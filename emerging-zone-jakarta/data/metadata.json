@@ -1,0 +1,243 @@
+{
+  "topic": "Emerging Commercial Zone Detector — DKI Jakarta 2019-2024",
+  "owner_agent": "Scraping (data prep) → Dashboard (build)",
+  "scrape_date": "2026-05-02",
+  "region": "DKI Jakarta",
+  "bbox_wgs84": [106.65, -6.40, 107.02, -6.05],
+
+  "datasets": [
+    {
+      "file": "260502_NASA_jakarta-area-analysis.xlsx",
+      "source": "NASA VIIRS VNP46A2 via Google Earth Engine",
+      "band": "DNB_BRDF_Corrected_NTL",
+      "scale_m": 500,
+      "period": "2019-2024 Jul-Sep composite (kemarau)",
+      "sheets": {
+        "named_areas": "16 area (Blok M, PIK, PIK 2, Cipete, SCBD, Thamrin, Kemang, Kelapa Gading, Pluit, Ancol, Kalideres, Cengkareng, Cilincing, Cawang, Pesanggrahan, Pantai Mutiara) dengan lum_2019..lum_2024, change_pct, covid_dip",
+        "pixel_change_map": "6557 pixel 500m (lat, lon, lum_2019, lum_2024, change_pct, trend label)",
+        "metadata": "info dataset"
+      }
+    },
+    {
+      "file": "260502_OSM_poi-commercial-jakarta.xlsx",
+      "source": "OpenStreetMap via Overpass API",
+      "scrape_date": "2026-05-02",
+      "total_pois": 7434,
+      "sheets": {
+        "all_commercial": "F&B + Entertainment + Retail combined (7434 POI)",
+        "fnb": "4502 POI — restaurant 2421, cafe 1116, fast_food 702, food_court 142, bar 72, ice_cream 37, pub 12",
+        "entertainment": "98 POI — cinema 41, nightclub 21, theatre 20, arts_centre 12, karaoke 4",
+        "retail": "2834 POI — convenience 1867, supermarket 336, marketplace 304, mall 281, department 46"
+      },
+      "columns": ["osm_id","osm_type","name","name_en","brand","operator","lat","lon","addr_street","addr_city","cuisine","opening_hours","category","group"],
+      "caveat": "Convenience store dominan (Alfamart/Indomaret) — pertimbangkan filter di scoring Retail agar tidak overweight"
+    },
+    {
+      "file": "260502_OSM_transport-jakarta.xlsx",
+      "source": "OpenStreetMap via Overpass API",
+      "total_nodes": 5054,
+      "sheets": {
+        "transport": "5054 nodes — halte_TJ 4830, rail/KRL 107, bus_station/terminal 56, transport_hub 40, subway/MRT 21"
+      },
+      "columns": ["osm_id","osm_type","name","lat","lon","category","group"],
+      "caveat": "Halte TransJakarta dominan; untuk transport_access_score, weighted: MRT/subway > KRL > terminal/hub > halte"
+    }
+  ],
+
+  "named_areas_centroid": [
+    {"area":"Blok M","lat":-6.2427,"lon":106.7984,"radius_m":800},
+    {"area":"SCBD/Sudirman","lat":-6.2243,"lon":106.8151,"radius_m":1000},
+    {"area":"Kemang","lat":-6.2583,"lon":106.8131,"radius_m":800},
+    {"area":"Cipete/Urban Forest","lat":-6.2630,"lon":106.8010,"radius_m":800},
+    {"area":"PIK (Pantai Indah Kapuk)","lat":-6.1044,"lon":106.7351,"radius_m":1200},
+    {"area":"PIK 2 (Pantai Maju)","lat":-6.0420,"lon":106.7230,"radius_m":1200},
+    {"area":"Kelapa Gading","lat":-6.1601,"lon":106.9086,"radius_m":1000},
+    {"area":"Pluit/Penjaringan","lat":-6.1290,"lon":106.8067,"radius_m":800},
+    {"area":"Ancol","lat":-6.1164,"lon":106.8395,"radius_m":800},
+    {"area":"Kalideres","lat":-6.1444,"lon":106.7014,"radius_m":800},
+    {"area":"Cengkareng","lat":-6.1469,"lon":106.7390,"radius_m":800},
+    {"area":"Cilincing","lat":-6.0924,"lon":106.9407,"radius_m":800},
+    {"area":"Cawang","lat":-6.2535,"lon":106.8760,"radius_m":800},
+    {"area":"Pesanggrahan","lat":-6.2931,"lon":106.7697,"radius_m":800},
+    {"area":"Thamrin","lat":-6.1944,"lon":106.8229,"radius_m":800},
+    {"area":"Pantai Mutiara","lat":-6.1201,"lon":106.7770,"radius_m":800}
+  ],
+
+  "scoring_model": {
+    "name": "Emerging Commercial Zone Score (ECZI)",
+    "method": "Composite weighted index, min-max normalized 0-100 per komponen, weighted sum final score",
+    "components": [
+      {
+        "id": "night_light_growth_score",
+        "weight": 0.30,
+        "formula": "min_max_normalize(change_pct, 2019-2024)",
+        "rationale": "Perubahan cahaya malam merupakan sinyal terkuat intensifikasi aktivitas ekonomi spasial. Bobot terbesar karena merupakan indikator longitudinal 6-tahun yang mencerminkan trajektori kawasan, bukan snapshot. Mengikuti Henderson et al. (2012) dan Gibson et al. (2020) yang menunjukkan elastisitas NTL terhadap pertumbuhan ekonomi 0.3-0.5."
+      },
+      {
+        "id": "avg_luminosity_score",
+        "weight": 0.15,
+        "formula": "min_max_normalize(lum_2024)",
+        "rationale": "Level luminositas tahun terbaru sebagai proxy baseline kepadatan aktivitas. Melengkapi growth score — kawasan dengan level tinggi tapi pertumbuhan rendah kemungkinan sudah mature. Lihat Mellander et al. (2015): NTL cocok sebagai proxy level aktivitas di tingkat sub-nasional."
+      },
+      {
+        "id": "poi_fnb_density_score",
+        "weight": 0.20,
+        "formula": "min_max_normalize(poi_fnb_count / area_km2)",
+        "rationale": "Aglomerasi restoran, kafe, dan F&B merupakan indikator utama night-time economy dan urban vitality. Merujuk pada Yue et al. (2017) yang menunjukkan POI density berkorelasi dengan neighbourhood vibrancy; dan Jacobs (1961) tentang mixed-use sebagai fondasi vitalitas kawasan."
+      },
+      {
+        "id": "poi_entertainment_density_score",
+        "weight": 0.10,
+        "formula": "min_max_normalize(poi_entertainment_count / area_km2)",
+        "rationale": "Cinema, nightclub, theatre sebagai proxy night-time leisure economy. Bobot lebih rendah dari F&B karena coverage OSM entertainment di Indonesia masih sparse (98 titik vs 4502 F&B). Merujuk pada Li et al. (2023) tentang spatial clustering aktivitas ekonomi malam."
+      },
+      {
+        "id": "poi_diversity_score",
+        "weight": 0.10,
+        "formula": "shannon_entropy([fnb_count, entertainment_count, retail_count]) per area, normalized",
+        "rationale": "Keberagaman jenis POI (F&B + Entertainment + Retail) menggunakan Shannon diversity index. Kawasan berkembang cenderung menunjukkan diversifikasi fungsi, bukan monokultur. Mengikuti prinsip Jacobs (1961) density-diversity-design; dan Ewing & Cervero (2010) land use mix."
+      },
+      {
+        "id": "transport_access_score",
+        "weight": 0.10,
+        "formula": "sum(weight_i / distance_i) untuk node transport dalam radius 2km; weight: subway=4, rail=3, bus_station/hub=2, halte=1; normalized",
+        "rationale": "Aksesibilitas transportasi publik mempengaruhi footfall kawasan komersial. Weighted distance decay mengikuti prinsip gravitasi aksesibilitas (Hansen, 1959; Ewing & Cervero, 2010). MRT/subway diberi bobot tertinggi karena skala layanan dan catchment area terbesar."
+      },
+      {
+        "id": "residential_catchment_score",
+        "weight": 0.05,
+        "formula": "min_max_normalize(total_poi_all_categories dalam buffer 1km) sebagai proxy kepadatan permukiman",
+        "rationale": "Keberadaan permukiman di sekitar kawasan komersial mempengaruhi demand. Karena data sensus kelurahan belum tersedia, proxy menggunakan kepadatan POI total dalam buffer 1km sebagai indikasi inhabited area. Bobot minimal karena proxy-nya lemah."
+      }
+    ],
+    "quadrant_classification": {
+      "threshold": "median growth_score dan median poi_fnb_density_score",
+      "categories": {
+        "Emerging Commercial Hotspot": "growth_score > median AND poi_density > median — kawasan berkembang dengan ekosistem komersial aktif (contoh expected: PIK 2, PIK)",
+        "Early-stage Emerging": "growth_score > median AND poi_density <= median — sinyal awal perkembangan, POI belum terbentuk (contoh expected: Cilincing, Kalideres)",
+        "Mature Commercial": "growth_score <= median AND poi_density > median — kawasan mapan dengan aktivitas NTL stabil atau menurun (contoh expected: Blok M, Kelapa Gading, SCBD)",
+        "Low Activity": "growth_score <= median AND poi_density <= median — kawasan perlu investigasi lebih lanjut"
+      }
+    }
+  },
+
+  "methodology_notes": [
+    "Nighttime light = proxy aktivitas ekonomi spasial dan intensitas urban, BUKAN ukuran langsung PDRB, transaksi, atau daya beli.",
+    "POI F&B + Entertainment = proxy micro-spatial vitality dan night-time economy.",
+    "Transport access weighted: MRT > KRL > terminal > halte_TJ.",
+    "Convenience store (Alfa/Indomaret) jangan over-weight di Retail score karena coverage seragam DKI — exclude dari diversity index atau treat sebagai separate layer.",
+    "Scoring composite: 30% NTL growth + 15% NTL level + 20% F&B density + 10% entertainment density + 10% diversity (Shannon) + 10% transport access + 5% residential catchment proxy.",
+    "Jul-Sep composite (kemarau): meminimalkan cloud cover noise, tapi tidak capture year-end shopping season peak.",
+    "NTL saturasi: kawasan CBD sangat terang (SCBD lum>80) cenderung terkompresi — growth pada level tinggi lebih sulit terdeteksi vs kawasan baseline rendah.",
+    "OSM coverage gap: nama terisi 98%, alamat hanya 1%, brand 52% — analisis berbasis density/count lebih robust daripada analisis berbasis atribut nama/alamat."
+  ],
+
+  "academic_references": [
+    {
+      "id": "ref_A1",
+      "layer": "A — Nighttime Lights Proxy",
+      "justifies": ["night_light_growth_score","avg_luminosity_score"],
+      "citation": "Henderson, J.V., Storeygard, A., & Weil, D.N. (2012). Measuring Economic Growth from Outer Space. American Economic Review, 102(2), 994–1028.",
+      "doi": "10.1257/aer.102.2.994",
+      "key_finding": "NTL dari satelit berkorelasi kuat dengan pertumbuhan ekonomi; elastisitas 0.3 antara growth GDP dan pertumbuhan cahaya. Dasar penggunaan NTL sebagai proxy aktivitas ekonomi spasial.",
+      "confidence": "verified"
+    },
+    {
+      "id": "ref_A2",
+      "layer": "A — Nighttime Lights Proxy",
+      "justifies": ["night_light_growth_score","avg_luminosity_score"],
+      "citation": "Gibson, J., Olivia, S., & Boe-Gibson, G. (2020). Night Lights in Economics: Sources and Uses. Journal of Economic Surveys, 34(5), 955–980.",
+      "doi": "10.1111/joes.12387",
+      "key_finding": "Review komprehensif penggunaan NTL dalam ekonomi. Mendukung penggunaan untuk aktivitas ekonomi lokal dan subnasional, termasuk negara berkembang. Menekankan pentingnya pemilihan periode (kemarau vs hujan) untuk konsistensi.",
+      "confidence": "verified"
+    },
+    {
+      "id": "ref_A3",
+      "layer": "A — Nighttime Lights Proxy (VIIRS specific)",
+      "justifies": ["avg_luminosity_score","night_light_growth_score"],
+      "citation": "Elvidge, C.D., Baugh, K., Zhizhin, M., Hsu, F.C., & Ghosh, T. (2017). VIIRS night-time lights. International Journal of Remote Sensing, 38(21), 5860–5879.",
+      "doi": "10.1080/01431161.2017.1342050",
+      "key_finding": "Deskripsi teknis VIIRS DNB Black Marble. Mendukung penggunaan BRDF-corrected band (VNP46A2) untuk analisis temporal — koreksi atmosferik dan moonlight noise lebih baik dibanding DMSP-OLS.",
+      "confidence": "verified"
+    },
+    {
+      "id": "ref_A4",
+      "layer": "A — Nighttime Lights Proxy",
+      "justifies": ["avg_luminosity_score"],
+      "citation": "Mellander, C., Lobo, J., Stolarick, K., & Matheson, Z. (2015). Night-Time Light Data: A Good Proxy Measure for Economic Activity? PLOS ONE, 10(10), e0139779.",
+      "doi": "10.1371/journal.pone.0139779",
+      "key_finding": "NTL lebih baik sebagai proxy kepadatan populasi dan kepadatan ekonomi daripada sebagai ukuran pertumbuhan pada level mikro. Mendukung penggunaan avg_luminosity sebagai level score, bukan sole indicator.",
+      "confidence": "verified"
+    },
+    {
+      "id": "ref_B1",
+      "layer": "B — POI Urban Vitality",
+      "justifies": ["poi_fnb_density_score","poi_diversity_score"],
+      "citation": "Yue, Y., Zhuang, Y., Yeh, A.G.O., Xie, J., Ma, C., & Li, Q. (2017). Measurements of POI-based mixed use and their relationships with neighbourhood vibrancy. International Journal of Geographical Information Science, 31(4), 658–675.",
+      "doi": "10.1080/13658816.2016.1248508",
+      "key_finding": "POI density dan POI diversity (Shannon index) berkorelasi signifikan dengan vibrancy kawasan (diukur via Weibo check-in dan foot traffic). Mendukung penggunaan poi_fnb_density dan poi_diversity_score.",
+      "confidence": "verified"
+    },
+    {
+      "id": "ref_B2",
+      "layer": "B — POI Night-time Economy",
+      "justifies": ["poi_fnb_density_score","poi_entertainment_density_score"],
+      "citation": "Li, M., Yu, Z., & Li, R. (2023). Spatial Characteristics and Influencing Factors of Multiscale Night-Time Economy: Evidence from Point of Interest Data in Chengdu, China. ISPRS International Journal of Geo-Information, 12(5), 205.",
+      "doi": "10.3390/ijgi12050205",
+      "key_finding": "Analisis POI night-time economy di tingkat kecamatan-kelurahan menunjukkan klasterisasi F&B dan entertainment sebagai inti night-time commercial circuit. Transport proximity adalah faktor paling signifikan kedua setelah POI density.",
+      "confidence": "perlu verifikasi DOI — cek jurnal ISPRS IJGI 2023"
+    },
+    {
+      "id": "ref_B3",
+      "layer": "B — Urban Vitality Foundation",
+      "justifies": ["poi_diversity_score","poi_fnb_density_score"],
+      "citation": "Jacobs, J. (1961). The Death and Life of Great American Cities. New York: Random House.",
+      "doi": null,
+      "key_finding": "Empat kondisi vitalitas kawasan urban: mixed primary uses, short blocks, buildings berbagai usia, concentration of people. Menjadi dasar teoritis mengapa diversity index POI relevan — kawasan berkembang menunjukkan mixed-use organik.",
+      "confidence": "verified"
+    },
+    {
+      "id": "ref_C1",
+      "layer": "C — Built Environment & Accessibility",
+      "justifies": ["transport_access_score","residential_catchment_score"],
+      "citation": "Ewing, R., & Cervero, R. (2010). Travel and the Built Environment: A Meta-Analysis. Journal of the American Planning Association, 76(3), 265–294.",
+      "doi": "10.1080/01944361003766766",
+      "key_finding": "Meta-analisis 200+ studi: kepadatan, diversity, dan desain walkable berpengaruh signifikan terhadap travel behavior dan aktivitas di suatu kawasan. Land use mix dan proximity ke transit nodes merupakan prediktor terkuat footfall komersial.",
+      "confidence": "verified"
+    },
+    {
+      "id": "ref_C2",
+      "layer": "C — Accessibility Theory",
+      "justifies": ["transport_access_score"],
+      "citation": "Hansen, W.G. (1959). How Accessibility Shapes Land Use. Journal of the American Institute of Planners, 25(2), 73–76.",
+      "doi": "10.1080/01944365908978307",
+      "key_finding": "Fondasi teori aksesibilitas: nilai suatu lokasi ditentukan oleh weighted sum potensi interaksi dengan lokasi lain, di-decay oleh jarak/waktu. Menjadi basis formula transport_access_score = sum(weight / distance).",
+      "confidence": "verified"
+    }
+  ],
+
+  "reference_display_guide": {
+    "page5_sections": [
+      {
+        "section": "Layer A: Nighttime Light sebagai Proxy Aktivitas Ekonomi Spasial",
+        "refs": ["ref_A1","ref_A2","ref_A3","ref_A4"],
+        "caveat_display": "Nighttime light BUKAN ukuran langsung PDRB atau daya beli. Digunakan sebagai proxy intensitas aktivitas ekonomi spasial mengikuti Henderson et al. (2012) dan Gibson et al. (2020). Saturasi cahaya pada kawasan CBD sangat terang (>80 DNB units) dapat menekan growth signal — interpretasi perlu hati-hati untuk SCBD/Thamrin."
+      },
+      {
+        "section": "Layer B: POI sebagai Proxy Urban Vitality dan Night-Time Economy",
+        "refs": ["ref_B1","ref_B2","ref_B3"],
+        "caveat_display": "POI dari OSM memiliki coverage tidak merata — area dengan komunitas mapper aktif lebih lengkap. Konsentrasi convenience store (Alfamart/Indomaret) dikecualikan dari diversity index karena distribusinya seragam di seluruh DKI dan tidak mencerminkan diferensiasi karakter kawasan."
+      },
+      {
+        "section": "Layer C: Built Environment dan Aksesibilitas",
+        "refs": ["ref_C1","ref_C2"],
+        "caveat_display": "Transport access score menggunakan weighted distance decay (Hansen, 1959): subway/MRT diberi bobot 4x, KRL 3x, terminal/hub 2x, halte TransJakarta 1x. Halte TJ dominan secara jumlah (4830 titik) namun bobotnya minimal per-titik agar tidak mendominasi score."
+      },
+      {
+        "section": "Composite Scoring dan Klasifikasi Kuadran",
+        "refs": ["ref_A1","ref_B1","ref_C1"],
+        "caveat_display": "Bobot final (30/15/20/10/10/10/5) ditentukan secara expert-judgment mengikuti proporsi variance explained masing-masing layer pada literatur. Bukan hasil optimasi empiris — bobot dapat dikalibrasi ulang jika data validasi tersedia (misal: retail sales, footfall sensor)."
+      }
+    ]
+  }
+}

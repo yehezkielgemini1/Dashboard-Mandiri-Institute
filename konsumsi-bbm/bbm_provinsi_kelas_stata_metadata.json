@@ -1,0 +1,118 @@
+{
+  "file": "bbm_provinsi_kelas_stata.csv",
+  "generated_by": "Data/Python/260423_Generate_BBM_Xlsx_v5_PerKelas.py",
+  "generated_date": "2026-04-24",
+  "mode": "stata",
+  "mode_description": "Stata-match: float32 storage, verified 100% cell-by-cell vs tim Stata",
+  "source_data": {
+    "blok42": "Data/Python/parquet/susenas_{YYYY}_blok42.parquet",
+    "wb_full": "Data/Susenas/Working File/Kelas Masyarakat/wb{YY}_full.dta",
+    "master_wilayah": "Data/Python/master_wilayah_2025.csv"
+  },
+  "tahun_cakupan": [
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "n_provinsi": 38,
+  "kelas_wb4": {
+    "1": "Poor",
+    "2": "Vulnerable",
+    "3": "Lower AMC",
+    "4": "Upper AMC",
+    "5": "Lower MC",
+    "6": "Middle MC",
+    "7": "Upper MC",
+    "8": "Upper Class"
+  },
+  "jenis_bbm": [
+    "Tidak beli",
+    "Premium",
+    "Pertalite",
+    "Pertamax",
+    "Pertamax Turbo"
+  ],
+  "cutoff_per_era": {
+    "era_1_2019_2022": {
+      "Premium": "bensin_h <= Rp 7,000",
+      "Pertalite": "Rp 7,000 < bensin_h <= Rp 8,500",
+      "Pertamax": "Rp 8,500 < bensin_h <= Rp 10,500",
+      "Pertamax Turbo": "bensin_h > Rp 10,500",
+      "pertalite_price_ref": 7650
+    },
+    "era_2_2023_2025": {
+      "Pertalite": "bensin_h <= Rp 11,000",
+      "Pertamax": "Rp 11,000 < bensin_h <= Rp 13,500",
+      "Pertamax Turbo": "bensin_h > Rp 13,500",
+      "pertalite_price_ref": 10000,
+      "note": "Premium sudah phase-out di era 2"
+    }
+  },
+  "harga_bbm_referensi_per_tahun": {
+    "2019": {
+      "Premium": 6450,
+      "Pertalite": 7650,
+      "Pertamax": 9850,
+      "Turbo": 11200
+    },
+    "2020": {
+      "Premium": 6450,
+      "Pertalite": 7650,
+      "Pertamax": 9000,
+      "Turbo": 9850
+    },
+    "2021": {
+      "Premium": 6450,
+      "Pertalite": 7650,
+      "Pertamax": 9000,
+      "Turbo": 11500
+    },
+    "2022": {
+      "Premium": 6450,
+      "Pertalite": 7650,
+      "Pertamax": 9000,
+      "Turbo": 11500
+    },
+    "2023": {
+      "Pertalite": 10000,
+      "Pertamax": 13050,
+      "Turbo": 14400
+    },
+    "2024": {
+      "Pertalite": 10000,
+      "Pertamax": 12950,
+      "Green": 13700,
+      "Turbo": 14500
+    },
+    "2025": {
+      "Pertalite": 10000,
+      "Pertamax": 12300,
+      "Green": 13250,
+      "Turbo": 13900
+    }
+  },
+  "weight_variable": "weind (RT-level, konstan per RT; sum nasional = populasi tertimbang)",
+  "methodology": "gen bensin = b42k4/r301 if kode==nilai; gen bensin_l = b42k3/r301 if kode==liter; collapse sum per urut; merge wb_full.dta; bensin_h = bensin/bensin_l; classify tier; tabulate weighted by weind",
+  "caveats": [
+    "Cutoff berbeda antar era. Growth 2022 ke 2023 cross-era bisa artifact cutoff change.",
+    "Tier Pertamax era 2 mix Pertamax Pertamina dan RON 92 non-Pertamina (Shell Super, BP, Vivo). Median tier Rp 12,000 karena mass non-Pertamina.",
+    "Tier Pertamax Turbo bisa berisi RON 98, RON 95 (Shell V-Power), dan RON 92 non-Pertamina harga mahal. Label tidak 100% refleksi grade.",
+    "2025 Pertalite anomali: median Rp 8,722 (bukan Rp 10,000). Perlu investigasi.",
+    "Surge Pertamax Turbo 2022 sebagian besar karena reclassification Shell price hike Feb 2022, bukan orang ganti BBM.",
+    "Pertamax Plus sudah dihentikan Desember 2016. Pertamax Green baru Juli 2023."
+  ],
+  "columns": {
+    "tahun": "Tahun survei Susenas Maret",
+    "kode_prov": "Kode provinsi BPS 2-digit",
+    "nama_prov": "Nama provinsi",
+    "kelas_kode": "Kode kelas wb4 (1-8)",
+    "kelas": "Label kelas masyarakat",
+    "jenis_bbm": "Kategori BBM berdasarkan harga per liter",
+    "n_tertimbang": "Jumlah individu tertimbang (weind)",
+    "pct_dalam_kelas": "Persentase jenis BBM dalam (prov, kelas), sum per (prov, kelas) = 100"
+  }
+}

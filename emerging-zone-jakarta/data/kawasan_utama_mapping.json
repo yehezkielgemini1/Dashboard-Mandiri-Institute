@@ -1,0 +1,115 @@
+{
+  "metadata": {
+    "description": "Mapping kawasan utama (informal commercial zones) → desa/kelurahan member di DKI Jakarta",
+    "source": "Scraping agent expert judgment + temuan spatial join NTL/OSM 2026-05-03",
+    "version": "1.0",
+    "note": "Kawasan utama adalah grouping informal yang dikenal masyarakat. Tidak setara dengan kecamatan administratif. Bisa 1 kawasan span lintas kecamatan, atau 1 kecamatan punya beberapa kawasan."
+  },
+  "kawasan": {
+    "Blok M & Sekitarnya": {
+      "deskripsi": "Pusat komersial Kebayoran Baru klasik, mengalami revival 2024-2026",
+      "kabkota": "Jakarta Selatan",
+      "desa_member": ["Melawai", "Kramat Pela", "Pulo", "Petogogan"]
+    },
+    "SCBD & Sudirman": {
+      "deskripsi": "Kawasan CBD Sudirman-Thamrin corridor, ofise tower premium",
+      "kabkota": "Jakarta Selatan & Pusat",
+      "desa_member": ["Senayan", "Karet Tengsin", "Karet Semanggi", "Setiabudi", "Bendungan Hilir"]
+    },
+    "Mega Kuningan": {
+      "deskripsi": "Office cluster Mega Kuningan dan Karet Kuningan, top emerging post-COVID",
+      "kabkota": "Jakarta Selatan",
+      "desa_member": ["Karet Kuningan", "Kuningan Timur", "Kuningan Barat"]
+    },
+    "Kemang": {
+      "deskripsi": "Lifestyle cluster Mampang-Kemang",
+      "kabkota": "Jakarta Selatan",
+      "desa_member": ["Bangka", "Pela Mampang", "Mampang Prapatan"]
+    },
+    "Cipete & Urban Forest": {
+      "deskripsi": "Kawasan residensial dan kafe Cipete",
+      "kabkota": "Jakarta Selatan",
+      "desa_member": ["Cipete Selatan", "Cipete Utara"]
+    },
+    "Pesanggrahan & Bintaro": {
+      "deskripsi": "Kawasan residensial-komersial Bintaro corridor",
+      "kabkota": "Jakarta Selatan",
+      "desa_member": ["Pesanggrahan", "Bintaro"]
+    },
+    "PIK (Pantai Indah Kapuk)": {
+      "deskripsi": "Kawasan komersial reklamasi Pantai Indah Kapuk, salah satu zona pertumbuhan tinggi",
+      "kabkota": "Jakarta Utara",
+      "desa_member": ["Kapuk Muara", "Pejagalan", "Kamal Muara"]
+    },
+    "Pluit & Penjaringan": {
+      "deskripsi": "Kawasan komersial Pluit dan Penjaringan",
+      "kabkota": "Jakarta Utara",
+      "desa_member": ["Pluit", "Penjaringan", "Kapuk"]
+    },
+    "Pantai Mutiara": {
+      "deskripsi": "Kawasan residensial elite pesisir",
+      "kabkota": "Jakarta Utara",
+      "desa_member": ["Pluit"]
+    },
+    "Kelapa Gading": {
+      "deskripsi": "Kawasan komersial dan kuliner mature, mall + ruko",
+      "kabkota": "Jakarta Utara",
+      "desa_member": ["Kelapa Gading Barat", "Kelapa Gading Timur", "Pegangsaan Dua"]
+    },
+    "Ancol & Pademangan": {
+      "deskripsi": "Kawasan rekreasi dan komersial pesisir",
+      "kabkota": "Jakarta Utara",
+      "desa_member": ["Ancol", "Pademangan Barat", "Pademangan Timur"]
+    },
+    "Cilincing": {
+      "deskripsi": "Kawasan industri-pelabuhan dengan pertumbuhan komersial penyangga",
+      "kabkota": "Jakarta Utara",
+      "desa_member": ["Cilincing", "Marunda", "Sukapura", "Semper Barat", "Semper Timur"]
+    },
+    "Sunter & Tanjung Priok": {
+      "deskripsi": "Kawasan pelabuhan-residensial Jakarta Utara timur",
+      "kabkota": "Jakarta Utara",
+      "desa_member": ["Sunter Agung", "Sunter Jaya", "Tanjung Priuk", "Papanggo"]
+    },
+    "Kalideres": {
+      "deskripsi": "Kawasan logistik dan residensial barat Jakarta",
+      "kabkota": "Jakarta Barat",
+      "desa_member": ["Kalideres", "Tegal Alur", "Pegadungan", "Semanan", "Kamal"]
+    },
+    "Cengkareng": {
+      "deskripsi": "Kawasan residensial-komersial sekitar bandara Soekarno-Hatta",
+      "kabkota": "Jakarta Barat",
+      "desa_member": ["Cengkareng Barat", "Cengkareng Timur", "Kapuk"]
+    },
+    "Tanjung Duren & Mall Corridor": {
+      "deskripsi": "Corridor mall Taman Anggrek - Central Park - Mall Tanjung Duren, top emerging Jakbar",
+      "kabkota": "Jakarta Barat",
+      "desa_member": ["Tanjung Duren Selatan", "Tanjung Duren Utara", "Tomang", "Grogol"]
+    },
+    "Cawang & Cililitan": {
+      "deskripsi": "Kawasan transit Jaktim selatan",
+      "kabkota": "Jakarta Timur",
+      "desa_member": ["Cawang", "Cililitan", "Kebon Pala", "Bidara Cina"]
+    },
+    "Cipayung Cluster": {
+      "deskripsi": "Emerging zone di selatan Jaktim, terdeteksi via spatial join NTL (CAGR +25-37%) — sebelumnya tidak masuk radar 16 kawasan klasik",
+      "kabkota": "Jakarta Timur",
+      "desa_member": ["Pondok Ranggon", "Munjul", "Cilangkap", "Setu", "Bambu Apus", "Ceger"]
+    },
+    "Jagakarsa": {
+      "deskripsi": "Emerging residensial-komersial Jaksel selatan, NTL CAGR tinggi",
+      "kabkota": "Jakarta Selatan",
+      "desa_member": ["Cipedak", "Srengseng Sawah", "Jagakarsa", "Tanjung Barat"]
+    },
+    "Thamrin & Menteng": {
+      "deskripsi": "CBD Pusat klasik dengan office tower dan retail premium",
+      "kabkota": "Jakarta Pusat",
+      "desa_member": ["Gondangdia", "Menteng", "Cikini", "Kebon Sirih", "Gambir"]
+    },
+    "Sarinah & Tanah Abang": {
+      "deskripsi": "Kawasan retail dan grosir tradisional Jakpus",
+      "kabkota": "Jakarta Pusat",
+      "desa_member": ["Tanah Abang", "Petamburan", "Kebon Kacang", "Cideng", "Karang Anyar"]
+    }
+  }
+}

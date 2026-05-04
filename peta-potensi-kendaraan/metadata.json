@@ -1,0 +1,258 @@
+{
+  "title": "Peta Potensi Pasar Kredit Kendaraan per Kabkot",
+  "initiative": "Riset Kendaraan 2026 (partner MUF)",
+  "vintage": "2026-04-28",
+  "source": "Susenas KOR-RT + KP Blok 4.2 parquet 2019-2025 (BPS, processed)",
+  "filter": {
+    "universal": "kelas_8 ∈ {Lower MC, Middle MC, Upper MC, Upper Class} — middle+ subset",
+    "exception": "pct_middle_plus (E1) dihitung pakai ALL RT denominator — capacity scale indicator"
+  },
+  "geo_levels": [
+    "nasional",
+    "provinsi",
+    "kabkot"
+  ],
+  "papua_handling": "Kode provinsi as-is per tahun (91, 92, 94, 95, 96, 97). Tidak ada forced roll-up. Kabkot kode unique cross-year.",
+  "sample_threshold": {
+    "rule": "n_rt_middle_sample < 30 per kabkot 2025 → low_confidence=True",
+    "treatment": "Kabkot tetap muncul di output, tidak di-exclude. Dashboard wajib show flag."
+  },
+  "weight": "wert (penimbang RT, dari KP Blok 4.2 ekuivalen fwt KOR-RT)",
+  "kelas_8_order": [
+    "Poor",
+    "Vulnerable",
+    "Lower AMC",
+    "Upper AMC",
+    "Lower MC",
+    "Middle MC",
+    "Upper MC",
+    "Upper Class"
+  ],
+  "middle_plus": [
+    "Lower MC",
+    "Middle MC",
+    "Upper MC",
+    "Upper Class"
+  ],
+  "fields": {
+    "tahun": "int 2019-2025",
+    "geo_level": "nasional / provinsi / kabkot",
+    "kode_prov": "kode BPS provinsi 2 digit (11-97)",
+    "nama_prov": "nama provinsi (Sumatra spelling, Title Case)",
+    "kabkota_4digit": "kode BPS kabkot 4 digit (= prov*100 + kab) — null untuk geo_level nasional/provinsi",
+    "nama_kab": "nama kabkot (Title Case) — null untuk nasional/provinsi",
+    "kelas_8": "kelas masyarakat 8-tier (atau 'Total' untuk middle+ aggregate)",
+    "n_rt_sample": "jumlah RT raw sample (unweighted) dalam baris ini",
+    "n_rt_weighted": "jumlah RT tertimbang (wert) dalam baris ini",
+    "n_rt_total_sample": "jumlah RT raw sample TOTAL (semua kelas) di geo+tahun — denominator E1",
+    "n_rt_total_weighted": "jumlah RT tertimbang TOTAL — denominator E1",
+    "n_rt_middle_sample": "jumlah RT raw sample middle+ di geo+tahun",
+    "n_rt_middle_weighted": "jumlah RT tertimbang middle+ — pengali untuk composite absolute (TAM)",
+    "pct_mobil": "% RT yang punya mobil (filter middle+ kalau kelas_8='Total'; dalam kelas_8 specific = % RT punya mobil dalam kelas itu)",
+    "pct_motor": "% RT yang punya sepeda motor (mirror pct_mobil)",
+    "avg_kendaraan": "rata-rata pengeluaran kendaraan per RT/tahun (Rp). KP kode kendaraan setahun.",
+    "avg_tol_parkir": "rata-rata pengeluaran tol+parkir per RT/tahun (Rp)",
+    "avg_pelumas": "rata-rata pengeluaran pelumas kendaraan per RT/tahun (Rp)",
+    "avg_perbaikan": "rata-rata pengeluaran perbaikan kendaraan per RT/tahun (Rp)",
+    "avg_stnk": "rata-rata pengeluaran pajak kendaraan (STNK) per RT/tahun (Rp)",
+    "avg_bensin_liter": "estimasi liter bensin per RT/tahun. Kuantitas asli BPS tidak tersedia (b42k3 zero), derived via Rp / harga Pertalite published.",
+    "avg_nonfood": "rata-rata pengeluaran non-food per RT/bulan (Rp). Sum sebulan KP Blok 4.2.",
+    "pct_middle_plus": "% RT middle+ di geo+tahun. Cuma populated kalau kelas_8='Total'. Denominator = ALL RT.",
+    "low_confidence": "true kalau n_rt_middle_sample 2025 < 30 di kabkot ini (broadcast ke semua tahun)"
+  },
+  "klp_crosswalk": {
+    "_note": "Kode komoditi BPS Susenas KP Blok 4.2 berubah lintas era 2019-2021 vs 2022-2024 vs 2025.",
+    "kendaraan": {
+      "2019": 294,
+      "2020": 294,
+      "2021": 294,
+      "2022": 304,
+      "2023": 304,
+      "2024": 304,
+      "2025": 331
+    },
+    "bensin": {
+      "2019": 207,
+      "2020": 207,
+      "2021": 207,
+      "2022": 216,
+      "2023": 216,
+      "2024": 216,
+      "2025": 244
+    },
+    "pelumas": {
+      "2019": 213,
+      "2020": 213,
+      "2021": 213,
+      "2022": 222,
+      "2023": 222,
+      "2024": 222,
+      "2025": 250
+    },
+    "perbaikan": {
+      "2019": 214,
+      "2020": 214,
+      "2021": 214,
+      "2022": 223,
+      "2023": 223,
+      "2024": 223,
+      "2025": 251
+    },
+    "tol_parkir": {
+      "2019": 264,
+      "2020": 264,
+      "2021": 264,
+      "2022": 274,
+      "2023": 274,
+      "2024": 274,
+      "2025": 301
+    },
+    "stnk": {
+      "2019": 299,
+      "2020": 299,
+      "2021": 299,
+      "2022": 309,
+      "2023": 309,
+      "2024": 309,
+      "2025": 336
+    }
+  },
+  "ownership_crosswalk": {
+    "_note": "Kode KOR-RT untuk ownership: R20xx pre-2025, R18xx 2025 (BPS shift block prefix).",
+    "mobil": {
+      "2019": "r2001k",
+      "2020": "r2001k",
+      "2021": "r2001k",
+      "2022": "r2001k",
+      "2023": "r2001k",
+      "2024": "r2001k",
+      "2025": "r1801k"
+    },
+    "motor": {
+      "2019": "r2001h",
+      "2020": "r2001h",
+      "2021": "r2001h",
+      "2022": "r2001h",
+      "2023": "r2001h",
+      "2024": "r2001h",
+      "2025": "r1801h"
+    }
+  },
+  "harga_bbm_proxy": {
+    "_note": "Published harga Pertalite (Rp/liter) untuk derive bensin_liter dari bensin_rp_bulan. Approximation karena BPS Susenas tidak collect kuantitas bensin (b42k3 zero).",
+    "2019": 7650,
+    "2020": 7650,
+    "2021": 7650,
+    "2022": 8200,
+    "2023": 10000,
+    "2024": 10000,
+    "2025": 10000
+  },
+  "composite_indeks": [
+    {
+      "id": "A1",
+      "pillar": "P1_Adoption_Velocity",
+      "sub_w": 0.25,
+      "label": "Δ % RT mobil short (24-25), pp",
+      "formula_calc": "delta_pp"
+    },
+    {
+      "id": "A2",
+      "pillar": "P1_Adoption_Velocity",
+      "sub_w": 0.25,
+      "label": "Δ % RT motor short (24-25), pp",
+      "formula_calc": "delta_pp"
+    },
+    {
+      "id": "A3",
+      "pillar": "P1_Adoption_Velocity",
+      "sub_w": 0.25,
+      "label": "Δ % RT mobil long (19-25), pp",
+      "formula_calc": "delta_pp"
+    },
+    {
+      "id": "A4",
+      "pillar": "P1_Adoption_Velocity",
+      "sub_w": 0.25,
+      "label": "Δ % RT motor long (19-25), pp",
+      "formula_calc": "delta_pp"
+    },
+    {
+      "id": "B1",
+      "pillar": "P2_Purchase_Momentum",
+      "sub_w": 0.5,
+      "label": "Δ avg belanja kendaraan/RT long (19-25), %",
+      "formula_calc": "delta_pct"
+    },
+    {
+      "id": "B2",
+      "pillar": "P2_Purchase_Momentum",
+      "sub_w": 0.5,
+      "label": "Δ avg belanja kendaraan/RT short (24-25), %",
+      "formula_calc": "delta_pct"
+    },
+    {
+      "id": "C1",
+      "pillar": "P3_Cost_Of_Ownership",
+      "sub_w": 0.25,
+      "label": "Avg parkir+tol per RT 2025 (Rp/tahun)",
+      "formula_calc": "level"
+    },
+    {
+      "id": "C2",
+      "pillar": "P3_Cost_Of_Ownership",
+      "sub_w": 0.25,
+      "label": "Avg pelumas per RT 2025 (Rp/tahun)",
+      "formula_calc": "level"
+    },
+    {
+      "id": "C3",
+      "pillar": "P3_Cost_Of_Ownership",
+      "sub_w": 0.25,
+      "label": "Avg perbaikan kendaraan per RT 2025 (Rp/tahun)",
+      "formula_calc": "level"
+    },
+    {
+      "id": "C4",
+      "pillar": "P3_Cost_Of_Ownership",
+      "sub_w": 0.25,
+      "label": "Avg STNK per RT 2025 (Rp/tahun)",
+      "formula_calc": "level"
+    },
+    {
+      "id": "D1",
+      "pillar": "P4_Intensity",
+      "sub_w": 1.0,
+      "label": "CAGR konsumsi bensin liter/RT (19-25), %/tahun",
+      "formula_calc": "cagr"
+    },
+    {
+      "id": "E1",
+      "pillar": "P5_Capacity_Scale",
+      "sub_w": 0.5,
+      "label": "% RT Middle+ per kabkot 2025",
+      "formula_calc": "level"
+    },
+    {
+      "id": "E2",
+      "pillar": "P5_Capacity_Scale",
+      "sub_w": 0.5,
+      "label": "Avg pengeluaran non-food per RT 2025 (Rp/bulan)",
+      "formula_calc": "level"
+    }
+  ],
+  "pillar_weights": {
+    "P1_Adoption_Velocity": 0.3,
+    "P2_Purchase_Momentum": 0.25,
+    "P3_Cost_Of_Ownership": 0.15,
+    "P4_Intensity": 0.1,
+    "P5_Capacity_Scale": 0.2
+  },
+  "row_count": 31782,
+  "caveat": [
+    "D1 (bensin liter): aproksimasi via harga Pertalite. Harga riil RT bisa beda (campuran Pertamax/Solar).",
+    "Papua pasca-2022: kode provinsi 92/95/96/97 muncul di 2024-2025 (pemekaran BPS). Kode kabkot tetap unik lintas tahun.",
+    "Ambang sampel n=30 RT Middle+ per kabkot. Kabkot di bawah ambang ditandai sampel terbatas di 2025.",
+    "Normalisasi min-max mencakup seluruh kabkot (termasuk sampel terbatas); rentang skor bisa terdistorsi outlier kabkot kecil."
+  ]
+}

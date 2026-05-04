@@ -1,0 +1,332 @@
+nama_komoditi,kelompok,is_makanan,kode_2019_21,kode_2022_24,kode_2025,display_period
+"Beras (beras lokal, kualitas unggul, impor)",Padi-Padian,True,2.0,2.0,2.0,bulan
+Beras ketan,Padi-Padian,True,3.0,3.0,3.0,bulan
+Jagung basah dengan kulit,Padi-Padian,True,4.0,4.0,4.0,bulan
+Jagung pipilan/beras jagung/jagung titi,Padi-Padian,True,5.0,5.0,5.0,bulan
+Tepung terigu,Padi-Padian,True,6.0,6.0,6.0,bulan
+Padi-padian lainnya,Padi-Padian,True,7.0,7.0,7.0,bulan
+Ketela pohon/singkong,Umbi-Umbian,True,9.0,9.0,9.0,bulan
+Ketela rambat/ubi jalar,Umbi-Umbian,True,10.0,10.0,10.0,bulan
+Sagu (bukan dari ketela pohon),Umbi-Umbian,True,11.0,11.0,11.0,bulan
+Talas/keladi,Umbi-Umbian,True,12.0,12.0,12.0,bulan
+Kentang,Umbi-Umbian,True,13.0,13.0,13.0,bulan
+Gaplek,Umbi-Umbian,True,14.0,14.0,14.0,bulan
+Umbi-umbian lainnya,Umbi-Umbian,True,15.0,15.0,15.0,bulan
+Ekor kuning,Ikan,True,17.0,17.0,17.0,bulan
+"Tongkol, tuna, cakalang, dencis (gabungan)",Ikan,True,18.0,,,bulan
+[BARU 2022] Tongkol (terpisah),Ikan,True,,18.0,18.0,bulan
+[BARU 2022] Tuna (terpisah),Ikan,True,,19.0,19.0,bulan
+"[BARU 2022] Cakalang, dencis (terpisah)",Ikan,True,,20.0,20.0,bulan
+Tenggiri,Ikan,True,19.0,21.0,21.0,bulan
+Selar,Ikan,True,20.0,22.0,22.0,bulan
+"Kembung, lema/tatare, banyar/banyara",Ikan,True,21.0,23.0,23.0,bulan
+Teri (basah),Ikan,True,22.0,24.0,24.0,bulan
+Bandeng,Ikan,True,23.0,25.0,25.0,bulan
+Gabus,Ikan,True,24.0,26.0,26.0,bulan
+Mujair,Ikan,True,25.0,27.0,27.0,bulan
+"Mas, nila (gabungan)",Ikan,True,26.0,,,bulan
+[BARU 2022] Mas (terpisah),Ikan,True,,28.0,28.0,bulan
+[BARU 2022] Nila (terpisah),Ikan,True,,29.0,29.0,bulan
+Lele,Ikan,True,27.0,30.0,30.0,bulan
+Kakap,Ikan,True,28.0,31.0,31.0,bulan
+Baronang,Ikan,True,29.0,32.0,32.0,bulan
+Patin,Ikan,True,30.0,33.0,33.0,bulan
+Bawal,Ikan,True,31.0,34.0,34.0,bulan
+Gurame,Ikan,True,32.0,35.0,35.0,bulan
+[BARU 2025] Ikan Layang,Ikan,True,,,36.0,bulan
+[BARU 2025] Ikan Baung,Ikan,True,,,37.0,bulan
+[BARU 2025] Ikan Belanak,Ikan,True,,,38.0,bulan
+[BARU 2025] Ikan Wader/Seluang,Ikan,True,,,39.0,bulan
+[BARU 2025] Belut,Ikan,True,,,40.0,bulan
+Ikan segar/basah lainnya,Ikan,True,33.0,36.0,41.0,bulan
+"[BARU 2025] Olahan ikan segar (siomay ikan, dll)",Ikan,True,,,42.0,bulan
+"Udang, lobster",Ikan,True,34.0,37.0,43.0,bulan
+"Cumi-cumi, sotong, gurita",Ikan,True,35.0,38.0,44.0,bulan
+"Ketam, kepiting, rajungan",Ikan,True,36.0,39.0,45.0,bulan
+"Kerang, siput, bekicot, remis",Ikan,True,37.0,40.0,46.0,bulan
+Udang dan hewan air lainnya (segar),Ikan,True,38.0,41.0,47.0,bulan
+Kembung diawetkan/peda,Ikan,True,39.0,42.0,48.0,bulan
+Tenggiri diawetkan,Ikan,True,40.0,43.0,49.0,bulan
+Tongkol/tuna/cakalang diawetkan,Ikan,True,41.0,44.0,50.0,bulan
+Teri diawetkan,Ikan,True,42.0,45.0,51.0,bulan
+Selar diawetkan,Ikan,True,43.0,46.0,52.0,bulan
+Sepat diawetkan,Ikan,True,44.0,47.0,53.0,bulan
+Bandeng diawetkan,Ikan,True,45.0,48.0,54.0,bulan
+Gabus diawetkan,Ikan,True,46.0,49.0,55.0,bulan
+"Ikan dalam kaleng (sardencis, tuna, dsb)",Ikan,True,47.0,50.0,56.0,bulan
+Ikan diawetkan lainnya,Ikan,True,48.0,51.0,57.0,bulan
+"Udang diawetkan (ebi, rebon)",Ikan,True,49.0,52.0,58.0,bulan
+Cumi-cumi/sotong/gurita diawetkan,Ikan,True,50.0,53.0,59.0,bulan
+Udang dan hewan air lainnya diawetkan,Ikan,True,51.0,54.0,60.0,bulan
+Daging sapi,Daging,True,53.0,56.0,62.0,bulan
+[BARU 2025] Daging kerbau,Daging,True,,,63.0,bulan
+Daging kambing/domba/biri-biri,Daging,True,54.0,57.0,64.0,bulan
+Daging babi,Daging,True,55.0,58.0,65.0,bulan
+Daging ayam ras,Daging,True,56.0,59.0,66.0,bulan
+Daging ayam kampung,Daging,True,57.0,60.0,67.0,bulan
+Daging segar lainnya,Daging,True,58.0,61.0,68.0,bulan
+[BARU 2025] Daging sapi diawetkan/olahan,Daging,True,,,69.0,bulan
+[BARU 2025] Daging ayam diawetkan/olahan,Daging,True,,,70.0,bulan
+[BARU 2025] Daging lainnya diawetkan,Daging,True,,,71.0,bulan
+"Tetelan, sandung lamur",Daging,True,60.0,63.0,72.0,bulan
+"Lainnya (hati, jeroan, iga, kaki, buntut, kepala)",Daging,True,61.0,64.0,73.0,bulan
+Telur ayam ras,Telur dan Susu,True,63.0,66.0,75.0,bulan
+Telur ayam kampung,Telur dan Susu,True,64.0,67.0,76.0,bulan
+Telur itik/telur itik manila,Telur dan Susu,True,65.0,68.0,77.0,bulan
+"Telur lainnya (puyuh, asin, penyu, angsa, dsb)",Telur dan Susu,True,66.0,69.0,78.0,bulan
+Susu cair pabrik,Telur dan Susu,True,67.0,70.0,79.0,bulan
+Susu kental manis,Telur dan Susu,True,68.0,71.0,80.0,bulan
+Susu bubuk,Telur dan Susu,True,69.0,72.0,81.0,bulan
+Susu bubuk bayi,Telur dan Susu,True,70.0,73.0,82.0,bulan
+Susu lainnya dan hasil lain dari susu,Telur dan Susu,True,71.0,74.0,,bulan
+[BARU 2025] Susu murni,Telur dan Susu,True,,,83.0,bulan
+"[BARU 2025] Hasil lain dari susu (keju, yogurt)",Telur dan Susu,True,,,84.0,bulan
+Bayam,Sayur-Sayuran,True,73.0,76.0,86.0,bulan
+Kangkung,Sayur-Sayuran,True,74.0,77.0,87.0,bulan
+Kol/kubis,Sayur-Sayuran,True,75.0,78.0,88.0,bulan
+Sawi putih (petsai),Sayur-Sayuran,True,76.0,79.0,89.0,bulan
+Sawi hijau,Sayur-Sayuran,True,77.0,80.0,90.0,bulan
+Buncis,Sayur-Sayuran,True,78.0,81.0,91.0,bulan
+Kacang panjang,Sayur-Sayuran,True,79.0,82.0,92.0,bulan
+"Tomat sayur, tomat ceri",Sayur-Sayuran,True,80.0,83.0,93.0,bulan
+Wortel,Sayur-Sayuran,True,81.0,84.0,94.0,bulan
+Mentimun,Sayur-Sayuran,True,82.0,85.0,95.0,bulan
+Daun ketela pohon/daun singkong,Sayur-Sayuran,True,83.0,86.0,96.0,bulan
+Terong,Sayur-Sayuran,True,84.0,87.0,97.0,bulan
+Tauge,Sayur-Sayuran,True,85.0,88.0,98.0,bulan
+"Labu, labu siam, labu parang",Sayur-Sayuran,True,86.0,89.0,99.0,bulan
+Bahan sayur sop/cap cay/kimlo (paket),Sayur-Sayuran,True,87.0,90.0,100.0,bulan
+Bahan sayur asam/lodeh (paket),Sayur-Sayuran,True,88.0,91.0,101.0,bulan
+Nangka muda,Sayur-Sayuran,True,89.0,92.0,102.0,bulan
+Pepaya muda,Sayur-Sayuran,True,90.0,93.0,103.0,bulan
+Jengkol,Sayur-Sayuran,True,91.0,94.0,104.0,bulan
+Bawang merah,Sayur-Sayuran,True,92.0,95.0,105.0,bulan
+Bawang putih,Sayur-Sayuran,True,93.0,96.0,106.0,bulan
+[BARU 2022] Bawang bombay,Sayur-Sayuran,True,,97.0,107.0,bulan
+Cabe merah,Sayur-Sayuran,True,94.0,98.0,108.0,bulan
+Cabe hijau,Sayur-Sayuran,True,95.0,99.0,109.0,bulan
+Cabe rawit,Sayur-Sayuran,True,96.0,100.0,110.0,bulan
+[BARU 2025] Daun pepaya,Sayur-Sayuran,True,,,111.0,bulan
+[BARU 2025] Daun kelor,Sayur-Sayuran,True,,,112.0,bulan
+[BARU 2025] Daun katuk,Sayur-Sayuran,True,,,113.0,bulan
+[BARU 2025] Daun bawang,Sayur-Sayuran,True,,,114.0,bulan
+[BARU 2025] Daun pakis,Sayur-Sayuran,True,,,115.0,bulan
+[BARU 2025] Daun kemangi,Sayur-Sayuran,True,,,116.0,bulan
+[BARU 2025] Oyong/gambas,Sayur-Sayuran,True,,,117.0,bulan
+[BARU 2025] Rebung,Sayur-Sayuran,True,,,118.0,bulan
+"[BARU 2025] Jamur (tiram, enoki, kancing, dll)",Sayur-Sayuran,True,,,119.0,bulan
+Sayur-sayuran lainnya,Sayur-Sayuran,True,97.0,101.0,120.0,bulan
+Kacang tanah tanpa kulit,Kacang-Kacangan,True,99.0,103.0,122.0,bulan
+Kacang kedelai,Kacang-Kacangan,True,100.0,104.0,123.0,bulan
+Kacang lainnya,Kacang-Kacangan,True,101.0,105.0,124.0,bulan
+Tahu,Kacang-Kacangan,True,102.0,106.0,125.0,bulan
+Tempe,Kacang-Kacangan,True,103.0,107.0,126.0,bulan
+Oncom,Kacang-Kacangan,True,104.0,108.0,127.0,bulan
+Hasil lain dari kacang-kacangan,Kacang-Kacangan,True,105.0,109.0,128.0,bulan
+"Jeruk, jeruk bali",Buah-Buahan,True,107.0,111.0,130.0,bulan
+Mangga,Buah-Buahan,True,108.0,112.0,131.0,bulan
+Apel,Buah-Buahan,True,109.0,113.0,132.0,bulan
+Rambutan,Buah-Buahan,True,110.0,114.0,133.0,bulan
+"Duku, langsat",Buah-Buahan,True,111.0,115.0,134.0,bulan
+Durian,Buah-Buahan,True,112.0,116.0,135.0,bulan
+Salak,Buah-Buahan,True,113.0,117.0,136.0,bulan
+Pisang ambon,Buah-Buahan,True,114.0,118.0,137.0,bulan
+Pisang lainnya,Buah-Buahan,True,115.0,119.0,138.0,bulan
+Pepaya,Buah-Buahan,True,116.0,120.0,139.0,bulan
+Semangka,Buah-Buahan,True,117.0,121.0,140.0,bulan
+Tomat buah,Buah-Buahan,True,118.0,122.0,141.0,bulan
+[BARU 2022] Alpokat,Buah-Buahan,True,,123.0,142.0,bulan
+[BARU 2022] Jambu biji,Buah-Buahan,True,,124.0,143.0,bulan
+[BARU 2025] Nanas,Buah-Buahan,True,,,144.0,bulan
+[BARU 2025] Nangka,Buah-Buahan,True,,,145.0,bulan
+[BARU 2025] Pir,Buah-Buahan,True,,,146.0,bulan
+[BARU 2025] Anggur,Buah-Buahan,True,,,147.0,bulan
+[BARU 2025] Buah naga,Buah-Buahan,True,,,148.0,bulan
+[BARU 2025] Jambu air,Buah-Buahan,True,,,149.0,bulan
+[BARU 2025] Melon,Buah-Buahan,True,,,150.0,bulan
+[BARU 2025] Manggis,Buah-Buahan,True,,,151.0,bulan
+[BARU 2025] Kelengkeng,Buah-Buahan,True,,,152.0,bulan
+Buah-buahan lainnya,Buah-Buahan,True,119.0,125.0,153.0,bulan
+Minyak kelapa,Minyak dan Kelapa,True,121.0,127.0,155.0,bulan
+"Minyak goreng (kelapa sawit, bunga matahari)",Minyak dan Kelapa,True,122.0,128.0,156.0,bulan
+Kelapa,Minyak dan Kelapa,True,123.0,129.0,157.0,bulan
+Minyak dan kelapa lainnya,Minyak dan Kelapa,True,124.0,130.0,158.0,bulan
+Gula pasir,Bahan Minuman,True,126.0,132.0,160.0,bulan
+"Gula merah, gula air (aren, kelapa, lontar)",Bahan Minuman,True,127.0,133.0,161.0,bulan
+Teh bubuk,Bahan Minuman,True,128.0,134.0,162.0,bulan
+Teh celup (sachet),Bahan Minuman,True,129.0,135.0,163.0,bulan
+"Kopi (bubuk, biji)",Bahan Minuman,True,130.0,136.0,164.0,bulan
+Kopi instan (sachet),Bahan Minuman,True,131.0,137.0,165.0,bulan
+Bahan minuman lainnya,Bahan Minuman,True,132.0,138.0,166.0,bulan
+Garam,Bumbu-Bumbuan,True,134.0,140.0,168.0,bulan
+Kemiri,Bumbu-Bumbuan,True,135.0,141.0,169.0,bulan
+Ketumbar/jinten,Bumbu-Bumbuan,True,136.0,142.0,170.0,bulan
+Merica/lada,Bumbu-Bumbuan,True,137.0,143.0,171.0,bulan
+[BARU 2022] Jahe (terpisah),Bumbu-Bumbuan,True,,144.0,172.0,bulan
+[BARU 2022] Kunyit (terpisah),Bumbu-Bumbuan,True,,145.0,173.0,bulan
+Asam,Bumbu-Bumbuan,True,138.0,146.0,174.0,bulan
+Terasi/petis,Bumbu-Bumbuan,True,139.0,147.0,175.0,bulan
+Kecap,Bumbu-Bumbuan,True,140.0,148.0,176.0,bulan
+Penyedap masakan/vetsin,Bumbu-Bumbuan,True,141.0,149.0,177.0,bulan
+Sambal jadi,Bumbu-Bumbuan,True,142.0,150.0,178.0,bulan
+Saus tomat,Bumbu-Bumbuan,True,143.0,151.0,179.0,bulan
+"Bumbu masak jadi/kemasan, bumbu racikan",Bumbu-Bumbuan,True,144.0,152.0,180.0,bulan
+"Bumbu dapur lainnya (pala, jahe, kunyit, dsb)",Bumbu-Bumbuan,True,145.0,153.0,181.0,bulan
+Mie instan (mentah),Konsumsi Lainnya,True,147.0,155.0,183.0,bulan
+Kerupuk,Konsumsi Lainnya,True,148.0,156.0,184.0,bulan
+Bubur bayi kemasan,Konsumsi Lainnya,True,149.0,157.0,185.0,bulan
+Lainnya,Konsumsi Lainnya,True,150.0,158.0,186.0,bulan
+Roti tawar,Makanan dan Minuman Jadi,True,152.0,160.0,188.0,bulan
+"Roti manis, roti lainnya",Makanan dan Minuman Jadi,True,153.0,161.0,189.0,bulan
+"Kue kering, biskuit, semprong",Makanan dan Minuman Jadi,True,154.0,162.0,190.0,bulan
+"Kue basah (kue lapis, bika ambon, dsb)",Makanan dan Minuman Jadi,True,155.0,163.0,191.0,bulan
+"[BARU 2022] Makanan gorengan (tahu, tempe, bakwan, pisang)",Makanan dan Minuman Jadi,True,,164.0,192.0,bulan
+Makanan gorengan (umum),Makanan dan Minuman Jadi,True,156.0,165.0,193.0,bulan
+Bubur kacang hijau,Makanan dan Minuman Jadi,True,157.0,166.0,194.0,bulan
+"Gado-gado, ketoprak, pecel",Makanan dan Minuman Jadi,True,158.0,167.0,195.0,bulan
+Nasi campur/rames,Makanan dan Minuman Jadi,True,159.0,168.0,196.0,bulan
+Nasi goreng,Makanan dan Minuman Jadi,True,160.0,169.0,197.0,bulan
+Nasi putih,Makanan dan Minuman Jadi,True,161.0,170.0,198.0,bulan
+Lontong/ketupat sayur,Makanan dan Minuman Jadi,True,162.0,171.0,199.0,bulan
+"Soto, gule, sop, rawon, cincang",Makanan dan Minuman Jadi,True,163.0,172.0,200.0,bulan
+"Sayur matang (ditumis, disantan, dsb)",Makanan dan Minuman Jadi,True,164.0,173.0,201.0,bulan
+"Sate, tongseng",Makanan dan Minuman Jadi,True,165.0,174.0,202.0,bulan
+"Mie bakso, mie rebus, mie goreng",Makanan dan Minuman Jadi,True,166.0,175.0,203.0,bulan
+Mie instan (jadi/matang),Makanan dan Minuman Jadi,True,167.0,176.0,204.0,bulan
+"Makanan ringan anak-anak, kerupuk/keripik",Makanan dan Minuman Jadi,True,168.0,177.0,205.0,bulan
+Ikan matang,Makanan dan Minuman Jadi,True,169.0,178.0,206.0,bulan
+Ayam/daging matang,Makanan dan Minuman Jadi,True,170.0,179.0,207.0,bulan
+"Daging olahan matang (sosis, nugget, dsb)",Makanan dan Minuman Jadi,True,171.0,180.0,208.0,bulan
+Bubur ayam,Makanan dan Minuman Jadi,True,172.0,181.0,209.0,bulan
+"Siomay, batagor",Makanan dan Minuman Jadi,True,173.0,182.0,210.0,bulan
+Makanan jadi lainnya,Makanan dan Minuman Jadi,True,174.0,183.0,211.0,bulan
+Air kemasan,Makanan dan Minuman Jadi,True,175.0,184.0,212.0,bulan
+Air kemasan galon,Makanan dan Minuman Jadi,True,176.0,185.0,213.0,bulan
+"Air teh kemasan, minuman bersoda",Makanan dan Minuman Jadi,True,177.0,186.0,214.0,bulan
+"Sari buah kemasan, minuman kesehatan/energi",Makanan dan Minuman Jadi,True,178.0,187.0,215.0,bulan
+"Minuman jadi (kopi, teh, susu, dsb)",Makanan dan Minuman Jadi,True,179.0,188.0,216.0,bulan
+Es krim,Makanan dan Minuman Jadi,True,180.0,189.0,217.0,bulan
+Es lainnya,Makanan dan Minuman Jadi,True,181.0,190.0,218.0,bulan
+Minuman keras,Makanan dan Minuman Jadi,True,182.0,191.0,219.0,bulan
+Rokok kretek filter,Rokok dan Tembakau,True,184.0,193.0,221.0,bulan
+Rokok kretek tanpa filter,Rokok dan Tembakau,True,185.0,194.0,222.0,bulan
+Rokok putih,Rokok dan Tembakau,True,186.0,195.0,223.0,bulan
+Tembakau,Rokok dan Tembakau,True,187.0,196.0,224.0,bulan
+Rokok dan tembakau lainnya,Rokok dan Tembakau,True,188.0,197.0,225.0,bulan
+Status penguasaan bangunan (kode jenis),Perumahan dan Fasilitas RT,False,190.0,199.0,227.0,bulan
+Perkiraan sewa rumah sendiri/bebas sewa,Perumahan dan Fasilitas RT,False,191.0,200.0,228.0,bulan
+Kontrak rumah,Perumahan dan Fasilitas RT,False,192.0,201.0,229.0,bulan
+Sewa rumah,Perumahan dan Fasilitas RT,False,193.0,202.0,230.0,bulan
+Rumah dinas atau lainnya,Perumahan dan Fasilitas RT,False,194.0,203.0,231.0,bulan
+Pemeliharaan rumah dan perbaikan ringan,Perumahan dan Fasilitas RT,False,195.0,204.0,232.0,tahun
+Banyaknya (kWh) pemakaian listrik,Perumahan dan Fasilitas RT,False,196.0,205.0,233.0,bulan
+Listrik - nilai pengeluaran,Perumahan dan Fasilitas RT,False,197.0,206.0,234.0,bulan
+Banyaknya pemakaian air (PAM/Pikulan/Beli),Perumahan dan Fasilitas RT,False,198.0,207.0,235.0,bulan
+Air - nilai pengeluaran,Perumahan dan Fasilitas RT,False,199.0,208.0,236.0,bulan
+Jenis BBM untuk generator,Perumahan dan Fasilitas RT,False,200.0,209.0,237.0,bulan
+Banyaknya BBM untuk generator,Perumahan dan Fasilitas RT,False,201.0,210.0,238.0,bulan
+BBM untuk generator - nilai,Perumahan dan Fasilitas RT,False,202.0,211.0,239.0,bulan
+Banyaknya minyak pelumas untuk generator,Perumahan dan Fasilitas RT,False,203.0,212.0,240.0,bulan
+Minyak pelumas untuk generator - nilai,Perumahan dan Fasilitas RT,False,204.0,213.0,241.0,bulan
+Pemeliharaan dan perbaikan generator,Perumahan dan Fasilitas RT,False,205.0,214.0,242.0,tahun
+Banyaknya bensin untuk kendaraan bermotor,Perumahan dan Fasilitas RT,False,206.0,215.0,243.0,bulan
+Bensin untuk kendaraan bermotor - nilai,Perumahan dan Fasilitas RT,False,207.0,216.0,244.0,bulan
+Banyaknya solar untuk kendaraan bermotor,Perumahan dan Fasilitas RT,False,208.0,217.0,245.0,bulan
+Solar untuk kendaraan bermotor - nilai,Perumahan dan Fasilitas RT,False,209.0,218.0,246.0,bulan
+Banyaknya minyak tanah untuk kendaraan,Perumahan dan Fasilitas RT,False,210.0,219.0,247.0,bulan
+Minyak tanah untuk kendaraan - nilai,Perumahan dan Fasilitas RT,False,211.0,220.0,248.0,bulan
+Banyaknya minyak pelumas untuk kendaraan,Perumahan dan Fasilitas RT,False,212.0,221.0,249.0,bulan
+Minyak pelumas untuk kendaraan - nilai,Perumahan dan Fasilitas RT,False,213.0,222.0,250.0,bulan
+Perbaikan dan pemeliharaan kendaraan,Perumahan dan Fasilitas RT,False,214.0,223.0,251.0,tahun
+Banyaknya LPG,Perumahan dan Fasilitas RT,False,215.0,224.0,252.0,bulan
+LPG - nilai,Perumahan dan Fasilitas RT,False,216.0,225.0,253.0,bulan
+Banyaknya gas kota,Perumahan dan Fasilitas RT,False,217.0,226.0,254.0,bulan
+Gas kota - nilai,Perumahan dan Fasilitas RT,False,218.0,227.0,255.0,bulan
+Banyaknya minyak tanah (keperluan lainnya),Perumahan dan Fasilitas RT,False,219.0,228.0,256.0,bulan
+Minyak tanah keperluan lainnya - nilai,Perumahan dan Fasilitas RT,False,220.0,229.0,257.0,bulan
+Banyaknya arang/batu bara/briket,Perumahan dan Fasilitas RT,False,221.0,230.0,258.0,bulan
+Arang/batu bara/briket - nilai,Perumahan dan Fasilitas RT,False,222.0,231.0,259.0,bulan
+Biogas - nilai,Perumahan dan Fasilitas RT,False,223.0,232.0,260.0,bulan
+Kayu bakar dan bahan bakar lainnya,Perumahan dan Fasilitas RT,False,224.0,233.0,261.0,bulan
+Kebutuhan lainnya untuk rumah,Perumahan dan Fasilitas RT,False,225.0,234.0,262.0,bulan
+Rekening telepon rumah,Perumahan dan Fasilitas RT,False,226.0,235.0,263.0,bulan
+Pulsa HP,Perumahan dan Fasilitas RT,False,227.0,236.0,264.0,bulan
+"Benda pos (wesel, materai, perangko)",Perumahan dan Fasilitas RT,False,228.0,237.0,265.0,bulan
+Biaya internet/warnet,Perumahan dan Fasilitas RT,False,229.0,238.0,266.0,bulan
+"Lainnya (nomor perdana, kirim paket, dsb)",Perumahan dan Fasilitas RT,False,230.0,239.0,267.0,bulan
+"Sabun mandi, pasta gigi, sikat gigi, sampo",Aneka Barang dan Jasa,False,232.0,241.0,269.0,bulan
+Barang kecantikan dan pembalut wanita,Aneka Barang dan Jasa,False,233.0,242.0,270.0,bulan
+Perawatan kulit/muka/kuku/rambut,Aneka Barang dan Jasa,False,234.0,243.0,271.0,bulan
+Sabun cuci (batangan/bubuk/krim/cair),Aneka Barang dan Jasa,False,235.0,244.0,272.0,bulan
+Bahan pemeliharaan pakaian,Aneka Barang dan Jasa,False,236.0,245.0,273.0,bulan
+"Surat kabar, majalah, buku, alat tulis",Aneka Barang dan Jasa,False,237.0,246.0,274.0,bulan
+"Barang lainnya (tisue, pampers, dsb)",Aneka Barang dan Jasa,False,238.0,247.0,275.0,bulan
+Rumah sakit pemerintah,Aneka Barang dan Jasa,False,239.0,248.0,276.0,tahun
+Rumah sakit swasta,Aneka Barang dan Jasa,False,240.0,249.0,277.0,tahun
+Puskesmas/pustu/polindes/posyandu,Aneka Barang dan Jasa,False,241.0,250.0,278.0,tahun
+Praktik dokter/poliklinik,Aneka Barang dan Jasa,False,242.0,251.0,279.0,tahun
+Praktik petugas kesehatan,Aneka Barang dan Jasa,False,243.0,252.0,280.0,tahun
+Praktik pengobatan tradisional,Aneka Barang dan Jasa,False,244.0,253.0,281.0,tahun
+Dukun penolong persalinan,Aneka Barang dan Jasa,False,245.0,254.0,282.0,tahun
+Obat dengan resep tenaga kesehatan,Aneka Barang dan Jasa,False,246.0,255.0,283.0,tahun
+Obat modern tanpa resep,Aneka Barang dan Jasa,False,247.0,256.0,284.0,tahun
+Obat tradisional/jamu,Aneka Barang dan Jasa,False,248.0,257.0,285.0,tahun
+Biaya kacamata/protese/kursi roda,Aneka Barang dan Jasa,False,249.0,258.0,286.0,tahun
+Periksa kehamilan,Aneka Barang dan Jasa,False,250.0,259.0,287.0,tahun
+Imunisasi,Aneka Barang dan Jasa,False,251.0,260.0,288.0,tahun
+[BARU 2022] Vaksin Covid-19,Aneka Barang dan Jasa,False,,261.0,,tahun
+Tes kesehatan/Medical Check Up,Aneka Barang dan Jasa,False,252.0,262.0,289.0,tahun
+Keluarga Berencana,Aneka Barang dan Jasa,False,253.0,263.0,290.0,tahun
+Pemeliharaan kesehatan lainnya,Aneka Barang dan Jasa,False,254.0,264.0,291.0,tahun
+Sumbangan pembangunan sekolah,Aneka Barang dan Jasa,False,255.0,265.0,292.0,tahun
+Uang sekolah (SPP/UKT) dan komite,Aneka Barang dan Jasa,False,256.0,266.0,293.0,tahun
+"Iuran sekolah lainnya (ketrampilan, les, tes)",Aneka Barang dan Jasa,False,257.0,267.0,294.0,tahun
+"Buku pelajaran, foto copy",Aneka Barang dan Jasa,False,258.0,268.0,295.0,tahun
+Alat-alat tulis,Aneka Barang dan Jasa,False,259.0,269.0,296.0,bulan
+Uang kursus/bimbingan belajar,Aneka Barang dan Jasa,False,260.0,270.0,297.0,tahun
+Transportasi darat,Aneka Barang dan Jasa,False,261.0,271.0,298.0,tahun
+Transportasi udara/pesawat,Aneka Barang dan Jasa,False,262.0,272.0,299.0,tahun
+Transportasi laut/kapal,Aneka Barang dan Jasa,False,263.0,273.0,300.0,tahun
+"Lainnya (parkir, tol, dsb)",Aneka Barang dan Jasa,False,264.0,274.0,301.0,bulan
+Hotel/motel/penginapan,Aneka Barang dan Jasa,False,265.0,275.0,302.0,tahun
+Hiburan,Aneka Barang dan Jasa,False,266.0,276.0,303.0,bulan
+"Gaji/upah PRT, satpam, tukang kebun, sopir",Aneka Barang dan Jasa,False,267.0,277.0,304.0,bulan
+"Jasa lembaga keuangan (ATM, kartu kredit)",Aneka Barang dan Jasa,False,268.0,278.0,305.0,bulan
+"Jasa lainnya (KTP, SIM, foto copy, dsb)",Aneka Barang dan Jasa,False,269.0,279.0,306.0,bulan
+Pakaian jadi laki-laki dewasa,"Pakaian, Alas Kaki dan Tutup Kepala",False,271.0,281.0,308.0,tahun
+Pakaian jadi perempuan dewasa,"Pakaian, Alas Kaki dan Tutup Kepala",False,272.0,282.0,309.0,tahun
+Pakaian jadi anak-anak,"Pakaian, Alas Kaki dan Tutup Kepala",False,273.0,283.0,310.0,tahun
+Bahan pakaian,"Pakaian, Alas Kaki dan Tutup Kepala",False,274.0,284.0,311.0,tahun
+Upah menjahit/memperbaiki pakaian,"Pakaian, Alas Kaki dan Tutup Kepala",False,275.0,285.0,312.0,tahun
+"Alas kaki (sepatu, sandal, kaos kaki)","Pakaian, Alas Kaki dan Tutup Kepala",False,276.0,286.0,313.0,tahun
+"Tutup kepala (topi, kopiah, kerudung)","Pakaian, Alas Kaki dan Tutup Kepala",False,277.0,287.0,314.0,tahun
+"Lainnya (handuk, ikat pinggang, mukena, dsb)","Pakaian, Alas Kaki dan Tutup Kepala",False,278.0,288.0,315.0,tahun
+Meubelair,Barang Tahan Lama,False,280.0,290.0,317.0,tahun
+"Peralatan RT (mesin cuci, AC, dsb)",Barang Tahan Lama,False,281.0,291.0,318.0,tahun
+"Perlengkapan perabot RT (kasur, sprei, dsb)",Barang Tahan Lama,False,282.0,292.0,319.0,tahun
+"Perkakas RT (seterika, sapu, dsb)",Barang Tahan Lama,False,283.0,293.0,320.0,tahun
+Alat-alat dapur/makan,Barang Tahan Lama,False,284.0,294.0,321.0,tahun
+Barang pajangan/hiasan,Barang Tahan Lama,False,285.0,295.0,322.0,tahun
+Perbaikan perabot/perkakas RT,Barang Tahan Lama,False,286.0,296.0,323.0,tahun
+HP/smartphone dan aksesori,Barang Tahan Lama,False,287.0,297.0,324.0,tahun
+"Kamera, kacamata, alat optik",Barang Tahan Lama,False,288.0,298.0,325.0,tahun
+"Arloji, jam, tas, koper",Barang Tahan Lama,False,289.0,299.0,326.0,tahun
+"Perhiasan mahal (emas, berlian, mutiara)",Barang Tahan Lama,False,290.0,300.0,327.0,tahun
+Mainan anak,Barang Tahan Lama,False,291.0,301.0,328.0,tahun
+"Televisi, radio, komputer, laptop, tablet",Barang Tahan Lama,False,292.0,302.0,329.0,tahun
+Alat dan perlengkapan olahraga,Barang Tahan Lama,False,293.0,303.0,330.0,tahun
+Kendaraan untuk transportasi,Barang Tahan Lama,False,294.0,304.0,331.0,tahun
+Binatang dan tanaman peliharaan,Barang Tahan Lama,False,295.0,305.0,332.0,tahun
+Barang tahan lama lainnya,Barang Tahan Lama,False,296.0,306.0,333.0,tahun
+Pajak bumi dan bangunan (PBB),"Pajak, Pungutan dan Asuransi",False,298.0,308.0,335.0,tahun
+Pajak kendaraan bermotor (STNK),"Pajak, Pungutan dan Asuransi",False,299.0,309.0,336.0,tahun
+"Pungutan/retribusi (iuran RT/RW, sampah)","Pajak, Pungutan dan Asuransi",False,300.0,310.0,337.0,bulan
+Asuransi kesehatan,"Pajak, Pungutan dan Asuransi",False,301.0,311.0,338.0,tahun
+Asuransi jiwa dan asuransi kerugian,"Pajak, Pungutan dan Asuransi",False,302.0,312.0,339.0,tahun
+"Lainnya (tilang, PPh, dsb)","Pajak, Pungutan dan Asuransi",False,303.0,313.0,340.0,tahun
+Perkawinan,Keperluan Pesta dan Upacara,False,305.0,315.0,342.0,tahun
+Khitanan dan ulang tahun,Keperluan Pesta dan Upacara,False,306.0,316.0,343.0,tahun
+Perayaan hari raya agama,Keperluan Pesta dan Upacara,False,307.0,317.0,344.0,tahun
+Biaya ibadah haji/umroh/perjalanan rohani,Keperluan Pesta dan Upacara,False,308.0,318.0,345.0,tahun
+Upacara agama atau adat lainnya,Keperluan Pesta dan Upacara,False,309.0,319.0,346.0,tahun
+Biaya pemakaman,Keperluan Pesta dan Upacara,False,310.0,320.0,347.0,tahun

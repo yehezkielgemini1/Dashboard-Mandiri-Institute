@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mandiri Institute — Dashboard Suite</title>
+<script src="_assets/tailwind.min.js"></script>
+<script src="_assets/iconify-icon.min.js"></script>
+<script src="_assets/icons.js"></script>
+<script defer src="_assets/alpine.min.js"></script>
+<link href="_assets/fonts/fonts.css" rel="stylesheet">
+<style>
+  :root {
+    --navy: #003D79; --navy-deep: #002852; --sky: #67B2E8; --yellow: #FFB700;
+    --ink: #051C2C; --rule: #D0D5DD; --muted: #667085;
+    --paper: #FFFFFF; --cream: #F4F1EA; --mist: #EAF1F8;
+  }
+  html, body { background: var(--paper); color: var(--ink); }
+  body { font-family: 'Inter', system-ui, sans-serif; font-weight: 400; letter-spacing: -0.003em; }
+  .serif-display { font-family: 'Source Serif 4', Georgia, serif; font-weight: 500; letter-spacing: -0.015em; line-height: 1.08; }
+  .serif { font-family: 'Source Serif 4', Georgia, serif; }
+  .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sky); }
+  .yellow-accent { display: inline-block; width: 12px; height: 12px; background: var(--yellow); margin-bottom: 12px; }
+  .hero-band { background: var(--navy); color: white; }
+  .card { background: white; border: 1px solid var(--rule); transition: all 0.15s; cursor: pointer; }
+  .card:hover { border-color: var(--navy); box-shadow: 0 8px 24px rgba(5,28,44,0.08); transform: translateY(-2px); }
+  .card .icon-box { background: var(--mist); border-bottom: 3px solid var(--sky); padding: 32px; display: flex; align-items: center; justify-content: center; }
+  .card .icon-box iconify-icon { font-size: 56px; color: var(--navy); }
+  .card .body { padding: 24px; }
+  .card .badge { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--navy); background: var(--mist); border: 1px solid var(--sky); margin-bottom: 12px; }
+  .card .title { font-family: 'Source Serif 4', Georgia, serif; font-size: 22px; font-weight: 600; color: var(--ink); line-height: 1.2; margin-bottom: 8px; }
+  .card .subtitle { font-size: 14px; color: var(--muted); line-height: 1.5; margin-bottom: 16px; }
+  .card .meta { display: flex; gap: 16px; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; padding-top: 16px; border-top: 1px solid var(--rule); }
+  .card .arrow { font-size: 22px; color: var(--navy); margin-left: auto; }
+  .card .badge.coming { background: #F4F1EA; color: var(--muted); border-color: var(--rule); }
+  .card.coming { cursor: not-allowed; opacity: 0.6; }
+  .card.coming:hover { transform: none; box-shadow: none; }
+  .filter-bar { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--rule); margin-bottom: 32px; }
+  .search-box { flex: 1; min-width: 240px; position: relative; }
+  .search-box input { width: 100%; padding: 10px 14px 10px 38px; border: 1px solid var(--rule); font-size: 14px; font-family: 'Inter', sans-serif; background: white; }
+  .search-box input:focus { outline: none; border-color: var(--navy); }
+  .search-box iconify-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 18px; }
+  .tag-chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; font-size: 12px; font-weight: 600; color: var(--ink); background: white; border: 1px solid var(--rule); cursor: pointer; transition: all 0.12s; }
+  .tag-chip:hover { border-color: var(--navy); }
+  .tag-chip.active { background: var(--navy); color: white; border-color: var(--navy); }
+  .tag-chip iconify-icon { font-size: 14px; }
+  *:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
+  .skip-link { position: absolute; top: -100px; left: 8px; background: var(--ink); color: white; padding: 8px 16px; z-index: 200; font-size: 14px; font-weight: 600; }
+  .skip-link:focus { top: 8px; }
+
+  /* Live ticker hero */
+  .ticker-bar { display: flex; flex-wrap: wrap; gap: 32px; margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.15); }
+  .ticker-item { color: white; }
+  .ticker-item .lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sky); }
+  .ticker-item .num { font-family: 'Source Serif 4', Georgia, serif; font-size: 36px; font-weight: 600; line-height: 1; margin-top: 6px; font-variant-numeric: tabular-nums; }
+  .ticker-item .sub { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+</style>
+</head>
+<body x-data="portal()">
+
+<a href="#main-content" class="skip-link">Lewati ke konten utama</a>
+
+<!-- Top brand band -->
+<div class="rule-bottom" style="border-bottom: 1px solid var(--rule);">
+  <div class="max-w-[1280px] mx-auto px-8 py-4 flex items-center justify-between text-xs uppercase tracking-widest">
+    <div class="font-semibold" style="color: var(--ink);">
+      <span style="display:inline-block;width:10px;height:10px;background:var(--yellow);margin-right:8px;"></span>
+      Mandiri Institute · Dashboard Suite
+    </div>
+    <div style="color: var(--muted);">Riset Mandiri Institute</div>
+  </div>
+</div>
+
+<!-- Hero -->
+<header class="hero-band">
+  <div class="max-w-[1280px] mx-auto px-8 pt-20 pb-16">
+    <span class="yellow-accent"></span>
+    <div class="eyebrow">Riset Mandiri Institute</div>
+    <h1 class="serif-display text-5xl md:text-6xl mt-4 max-w-4xl text-white">
+      Dashboard ekonomi, demografi, dan konsumsi Indonesia.
+    </h1>
+    <p class="mt-6 text-lg max-w-3xl leading-relaxed" style="color: rgba(255,255,255,0.78);">
+      Dashboard interaktif Susenas BPS 2019-2025: tren, distribusi, dan disparitas
+      geografis per kelas masyarakat.
+    </p>
+    <!-- Live ticker bar -->
+    <div class="ticker-bar">
+      <div class="ticker-item">
+        <div class="lbl">Populasi tertimbang 2025</div>
+        <div class="num" id="tick-pop">281.622.304</div>
+        <div class="sub">individu Susenas Maret BPS</div>
+      </div>
+      <div class="ticker-item">
+        <div class="lbl">Per kapita / bulan 2025</div>
+        <div class="num" id="tick-rp">Rp 1.580.397</div>
+        <div class="sub">rata-rata tertimbang nasional</div>
+      </div>
+      <div class="ticker-item">
+        <div class="lbl">Cakupan dashboard</div>
+        <div class="num" id="tick-cov">514 + 38 + 316</div>
+        <div class="sub">kab/kota · provinsi · komoditi</div>
+      </div>
+      <div class="ticker-item">
+        <div class="lbl">Update terakhir</div>
+        <div class="num" id="tick-up">2026-04-27</div>
+        <div class="sub">data Susenas terbaru</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+// Counter animation pas first load
+window.addEventListener('DOMContentLoaded', () => {
+  function animateCount(el, target, suffix = '', duration = 1200) {
+    const start = 0;
+    const startTs = performance.now();
+    function tick(ts) {
+      const t = Math.min((ts - startTs) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+      const current = Math.round(start + (target - start) * eased);
+      el.textContent = current.toLocaleString('id-ID') + suffix;
+      if (t < 1) requestAnimationFrame(tick);
+      else el.textContent = el.dataset.final || target.toLocaleString('id-ID') + suffix;
+    }
+    requestAnimationFrame(tick);
+  }
+  const pop = document.getElementById('tick-pop');
+  if (pop) { pop.dataset.final = '281.622.304'; animateCount(pop, 281622304); }
+  const rp = document.getElementById('tick-rp');
+  if (rp) { rp.dataset.final = 'Rp 1.580.397'; animateCount(rp, 1580397); setTimeout(() => rp.textContent = 'Rp 1.580.397', 1300); }
+});
+</script>
+
+<!-- Cards grid -->
+<main id="main-content" class="max-w-[1280px] mx-auto px-8 py-16" role="main">
+
+  <!-- Search + tag filter -->
+  <div class="filter-bar">
+    <div class="search-box">
+      <iconify-icon icon="mdi:magnify"></iconify-icon>
+      <input type="text" x-model="query" placeholder="Cari dashboard, topik, kata kunci..." aria-label="Cari dashboard">
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;">
+      <template x-for="tag in tags" :key="tag.id">
+        <button class="tag-chip" :class="activeTag === tag.id ? 'active' : ''" @click="activeTag = activeTag === tag.id ? null : tag.id">
+          <iconify-icon :icon="tag.icon"></iconify-icon>
+          <span x-text="tag.label"></span>
+        </button>
+      </template>
+    </div>
+  </div>
+
+  <!-- Riset Reguler -->
+  <div class="eyebrow" style="color: var(--navy);">Riset Reguler</div>
+  <h2 class="serif-display text-3xl mt-3 mb-10 max-w-2xl">Dashboard tetap, basis data Susenas.</h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+    <a href="konsumsi-susenas/dashboard.html" class="card flex flex-col" data-tags="susenas,geografi">
+      <div class="icon-box">
+        <iconify-icon icon="mdi:cart-outline"></iconify-icon>
+      </div>
+      <div class="body flex flex-col flex-1">
+        <span class="badge"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--sky);"></span>Pengeluaran Konsumsi</span>
+        <div class="title">Konsumsi per Kapita per Bulan</div>
+        <div class="subtitle">Pertumbuhan, makanan vs non-makanan, disparitas geografis, dan rincian 316 komoditi Susenas. 2019-2025.</div>
+        <div class="flex items-center mt-auto">
+          <div class="meta">
+            <span>5 exhibits</span>
+            <span>38 prov</span>
+            <span>316 komoditi</span>
+          </div>
+          <iconify-icon icon="mdi:arrow-right" class="arrow"></iconify-icon>
+        </div>
+      </div>
+    </a>
+
+    <!-- placeholder Soon dipindahkan ke akhir setelah Kelas -->
+    <a href="kelas-kabkota/dashboard.html" class="card flex flex-col" data-tags="susenas,kelas,geografi">
+      <div class="icon-box">
+        <iconify-icon icon="mdi:account-group-outline"></iconify-icon>
+      </div>
+      <div class="body flex flex-col flex-1">
+        <span class="badge"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--sky);"></span>Kelas Masyarakat</span>
+        <div class="title">Kelas Masyarakat per Kabupaten/Kota</div>
+        <div class="subtitle">Distribusi 8 kelas masyarakat (Poor sampai Upper Class) di 514 kab/kota: tren, peta sebaran, profil per kabupaten.</div>
+        <div class="flex items-center mt-auto">
+          <div class="meta">
+            <span>3 exhibits</span>
+            <span>514 kab</span>
+            <span>8 kelas</span>
+          </div>
+          <iconify-icon icon="mdi:arrow-right" class="arrow"></iconify-icon>
+        </div>
+      </div>
+    </a>
+
+    <div class="card coming flex flex-col">
+      <div class="icon-box" style="background: #F4F1EA; border-bottom-color: var(--rule);">
+        <iconify-icon icon="mdi:dots-horizontal" style="color: var(--muted);"></iconify-icon>
+      </div>
+      <div class="body flex flex-col flex-1">
+        <span class="badge coming">Soon</span>
+        <div class="title" style="color: var(--muted); letter-spacing: 0.3em;">• • • • •</div>
+        <div class="subtitle" style="letter-spacing: 0.3em;">• • • • • • • • • • • • • • • • • • • •</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Research Initiatives -->
+  <div class="mt-20">
+    <div class="eyebrow" style="color: var(--ink); background: var(--yellow); display: inline-block; padding: 4px 10px;">
+      <iconify-icon icon="mdi:flask-outline" style="font-size: 12px; vertical-align: -2px; margin-right: 4px;"></iconify-icon>Research Initiatives
+    </div>
+    <h2 class="serif-display text-3xl mt-3 mb-3 max-w-2xl">Riset partner-driven dengan output spesifik.</h2>
+    <p class="text-sm muted max-w-2xl mb-10" style="color: var(--muted);">
+      Inisiatif riset dengan partner eksternal: skor komposit, potensi pasar, dan segmentasi konsumen.
+    </p>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      <a href="peta-potensi-kendaraan/dashboard.html" class="card flex flex-col" data-tags="kendaraan,kredit,susenas,geografi,kelas">
+        <div class="icon-box" style="background: #FFF6E0; border-bottom-color: var(--yellow);">
+          <iconify-icon icon="mdi:car-multiple" style="color: var(--navy);"></iconify-icon>
+        </div>
+        <div class="body flex flex-col flex-1">
+          <span class="badge" style="background: var(--yellow); border-color: var(--ink); color: var(--ink);">
+            <iconify-icon icon="mdi:flask-outline" style="font-size:10px;vertical-align:-1px;"></iconify-icon>Riset 2026
+          </span>
+          <div class="title">Potensi Pasar Kredit Kendaraan</div>
+          <div class="subtitle">Skor komposit 13 indeks Susenas 2019-2025 (Middle Class+) untuk memetakan kabkot prioritas kredit kendaraan.</div>
+          <div class="flex items-center mt-auto">
+            <div class="meta">
+              <span>514 kab</span>
+              <span>5 pillar</span>
+              <span>13 indeks</span>
+            </div>
+            <iconify-icon icon="mdi:arrow-right" class="arrow"></iconify-icon>
+          </div>
+        </div>
+      </a>
+
+      <div class="card coming flex flex-col">
+        <div class="icon-box" style="background: #F4F1EA; border-bottom-color: var(--rule);">
+          <iconify-icon icon="mdi:dots-horizontal" style="color: var(--muted);"></iconify-icon>
+        </div>
+        <div class="body flex flex-col flex-1">
+          <span class="badge coming">Soon</span>
+          <div class="title" style="color: var(--muted); letter-spacing: 0.3em;">• • • • •</div>
+          <div class="subtitle" style="letter-spacing: 0.3em;">• • • • • • • • • • • • • • • • • • • •</div>
+        </div>
+      </div>
+
+      <div class="card coming flex flex-col">
+        <div class="icon-box" style="background: #F4F1EA; border-bottom-color: var(--rule);">
+          <iconify-icon icon="mdi:dots-horizontal" style="color: var(--muted);"></iconify-icon>
+        </div>
+        <div class="body flex flex-col flex-1">
+          <span class="badge coming">Soon</span>
+          <div class="title" style="color: var(--muted); letter-spacing: 0.3em;">• • • • •</div>
+          <div class="subtitle" style="letter-spacing: 0.3em;">• • • • • • • • • • • • • • • • • • • •</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Isu Tematik -->
+  <div class="mt-20">
+    <div class="eyebrow" style="color: var(--yellow); background: var(--ink); display: inline-block; padding: 4px 10px;">
+      <iconify-icon icon="mdi:fire" style="font-size: 12px; vertical-align: -2px; margin-right: 4px;"></iconify-icon>Isu Tematik
+    </div>
+    <h2 class="serif-display text-3xl mt-3 mb-3 max-w-2xl">Topik aktual berbasis riset terkini.</h2>
+    <p class="text-sm muted max-w-2xl mb-10" style="color: var(--muted);">
+      Dashboard tematik per isu (kebijakan, energi, sektor) dengan analisis mendalam dalam satu hub.
+    </p>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      <a href="emerging-zone-jakarta/260503_NASA_emerging-zone-detector.html" class="card flex flex-col" data-tags="spasial,geografi,komersial,jakarta">
+        <div class="icon-box" style="background: #F0F6FC; border-bottom-color: var(--navy);">
+          <iconify-icon icon="mdi:city-variant-outline" style="color: var(--navy);"></iconify-icon>
+        </div>
+        <div class="body flex flex-col flex-1">
+          <span class="badge" style="background: var(--navy); border-color: var(--navy); color: white;">
+            <iconify-icon icon="mdi:map-marker-radius-outline" style="font-size:10px;vertical-align:-1px;"></iconify-icon>Spasial Ekonomi
+          </span>
+          <div class="title">Pendeteksi Kawasan Komersial Berkembang — DKI Jakarta</div>
+          <div class="subtitle">Skor potensi 270 desa + 21 kawasan utama (Blok M, PIK, Mega Kuningan, dll). Multi-source: cahaya malam NASA VIIRS + Podes BPS + Sakernas + OSM. 2021-2025 + pulse 2026.</div>
+          <div class="flex items-center mt-auto">
+            <div class="meta">
+              <span>6 halaman</span>
+              <span>270 desa</span>
+              <span>21 kawasan</span>
+            </div>
+            <iconify-icon icon="mdi:arrow-right" class="arrow"></iconify-icon>
+          </div>
+        </div>
+      </a>
+
+      <a href="ketahanan-pangan/ketahanan-pangan-dashboard.html" class="card flex flex-col" data-tags="susenas,geografi,pangan">
+        <div class="icon-box" style="background: #F0F6FC; border-bottom-color: var(--navy);">
+          <iconify-icon icon="mdi:food-apple-outline" style="color: var(--navy);"></iconify-icon>
+        </div>
+        <div class="body flex flex-col flex-1">
+          <span class="badge" style="background: var(--navy); border-color: var(--navy); color: white;">
+            <iconify-icon icon="mdi:food-apple-outline" style="font-size:10px;vertical-align:-1px;"></iconify-icon>Pangan &middot; Sosial
+          </span>
+          <div class="title">Ketahanan Pangan Kabupaten/Kota</div>
+          <div class="subtitle">Distribusi status ketahanan pangan (FIES) per kabupaten/kota, 514 wilayah, 2019-2025. Tren spasial dan temporal rawan pangan.</div>
+          <div class="flex items-center mt-auto">
+            <div class="meta">
+              <span>5 exhibit</span>
+              <span>514 kab/kota</span>
+              <span>7 tahun</span>
+            </div>
+            <iconify-icon icon="mdi:arrow-right" class="arrow"></iconify-icon>
+          </div>
+        </div>
+      </a>
+
+      <a href="thematic/bbm/dashboard.html" class="card flex flex-col" data-tags="susenas,energi,geografi,kelas">
+        <div class="icon-box" style="background: #FFF6E0; border-bottom-color: var(--yellow);">
+          <iconify-icon icon="mdi:gas-station-outline" style="color: var(--navy);"></iconify-icon>
+        </div>
+        <div class="body flex flex-col flex-1">
+          <span class="badge" style="background: var(--yellow); border-color: var(--ink); color: var(--ink);">
+            <iconify-icon icon="mdi:fire" style="font-size:10px;vertical-align:-1px;"></iconify-icon>Energi
+          </span>
+          <div class="title">Konsumsi BBM per Kelas</div>
+          <div class="subtitle">Komposisi jenis BBM (Premium, Pertalite, Pertamax, Turbo) per kelas masyarakat dan provinsi. Era subsidi Premium vs penghapusan 2022.</div>
+          <div class="flex items-center mt-auto">
+            <div class="meta">
+              <span>3 exhibits</span>
+              <span>38 prov</span>
+              <span>5 jenis BBM</span>
+            </div>
+            <iconify-icon icon="mdi:arrow-right" class="arrow"></iconify-icon>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+
+  <footer class="mt-20 pt-8 flex items-center justify-between text-xs uppercase tracking-widest" style="border-top: 1px solid var(--rule); color: var(--muted);">
+    <div>Mandiri Institute · Dashboard Suite</div>
+    <div>Plotly.js · Tailwind CSS · Susenas BPS</div>
+    <div>Palette: Mandiri Official</div>
+  </footer>
+</main>
+
+<script>
+function portal() {
+  return {
+    query: '',
+    activeTag: null,
+    tags: [
+      { id: 'susenas',  label: 'Susenas',     icon: 'mdi:database-outline' },
+      { id: 'kelas',    label: 'Kelas Masyarakat', icon: 'mdi:account-group-outline' },
+      { id: 'geografi', label: 'Geografi',    icon: 'mdi:map-outline' },
+      { id: 'energi',   label: 'Energi',      icon: 'mdi:fire' },
+      { id: 'kendaraan', label: 'Kendaraan',  icon: 'mdi:car-multiple' },
+      { id: 'pangan',    label: 'Pangan',     icon: 'mdi:food-apple-outline' },
+      { id: 'spasial',   label: 'Spasial',    icon: 'mdi:map-marker-radius-outline' },
+      { id: 'jakarta',   label: 'Jakarta',    icon: 'mdi:city-variant-outline' },
+    ],
+    init() {
+      this.$nextTick(() => this.applyFilter());
+      this.$watch('query', () => this.applyFilter());
+      this.$watch('activeTag', () => this.applyFilter());
+    },
+    applyFilter() {
+      const q = (this.query || '').toLowerCase().trim();
+      const tag = this.activeTag;
+      document.querySelectorAll('.card').forEach(c => {
+        const text = (c.textContent || '').toLowerCase();
+        const tags = (c.dataset.tags || '').split(',');
+        const matchQ = !q || text.includes(q);
+        const matchT = !tag || tags.includes(tag);
+        c.style.display = (matchQ && matchT) ? '' : 'none';
+      });
+    },
+  };
+}
+</script>
+</body>
+</html>

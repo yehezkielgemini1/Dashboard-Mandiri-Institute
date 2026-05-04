@@ -1,0 +1,66 @@
+# ============================================================
+# Dashboard Mandiri Institute — .gitignore
+# Konvensi: folder ini HANYA berisi file yang siap di-publish.
+# Raw data + WIP dipindah ke Desktop\Mandiri\Data\Dashboard-Sources\
+# ============================================================
+
+# OS / system
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# Python (kalau ada generator.py local run)
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+*.egg-info/
+.venv/
+venv/
+
+# Logs
+*.log
+
+# Backup / temp
+*.bak
+*.tmp
+~$*
+
+# Folder Old / archive (versi lama dashboard)
+**/Old/
+**/old/
+**/archive/
+**/_archive/
+
+# Raw data BESAR — defense in depth
+# (idealnya raw data sudah di luar folder ini, tapi safety net)
+**/data_komoditi.csv
+**/data_raw_*.csv
+**/*_raw.csv
+**/raw/
+**/_raw/
+**/_source/
+
+# File >50MB rentan reject GitHub
+# (tidak ada pattern, tapi reminder: jangan commit file besar)
+
+# Environment / secrets
+.env
+.env.local
+*.key
+*.pem
+secrets.json
+
+# Claude local config (jangan publish)
+.claude/
+
+# Node (kalau di masa depan ada build tool)
+node_modules/
+dist/
+.cache/

@@ -1,0 +1,71 @@
+{
+  "file": "data_komoditi.csv",
+  "generated_by": "Data/Python/260425_Extract_Konsumsi_Susenas_Full_Metrics.py",
+  "generated_date": "2026-04-25",
+  "tahun_cakupan": [
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "n_provinsi": 38,
+  "n_komoditi_unique": 316,
+  "n_rows": 503766,
+  "period_note": "Semua metrik disediakan dalam 2 versi: _bulan (canonical) + _tahun (×12). Dashboard pilih render period per komoditi berdasarkan kolom display_period di komoditi_dim.csv.",
+  "display_period_logic": {
+    "default_per_kelompok": {
+      "Padi-Padian": "bulan",
+      "Umbi-Umbian": "bulan",
+      "Ikan": "bulan",
+      "Daging": "bulan",
+      "Telur dan Susu": "bulan",
+      "Sayur-Sayuran": "bulan",
+      "Kacang-Kacangan": "bulan",
+      "Buah-Buahan": "bulan",
+      "Minyak dan Kelapa": "bulan",
+      "Bahan Minuman": "bulan",
+      "Bumbu-Bumbuan": "bulan",
+      "Konsumsi Lainnya": "bulan",
+      "Makanan dan Minuman Jadi": "bulan",
+      "Rokok dan Tembakau": "bulan",
+      "Perumahan dan Fasilitas RT": "bulan",
+      "Aneka Barang dan Jasa": "bulan",
+      "Pakaian, Alas Kaki dan Tutup Kepala": "tahun",
+      "Barang Tahan Lama": "tahun",
+      "Pajak, Pungutan dan Asuransi": "tahun",
+      "Keperluan Pesta dan Upacara": "tahun"
+    },
+    "overrides_count": 30,
+    "rationale": {
+      "bulan": "Konsumsi recurring: makanan, utilities (listrik/air/gas), personal care, transport harian, jasa rutin, pulsa, gaji PRT, iuran RT/RW, hiburan ringan",
+      "tahun": "Konsumsi infrequent/event: pakaian, barang tahan lama, pajak, asuransi, pesta/upacara, kesehatan besar (RS/dokter/obat resep), transportasi jauh (laut/udara/darat antar-kota), pendidikan (SPP/kursus), travel/hotel, perayaan hari raya, maintenance rumah/kendaraan"
+    }
+  },
+  "metrics": {
+    "rp_total_agregat_bulan": "Total konsumsi tertimbang Rp/bulan",
+    "rp_total_agregat_tahun": "×12 dari bulan",
+    "rp_per_kapita_bulan": "Rp/kapita/bulan (denominator pop_tertimbang total)",
+    "rp_per_kapita_tahun": "×12",
+    "rp_per_kapita_buyer_bulan": "Ticket size Rp/kapita/bulan, buyer only",
+    "rp_per_kapita_buyer_tahun": "×12",
+    "qty_per_kapita_bulan": "Kuantitas fisik per kapita/bulan. Unit berbeda per komoditi.",
+    "qty_per_kapita_tahun": "×12",
+    "qty_total_agregat_bulan": "Total kuantitas tertimbang/bulan",
+    "qty_total_agregat_tahun": "×12",
+    "n_buyer_individu": "Jumlah individu tertimbang yang RT-nya beli komoditi",
+    "n_buyer_ruta": "Jumlah RT tertimbang yang beli",
+    "pct_buyer": "Penetration rate %",
+    "share_pct": "% share komoditi dalam total konsumsi grup"
+  },
+  "caveats": [
+    "Unit kuantitas fisik berbeda per komoditi (kg/liter/butir/bungkus/etc) - jangan jumlahkan qty antar komoditi beda unit.",
+    "Non-makanan: period b42k3 di-detect otomatis (sebulan vs setahun) dari dominance b42k4 vs b42k5 per komoditi per tahun, lalu normalisasi ke bulan.",
+    "Makanan: b41k5 seminggu ke bulan via ×30/7 (BPS standard).",
+    "display_period = preferensi render dashboard, BUKAN period raw data. Data canonical selalu tersedia di kolom _bulan dan _tahun.",
+    "Pemekaran Papua 2022: nama_prov mungkin NaN untuk kode pre-2022 di prov yang dipekarkan."
+  ],
+  "verification_status": "Per kapita total, per kapita makanan, komoditi spesifik (Telur ayam ras), agregat absolut per prov×kelas, ticket size buyer, jumlah konsumen — all match Stata exact."
+}

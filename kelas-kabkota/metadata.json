@@ -1,0 +1,67 @@
+{
+  "file": "data.csv",
+  "generated_by": "Data/Python/260425_Extract_Kelas_Kabkota.py",
+  "generated_date": "2026-04-25",
+  "tahun_cakupan": [
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "n_rows": 25910,
+  "source_data": {
+    "parquet": "Data/Python/parquet/susenas_{YYYY}_kor_ind.parquet",
+    "master_wilayah": {
+      "2019-2021": "Data/Python/master_wilayah_2020.csv (34 prov pre-pemekaran Papua)",
+      "2022": "Data/Python/master_wilayah_2022.csv (34 prov, transisi)",
+      "2023-2025": "Data/Python/master_wilayah_2025.csv (38 prov post-pemekaran)"
+    }
+  },
+  "weight": "fwt (individu, sum nasional = total populasi tertimbang per tahun)",
+  "kelas_wb4": {
+    "1": "Poor",
+    "2": "Vulnerable",
+    "3": "Lower AMC",
+    "4": "Upper AMC",
+    "5": "Lower MC",
+    "6": "Middle MC",
+    "7": "Upper MC",
+    "8": "Upper Class"
+  },
+  "n_provinsi_per_era": {
+    "2019-2021": 34,
+    "2022-2025": 38
+  },
+  "pop_total_per_tahun": {
+    "2019": 267306564.25793824,
+    "2020": 270315429.5949498,
+    "2021": 271584774.6982852,
+    "2022": 274204095.99999994,
+    "2023": 276786794.0,
+    "2024": 279329808.9999999,
+    "2025": 281622304.0
+  },
+  "columns": {
+    "tahun": "Tahun Susenas Maret",
+    "kode_prov": "Kode prov BPS 2-digit",
+    "nama_prov": "Nama prov (Title Case, Sumatra)",
+    "kabkota_4digit": "Kode kab/kota 4-digit (prov*100 + kab)",
+    "kode_kab_2digit": "Kode kab dalam prov 2-digit",
+    "nama_kab": "Nama kab/kota dengan prefix Kab/Kota",
+    "kelas_kode": "Kode wb4 (1-8)",
+    "kelas": "Label kelas",
+    "n_individu_tertimbang": "Jumlah individu tertimbang (sum fwt)",
+    "n_individu_sample": "Jumlah sample individu (count rows)",
+    "pop_kab_total": "Total populasi tertimbang kab pada tahun tsb (semua kelas)",
+    "pct_kelas_dalam_kab": "% share kelas dalam kab (sum=100% per kab per tahun)"
+  },
+  "caveats": [
+    "Pemekaran Papua 2022: kab Papua punya kode prov beda di pre vs post-pemekaran. Master per era dipakai untuk merge nama. Beberapa kab mungkin nama berubah seiring waktu.",
+    "Master Susenas 2021 ada data entry error - dipakai master_wilayah_2020 untuk 2019-2021 (rule dari feedback_python_stata_equivalence.md).",
+    "Sample size kecil per (kab × kelas) - kelas marginal di kab kecil bisa noisy. Dashboard sebaiknya tampilkan absolut + share.",
+    "Sum n_individu_tertimbang per tahun = total populasi nasional tertimbang."
+  ]
+}

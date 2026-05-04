@@ -1,0 +1,271 @@
+desa_pcode,nama_desa,nama_kecamatan,nama_kabkota,n_pixels,lum_2021,lum_2024,lum_2025,ntl_cagr_2021_2025,ntl_change_2024_2025,ntl_level_2025,ntl_recovery_2021_2025,quality_flag
+ID3175020003,Ancol,Pademangan,Kota Jakarta Utara,28,33.02,47.134,46.612,0.08524999999999999,-0.010450000000000001,46.612,1.412,high
+ID3174050007,Angke,Tambora,Kota Jakarta Barat,3,38.56,48.008,47.633,0.0469,-0.0178,47.633,1.235,low
+ID3172050001,Bale Kambang,Kramat Jati,Kota Jakarta Timur,7,26.162,34.558,33.296,0.067,-0.0385,33.296,1.273,medium
+ID3172060007,Bali Mester,Jatinegara,Kota Jakarta Timur,1,43.785,60.372,57.901,0.0724,-0.0409,57.901,1.322,low
+ID3172030006,Bambu Apus,Cipayung,Kota Jakarta Timur,12,23.024,30.834,29.162,0.06720000000000001,-0.04,29.162,1.267,high
+ID3171070001,Bangka,Mampang Prapatan,Kota Jakarta Selatan,13,33.099,44.531,42.308,0.0834,0.0199,42.308,1.278,high
+ID3172010003,Baru,Pasar Rebo,Kota Jakarta Timur,7,22.381,29.109,27.068,0.0502,-0.0692,27.068,1.209,medium
+ID3172050002,Batu Ampar,Kramat Jati,Kota Jakarta Timur,11,27.385,36.142,36.117,0.0679,-0.0017,36.117,1.319,high
+ID3173010002,Bendungan Hilir,Tanah Abang,Kota Jakarta Pusat,6,58.267,65.152,65.436,0.0532,0.0402,65.436,1.123,medium
+ID3172060001,Bidara Cina,Jatinegara,Kota Jakarta Timur,3,34.193,47.961,45.328,0.0708,-0.0621,45.328,1.326,low
+ID3171040001,Bintaro,Pesanggrahan,Kota Jakarta Selatan,21,31.482,40.098,38.298,0.0586,-0.0419,38.298,1.216,high
+ID3171090005,Bukit Duri,Tebet,Kota Jakarta Selatan,5,37.535,51.655,46.445,0.0532,-0.1369,46.445,1.237,medium
+ID3173030006,Bungur,Senen,Kota Jakarta Pusat,3,51.577,53.294,55.64,0.0168,0.0371,55.64,1.079,low
+ID3172080006,Cakung Barat,Cakung,Kota Jakarta Timur,26,39.273,46.315,44.399,0.02765,-0.026099999999999998,44.399,1.131,high
+ID3172080005,Cakung Timur,Cakung,Kota Jakarta Timur,35,34.753,43.207,40.785,0.0445,-0.047,40.785,1.174,high
+ID3172050007,Cawang,Kramat Jati,Kota Jakarta Timur,8,36.222,44.8,42.826,0.04435,-0.0803,42.826,1.182,medium
+ID3172030007,Ceger,Cipayung,Kota Jakarta Timur,15,27.251,36.808,33.457,0.0472,-0.091,33.457,1.228,high
+ID3173060002,Cempaka Baru,Kemayoran,Kota Jakarta Pusat,3,47.007,52.796,51.729,0.0238,-0.0202,51.729,1.1,low
+ID3173050003,Cempaka Putih Barat,Cempaka Putih,Kota Jakarta Pusat,3,47.58,51.476,51.986,0.0211,0.0099,51.986,1.093,low
+ID3173050002,Cempaka Putih Timur,Cempaka Putih,Kota Jakarta Pusat,11,44.889,54.179,51.568,0.0343,-0.0171,51.568,1.149,high
+ID3174070006,Cengkareng Barat,Cengkareng,Kota Jakarta Barat,15,37.293,48.327,48.153,0.0758,0.027,48.153,1.291,high
+ID3174070005,Cengkareng Timur,Cengkareng,Kota Jakarta Barat,17,36.92,48.527,52.398,0.0775,0.0705,52.398,1.419,high
+ID3172020001,Cibubur,Ciracas,Kota Jakarta Timur,19,22.092,31.216,29.657,0.0651,-0.0355,29.657,1.342,high
+ID3173080001,Cideng,Gambir,Kota Jakarta Pusat,5,46.704,54.8,60.078,0.0602,0.0963,60.078,1.286,medium
+ID3171010003,Ciganjur,Jagakarsa,Kota Jakarta Selatan,14,25.727,33.611,34.215,0.0707,0.010249999999999999,34.215,1.33,high
+ID3172010004,Cijantung,Pasar Rebo,Kota Jakarta Timur,12,24.205,33.191,32.216,0.07715,-0.03745,32.216,1.331,high
+ID3173020003,Cikini,Menteng,Kota Jakarta Pusat,3,68.018,65.815,71.725,0.0189,0.0405,71.725,1.055,low
+ID3171080006,Cikoko,Pancoran,Kota Jakarta Selatan,4,40.549,56.549,54.833,0.07285,-0.0352,54.833,1.352,low
+ID3171030003,Cilandak Barat,Cilandak,Kota Jakarta Selatan,22,34.807,46.097,46.38,0.07569999999999999,0.0171,46.38,1.332,high
+ID3171020001,Cilandak Timur,Pasar Minggu,Kota Jakarta Selatan,14,32.77,42.33,42.311,0.06455,0.005549999999999999,42.311,1.291,high
+ID3172030002,Cilangkap,Cipayung,Kota Jakarta Timur,23,17.798,26.215,24.837,0.086,-0.0054,24.837,1.395,high
+ID3172050006,Cililitan,Kramat Jati,Kota Jakarta Timur,8,35.932,43.281,40.607,0.0406,-0.0431,40.607,1.13,medium
+ID3175060004,Cilincing,Cilincing,Kota Jakarta Utara,30,29.744,33.245,33.17,0.03155,-0.033,33.17,1.115,high
+ID3172030004,Cipayung,Cipayung,Kota Jakarta Timur,10,22.847,30.334,29.337,0.0761,-0.0086,29.337,1.284,high
+ID3171010001,Cipedak,Jagakarsa,Kota Jakarta Selatan,18,25.725,35.718,35.431,0.08375,-0.014600000000000002,35.431,1.377,high
+ID3171030005,Cipete Selatan,Cilandak,Kota Jakarta Selatan,12,33.878,46.342,47.373,0.08985,0.03,47.373,1.398,high
+ID3171060002,Cipete Utara,Kebayoran Baru,Kota Jakarta Selatan,6,34.24,46.785,48.011,0.08875,0.007050000000000001,48.011,1.402,medium
+ID3172090002,Cipinang,Pulo Gadung,Kota Jakarta Timur,5,33.5,46.491,42.736,0.0646,-0.0909,42.736,1.276,medium
+ID3172060003,Cipinang Besar Selatan,Jatinegara,Kota Jakarta Timur,5,33.36,44.251,38.954,0.0445,-0.0891,38.954,1.168,medium
+ID3172060005,Cipinang Besar Utara,Jatinegara,Kota Jakarta Timur,5,44.065,54.549,50.34,0.0306,-0.0799,50.34,1.142,medium
+ID3172060002,Cipinang Cempedak,Jatinegara,Kota Jakarta Timur,9,39.75,52.877,46.669,0.0417,-0.1221,46.669,1.174,medium
+ID3172040005,Cipinang Melayu,Makasar,Kota Jakarta Timur,12,33.141,44.038,42.303,0.061149999999999996,-0.04945,42.303,1.276,high
+ID3172060004,Cipinang Muara,Jatinegara,Kota Jakarta Timur,11,33.069,43.319,39.308,0.0354,-0.1076,39.308,1.189,high
+ID3171050004,Cipulir,Kebayoran Lama,Kota Jakarta Selatan,6,35.753,42.578,39.975,0.0286,-0.062,39.975,1.118,medium
+ID3172020003,Ciracas,Ciracas,Kota Jakarta Timur,16,26.977,34.248,31.975,0.038650000000000004,-0.0813,31.975,1.185,high
+ID3175888888,Danau Sunter,Danau Sunter,Kota Jakarta Utara,1,47.451,54.959,55.777,0.0412,0.0149,55.777,1.175,low
+ID3175555888,Danau Sunter Dll,Danau Sunter Dll,Kota Jakarta Utara,3,46.478,61.666,63.138,0.0796,0.0214,63.138,1.358,low
+ID3172050004,Dukuh,Kramat Jati,Kota Jakarta Timur,6,29.744,40.107,40.574,0.07450000000000001,-0.00775,40.574,1.364,medium
+ID3172070002,Duren Sawit,Duren Sawit,Kota Jakarta Timur,19,31.123,39.376,38.348,0.0529,-0.0281,38.348,1.232,high
+ID3171080003,Duren Tiga,Pancoran,Kota Jakarta Selatan,8,33.184,43.251,38.556,0.04145,-0.0784,38.556,1.162,medium
+ID3174020005,Duri Kepa,Kebon Jeruk,Kota Jakarta Barat,13,39.51,52.441,55.584,0.0878,0.0425,55.584,1.407,high
+ID3174070001,Duri Kosambi,Cengkareng,Kota Jakarta Barat,26,34.646,45.089,45.598,0.0703,-0.00955,45.598,1.316,high
+ID3173080006,Duri Pulo,Gambir,Kota Jakarta Pusat,2,45.729,51.016,51.644,0.03095,0.012199999999999999,51.644,1.129,low
+ID3174050002,Duri Selatan,Tambora,Kota Jakarta Barat,2,40.176,46.3,45.03,0.02875,-0.02775,45.03,1.121,low
+ID3174050004,Duri Utara,Tambora,Kota Jakarta Barat,2,35.765,44.478,42.798,0.0459,-0.0376,42.798,1.197,low
+ID3173040004,Galur,Johar Baru,Kota Jakarta Pusat,1,46.443,51.111,55.822,0.0471,0.0922,55.822,1.202,low
+ID3173080003,Gambir,Gambir,Kota Jakarta Pusat,11,92.165,99.577,105.051,0.0153,0.0494,105.051,1.14,high
+ID3171030004,Gandaria Selatan,Cilandak,Kota Jakarta Selatan,4,29.62,40.207,41.659,0.0887,0.014850000000000002,41.659,1.406,low
+ID3171060001,Gandaria Utara,Kebayoran Baru,Kota Jakarta Selatan,6,33.508,44.755,46.146,0.0794,0.0295,46.146,1.377,medium
+ID3172010005,Gedong,Pasar Rebo,Kota Jakarta Timur,10,28.638,36.827,35.018,0.0643,-0.0302,35.018,1.223,high
+ID3173010001,Gelora,Tanah Abang,Kota Jakarta Pusat,14,63.231,75.574,86.959,0.0741,0.107,86.959,1.375,high
+ID3174060007,Glodok,Taman Sari,Kota Jakarta Barat,2,36.789,49.221,51.352,0.0869,0.0432,51.352,1.396,low
+ID3173020004,Gondangdia,Menteng,Kota Jakarta Pusat,6,60.351,73.963,76.776,0.0511,0.034999999999999996,76.776,1.272,medium
+ID3174040004,Grogol,Grogol Petamburan,Kota Jakarta Barat,5,46.941,55.101,62.127,0.0678,0.0816,62.127,1.324,medium
+ID3171050005,Grogol Selatan,Kebayoran Lama,Kota Jakarta Selatan,13,36.04,43.404,43.773,0.0587,0.0037,43.773,1.215,high
+ID3171050006,Grogol Utara,Kebayoran Lama,Kota Jakarta Selatan,14,39.582,48.391,50.011,0.061149999999999996,0.04325,50.011,1.263,high
+ID3171100007,Guntur,Setia Budi,Kota Jakarta Selatan,3,43.78,56.79,52.776,0.0478,-0.0639,52.776,1.205,low
+ID3171060007,Gunung,Kebayoran Baru,Kota Jakarta Selatan,4,42.318,53.947,54.829,0.0645,-0.0031999999999999997,54.829,1.296,low
+ID3173060008,Gunung Sahari Selatan,Kemayoran,Kota Jakarta Pusat,6,49.915,56.926,57.199,0.0325,-0.0038000000000000004,57.199,1.146,medium
+ID3173070002,Gunung Sahari Utara,Sawah Besar,Kota Jakarta Pusat,6,44.112,51.96,61.148,0.07225000000000001,0.1548,61.148,1.386,medium
+ID3172040004,Halim Perdana Kusumah,Makasar,Kota Jakarta Timur,51,19.467,29.468,27.955,0.0516,-0.0936,27.955,1.436,high
+ID3173060001,Harapan Mulya,Kemayoran,Kota Jakarta Pusat,4,48.667,50.418,53.288,0.023350000000000003,0.05975,53.288,1.095,low
+ID3171010004,Jagakarsa,Jagakarsa,Kota Jakarta Selatan,20,25.23,34.177,35.302,0.08935,0.03165,35.302,1.399,high
+ID3172090004,Jati,Pulo Gadung,Kota Jakarta Timur,9,36.938,47.804,46.377,0.0606,-0.0071,46.377,1.256,medium
+ID3171020005,Jati Padang,Pasar Minggu,Kota Jakarta Selatan,10,29.92,37.296,36.775,0.050949999999999995,-0.025,36.775,1.229,high
+ID3174030006,Jati Pulo,Palmerah,Kota Jakarta Barat,2,44.473,55.594,57.549,0.0661,0.03475,57.549,1.294,low
+ID3172080001,Jatinegara,Cakung,Kota Jakarta Timur,28,32.716,39.346,38.238,0.0409,-0.03455,38.238,1.169,high
+ID3172090003,Jatinegara Kaum,Pulo Gadung,Kota Jakarta Timur,4,33.461,43.607,42.963,0.06889999999999999,-0.0063999999999999994,42.963,1.284,low
+ID3174040005,Jelambar,Grogol Petamburan,Kota Jakarta Barat,7,43.287,53.773,58.112,0.0775,0.096,58.112,1.342,medium
+ID3174040007,Jelambar Baru,Grogol Petamburan,Kota Jakarta Barat,4,41.003,50.254,53.804,0.0646,0.0615,53.804,1.312,low
+ID3174050006,Jembatan Besi,Tambora,Kota Jakarta Barat,2,38.26,46.517,46.343,0.04915,-0.004199999999999999,46.343,1.211,low
+ID3174050008,Jembatan Lima,Tambora,Kota Jakarta Barat,2,37.504,44.693,45.938,0.05245,0.02815,45.938,1.225,low
+ID3174010001,Joglo,Kembangan,Kota Jakarta Barat,18,29.458,39.279,41.588,0.07935,0.028650000000000002,41.588,1.412,high
+ID3173040001,Johar Baru,Johar Baru,Kota Jakarta Pusat,6,44.081,51.528,52.054,0.0419,0.001,52.054,1.181,medium
+ID3175060007,Kali Baru,Cilincing,Kota Jakarta Utara,10,61.947,63.374,66.186,0.02485,0.0586,66.186,1.068,high
+ID3174050001,Kalianyar,Tambora,Kota Jakarta Barat,2,39.685,46.993,45.803,0.03655,-0.0253,45.803,1.154,low
+ID3171080001,Kalibata,Pancoran,Kota Jakarta Selatan,9,31.711,39.653,37.617,0.042,-0.0393,37.617,1.186,medium
+ID3174080002,Kalideres,Kali Deres,Kota Jakarta Barat,20,37.798,48.529,44.215,0.042800000000000005,-0.0992,44.215,1.17,high
+ID3172010002,Kalisari,Pasar Rebo,Kota Jakarta Timur,12,26.155,33.9,31.187,0.057249999999999995,-0.0465,31.187,1.192,high
+ID3174080005,Kamal,Kali Deres,Kota Jakarta Barat,13,25.2,31.113,31.331,0.0636,-0.0148,31.331,1.243,high
+ID3175010001,Kamal Muara,Penjaringan,Kota Jakarta Utara,46,30.867,43.562,42.143,0.1034,0.0069,42.143,1.365,high
+ID3173010007,Kampung Bali,Tanah Abang,Kota Jakarta Pusat,3,60.308,70.266,79.277,0.0721,0.1282,79.277,1.315,low
+ID3172060008,Kampung Melayu,Jatinegara,Kota Jakarta Timur,2,41.031,57.133,52.62,0.0643,-0.079,52.62,1.282,low
+ID3173040002,Kampung Rawa,Johar Baru,Kota Jakarta Pusat,1,46.909,52.424,55.206,0.0416,0.0531,55.206,1.177,low
+ID3172050003,Kampung Tengah,Kramat Jati,Kota Jakarta Timur,8,27.757,36.475,34.968,0.056650000000000006,-0.0478,34.968,1.26,medium
+ID3174070004,Kapuk,Cengkareng,Kota Jakarta Barat,22,31.762,39.694,38.765,0.05795,-0.0016,38.765,1.22,high
+ID3175010002,Kapuk Muara,Penjaringan,Kota Jakarta Utara,38,36.286,46.202,48.627,0.0712,0.0545,48.627,1.34,high
+ID3173070004,Karang Anyar,Sawah Besar,Kota Jakarta Pusat,2,46.229,50.375,52.645,0.0329,0.0448,52.645,1.139,low
+ID3171100004,Karet,Setia Budi,Kota Jakarta Selatan,3,48.923,66.193,63.948,0.0693,-0.0337,63.948,1.307,low
+ID3171100003,Karet Kuningan,Setia Budi,Kota Jakarta Selatan,8,49.561,68.381,64.787,0.061649999999999996,-0.06005,64.787,1.307,medium
+ID3171100001,Karet Semanggi,Setia Budi,Kota Jakarta Selatan,4,70.931,78.17,92.013,0.060450000000000004,0.1252,92.013,1.297,low
+ID3173010003,Karet Tengsin,Tanah Abang,Kota Jakarta Pusat,7,55.089,73.825,73.739,0.0582,-0.0012,73.739,1.339,medium
+ID3173070003,Kartini,Sawah Besar,Kota Jakarta Pusat,2,47.232,50.551,56.375,0.04505,0.11480000000000001,56.375,1.194,low
+ID3172100004,Kayu Manis,Matraman,Kota Jakarta Timur,2,37.891,54.263,51.071,0.07735,-0.0577,51.071,1.348,low
+ID3172090006,Kayu Putih,Pulo Gadung,Kota Jakarta Timur,15,40.912,47.194,47.455,0.0425,-0.0249,47.455,1.16,high
+ID3174060006,Keagungan,Taman Sari,Kota Jakarta Barat,1,40.432,51.474,55.412,0.082,0.0765,55.412,1.371,low
+ID3171020003,Kebagusan,Pasar Minggu,Kota Jakarta Selatan,10,28.162,35.061,36.674,0.0594,0.03345,36.674,1.302,high
+ID3171050002,Kebayoran Lama Selatan,Kebayoran Lama,Kota Jakarta Selatan,9,32.375,45.429,42.919,0.0754,-0.037,42.919,1.326,medium
+ID3171050003,Kebayoran Lama Utara,Kebayoran Lama,Kota Jakarta Selatan,8,36.465,47.191,47.338,0.06215,-0.0020500000000000006,47.338,1.298,medium
+ID3171090004,Kebon Baru,Tebet,Kota Jakarta Selatan,5,33.921,47.68,44.441,0.0724,-0.0539,44.441,1.31,medium
+ID3175030006,Kebon Bawang,Tanjung Priok,Kota Jakarta Utara,6,54.031,57.285,58.582,0.03925,0.0508,58.582,1.084,medium
+ID3174020004,Kebon Jeruk,Kebon Jeruk,Kota Jakarta Barat,16,37.836,51.22,52.939,0.09125,0.07805000000000001,52.939,1.399,high
+ID3173010006,Kebon Kacang,Tanah Abang,Kota Jakarta Pusat,3,84.377,79.052,88.261,0.0113,0.0842,88.261,1.046,low
+ID3173080004,Kebon Kelapa,Gambir,Kota Jakarta Pusat,4,61.6,70.024,78.619,0.07335,0.1235,78.619,1.276,low
+ID3173060006,Kebon Kosong,Kemayoran,Kota Jakarta Pusat,4,49.505,56.499,55.516,0.02905,-0.0167,55.516,1.121,low
+ID3172100001,Kebon Manggis,Matraman,Kota Jakarta Timur,2,39.373,58.183,51.05,0.0665,-0.12305,51.05,1.297,low
+ID3173010004,Kebon Melati,Tanah Abang,Kota Jakarta Pusat,6,58.251,63.976,69.05,0.04695,0.0482,69.05,1.185,medium
+ID3172040003,Kebon Pala,Makasar,Kota Jakarta Timur,9,34.702,40.861,37.342,0.0185,-0.0861,37.342,1.076,medium
+ID3173020005,Kebon Sirih,Menteng,Kota Jakarta Pusat,3,68.897,77.782,84.247,0.0344,0.036,84.247,1.223,low
+ID3174070003,Kedaung Kali Angke,Cengkareng,Kota Jakarta Barat,12,32.113,40.425,37.951,0.0518,-0.056,37.951,1.182,high
+ID3174020006,Kedoya Selatan,Kebon Jeruk,Kota Jakarta Barat,10,40.017,50.462,51.094,0.06559999999999999,0.03335,51.094,1.277,high
+ID3174020007,Kedoya Utara,Kebon Jeruk,Kota Jakarta Barat,13,44.897,57.203,59.885,0.0738,0.0905,59.885,1.334,high
+ID3174020003,Kelapa Dua,Kebon Jeruk,Kota Jakarta Barat,5,36.344,46.535,47.336,0.0737,0.0172,47.336,1.302,medium
+ID3172020002,Kelapa Dua Wetan,Ciracas,Kota Jakarta Timur,13,25.097,31.948,32.14,0.0606,-0.0042,32.14,1.281,high
+ID3175050001,Kelapa Gading Barat,Kelapa Gading,Kota Jakarta Utara,29,42.033,53.461,54.191,0.0672,0.0268,54.191,1.289,high
+ID3175050002,Kelapa Gading Timur,Kelapa Gading,Kota Jakarta Utara,13,40.417,50.238,51.315,0.0596,0.0328,51.315,1.27,high
+ID3174030003,Kemanggisan,Palmerah,Kota Jakarta Barat,7,44.746,57.675,61.303,0.0863,0.0629,61.303,1.37,medium
+ID3173060007,Kemayoran,Kemayoran,Kota Jakarta Pusat,2,47.737,49.245,51.138,0.01705,0.0377,51.138,1.071,low
+ID3174010005,Kembangan Selatan,Kembangan,Kota Jakarta Barat,16,37.304,49.281,52.029,0.0876,0.0643,52.029,1.395,high
+ID3174010006,Kembangan Utara,Kembangan,Kota Jakarta Barat,17,35.44,45.55,46.759,0.0713,0.0046,46.759,1.319,high
+ID3173030001,Kenari,Senen,Kota Jakarta Pusat,4,55.502,62.7,64.643,0.0419,0.04605,64.643,1.165,low
+ID3172070007,Klender,Duren Sawit,Kota Jakarta Timur,13,32.918,41.714,40.135,0.0508,-0.0374,40.135,1.219,high
+ID3175040006,Koja,Koja,Kota Jakarta Utara,9,110.91,114.549,137.048,0.0205,0.1434,137.048,1.236,medium
+ID3174030005,Kota Bambu Selatan,Palmerah,Kota Jakarta Barat,3,47.046,60.567,56.226,0.0511,0.0035,56.226,1.195,low
+ID3174030004,Kota Bambu Utara,Palmerah,Kota Jakarta Barat,3,46.217,52.799,54.483,0.0533,0.0319,54.483,1.179,low
+ID3173030003,Kramat,Senen,Kota Jakarta Pusat,4,51.822,59.663,60.032,0.03195,0.0085,60.032,1.158,low
+ID3172050005,Kramat Jati,Kramat Jati,Kota Jakarta Timur,5,34.915,40.254,45.253,0.0468,0.0153,45.253,1.296,medium
+ID3171060006,Kramat Pela,Kebayoran Baru,Kota Jakarta Selatan,5,44.111,53.496,54.532,0.0675,-0.0014,54.532,1.236,medium
+ID3174050005,Krendang,Tambora,Kota Jakarta Barat,2,34.994,42.672,42.607,0.0504,-0.00145,42.607,1.218,low
+ID3174060001,Krukut,Taman Sari,Kota Jakarta Barat,3,41.93,52.326,52.459,0.0598,-0.0001,52.459,1.251,low
+ID3171070005,Kuningan Barat,Mampang Prapatan,Kota Jakarta Selatan,3,57.707,77.477,87.025,0.1082,0.1232,87.025,1.508,low
+ID3171100002,Kuningan Timur,Setia Budi,Kota Jakarta Selatan,8,56.084,67.423,69.816,0.055499999999999994,0.026750000000000003,69.816,1.245,medium
+ID3173030004,Kwitang,Senen,Kota Jakarta Pusat,1,62.321,66.489,68.114,0.0225,0.0244,68.114,1.093,low
+ID3175040004,Lagoa,Koja,Kota Jakarta Utara,5,53.626,58.058,59.307,0.0115,0.0215,59.307,1.106,medium
+ID3171030001,Lebak Bulus,Cilandak,Kota Jakarta Selatan,16,31.399,40.569,40.07,0.05955,-0.01515,40.07,1.276,high
+ID3171010005,Lenteng Agung,Jagakarsa,Kota Jakarta Selatan,16,24.006,31.755,30.716,0.06895,-0.0045000000000000005,30.716,1.279,high
+ID3172030008,Lubang Buaya,Cipayung,Kota Jakarta Timur,14,23.363,32.271,29.82,0.05715,-0.0885,29.82,1.276,high
+ID3172040002,Makasar,Makasar,Kota Jakarta Timur,5,27.345,33.834,34.237,0.0478,0.0119,34.237,1.252,medium
+ID3172070005,Malaka Jaya,Duren Sawit,Kota Jakarta Timur,6,35.599,43.227,39.871,0.02945,-0.0668,39.871,1.12,medium
+ID3172070006,Malaka Sari,Duren Sawit,Kota Jakarta Timur,3,34.417,40.166,41.421,0.0474,-0.0007,41.421,1.203,low
+ID3171070004,Mampang Prapatan,Mampang Prapatan,Kota Jakarta Selatan,4,48.46,64.403,61.001,0.08335000000000001,-0.00455,61.001,1.259,low
+ID3174060005,Mangga Besar,Taman Sari,Kota Jakarta Barat,2,42.056,54.329,59.196,0.0892,0.09125,59.196,1.408,low
+ID3173070005,Mangga Dua Selatan,Sawah Besar,Kota Jakarta Pusat,5,44.139,50.72,53.687,0.0643,0.0484,53.687,1.216,medium
+ID3171090007,Manggarai,Tebet,Kota Jakarta Selatan,6,36.135,50.778,45.328,0.061450000000000005,-0.1109,45.328,1.254,medium
+ID3171090006,Manggarai Selatan,Tebet,Kota Jakarta Selatan,2,42.949,52.604,49.145,0.0368,-0.0654,49.145,1.144,low
+ID3174060002,Maphar,Taman Sari,Kota Jakarta Barat,2,44.899,50.518,55.09,0.05215,0.09045,55.09,1.227,low
+ID3175060003,Marunda,Cilincing,Kota Jakarta Utara,32,19.209,23.585,21.94,0.023600000000000003,-0.0776,21.94,1.142,high
+ID3171060005,Melawai,Kebayoran Baru,Kota Jakarta Selatan,7,55.244,67.51,70.513,0.0975,0.0852,70.513,1.276,medium
+ID3173020001,Menteng,Menteng,Kota Jakarta Pusat,8,50.785,61.124,61.399,0.051699999999999996,-0.012700000000000001,61.399,1.209,medium
+ID3171100005,Menteng Atas,Setia Budi,Kota Jakarta Selatan,3,40.226,54.427,50.019,0.0558,-0.1169,50.019,1.243,low
+ID3171090001,Menteng Dalam,Tebet,Kota Jakarta Selatan,10,43.151,54.678,54.293,0.05935,-0.011349999999999999,54.293,1.258,high
+ID3174010003,Meruya Selatan,Kembangan,Kota Jakarta Barat,13,30.223,41.614,42.57,0.0879,0.023,42.57,1.409,high
+ID3174010004,Meruya Utara,Kembangan,Kota Jakarta Barat,20,36.317,49.486,50.274,0.08815,0.03325,50.274,1.384,high
+ID3172030003,Munjul,Cipayung,Kota Jakarta Timur,7,24.152,28.321,28.677,0.0563,-0.0086,28.677,1.187,medium
+ID3175020001,Pademangan Barat,Pademangan,Kota Jakarta Utara,5,36.61,47.824,46.867,0.0636,-0.0089,46.867,1.28,medium
+ID3175020002,Pademangan Timur,Pademangan,Kota Jakarta Utara,10,37.419,55.202,56.645,0.08465,0.0393,56.645,1.514,high
+ID3172100002,Pal Meriem,Matraman,Kota Jakarta Timur,2,44.175,61.081,58.821,0.0745,-0.038849999999999996,58.821,1.332,low
+ID3174030001,Palmerah,Palmerah,Kota Jakarta Barat,10,37.899,47.723,48.4,0.05285,0.0317,48.4,1.277,high
+ID3171080004,Pancoran,Pancoran,Kota Jakarta Selatan,4,40.636,50.744,51.071,0.05840000000000001,0.00545,51.071,1.257,low
+ID3175030003,Papango,Tanjung Priok,Kota Jakarta Utara,11,41.826,51.279,48.66,0.046,-0.0053,48.66,1.163,high
+ID3173070001,Pasar Baru,Sawah Besar,Kota Jakarta Pusat,6,55.973,64.247,63.259,0.03555,0.02,63.259,1.13,medium
+ID3171100006,Pasar Manggis,Setia Budi,Kota Jakarta Selatan,3,39.4,51.385,51.162,0.0617,-0.0408,51.162,1.299,low
+ID3171020004,Pasar Minggu,Pasar Minggu,Kota Jakarta Selatan,9,32.032,39.477,41.548,0.0525,0.0328,41.548,1.297,medium
+ID3173030002,Paseban,Senen,Kota Jakarta Pusat,3,52.052,59.413,64.054,0.0508,0.0781,64.054,1.231,low
+ID3174080003,Pegadungan,Kali Deres,Kota Jakarta Barat,28,35.416,47.015,46.388,0.0722,-0.0234,46.388,1.31,high
+ID3173020002,Pegangsaan,Menteng,Kota Jakarta Pusat,5,46.347,58.615,56.441,0.0476,-0.0203,56.441,1.218,medium
+ID3175050003,Pegangsaan Dua,Kelapa Gading,Kota Jakarta Utara,24,43.875,53.046,53.282,0.054400000000000004,0.03505,53.282,1.214,high
+ID3175010003,Pejagalan,Penjaringan,Kota Jakarta Utara,16,40.547,49.041,49.218,0.04935,0.0005500000000000001,49.218,1.214,high
+ID3171020006,Pejaten Barat,Pasar Minggu,Kota Jakarta Selatan,12,30.296,38.02,38.603,0.05165,-0.0097,38.603,1.274,high
+ID3171020007,Pejaten Timur,Pasar Minggu,Kota Jakarta Selatan,12,27.662,35.717,34.086,0.0638,-0.018000000000000002,34.086,1.232,high
+ID3172010001,Pekayon,Pasar Rebo,Kota Jakarta Timur,13,26.571,34.428,32.396,0.0577,-0.0455,32.396,1.219,high
+ID3174050011,Pekojan,Tambora,Kota Jakarta Barat,3,40.116,48.006,47.494,0.0611,-0.0059,47.494,1.184,low
+ID3171070002,Pela Mampang,Mampang Prapatan,Kota Jakarta Selatan,9,38.876,53.424,56.287,0.0923,0.0215,56.287,1.448,medium
+ID3171080005,Pengadegan,Pancoran,Kota Jakarta Selatan,4,32.948,44.268,37.863,0.033,-0.15405000000000002,37.863,1.149,low
+ID3172080002,Penggilingan,Cakung,Kota Jakarta Timur,17,34.929,41.133,38.496,0.025,-0.0484,38.496,1.102,high
+ID3175010004,Penjaringan,Penjaringan,Kota Jakarta Utara,17,44.411,50.779,53.941,0.0395,0.0623,53.941,1.215,high
+ID3171040002,Pesanggrahan,Pesanggrahan,Kota Jakarta Selatan,8,28.224,38.484,35.956,0.06315,-0.07575,35.956,1.274,medium
+ID3173010005,Petamburan,Tanah Abang,Kota Jakarta Pusat,4,47.307,53.783,56.797,0.04325,0.054799999999999995,56.797,1.201,low
+ID3171060004,Petogogan,Kebayoran Baru,Kota Jakarta Selatan,3,42.085,57.28,59.848,0.092,0.0448,59.848,1.422,low
+ID3173080002,Petojo Selatan,Gambir,Kota Jakarta Pusat,5,55.756,72.72,74.424,0.0735,0.0237,74.424,1.335,medium
+ID3173080005,Petojo Utara,Gambir,Kota Jakarta Pusat,5,50.005,60.484,66.426,0.0777,0.0907,66.426,1.328,medium
+ID3171040004,Petukangan Selatan,Pesanggrahan,Kota Jakarta Selatan,8,29.93,36.9,35.294,0.0572,-0.0346,35.294,1.179,medium
+ID3171040005,Petukangan Utara,Pesanggrahan,Kota Jakarta Selatan,14,30.627,37.37,36.034,0.048,-0.03615,36.034,1.177,high
+ID3172040001,Pinang Ranti,Makasar,Kota Jakarta Timur,10,27.439,37.181,34.088,0.0516,-0.0804,34.088,1.242,high
+ID3174060008,Pinangsia,Taman Sari,Kota Jakarta Barat,4,44.203,55.503,59.312,0.08605,0.0665,59.312,1.342,low
+ID3172100003,Pisangan Baru,Matraman,Kota Jakarta Timur,3,36.813,52.041,48.662,0.0774,-0.0422,48.662,1.322,low
+ID3172090001,Pisangan Timur,Pulo Gadung,Kota Jakarta Timur,9,36.342,52.071,47.644,0.065,-0.0952,47.644,1.311,medium
+ID3175010005,Pluit,Penjaringan,Kota Jakarta Utara,28,41.847,54.603,59.912,0.07685,0.11185,59.912,1.432,high
+ID3172070001,Pondok Bambu,Duren Sawit,Kota Jakarta Timur,15,31.269,41.603,39.047,0.0538,-0.0713,39.047,1.249,high
+ID3172070003,Pondok Kelapa,Duren Sawit,Kota Jakarta Timur,22,33.001,39.735,37.931,0.0332,-0.0458,37.931,1.149,high
+ID3172070004,Pondok Kopi,Duren Sawit,Kota Jakarta Timur,10,31.85,39.497,37.449,0.03875,-0.09935,37.449,1.176,high
+ID3171030002,Pondok Labu,Cilandak,Kota Jakarta Selatan,15,26.528,36.435,36.963,0.0818,-0.0042,36.963,1.393,high
+ID3171050001,Pondok Pinang,Kebayoran Lama,Kota Jakarta Selatan,29,34.196,42.462,44.26,0.0626,0.0462,44.26,1.294,high
+ID3172030001,Pondok Ranggon,Cipayung,Kota Jakarta Timur,20,18.434,25.288,23.828,0.06384999999999999,-0.054900000000000004,23.828,1.293,high
+ID3174080888,Prepedan,Kali Deres,Kota Jakarta Barat,9,23.416,29.84,30.079,0.0671,0.0062,30.079,1.285,medium
+ID3101020003,Pulau Harapan,Kepulauan Seribu Utara,Kepulauan Seribu,0,,,,,,,,no_data
+ID3101020002,Pulau Kelapa,Kepulauan Seribu Utara,Kepulauan Seribu,0,,,,,,,,no_data
+ID3101020001,Pulau Panggang,Kepulauan Seribu Utara,Kepulauan Seribu,0,,,,,,,,no_data
+ID3101010002,Pulau Pari,Kepulauan Seribu Selatan,Kepulauan Seribu,0,,,,,,,,no_data
+ID3101010001,Pulau Tidung,Kepulauan Seribu Selatan,Kepulauan Seribu,0,,,,,,,,no_data
+ID3101010003,Pulau Untung Jawa,Kepulauan Seribu Selatan,Kepulauan Seribu,0,,,,,,,,no_data
+ID3171060003,Pulo,Kebayoran Baru,Kota Jakarta Selatan,5,36.092,51.194,53.627,0.0889,0.0398,53.627,1.486,medium
+ID3172090007,Pulo Gadung,Pulo Gadung,Kota Jakarta Timur,7,36.125,48.266,47.097,0.0655,-0.0004,47.097,1.304,medium
+ID3172080003,Pulo Gebang,Cakung,Kota Jakarta Timur,27,36.23,43.031,41.109,0.0322,-0.0543,41.109,1.135,high
+ID3171020002,Ragunan,Pasar Minggu,Kota Jakarta Selatan,20,31.582,39.354,39.116,0.0552,-0.0087,39.116,1.239,high
+ID3172020005,Rambutan,Ciracas,Kota Jakarta Timur,10,32.144,41.67,39.462,0.038650000000000004,-0.058249999999999996,39.462,1.228,high
+ID3171060009,Rawa Barat,Kebayoran Baru,Kota Jakarta Selatan,2,41.529,62.59,63.803,0.11335,0.0194,63.803,1.536,low
+ID3174070002,Rawa Buaya,Cengkareng,Kota Jakarta Barat,15,31.083,42.161,40.324,0.0652,-0.0379,40.324,1.297,high
+ID3172060006,Rawa Bunga,Jatinegara,Kota Jakarta Timur,3,43.92,58.706,56.712,0.0718,-0.0294,56.712,1.291,low
+ID3173050001,Rawa Sari,Cempaka Putih,Kota Jakarta Pusat,7,45.152,53.881,50.559,0.0353,-0.0305,50.559,1.12,medium
+ID3172080007,Rawa Terate,Cakung,Kota Jakarta Timur,17,37.88,48.043,46.288,0.0393,-0.0365,46.288,1.222,high
+ID3175040001,Rawabadak Selatan,Koja,Kota Jakarta Utara,9,42.353,47.003,48.101,0.037,0.0292,48.101,1.136,medium
+ID3175040005,Rawabadak Utara,Koja,Kota Jakarta Utara,4,48.257,55.317,58.576,0.0435,0.0487,58.576,1.214,low
+ID3171080002,Rawajati,Pancoran,Kota Jakarta Selatan,5,33.642,41.066,38.369,0.0334,-0.1,38.369,1.141,medium
+ID3172090005,Rawamangun,Pulo Gadung,Kota Jakarta Timur,11,37.793,49.616,48.566,0.0606,-0.0256,48.566,1.285,high
+ID3174050010,Roa Malaka,Tambora,Kota Jakarta Barat,2,42.198,56.958,58.325,0.08465,0.024050000000000002,58.325,1.382,low
+ID3175060002,Rorotan,Cilincing,Kota Jakarta Utara,42,21.641,29.745,28.268,0.046200000000000005,-0.1138,28.268,1.306,high
+ID3171060008,Selong,Kebayoran Baru,Kota Jakarta Selatan,7,53.574,69.024,70.828,0.0576,0.0108,70.828,1.322,medium
+ID3174080001,Semanan,Kali Deres,Kota Jakarta Barat,22,30.949,39.471,35.588,0.0377,-0.0931,35.588,1.15,high
+ID3175060006,Semper Barat,Cilincing,Kota Jakarta Utara,13,44.192,50.722,49.047,0.0319,0.0008,49.047,1.11,high
+ID3175060005,Semper Timur,Cilincing,Kota Jakarta Utara,14,39.475,43.982,41.272,0.01695,-0.0253,41.272,1.046,high
+ID3171060010,Senayan,Kebayoran Baru,Kota Jakarta Selatan,6,74.276,87.462,108.219,0.0727,0.16185,108.219,1.457,medium
+ID3173030005,Senen,Senen,Kota Jakarta Pusat,3,74.944,74.662,78.726,0.0124,0.0544,78.726,1.05,low
+ID3173060004,Serdang,Kemayoran,Kota Jakarta Pusat,3,46.292,54.149,52.861,0.0294,-0.0212,52.861,1.142,low
+ID3171100008,Setia Budi,Setia Budi,Kota Jakarta Selatan,3,49.415,70.55,66.351,0.0682,-0.0868,66.351,1.343,low
+ID3172030005,Setu,Cipayung,Kota Jakarta Timur,13,22.549,29.891,30.127,0.075,-0.0161,30.127,1.336,high
+ID3174030002,Slipi,Palmerah,Kota Jakarta Barat,4,46.482,56.068,57.13,0.058249999999999996,0.0333,57.13,1.229,low
+ID3174010002,Srengseng,Kembangan,Kota Jakarta Barat,19,33.067,42.466,43.204,0.0726,0.0302,43.204,1.307,high
+ID3171010002,Srengseng Sawah,Jagakarsa,Kota Jakarta Selatan,22,23.371,32.182,31.393,0.05995,-0.039650000000000005,31.393,1.343,high
+ID3175060001,Suka Pura,Cilincing,Kota Jakarta Utara,24,35.502,46.04,47.28,0.08055,0.0137,47.28,1.332,high
+ID3174020001,Sukabumi Selatan,Kebon Jeruk,Kota Jakarta Barat,6,32.624,44.947,45.606,0.0915,0.04395,45.606,1.398,medium
+ID3174020002,Sukabumi Utara,Kebon Jeruk,Kota Jakarta Barat,6,40.036,48.28,49.808,0.05685,0.03475,49.808,1.244,medium
+ID3173060003,Sumur Batu,Kemayoran,Kota Jakarta Pusat,6,45.538,52.676,51.529,0.02945,-0.0269,51.529,1.132,medium
+ID3175030005,Sungai Bambu,Tanjung Priok,Kota Jakarta Utara,10,41.75,49.276,48.03,0.036000000000000004,-0.00835,48.03,1.15,high
+ID3175030001,Sunter Agung,Tanjung Priok,Kota Jakarta Utara,23,44.148,52.562,51.73,0.0364,-0.009,51.73,1.172,high
+ID3175030002,Sunter Jaya,Tanjung Priok,Kota Jakarta Utara,21,40.832,48.993,48.687,0.0503,-0.0086,48.687,1.192,high
+ID3172020004,Susukan,Ciracas,Kota Jakarta Timur,8,28.03,34.487,33.308,0.03735,-0.04535,33.308,1.188,medium
+ID3174060003,Taman Sari,Taman Sari,Kota Jakarta Barat,3,44.018,52.393,54.1,0.0529,0.0326,54.1,1.229,low
+ID3174050009,Tambora,Tambora,Kota Jakarta Barat,2,34.923,43.798,46.867,0.07645,0.07139999999999999,46.867,1.342,low
+ID3174050003,Tanah Sereal,Tambora,Kota Jakarta Barat,1,35.66,45.854,47.793,0.076,0.0423,47.793,1.34,low
+ID3173040003,Tanah Tinggi,Johar Baru,Kota Jakarta Pusat,1,54.437,56.164,57.853,0.0153,0.0301,57.853,1.063,low
+ID3174060004,Tangki,Taman Sari,Kota Jakarta Barat,2,40.927,55.669,61.191,0.1058,0.09935,61.191,1.495,low
+ID3171010006,Tanjung Barat,Jagakarsa,Kota Jakarta Selatan,12,29.133,35.331,34.828,0.0504,-0.00935,34.828,1.195,high
+ID3174040002,Tanjung Duren Selatan,Grogol Petamburan,Kota Jakarta Barat,6,47.533,64.777,71.927,0.11810000000000001,0.10700000000000001,71.927,1.513,medium
+ID3174040001,Tanjung Duren Utara,Grogol Petamburan,Kota Jakarta Barat,5,44.652,58.858,60.997,0.1067,0.0739,60.997,1.366,medium
+ID3175030007,Tanjung Priuk,Tanjung Priok,Kota Jakarta Utara,16,73.41,74.269,80.689,0.0187,0.0763,80.689,1.099,high
+ID3171090002,Tebet Barat,Tebet,Kota Jakarta Selatan,6,40.125,56.13,55.83,0.0884,-0.0031,55.83,1.391,medium
+ID3171090003,Tebet Timur,Tebet,Kota Jakarta Selatan,6,38.467,55.538,51.696,0.08180000000000001,-0.056600000000000004,51.696,1.344,medium
+ID3174080004,Tegal Alur,Kali Deres,Kota Jakarta Barat,22,23.053,31.091,29.958,0.07475,0.0108,29.958,1.3,high
+ID3171070003,Tegal Parang,Mampang Prapatan,Kota Jakarta Selatan,5,35.84,43.875,41.27,0.0359,-0.0217,41.27,1.152,medium
+ID3174040003,Tomang,Grogol Petamburan,Kota Jakarta Barat,7,45.38,57.734,61.883,0.0745,0.0393,61.883,1.364,medium
+ID3175040002,Tugu Selatan,Koja,Kota Jakarta Utara,6,39.545,47.788,48.203,0.050600000000000006,0.02515,48.203,1.219,medium
+ID3175040003,Tugu Utara,Koja,Kota Jakarta Utara,11,44.238,50.199,50.332,0.0361,-0.0073,50.332,1.138,high
+ID3172080004,Ujung Menteng,Cakung,Kota Jakarta Timur,17,33.914,45.018,41.832,0.0501,-0.0775,41.832,1.233,high
+ID3171040003,Ulujami,Pesanggrahan,Kota Jakarta Selatan,7,28.955,36.898,34.558,0.0466,-0.067,34.558,1.193,medium
+ID3172100005,Utan Kayu Selatan,Matraman,Kota Jakarta Timur,4,35.051,47.554,44.699,0.0638,-0.039099999999999996,44.699,1.275,low
+ID3172100006,Utan Kayu Utara,Matraman,Kota Jakarta Timur,3,38.212,51.048,52.854,0.0917,0.0382,52.854,1.383,low
+ID3173060005,Utan Panjang,Kemayoran,Kota Jakarta Pusat,1,45.808,52.15,50.044,0.0224,-0.0404,50.044,1.092,low
+ID3175030004,Warakas,Tanjung Priok,Kota Jakarta Utara,5,41.243,50.279,47.451,0.0262,-0.0566,47.451,1.151,medium
+ID3174040006,Wijaya Kesuma,Grogol Petamburan,Kota Jakarta Barat,9,39.711,50.475,56.304,0.0789,0.0759,56.304,1.418,medium

@@ -1,0 +1,515 @@
+kabkota_4digit,kode_prov,nama_prov,kode_kab_2digit,nama_kab
+1101,11,Aceh,1,Kab Simeulue
+1102,11,Aceh,2,Kab Aceh Singkil
+1103,11,Aceh,3,Kab Aceh Selatan
+1104,11,Aceh,4,Kab Aceh Tenggara
+1105,11,Aceh,5,Kab Aceh Timur
+1106,11,Aceh,6,Kab Aceh Tengah
+1107,11,Aceh,7,Kab Aceh Barat
+1108,11,Aceh,8,Kab Aceh Besar
+1109,11,Aceh,9,Kab Pidie
+1110,11,Aceh,10,Kab Bireuen
+1111,11,Aceh,11,Kab Aceh Utara
+1112,11,Aceh,12,Kab Aceh Barat Daya
+1113,11,Aceh,13,Kab Gayo Lues
+1114,11,Aceh,14,Kab Aceh Tamiang
+1115,11,Aceh,15,Kab Nagan Raya
+1116,11,Aceh,16,Kab Aceh Jaya
+1117,11,Aceh,17,Kab Bener Meriah
+1118,11,Aceh,18,Kab Pidie Jaya
+1171,11,Aceh,71,Kota Banda Aceh
+1172,11,Aceh,72,Kota Sabang
+1173,11,Aceh,73,Kota Langsa
+1174,11,Aceh,74,Kota Lhokseumawe
+1175,11,Aceh,75,Kota Subulussalam
+1201,12,Sumatera Utara,1,Kab Nias
+1202,12,Sumatera Utara,2,Kab Mandailing Natal
+1203,12,Sumatera Utara,3,Kab Tapanuli Selatan
+1204,12,Sumatera Utara,4,Kab Tapanuli Tengah
+1205,12,Sumatera Utara,5,Kab Tapanuli Utara
+1206,12,Sumatera Utara,6,Kab Toba
+1207,12,Sumatera Utara,7,Kab Labuhanbatu
+1208,12,Sumatera Utara,8,Kab Asahan
+1209,12,Sumatera Utara,9,Kab Simalungun
+1210,12,Sumatera Utara,10,Kab Dairi
+1211,12,Sumatera Utara,11,Kab Karo
+1212,12,Sumatera Utara,12,Kab Deli Serdang
+1213,12,Sumatera Utara,13,Kab Langkat
+1214,12,Sumatera Utara,14,Kab Nias Selatan
+1215,12,Sumatera Utara,15,Kab Humbang Hasundutan
+1216,12,Sumatera Utara,16,Kab Pakpak Bharat
+1217,12,Sumatera Utara,17,Kab Samosir
+1218,12,Sumatera Utara,18,Kab Serdang Bedagai
+1219,12,Sumatera Utara,19,Kab Batu Bara
+1220,12,Sumatera Utara,20,Kab Padang Lawas Utara
+1221,12,Sumatera Utara,21,Kab Padang Lawas
+1222,12,Sumatera Utara,22,Kab Labuhanbatu Selatan
+1223,12,Sumatera Utara,23,Kab Labuhanbatu Utara
+1224,12,Sumatera Utara,24,Kab Nias Utara
+1225,12,Sumatera Utara,25,Kab Nias Barat
+1271,12,Sumatera Utara,71,Kota Sibolga
+1272,12,Sumatera Utara,72,Kota Tanjung Balai
+1273,12,Sumatera Utara,73,Kota Pematangsiantar
+1274,12,Sumatera Utara,74,Kota Tebing Tinggi
+1275,12,Sumatera Utara,75,Kota Medan
+1276,12,Sumatera Utara,76,Kota Binjai
+1277,12,Sumatera Utara,77,Kota Padang Sidempuan
+1278,12,Sumatera Utara,78,Kota Gunungsitoli
+1301,13,Sumatera Barat,1,Kab Kepulauan Mentawai
+1302,13,Sumatera Barat,2,Kab Pesisir Selatan
+1303,13,Sumatera Barat,3,Kab Solok
+1304,13,Sumatera Barat,4,Kab Sijunjung
+1305,13,Sumatera Barat,5,Kab Tanah Datar
+1306,13,Sumatera Barat,6,Kab Padang Pariaman
+1307,13,Sumatera Barat,7,Kab Agam
+1308,13,Sumatera Barat,8,Kab Lima Puluh Kota
+1309,13,Sumatera Barat,9,Kab Pasaman
+1310,13,Sumatera Barat,10,Kab Solok Selatan
+1311,13,Sumatera Barat,11,Kab Dharmasraya
+1312,13,Sumatera Barat,12,Kab Pasaman Barat
+1371,13,Sumatera Barat,71,Kota Padang
+1372,13,Sumatera Barat,72,Kota Solok
+1373,13,Sumatera Barat,73,Kota Sawahlunto
+1374,13,Sumatera Barat,74,Kota Padang Panjang
+1375,13,Sumatera Barat,75,Kota Bukittinggi
+1376,13,Sumatera Barat,76,Kota Payakumbuh
+1377,13,Sumatera Barat,77,Kota Pariaman
+1401,14,Riau,1,Kab Kuantan Singingi
+1402,14,Riau,2,Kab Indragiri Hulu
+1403,14,Riau,3,Kab Indragiri Hilir
+1404,14,Riau,4,Kab Pelalawan
+1405,14,Riau,5,Kab Siak
+1406,14,Riau,6,Kab Kampar
+1407,14,Riau,7,Kab Rokan Hulu
+1408,14,Riau,8,Kab Bengkalis
+1409,14,Riau,9,Kab Rokan Hilir
+1410,14,Riau,10,Kab Kepulauan Meranti
+1471,14,Riau,71,Kota Pekanbaru
+1473,14,Riau,73,Kota Dumai
+1501,15,Jambi,1,Kab Kerinci
+1502,15,Jambi,2,Kab Merangin
+1503,15,Jambi,3,Kab Sarolangun
+1504,15,Jambi,4,Kab Batanghari
+1505,15,Jambi,5,Kab Muaro Jambi
+1506,15,Jambi,6,Kab Tanjung Jabung Timur
+1507,15,Jambi,7,Kab Tanjung Jabung Barat
+1508,15,Jambi,8,Kab Tebo
+1509,15,Jambi,9,Kab Bungo
+1571,15,Jambi,71,Kota Jambi
+1572,15,Jambi,72,Kota Sungai Penuh
+1601,16,Sumatera Selatan,1,Kab Ogan Komering Ulu
+1602,16,Sumatera Selatan,2,Kab Ogan Komering Ilir
+1603,16,Sumatera Selatan,3,Kab Muara Enim
+1604,16,Sumatera Selatan,4,Kab Lahat
+1605,16,Sumatera Selatan,5,Kab Musi Rawas
+1606,16,Sumatera Selatan,6,Kab Musi Banyuasin
+1607,16,Sumatera Selatan,7,Kab Banyuasin
+1608,16,Sumatera Selatan,8,Kab Ogan Komering Ulu Selatan
+1609,16,Sumatera Selatan,9,Kab Ogan Komering Ulu Timur
+1610,16,Sumatera Selatan,10,Kab Ogan Ilir
+1611,16,Sumatera Selatan,11,Kab Empat Lawang
+1612,16,Sumatera Selatan,12,Kab Penukal Abab Lematang Ilir
+1613,16,Sumatera Selatan,13,Kab Musi Rawas Utara
+1671,16,Sumatera Selatan,71,Kota Palembang
+1672,16,Sumatera Selatan,72,Kota Prabumulih
+1673,16,Sumatera Selatan,73,Kota Pagar Alam
+1674,16,Sumatera Selatan,74,Kota Lubuk Linggau
+1701,17,Bengkulu,1,Kab Bengkulu Selatan
+1702,17,Bengkulu,2,Kab Rejang Lebong
+1703,17,Bengkulu,3,Kab Bengkulu Utara
+1704,17,Bengkulu,4,Kab Kaur
+1705,17,Bengkulu,5,Kab Seluma
+1706,17,Bengkulu,6,Kab Muko Muko
+1707,17,Bengkulu,7,Kab Lebong
+1708,17,Bengkulu,8,Kab Kepahiang
+1709,17,Bengkulu,9,Kab Bengkulu Tengah
+1771,17,Bengkulu,71,Kota Bengkulu
+1801,18,Lampung,1,Kab Lampung Barat
+1802,18,Lampung,2,Kab Tanggamus
+1803,18,Lampung,3,Kab Lampung Selatan
+1804,18,Lampung,4,Kab Lampung Timur
+1805,18,Lampung,5,Kab Lampung Tengah
+1806,18,Lampung,6,Kab Lampung Utara
+1807,18,Lampung,7,Kab Way Kanan
+1808,18,Lampung,8,Kab Tulang Bawang
+1809,18,Lampung,9,Kab Pesawaran
+1810,18,Lampung,10,Kab Pringsewu
+1811,18,Lampung,11,Kab Mesuji
+1812,18,Lampung,12,Kab Tulang Bawang Barat
+1813,18,Lampung,13,Kab Pesisir Barat
+1871,18,Lampung,71,Kota Bandar Lampung
+1872,18,Lampung,72,Kota Metro
+1901,19,Kepulauan Bangka Belitung,1,Kab Bangka
+1902,19,Kepulauan Bangka Belitung,2,Kab Belitung
+1903,19,Kepulauan Bangka Belitung,3,Kab Bangka Barat
+1904,19,Kepulauan Bangka Belitung,4,Kab Bangka Tengah
+1905,19,Kepulauan Bangka Belitung,5,Kab Bangka Selatan
+1906,19,Kepulauan Bangka Belitung,6,Kab Belitung Timur
+1971,19,Kepulauan Bangka Belitung,71,Kota Pangkal Pinang
+2101,21,Kepulauan Riau,1,Kab Karimun
+2102,21,Kepulauan Riau,2,Kab Bintan
+2103,21,Kepulauan Riau,3,Kab Natuna
+2104,21,Kepulauan Riau,4,Kab Lingga
+2105,21,Kepulauan Riau,5,Kab Kepulauan Anambas
+2171,21,Kepulauan Riau,71,Kota Batam
+2172,21,Kepulauan Riau,72,Kota Tanjung Pinang
+3101,31,DKI Jakarta,1,Kab ADM Kep Seribu
+3171,31,DKI Jakarta,71,Kota ADM Jakarta Selatan
+3172,31,DKI Jakarta,72,Kota ADM Jakarta Timur
+3173,31,DKI Jakarta,73,Kota ADM Jakarta Pusat
+3174,31,DKI Jakarta,74,Kota ADM Jakarta Barat
+3175,31,DKI Jakarta,75,Kota ADM Jakarta Utara
+3201,32,Jawa Barat,1,Kab Bogor
+3202,32,Jawa Barat,2,Kab Sukabumi
+3203,32,Jawa Barat,3,Kab Cianjur
+3204,32,Jawa Barat,4,Kab Bandung
+3205,32,Jawa Barat,5,Kab Garut
+3206,32,Jawa Barat,6,Kab Tasikmalaya
+3207,32,Jawa Barat,7,Kab Ciamis
+3208,32,Jawa Barat,8,Kab Kuningan
+3209,32,Jawa Barat,9,Kab Cirebon
+3210,32,Jawa Barat,10,Kab Majalengka
+3211,32,Jawa Barat,11,Kab Sumedang
+3212,32,Jawa Barat,12,Kab Indramayu
+3213,32,Jawa Barat,13,Kab Subang
+3214,32,Jawa Barat,14,Kab Purwakarta
+3215,32,Jawa Barat,15,Kab Karawang
+3216,32,Jawa Barat,16,Kab Bekasi
+3217,32,Jawa Barat,17,Kab Bandung Barat
+3218,32,Jawa Barat,18,Kab Pangandaran
+3271,32,Jawa Barat,71,Kota Bogor
+3272,32,Jawa Barat,72,Kota Sukabumi
+3273,32,Jawa Barat,73,Kota Bandung
+3274,32,Jawa Barat,74,Kota Cirebon
+3275,32,Jawa Barat,75,Kota Bekasi
+3276,32,Jawa Barat,76,Kota Depok
+3277,32,Jawa Barat,77,Kota Cimahi
+3278,32,Jawa Barat,78,Kota Tasikmalaya
+3279,32,Jawa Barat,79,Kota Banjar
+3301,33,Jawa Tengah,1,Kab Cilacap
+3302,33,Jawa Tengah,2,Kab Banyumas
+3303,33,Jawa Tengah,3,Kab Purbalingga
+3304,33,Jawa Tengah,4,Kab Banjarnegara
+3305,33,Jawa Tengah,5,Kab Kebumen
+3306,33,Jawa Tengah,6,Kab Purworejo
+3307,33,Jawa Tengah,7,Kab Wonosobo
+3308,33,Jawa Tengah,8,Kab Magelang
+3309,33,Jawa Tengah,9,Kab Boyolali
+3310,33,Jawa Tengah,10,Kab Klaten
+3311,33,Jawa Tengah,11,Kab Sukoharjo
+3312,33,Jawa Tengah,12,Kab Wonogiri
+3313,33,Jawa Tengah,13,Kab Karanganyar
+3314,33,Jawa Tengah,14,Kab Sragen
+3315,33,Jawa Tengah,15,Kab Grobogan
+3316,33,Jawa Tengah,16,Kab Blora
+3317,33,Jawa Tengah,17,Kab Rembang
+3318,33,Jawa Tengah,18,Kab Pati
+3319,33,Jawa Tengah,19,Kab Kudus
+3320,33,Jawa Tengah,20,Kab Jepara
+3321,33,Jawa Tengah,21,Kab Demak
+3322,33,Jawa Tengah,22,Kab Semarang
+3323,33,Jawa Tengah,23,Kab Temanggung
+3324,33,Jawa Tengah,24,Kab Kendal
+3325,33,Jawa Tengah,25,Kab Batang
+3326,33,Jawa Tengah,26,Kab Pekalongan
+3327,33,Jawa Tengah,27,Kab Pemalang
+3328,33,Jawa Tengah,28,Kab Tegal
+3329,33,Jawa Tengah,29,Kab Brebes
+3371,33,Jawa Tengah,71,Kota Magelang
+3372,33,Jawa Tengah,72,Kota Surakarta
+3373,33,Jawa Tengah,73,Kota Salatiga
+3374,33,Jawa Tengah,74,Kota Semarang
+3375,33,Jawa Tengah,75,Kota Pekalongan
+3376,33,Jawa Tengah,76,Kota Tegal
+3401,34,DI Yogyakarta,1,Kab Kulon Progo
+3402,34,DI Yogyakarta,2,Kab Bantul
+3403,34,DI Yogyakarta,3,Kab Gunungkidul
+3404,34,DI Yogyakarta,4,Kab Sleman
+3471,34,DI Yogyakarta,71,Kota Yogyakarta
+3501,35,Jawa Timur,1,Kab Pacitan
+3502,35,Jawa Timur,2,Kab Ponorogo
+3503,35,Jawa Timur,3,Kab Trenggalek
+3504,35,Jawa Timur,4,Kab Tulungagung
+3505,35,Jawa Timur,5,Kab Blitar
+3506,35,Jawa Timur,6,Kab Kediri
+3507,35,Jawa Timur,7,Kab Malang
+3508,35,Jawa Timur,8,Kab Lumajang
+3509,35,Jawa Timur,9,Kab Jember
+3510,35,Jawa Timur,10,Kab Banyuwangi
+3511,35,Jawa Timur,11,Kab Bondowoso
+3512,35,Jawa Timur,12,Kab Situbondo
+3513,35,Jawa Timur,13,Kab Probolinggo
+3514,35,Jawa Timur,14,Kab Pasuruan
+3515,35,Jawa Timur,15,Kab Sidoarjo
+3516,35,Jawa Timur,16,Kab Mojokerto
+3517,35,Jawa Timur,17,Kab Jombang
+3518,35,Jawa Timur,18,Kab Nganjuk
+3519,35,Jawa Timur,19,Kab Madiun
+3520,35,Jawa Timur,20,Kab Magetan
+3521,35,Jawa Timur,21,Kab Ngawi
+3522,35,Jawa Timur,22,Kab Bojonegoro
+3523,35,Jawa Timur,23,Kab Tuban
+3524,35,Jawa Timur,24,Kab Lamongan
+3525,35,Jawa Timur,25,Kab Gresik
+3526,35,Jawa Timur,26,Kab Bangkalan
+3527,35,Jawa Timur,27,Kab Sampang
+3528,35,Jawa Timur,28,Kab Pamekasan
+3529,35,Jawa Timur,29,Kab Sumenep
+3571,35,Jawa Timur,71,Kota Kediri
+3572,35,Jawa Timur,72,Kota Blitar
+3573,35,Jawa Timur,73,Kota Malang
+3574,35,Jawa Timur,74,Kota Probolinggo
+3575,35,Jawa Timur,75,Kota Pasuruan
+3576,35,Jawa Timur,76,Kota Mojokerto
+3577,35,Jawa Timur,77,Kota Madiun
+3578,35,Jawa Timur,78,Kota Surabaya
+3579,35,Jawa Timur,79,Kota Batu
+3601,36,Banten,1,Kab Pandeglang
+3602,36,Banten,2,Kab Lebak
+3603,36,Banten,3,Kab Tangerang
+3604,36,Banten,4,Kab Serang
+3671,36,Banten,71,Kota Tangerang
+3672,36,Banten,72,Kota Cilegon
+3673,36,Banten,73,Kota Serang
+3674,36,Banten,74,Kota Tangerang Selatan
+5101,51,Bali,1,Kab Jembrana
+5102,51,Bali,2,Kab Tabanan
+5103,51,Bali,3,Kab Badung
+5104,51,Bali,4,Kab Gianyar
+5105,51,Bali,5,Kab Klungkung
+5106,51,Bali,6,Kab Bangli
+5107,51,Bali,7,Kab Karangasem
+5108,51,Bali,8,Kab Buleleng
+5171,51,Bali,71,Kota Denpasar
+5201,52,Nusa Tenggara Barat,1,Kab Lombok Barat
+5202,52,Nusa Tenggara Barat,2,Kab Lombok Tengah
+5203,52,Nusa Tenggara Barat,3,Kab Lombok Timur
+5204,52,Nusa Tenggara Barat,4,Kab Sumbawa
+5205,52,Nusa Tenggara Barat,5,Kab Dompu
+5206,52,Nusa Tenggara Barat,6,Kab Bima
+5207,52,Nusa Tenggara Barat,7,Kab Sumbawa Barat
+5208,52,Nusa Tenggara Barat,8,Kab Lombok Utara
+5271,52,Nusa Tenggara Barat,71,Kota Mataram
+5272,52,Nusa Tenggara Barat,72,Kota Bima
+5301,53,Nusa Tenggara Timur,1,Kab Sumba Barat
+5302,53,Nusa Tenggara Timur,2,Kab Sumba Timur
+5303,53,Nusa Tenggara Timur,3,Kab Kupang
+5304,53,Nusa Tenggara Timur,4,Kab Timor Tengah Selatan
+5305,53,Nusa Tenggara Timur,5,Kab Timor Tengah Utara
+5306,53,Nusa Tenggara Timur,6,Kab Belu
+5307,53,Nusa Tenggara Timur,7,Kab Alor
+5308,53,Nusa Tenggara Timur,8,Kab Lembata
+5309,53,Nusa Tenggara Timur,9,Kab Flores Timur
+5310,53,Nusa Tenggara Timur,10,Kab Sikka
+5311,53,Nusa Tenggara Timur,11,Kab Ende
+5312,53,Nusa Tenggara Timur,12,Kab Ngada
+5313,53,Nusa Tenggara Timur,13,Kab Manggarai
+5314,53,Nusa Tenggara Timur,14,Kab Rote Ndao
+5315,53,Nusa Tenggara Timur,15,Kab Manggarai Barat
+5316,53,Nusa Tenggara Timur,16,Kab Sumba Tengah
+5317,53,Nusa Tenggara Timur,17,Kab Sumba Barat Daya
+5318,53,Nusa Tenggara Timur,18,Kab Nagekeo
+5319,53,Nusa Tenggara Timur,19,Kab Manggarai Timur
+5320,53,Nusa Tenggara Timur,20,Kab Sabu Raijua
+5321,53,Nusa Tenggara Timur,21,Kab Malaka
+5371,53,Nusa Tenggara Timur,71,Kota Kupang
+6101,61,Kalimantan Barat,1,Kab Sambas
+6102,61,Kalimantan Barat,2,Kab Bengkayang
+6103,61,Kalimantan Barat,3,Kab Landak
+6104,61,Kalimantan Barat,4,Kab Mempawah
+6105,61,Kalimantan Barat,5,Kab Sanggau
+6106,61,Kalimantan Barat,6,Kab Ketapang
+6107,61,Kalimantan Barat,7,Kab Sintang
+6108,61,Kalimantan Barat,8,Kab Kapuas Hulu
+6109,61,Kalimantan Barat,9,Kab Sekadau
+6110,61,Kalimantan Barat,10,Kab Melawi
+6111,61,Kalimantan Barat,11,Kab Kayong Utara
+6112,61,Kalimantan Barat,12,Kab Kubu Raya
+6171,61,Kalimantan Barat,71,Kota Pontianak
+6172,61,Kalimantan Barat,72,Kota Singkawang
+6201,62,Kalimantan Tengah,1,Kab Kotawaringin Barat
+6202,62,Kalimantan Tengah,2,Kab Kotawaringin Timur
+6203,62,Kalimantan Tengah,3,Kab Kapuas
+6204,62,Kalimantan Tengah,4,Kab Barito Selatan
+6205,62,Kalimantan Tengah,5,Kab Barito Utara
+6206,62,Kalimantan Tengah,6,Kab Sukamara
+6207,62,Kalimantan Tengah,7,Kab Lamandau
+6208,62,Kalimantan Tengah,8,Kab Seruyan
+6209,62,Kalimantan Tengah,9,Kab Katingan
+6210,62,Kalimantan Tengah,10,Kab Pulang Pisau
+6211,62,Kalimantan Tengah,11,Kab Gunung Mas
+6212,62,Kalimantan Tengah,12,Kab Barito Timur
+6213,62,Kalimantan Tengah,13,Kab Murung Raya
+6271,62,Kalimantan Tengah,71,Kota Palangkaraya
+6301,63,Kalimantan Selatan,1,Kab Tanah Laut
+6302,63,Kalimantan Selatan,2,Kab Kotabaru
+6303,63,Kalimantan Selatan,3,Kab Banjar
+6304,63,Kalimantan Selatan,4,Kab Barito Kuala
+6305,63,Kalimantan Selatan,5,Kab Tapin
+6306,63,Kalimantan Selatan,6,Kab Hulu Sungai Selatan
+6307,63,Kalimantan Selatan,7,Kab Hulu Sungai Tengah
+6308,63,Kalimantan Selatan,8,Kab Hulu Sungai Utara
+6309,63,Kalimantan Selatan,9,Kab Tabalong
+6310,63,Kalimantan Selatan,10,Kab Tanah Bumbu
+6311,63,Kalimantan Selatan,11,Kab Balangan
+6371,63,Kalimantan Selatan,71,Kota Banjarmasin
+6372,63,Kalimantan Selatan,72,Kota Banjarbaru
+6401,64,Kalimantan Timur,1,Kab Paser
+6402,64,Kalimantan Timur,2,Kab Kutai Barat
+6403,64,Kalimantan Timur,3,Kab Kutai Kartanegara
+6404,64,Kalimantan Timur,4,Kab Kutai Timur
+6405,64,Kalimantan Timur,5,Kab Berau
+6409,64,Kalimantan Timur,9,Kab Penajam Paser Utara
+6411,64,Kalimantan Timur,11,Kab Mahakam Ulu
+6471,64,Kalimantan Timur,71,Kota Balikpapan
+6472,64,Kalimantan Timur,72,Kota Samarinda
+6474,64,Kalimantan Timur,74,Kota Bontang
+6501,65,Kalimantan Utara,1,Kab Malinau
+6502,65,Kalimantan Utara,2,Kab Bulungan
+6503,65,Kalimantan Utara,3,Kab Tana Tidung
+6504,65,Kalimantan Utara,4,Kab Nunukan
+6571,65,Kalimantan Utara,71,Kota Tarakan
+7101,71,Sulawesi Utara,1,Kab Bolaang Mongondow
+7102,71,Sulawesi Utara,2,Kab Minahasa
+7103,71,Sulawesi Utara,3,Kab Kepulauan Sangihe
+7104,71,Sulawesi Utara,4,Kab Kepulauan Talaud
+7105,71,Sulawesi Utara,5,Kab Minahasa Selatan
+7106,71,Sulawesi Utara,6,Kab Minahasa Utara
+7107,71,Sulawesi Utara,7,Kab Bolaang Mongondow Utara
+7108,71,Sulawesi Utara,8,Kab Kep Siau Tagulandang Biaro
+7109,71,Sulawesi Utara,9,Kab Minahasa Tenggara
+7110,71,Sulawesi Utara,10,Kab Bolaang Mongondow Selatan
+7111,71,Sulawesi Utara,11,Kab Bolaang Mongondow Timur
+7171,71,Sulawesi Utara,71,Kota Manado
+7172,71,Sulawesi Utara,72,Kota Bitung
+7173,71,Sulawesi Utara,73,Kota Tomohon
+7174,71,Sulawesi Utara,74,Kota Kotamobagu
+7201,72,Sulawesi Tengah,1,Kab Banggai Kepulauan
+7202,72,Sulawesi Tengah,2,Kab Banggai
+7203,72,Sulawesi Tengah,3,Kab Morowali
+7204,72,Sulawesi Tengah,4,Kab Poso
+7205,72,Sulawesi Tengah,5,Kab Donggala
+7206,72,Sulawesi Tengah,6,Kab Toli Toli
+7207,72,Sulawesi Tengah,7,Kab Buol
+7208,72,Sulawesi Tengah,8,Kab Parigi Moutong
+7209,72,Sulawesi Tengah,9,Kab Tojo Una Una
+7210,72,Sulawesi Tengah,10,Kab Sigi
+7211,72,Sulawesi Tengah,11,Kab Banggai Laut
+7212,72,Sulawesi Tengah,12,Kab Morowali Utara
+7271,72,Sulawesi Tengah,71,Kota Palu
+7301,73,Sulawesi Selatan,1,Kab Kepulauan Selayar
+7302,73,Sulawesi Selatan,2,Kab Bulukumba
+7303,73,Sulawesi Selatan,3,Kab Bantaeng
+7304,73,Sulawesi Selatan,4,Kab Jeneponto
+7305,73,Sulawesi Selatan,5,Kab Takalar
+7306,73,Sulawesi Selatan,6,Kab Gowa
+7307,73,Sulawesi Selatan,7,Kab Sinjai
+7308,73,Sulawesi Selatan,8,Kab Maros
+7309,73,Sulawesi Selatan,9,Kab Pangkajene Dan Kepulauan
+7310,73,Sulawesi Selatan,10,Kab Barru
+7311,73,Sulawesi Selatan,11,Kab Bone
+7312,73,Sulawesi Selatan,12,Kab Soppeng
+7313,73,Sulawesi Selatan,13,Kab Wajo
+7314,73,Sulawesi Selatan,14,Kab Sidenreng Rappang
+7315,73,Sulawesi Selatan,15,Kab Pinrang
+7316,73,Sulawesi Selatan,16,Kab Enrekang
+7317,73,Sulawesi Selatan,17,Kab Luwu
+7318,73,Sulawesi Selatan,18,Kab Tana Toraja
+7322,73,Sulawesi Selatan,22,Kab Luwu Utara
+7325,73,Sulawesi Selatan,25,Kab Luwu Timur
+7326,73,Sulawesi Selatan,26,Kab Toraja Utara
+7371,73,Sulawesi Selatan,71,Kota Makassar
+7372,73,Sulawesi Selatan,72,Kota Parepare
+7373,73,Sulawesi Selatan,73,Kota Palopo
+7401,74,Sulawesi Tenggara,1,Kab Buton
+7402,74,Sulawesi Tenggara,2,Kab Muna
+7403,74,Sulawesi Tenggara,3,Kab Konawe
+7404,74,Sulawesi Tenggara,4,Kab Kolaka
+7405,74,Sulawesi Tenggara,5,Kab Konawe Selatan
+7406,74,Sulawesi Tenggara,6,Kab Bombana
+7407,74,Sulawesi Tenggara,7,Kab Wakatobi
+7408,74,Sulawesi Tenggara,8,Kab Kolaka Utara
+7409,74,Sulawesi Tenggara,9,Kab Buton Utara
+7410,74,Sulawesi Tenggara,10,Kab Konawe Utara
+7411,74,Sulawesi Tenggara,11,Kab Kolaka Timur
+7412,74,Sulawesi Tenggara,12,Kab Konawe Kepulauan
+7413,74,Sulawesi Tenggara,13,Kab Muna Barat
+7414,74,Sulawesi Tenggara,14,Kab Buton Tengah
+7415,74,Sulawesi Tenggara,15,Kab Buton Selatan
+7471,74,Sulawesi Tenggara,71,Kota Kendari
+7472,74,Sulawesi Tenggara,72,Kota Bau Bau
+7501,75,Gorontalo,1,Kab Boalemo
+7502,75,Gorontalo,2,Kab Gorontalo
+7503,75,Gorontalo,3,Kab Pohuwato
+7504,75,Gorontalo,4,Kab Bone Bolango
+7505,75,Gorontalo,5,Kab Gorontalo Utara
+7571,75,Gorontalo,71,Kota Gorontalo
+7601,76,Sulawesi Barat,1,Kab Majene
+7602,76,Sulawesi Barat,2,Kab Polewali Mandar
+7603,76,Sulawesi Barat,3,Kab Mamasa
+7604,76,Sulawesi Barat,4,Kab Mamuju
+7605,76,Sulawesi Barat,5,Kab Pasangkayu
+7606,76,Sulawesi Barat,6,Kab Mamuju Tengah
+8101,81,Maluku,1,Kab Kepulauan Tanimbar
+8102,81,Maluku,2,Kab Maluku Tenggara
+8103,81,Maluku,3,Kab Maluku Tengah
+8104,81,Maluku,4,Kab Buru
+8105,81,Maluku,5,Kab Kepulauan Aru
+8106,81,Maluku,6,Kab Seram Bagian Barat
+8107,81,Maluku,7,Kab Seram Bagian Timur
+8108,81,Maluku,8,Kab Maluku Barat Daya
+8109,81,Maluku,9,Kab Buru Selatan
+8171,81,Maluku,71,Kota Ambon
+8172,81,Maluku,72,Kota Tual
+8201,82,Maluku Utara,1,Kab Halmahera Barat
+8202,82,Maluku Utara,2,Kab Halmahera Tengah
+8203,82,Maluku Utara,3,Kab Kepulauan Sula
+8204,82,Maluku Utara,4,Kab Halmahera Selatan
+8205,82,Maluku Utara,5,Kab Halmahera Utara
+8206,82,Maluku Utara,6,Kab Halmahera Timur
+8207,82,Maluku Utara,7,Kab Pulau Morotai
+8208,82,Maluku Utara,8,Kab Pulau Taliabu
+8271,82,Maluku Utara,71,Kota Ternate
+8272,82,Maluku Utara,72,Kota Tidore Kepulauan
+9101,91,Papua Barat,1,Kab Fak Fak
+9102,91,Papua Barat,2,Kab Kaimana
+9103,91,Papua Barat,3,Kab Teluk Wondama
+9104,91,Papua Barat,4,Kab Teluk Bintuni
+9105,91,Papua Barat,5,Kab Manokwari
+9111,91,Papua Barat,11,Kab Manokwari Selatan
+9112,91,Papua Barat,12,Kab Pegunungan Arfak
+9201,92,Papua Barat Daya,1,Kab Raja Ampat
+9202,92,Papua Barat Daya,2,Kab Sorong
+9203,92,Papua Barat Daya,3,Kab Sorong Selatan
+9204,92,Papua Barat Daya,4,Kab Maybrat
+9205,92,Papua Barat Daya,5,Kab Tambrauw
+9271,92,Papua Barat Daya,71,Kota Sorong
+9403,94,Papua,3,Kab Jayapura
+9408,94,Papua,8,Kab Kepulauan Yapen
+9409,94,Papua,9,Kab Biak Numfor
+9419,94,Papua,19,Kab Sarmi
+9420,94,Papua,20,Kab Keerom
+9426,94,Papua,26,Kab Waropen
+9427,94,Papua,27,Kab Supiori
+9428,94,Papua,28,Kab Mamberamo Raya
+9471,94,Papua,71,Kota Jayapura
+9501,95,Papua Selatan,1,Kab Merauke
+9502,95,Papua Selatan,2,Kab Boven Digoel
+9503,95,Papua Selatan,3,Kab Mappi
+9504,95,Papua Selatan,4,Kab Asmat
+9601,96,Papua Tengah,1,Kab Mimika
+9602,96,Papua Tengah,2,Kab Dogiyai
+9603,96,Papua Tengah,3,Kab Deiyai
+9604,96,Papua Tengah,4,Kab Nabire
+9605,96,Papua Tengah,5,Kab Paniai
+9606,96,Papua Tengah,6,Kab Intan Jaya
+9607,96,Papua Tengah,7,Kab Puncak
+9608,96,Papua Tengah,8,Kab Puncak Jaya
+9701,97,Papua Pegunungan,1,Kab Nduga
+9702,97,Papua Pegunungan,2,Kab Jayawijaya
+9703,97,Papua Pegunungan,3,Kab Lanny Jaya
+9704,97,Papua Pegunungan,4,Kab Tolikara
+9705,97,Papua Pegunungan,5,Kab Mamberamo Tengah
+9706,97,Papua Pegunungan,6,Kab Yalimo
+9707,97,Papua Pegunungan,7,Kab Yahukimo
+9708,97,Papua Pegunungan,8,Kab Pegunungan Bintang

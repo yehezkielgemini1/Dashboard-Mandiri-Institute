@@ -1,0 +1,8 @@
+{
+  "title": "FIES Ketahanan Pangan Kabupaten/Kota Indonesia 2019-2025",
+  "source": "Susenas Maret 2019-2025, BPS",
+  "model": "IRT 1PL (Rasch), imputasi per provinsi, bobot individu weind",
+  "coverage": "514 kab/kota, 7 tahun",
+  "generated": "2026-05-02",
+  "generator": "ketahanan-pangan-generator.py"
+}
