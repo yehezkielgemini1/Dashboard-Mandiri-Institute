@@ -326,6 +326,19 @@
     .grid.grid-cols-1.md\:grid-cols-4 { grid-template-columns: 1fr !important; }
   }
 </style>
+
+<!-- UNIFORM v2 OVERRIDE 2026-05-05: hide sidebar entirely, keep topnav as the only nav -->
+<style id="uniform-v2-override">
+  /* Hide entire sidebar (incl. nav items, dark mode toggle, color blind toggle, palette tag) */
+  .sidebar, aside.sidebar { display: none !important; }
+  .mobile-toggle { display: none !important; }
+  /* Remove sidebar offset so main content uses full width */
+  .with-sidebar { margin-left: 0 !important; }
+  /* Push folio/filter sticky bars below topnav (topnav height ~64px) */
+  .folio { top: 64px !important; }
+  .filter-bar { top: 96px !important; }
+</style>
+
 </head>
 <body x-data="{ navOpen: false }">
 

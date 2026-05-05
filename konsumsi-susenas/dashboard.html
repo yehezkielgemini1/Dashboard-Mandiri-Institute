@@ -502,6 +502,19 @@
   }
 </style>
 <script src="komoditi_data.js"></script>
+
+<!-- UNIFORM v2 OVERRIDE 2026-05-05: hide sidebar entirely, keep topnav as the only nav -->
+<style id="uniform-v2-override">
+  /* Hide entire sidebar (incl. nav items, dark mode toggle, color blind toggle, palette tag) */
+  .sidebar, aside.sidebar { display: none !important; }
+  .mobile-toggle { display: none !important; }
+  /* Remove sidebar offset so main content uses full width */
+  .with-sidebar { margin-left: 0 !important; }
+  /* Push folio/filter sticky bars below topnav (topnav height ~64px) */
+  .folio { top: 64px !important; }
+  .filter-bar { top: 96px !important; }
+</style>
+
 </head>
 <body>
 
@@ -704,11 +717,6 @@
         <div class="text-sm muted mt-1">8 kelas wb4 · 20 kelompok</div>
       </div>
     </div>
-    <!-- Auto-narrated insight -->
-    <div class="narrative mt-8">
-      <div class="label"><iconify-icon icon="mdi:lightbulb-outline" style="vertical-align:-2px"></iconify-icon> Insight Otomatis</div>
-      <div class="text drop-cap" x-text="autoNarrative('trend')"></div>
-    </div>
     <div class="mt-16">
       <span class="badge"><span class="badge-dot"></span>Weighted Mean Nasional</span>
       <div class="eyebrow-roman mt-3">I. Trend</div>
@@ -757,13 +765,6 @@
 
   <!-- ==================== PAGE: ENGEL ==================== -->
   <section x-show="page === 'engel'">
-    <!-- Pull quote — Engel's law origin -->
-    <div class="pull-quote">
-      <blockquote>
-        "The proportion of income spent on food decreases as income rises."
-      </blockquote>
-      <cite>Ernst Engel, 1857</cite>
-    </div>
     <div class="rule-top pt-8 flex flex-wrap items-end gap-10">
       <div class="flex-1">
         <div class="eyebrow mb-2" style="color: var(--muted);">Tahun fokus</div>

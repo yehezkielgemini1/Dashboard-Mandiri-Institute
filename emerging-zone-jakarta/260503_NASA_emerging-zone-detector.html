@@ -183,6 +183,19 @@ body { font-family: 'Inter', system-ui, sans-serif; font-weight: 400; letter-spa
 button, .chip-action { transition: all var(--tr-base); }
 
 </style>
+
+<!-- UNIFORM v2 OVERRIDE 2026-05-05: hide sidebar entirely, keep topnav as the only nav -->
+<style id="uniform-v2-override">
+  /* Hide entire sidebar (incl. nav items, dark mode toggle, color blind toggle, palette tag) */
+  .sidebar, aside.sidebar { display: none !important; }
+  .mobile-toggle { display: none !important; }
+  /* Remove sidebar offset so main content uses full width */
+  .with-sidebar { margin-left: 0 !important; }
+  /* Push folio/filter sticky bars below topnav (topnav height ~64px) */
+  .folio { top: 64px !important; }
+  .filter-bar { top: 96px !important; }
+</style>
+
 </head>
 <body>
 
@@ -456,31 +469,22 @@ button, .chip-action { transition: all var(--tr-base); }
   </div>
 
   <div class="chart-card mt-8">
-    <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
-      <div style="display:flex;align-items:center;gap:12px;">
-        <span class="filter-bar-label">Mode</span>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;">
-          <input type="radio" x-model="page5Mode" value="kawasan" @change="page5Selected = KAWASAN_DATA[0].kawasan; $nextTick(()=>renderPage5(this))"> Wilayah Berpotensi
-        </label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;">
-          <input type="radio" x-model="page5Mode" value="desa" @change="page5Selected = DESA_DATA[0].nama_desa; $nextTick(()=>renderPage5(this))"> Kelurahan/Desa
-        </label>
-      </div>
-      <div style="display:flex;align-items:center;gap:12px;flex:1;">
-        <span class="filter-bar-label">Pilih</span>
-        <select x-model="page5Selected" @change="$nextTick(()=>renderPage5(this))" class="select-flat" style="font-size:14px;min-width:280px;">
-          <template x-if="page5Mode==='kawasan'">
-            <template x-for="k in KAWASAN_DATA.map(x=>x.kawasan).sort()" :key="k">
-              <option :value="k" x-text="k"></option>
-            </template>
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+      <span class="filter-bar-label">Pilih wilayah atau kelurahan</span>
+      <select
+        @change="const v=$event.target.value; const [m,...rest]=v.split('::'); page5Mode=m; page5Selected=rest.join('::'); $nextTick(()=>renderPage5(this))"
+        class="select-flat" style="font-size:14px;min-width:340px;flex:1;max-width:520px;">
+        <optgroup label="Wilayah Berpotensi (21)">
+          <template x-for="k in KAWASAN_DATA.map(x=>x.kawasan).sort()" :key="'k_'+k">
+            <option :value="'kawasan::'+k" :selected="page5Mode==='kawasan' && page5Selected===k" x-text="k"></option>
           </template>
-          <template x-if="page5Mode==='desa'">
-            <template x-for="d in DESA_DATA.map(x=>x.nama_desa).sort()" :key="d">
-              <option :value="d" x-text="d"></option>
-            </template>
+        </optgroup>
+        <optgroup label="Kelurahan / Desa (270)">
+          <template x-for="d in DESA_DATA.map(x=>x.nama_desa).sort()" :key="'d_'+d">
+            <option :value="'desa::'+d" :selected="page5Mode==='desa' && page5Selected===d" x-text="d"></option>
           </template>
-        </select>
-      </div>
+        </optgroup>
+      </select>
     </div>
   </div>
 
@@ -1195,11 +1199,19 @@ function colorPodes(v) {
 }
 function renderMap3() {
   initMap3();
+  if (!_map3) return;  // init may have failed (Leaflet not loaded etc.)
   if (_map3Layer) {
-    _map3.removeLayer(_map3Layer); _map3Layer = null;
+    try { _map3.removeLayer(_map3Layer); } catch (e) {}
+    _map3Layer = null;
   }
-  const ctx = document.querySelector('[x-data]').__x.$data;
-  const layer = ctx.page3Layer;
+  // Alpine v3 API (we load v3, not v2) — `__x.$data` is v2 and would throw "undefined"
+  let ctx = {};
+  try {
+    const root = document.querySelector('[x-data]');
+    if (root && typeof Alpine !== 'undefined' && Alpine.$data) ctx = Alpine.$data(root) || {};
+    else if (root && root._x_dataStack) ctx = root._x_dataStack[0] || {};
+  } catch (e) {}
+  const layer = ctx.page3Layer || 'podes';
   if (layer === 'podes') {
     _map3Layer = L.geoJSON(GEOJSON, {
       style: f => {
