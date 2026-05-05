@@ -367,31 +367,7 @@ FOLIO_HTML = """
 </div>
 """
 
-FILTER_BAR_HTML = """
-<div class="filter-bar">
-  <div class="filter-bar-inner">
-    <span class="filter-bar-label">Tier Analisis</span>
-    <div class="flex gap-1">
-      <button @click="tier='kawasan'" :class="tier==='kawasan' ? 'chip-action active' : 'chip-action'">Wilayah Berpotensi</button>
-      <button @click="tier='desa'" :class="tier==='desa' ? 'chip-action active' : 'chip-action'">Kelurahan/Desa</button>
-      <button @click="tier='kecamatan'" :class="tier==='kecamatan' ? 'chip-action active' : 'chip-action'">Kecamatan</button>
-      <button @click="tier='kabkota'" :class="tier==='kabkota' ? 'chip-action active' : 'chip-action'">Kabupaten/Kota</button>
-    </div>
-    <div class="sep"></div>
-    <span class="filter-bar-label">Kategori</span>
-    <select x-model="filterCategory" class="select-flat" style="font-size:12px;min-width:200px;">
-      <option value="all">Semua Kategori</option>
-      <option value="Kawasan Komersial Sedang Naik Daun">Sedang Naik Daun</option>
-      <option value="Kawasan Komersial Mapan">Sudah Mapan</option>
-      <option value="Awal Pertumbuhan">Awal Pertumbuhan</option>
-      <option value="Aktivitas Rendah">Aktivitas Rendah</option>
-    </select>
-    <div class="sep"></div>
-    <button @click="tier='kawasan'; filterCategory='all'" style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);background:none;border:none;cursor:pointer;">Reset</button>
-    <span x-text="'&middot; ' + getCurrentData().length + ' wilayah'" style="font-size:10px;color:var(--muted);"></span>
-  </div>
-</div>
-"""
+# FILTER_BAR_HTML deprecated v5.6 — filter sekarang inline di Page 1 Ringkasan
 
 HERO_HTML = """
 <div class="hero-band">
@@ -427,10 +403,10 @@ PAGE_RINGKASAN = """
       <span class="filter-bar-label">Kategori</span>
       <select x-model="filterCategory" class="select-flat" style="font-size:12px;min-width:200px;">
         <option value="all">Semua Kategori</option>
-        <option value="Kawasan Komersial Sedang Naik Daun">Sedang Naik Daun</option>
-        <option value="Kawasan Komersial Mapan">Sudah Mapan</option>
-        <option value="Awal Pertumbuhan">Awal Pertumbuhan</option>
-        <option value="Aktivitas Rendah">Aktivitas Rendah</option>
+        <option value="Kawasan Komersial Sedang Naik Daun">Emerging Hotspot</option>
+        <option value="Kawasan Komersial Mapan">Mature Commercial</option>
+        <option value="Awal Pertumbuhan">Early Growth</option>
+        <option value="Aktivitas Rendah">Low Activity</option>
       </select>
       <span x-text="'&middot; ' + getCurrentData().length + ' wilayah'" style="font-size:11px;color:var(--muted);margin-left:auto;"></span>
     </div>
@@ -468,7 +444,7 @@ PAGE_CAHAYA = """
 <section x-show="page === 'cahaya-malam'">
   <div class="rule-top pt-8">
     <span class="badge"><span class="badge-dot"></span>Luminositas Malam (Satelit)</span>
-    <div class="eyebrow-roman mt-3">II. Sinyal dari Atas Atap</div>
+    <div class="eyebrow-roman mt-3">II. Tren Luminositas Malam 2021-2025</div>
     <h2 class="serif-display text-3xl mt-2 max-w-3xl">Pertumbuhan luminositas per kelurahan, 2021-2025.</h2>
     <p class="mt-3 muted text-sm max-w-3xl">Luminositas malam (NASA VIIRS) sebagai proxy intensitas aktivitas spasial. Pertumbuhan tahunan menunjukkan kelurahan yang sedang naik; tingkat kecerahan 2025 menunjukkan skala aktivitas saat ini.</p>
   </div>
@@ -560,7 +536,7 @@ PAGE_SKOR = """
 <section x-show="page === 'skor-potensi'">
   <div class="rule-top pt-8">
     <span class="badge"><span class="badge-dot"></span>Skor Potensi &amp; Magnitude</span>
-    <div class="eyebrow-roman mt-3">IV. Composite Score Detail</div>
+    <div class="eyebrow-roman mt-3">IV. Skor Komposit · Dekomposisi Komponen</div>
     <h2 class="serif-display text-3xl mt-2 max-w-3xl">Pertumbuhan vs kepadatan.</h2>
     <p class="mt-3 muted text-sm max-w-3xl"><strong>Skor Potensi</strong>: siapa yang sedang naik. <strong>Skor Magnitude</strong>: siapa yang sudah besar. Independen, saling melengkapi.</p>
   </div>
@@ -586,7 +562,7 @@ PAGE_SKOR = """
 
     <div class="chart-card mt-6">
       <div class="eyebrow" style="color:var(--muted)">Peringkat Lengkap Skor Potensi</div>
-      <h3 class="serif-display text-xl mt-1 mb-4">Tabel Sortable</h3>
+      <h3 class="serif-display text-xl mt-1 mb-4">Tabel Lengkap (dapat diurutkan)</h3>
       <div style="overflow-x:auto;">
         <table class="score-table" id="table-eczi"></table>
       </div>
@@ -605,7 +581,7 @@ PAGE_SKOR = """
 
     <div class="chart-card">
       <div class="eyebrow" style="color:var(--muted)">Peringkat Skor Magnitude</div>
-      <h3 class="serif-display text-xl mt-1 mb-4">Tabel Sortable</h3>
+      <h3 class="serif-display text-xl mt-1 mb-4">Tabel Lengkap (dapat diurutkan)</h3>
       <div style="overflow-x:auto;">
         <table class="score-table" id="table-magnitude"></table>
       </div>
@@ -619,7 +595,7 @@ PAGE_DETAIL = """
 <section x-show="page === 'detail-kawasan'">
   <div class="rule-top pt-8">
     <span class="badge"><span class="badge-dot"></span>Detail per Wilayah</span>
-    <div class="eyebrow-roman mt-3">V. Drilldown</div>
+    <div class="eyebrow-roman mt-3">V. Profil Kawasan dan Kelurahan</div>
     <h2 class="serif-display text-3xl mt-2 max-w-3xl">Profil per wilayah.</h2>
     <p class="mt-3 muted text-sm max-w-3xl">Pilih 1 dari 21 wilayah berpotensi atau 270 kelurahan untuk membedah semua komponen skor.</p>
   </div>
@@ -633,6 +609,16 @@ PAGE_DETAIL = """
         <optgroup label="Wilayah Berpotensi (21)">
           <template x-for="k in KAWASAN_DATA.map(x=>x.kawasan).sort()" :key="'k_'+k">
             <option :value="'kawasan::'+k" :selected="page5Mode==='kawasan' && page5Selected===k" x-text="k"></option>
+          </template>
+        </optgroup>
+        <optgroup label="Kabupaten / Kota (6)">
+          <template x-for="kk in [...new Set(DESA_DATA.map(x=>x.nama_kabkota))].sort()" :key="'kk_'+kk">
+            <option :value="'kabkota::'+kk" :selected="page5Mode==='kabkota' && page5Selected===kk" x-text="kk"></option>
+          </template>
+        </optgroup>
+        <optgroup label="Kecamatan (44)">
+          <template x-for="kc in [...new Set(DESA_DATA.map(x=>x.nama_kecamatan))].sort()" :key="'kc_'+kc">
+            <option :value="'kecamatan::'+kc" :selected="page5Mode==='kecamatan' && page5Selected===kc" x-text="kc"></option>
           </template>
         </optgroup>
         <optgroup label="Kelurahan / Desa (270)">
@@ -675,8 +661,8 @@ PAGE_METODOLOGI = """
       <tbody>
         <tr><td><strong>Skor Potensi</strong></td><td>Kekuatan sinyal pertumbuhan tahunan 2021-2025</td><td>Skor 0-100. Tinggi = sinyal pertumbuhan kuat dari multi-sumber.</td></tr>
         <tr><td><strong>Skor Magnitude</strong></td><td>Skala aktivitas komersial 2025</td><td>Skor 0-100. Tinggi = wilayah sudah padat aktivitas.</td></tr>
-        <tr><td><strong>Tipe Kawasan</strong></td><td>Kombinasi pertumbuhan dan kepadatan</td><td>Naik Daun (tinggi keduanya), Mapan (kepadatan tinggi, pertumbuhan moderat), Awal Pertumbuhan (kepadatan rendah, pertumbuhan tinggi), Aktivitas Rendah (rendah keduanya).</td></tr>
-        <tr><td><strong>Tren 2026</strong></td><td>Sinyal awal 2026 dari luminositas malam</td><td>Lanjut Tumbuh, Stabil, Mulai Melambat &mdash; berdasarkan perubahan tahunan awal 2026 vs awal 2025.</td></tr>
+        <tr><td><strong>Tipe Kawasan</strong></td><td>Kombinasi pertumbuhan dan kepadatan</td><td><em>Emerging Hotspot</em> (tinggi keduanya), <em>Mature Commercial</em> (kepadatan tinggi, pertumbuhan moderat), <em>Early Growth</em> (kepadatan rendah, pertumbuhan tinggi), <em>Low Activity</em> (rendah keduanya).</td></tr>
+        <tr><td><strong>Tren Terkini (2026)</strong></td><td>Sinyal awal 2026 dari luminositas malam</td><td><em>Pertumbuhan</em>, <em>Stabil</em>, <em>Perlambatan</em> &mdash; berdasarkan perubahan tahunan awal 2026 vs awal 2025.</td></tr>
       </tbody>
     </table>
   </div>
@@ -765,7 +751,7 @@ PAGE_METODOLOGI = """
       <li>Indeks keberagaman Shannon dihitung dari 10 kategori Podes; nilai tinggi = mix sektor.</li>
       <li>Skor Potensi distandardisasi 0-100 per komponen sebelum di-bobot, sehingga tidak sensitif outlier ekstrem.</li>
       <li>Beberapa kelurahan dengan data podes ekstrem dilakukan winsorize di p1-p99 (lihat flag winsorize).</li>
-      <li>Tren 2026 = perubahan tahunan luminositas malam awal 2026 vs awal 2025; sinyal awal, bukan kesimpulan tahun penuh.</li>
+      <li>Tren Terkini (2026) = perubahan tahunan luminositas malam awal 2026 vs awal 2025; sinyal awal, bukan kesimpulan tahun penuh.</li>
       <li>OpenStreetMap snapshot 2026 tidak retrospektif &mdash; tidak menggambarkan komposisi 2021.</li>
       <li><span style="color:var(--warning);">&#9888;</span> Indeks Aktivitas adalah proxy untuk peringkat relatif, bukan total revenue absolut.</li>
       <li>Reliability flag muncul ketika &lt;3 sub-komponen tersedia &mdash; baca skor wilayah tersebut dengan hati-hati.</li>
@@ -806,7 +792,7 @@ PAGE_METODOLOGI = """
     <table class="score-table">
       <thead><tr><th>Sumber</th><th>Frekuensi</th><th>Implikasi</th></tr></thead>
       <tbody>
-        <tr><td>Luminositas Malam VIIRS</td><td>Bulanan (lag 2-4 minggu)</td><td>Refresh indikator Tren 2026</td></tr>
+        <tr><td>Luminositas Malam VIIRS</td><td>Bulanan (lag 2-4 minggu)</td><td>Refresh indikator Tren Terkini (2026)</td></tr>
         <tr><td>Podes BPS</td><td>Tahunan</td><td>Refresh composite Skor Potensi</td></tr>
         <tr><td>Sakernas BPS</td><td>Tahunan (Februari &amp; Agustus)</td><td>Refresh Indeks Aktivitas Komersial</td></tr>
         <tr><td>OpenStreetMap</td><td>Snapshot saat regenerate dashboard</td><td>Update peta titik gaya hidup &amp; transportasi</td></tr>
@@ -856,12 +842,31 @@ function pulseClass(p) {
   if (p.includes('Stabil')) return 'pulse-stable';
   return 'pulse-na';
 }
+// Map kategori raw -> display label (English noun phrase, agreed convention)
+const KATEGORI_MAP = {
+  'Kawasan Komersial Sedang Naik Daun': 'Emerging Hotspot',
+  'Kawasan Komersial Mapan': 'Mature Commercial',
+  'Awal Pertumbuhan': 'Early Growth',
+  'Aktivitas Rendah': 'Low Activity'
+};
 function shortCat(t) {
   if (!t) return '-';
-  if (t.includes('Naik Daun')) return 'Naik Daun';
-  if (t.includes('Mapan')) return 'Mapan';
-  if (t.includes('Awal')) return 'Awal Pertumbuhan';
-  return 'Aktivitas Rendah';
+  if (KATEGORI_MAP[t]) return KATEGORI_MAP[t];
+  if (t.includes('Naik Daun')) return 'Emerging Hotspot';
+  if (t.includes('Mapan')) return 'Mature Commercial';
+  if (t.includes('Awal')) return 'Early Growth';
+  return 'Low Activity';
+}
+// Map pulse_badge raw -> display label
+const PULSE_MAP = {
+  'Trend Lanjut Tumbuh': 'Pertumbuhan',
+  'Lanjut Tumbuh': 'Pertumbuhan',
+  'Stabil': 'Stabil',
+  'Mulai Melambat': 'Perlambatan'
+};
+function displayPulse(p) {
+  if (!p) return '-';
+  return PULSE_MAP[p] || p;
 }
 
 // ============ AGGREGATIONS ============
@@ -1038,7 +1043,7 @@ function renderRingkasan(ctx) {
                 ctx.tier === 'kawasan' ? d.kabkota :
                 ctx.tier === 'kecamatan' ? d.nama_kabkota : '';
     const pct = (v / maxVal * 100);
-    const pulse = d.pulse_badge ? `<span class="cat-pill ${pulseClass(d.pulse_badge)}" style="margin-left:6px;">${d.pulse_badge}</span>` : '';
+    const pulse = d.pulse_badge ? `<span class="cat-pill ${pulseClass(d.pulse_badge)}" style="margin-left:6px;">${displayPulse(d.pulse_badge)}</span>` : '';
     listHtml += `
       <div class="rank-row">
         <div class="rank-num">${i+1}</div>
@@ -1196,12 +1201,12 @@ function renderCahayaMalam(ctx) {
   // Pulse table
   const kawPulse = KAWASAN_DATA.filter(k => k.pulse_badge && k.pulse_badge !== 'tidak tersedia')
     .sort((a,b) => (b.pulse_yoy_2026||0) - (a.pulse_yoy_2026||0));
-  let html = '<table class="score-table"><thead><tr><th>Wilayah</th><th>Kab/Kota</th><th>Tren 2026</th><th class="num">Perubahan Tahunan</th></tr></thead><tbody>';
+  let html = '<table class="score-table"><thead><tr><th>Wilayah</th><th>Kab/Kota</th><th>Tren Terkini (2026)</th><th class="num">Perubahan Tahunan</th></tr></thead><tbody>';
   kawPulse.forEach(k => {
     html += `<tr>
       <td><strong>${k.kawasan}</strong></td>
       <td>${k.kabkota || '-'}</td>
-      <td><span class="cat-pill ${pulseClass(k.pulse_badge)}">${k.pulse_badge}</span></td>
+      <td><span class="cat-pill ${pulseClass(k.pulse_badge)}">${displayPulse(k.pulse_badge)}</span></td>
       <td class="num">${k.pulse_yoy_2026 != null ? (k.pulse_yoy_2026 >= 0 ? '+' : '') + Number(k.pulse_yoy_2026).toFixed(2).replace('.',',') + '%' : '-'}</td>
     </tr>`;
   });
@@ -1402,7 +1407,7 @@ function renderPage4Eczi(ctx) {
       { type: 'line', x0: 0, x1: 100, y0: yMed, y1: yMed, line: { color: '#D0D5DD', width: 1, dash: 'dash' } },
     ],
     annotations: [
-      { x: 95, y: 95, text: 'Naik Daun &<br>Gaya Hidup Tinggi', showarrow: false, font: { size: 9, color: '#667085' }, align: 'right' },
+      { x: 95, y: 95, text: 'Emerging Hotspot &<br>Gaya Hidup Tinggi', showarrow: false, font: { size: 9, color: '#667085' }, align: 'right' },
       { x: 5, y: 95, text: 'Gaya Hidup<br>Tinggi', showarrow: false, font: { size: 9, color: '#667085' }, align: 'left' },
       { x: 95, y: 5, text: 'Pertumbuhan<br>Luminositas Tinggi', showarrow: false, font: { size: 9, color: '#667085' }, align: 'right' },
       { x: 5, y: 5, text: 'Aktivitas<br>Rendah', showarrow: false, font: { size: 9, color: '#667085' }, align: 'left' }
@@ -1416,14 +1421,14 @@ function renderPage4Eczi(ctx) {
   else if (ctx.tier === 'desa') html += '<th>Kelurahan</th><th>Kab/Kota</th>';
   else if (ctx.tier === 'kecamatan') html += '<th>Kecamatan</th><th>Kab/Kota</th>';
   else html += '<th>Kabupaten/Kota</th><th></th>';
-  html += '<th class="num">Skor Potensi</th><th class="num">Luminositas Malam</th><th class="num">Tempat Usaha</th><th class="num">Aktivitas Komersial</th><th class="num">Gaya Hidup</th><th class="num">Aksesibilitas</th><th>Kategori</th><th>Tren 2026</th></tr></thead><tbody>';
+  html += '<th class="num">Skor Potensi</th><th class="num">Luminositas Malam</th><th class="num">Tempat Usaha</th><th class="num">Aktivitas Komersial</th><th class="num">Gaya Hidup</th><th class="num">Aksesibilitas</th><th>Kategori</th><th>Tren Terkini (2026)</th></tr></thead><tbody>';
   sorted.forEach((d, i) => {
     let g1, g2, g3, g4, g5;
     if (ctx.tier === 'kawasan') { g1=d.g1_cahaya_malam; g2=d.g2_tempat_usaha; g3=d.g3_magnitude; g4=d.g4_gaya_hidup; g5=d.g5_aksesibilitas; }
     else { g1=d.g1; g2=d.g2; g3=d.g3; g4=d.g4; g5=d.g5; }
     const name = ctx.tier === 'kawasan' ? d.kawasan : ctx.tier === 'desa' ? d.nama_desa : ctx.tier === 'kecamatan' ? d.nama_kec : d.nama_kabkota;
     const sub = ctx.tier === 'kawasan' ? d.kabkota : ctx.tier === 'desa' ? d.nama_kabkota : ctx.tier === 'kecamatan' ? d.nama_kabkota : '';
-    const pulse = d.pulse_badge ? `<span class="cat-pill ${pulseClass(d.pulse_badge)}">${d.pulse_badge}</span>` : '-';
+    const pulse = d.pulse_badge ? `<span class="cat-pill ${pulseClass(d.pulse_badge)}">${displayPulse(d.pulse_badge)}</span>` : '-';
     html += `<tr>
       <td>${i+1}</td>
       <td><strong>${name}</strong></td>
@@ -1475,7 +1480,59 @@ function getPage5Item(ctx) {
   if (ctx.page5Mode === 'kawasan') {
     return KAWASAN_DATA.find(k => k.kawasan === ctx.page5Selected);
   }
+  if (ctx.page5Mode === 'kabkota') {
+    // Aggregate kabkota on-the-fly from member desa
+    const members = DESA_DATA.filter(d => d.nama_kabkota === ctx.page5Selected);
+    if (!members.length) return null;
+    return aggregateGroup(members, ctx.page5Selected, 'Kabupaten/Kota');
+  }
+  if (ctx.page5Mode === 'kecamatan') {
+    const members = DESA_DATA.filter(d => d.nama_kecamatan === ctx.page5Selected);
+    if (!members.length) return null;
+    return aggregateGroup(members, ctx.page5Selected, 'Kecamatan');
+  }
   return DESA_DATA.find(d => d.nama_desa === ctx.page5Selected);
+}
+function aggregateGroup(members, name, tier_label) {
+  const mean = (k) => {
+    const vals = members.map(m => m[k]).filter(v => v !== null && v !== undefined && !isNaN(v));
+    return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+  };
+  // Mode tipe_kawasan
+  const tipeCount = {};
+  members.forEach(m => { if (m.tipe_kawasan) tipeCount[m.tipe_kawasan] = (tipeCount[m.tipe_kawasan]||0) + 1; });
+  const tipeMode = Object.entries(tipeCount).sort((a,b) => b[1]-a[1])[0]?.[0] || null;
+  const pulseCount = {};
+  members.forEach(m => { if (m.pulse_badge) pulseCount[m.pulse_badge] = (pulseCount[m.pulse_badge]||0) + 1; });
+  const pulseMode = Object.entries(pulseCount).sort((a,b) => b[1]-a[1])[0]?.[0] || null;
+  return {
+    kawasan: name,
+    nama_desa: name,
+    nama_kabkota: tier_label === 'Kabupaten/Kota' ? name : (members[0]?.nama_kabkota || ''),
+    nama_kecamatan: tier_label === 'Kecamatan' ? name : '',
+    deskripsi: `Agregasi ${members.length} kelurahan`,
+    tier_label: tier_label,
+    member_desas: members.map(m => m.nama_desa),
+    tipe_kawasan: tipeMode,
+    pulse_badge: pulseMode,
+    eczi_score: mean('eczi_score'),
+    magnitude_score: mean('magnitude_score'),
+    g1: mean('g1'), g2: mean('g2'), g3: mean('g3'), g4: mean('g4'), g5: mean('g5'),
+    podes_count_2025: mean('podes_count_2025'),
+    podes_cagr_2021_2025: mean('podes_cagr_2021_2025'),
+    podes_diversity_shannon: mean('podes_diversity_shannon'),
+    ntl_cagr_2021_2025: mean('ntl_cagr_2021_2025'),
+    ntl_level_2025: mean('ntl_level_2025'),
+    lum_2021: mean('lum_2021'), lum_2024: mean('lum_2024'), lum_2025: mean('lum_2025'),
+    magnitude_2025: mean('magnitude_2025'),
+    transport_access_score_raw: mean('transport_access_score_raw'),
+    catchment_density_1km: mean('catchment_density_1km'),
+    count_hiburan_nightlife: mean('count_hiburan_nightlife'),
+    count_gaya_hidup_wellness: mean('count_gaya_hidup_wellness'),
+    count_retail_khusus: mean('count_retail_khusus'),
+    count_wisata_budaya: mean('count_wisata_budaya'),
+    count_layanan_penunjang: mean('count_layanan_penunjang'),
+  };
 }
 function renderPage5(ctx) {
   const item = getPage5Item(ctx);
@@ -1484,7 +1541,7 @@ function renderPage5(ctx) {
   const name = isKaw ? item.kawasan : item.nama_desa;
   const sub = isKaw ? item.kabkota : `${item.nama_kecamatan}, ${item.nama_kabkota}`;
   const desc = isKaw ? (item.deskripsi || '') : '';
-  const pulse = item.pulse_badge ? `<span class="cat-pill ${pulseClass(item.pulse_badge)}" style="margin-left:8px;">${item.pulse_badge}</span>` : '';
+  const pulse = item.pulse_badge ? `<span class="cat-pill ${pulseClass(item.pulse_badge)}" style="margin-left:8px;">${displayPulse(item.pulse_badge)}</span>` : '';
   document.getElementById('page5-header').innerHTML = `
     <div class="eyebrow" style="color:var(--muted);">${isKaw ? 'Wilayah Berpotensi' : 'Kelurahan'}</div>
     <h2 class="serif-display text-3xl mt-1">${name}</h2>
@@ -1522,12 +1579,12 @@ function renderPage5Sub(ctx) {
     const qual = item.quality_flag;
     c.innerHTML = `
       <div class="eyebrow" style="color:var(--muted);">Luminositas Malam</div>
-      <h3 class="serif-display text-xl mt-1 mb-3">Trajectory ${isKaw ? 'gabungan member' : 'kelurahan'}</h3>
+      <h3 class="serif-display text-xl mt-1 mb-3">Lintasan ${isKaw ? 'gabungan member' : 'kelurahan'}</h3>
       ${isKaw ? `<div style="font-size:13px;color:var(--muted);margin-bottom:16px;">Pertumbuhan tahunan rata-rata wilayah: <strong style="color:var(--ink);">${fmtPct(cagr, ' per tahun')}</strong></div>` :
         `<div id="page5-ntl-bar" style="height:240px;"></div>
         <div style="font-size:13px;color:var(--muted);margin-top:14px;">Pertumbuhan tahunan rata-rata: <strong style="color:var(--ink);">${fmtPct(cagr, ' per tahun')}</strong>${qual ? ` &middot; Quality flag: <em>${qual}</em>` : ''}</div>`}
       <div style="margin-top:14px;">
-        ${item.pulse_badge ? `<span class="cat-pill ${pulseClass(item.pulse_badge)}">Tren 2026: ${item.pulse_badge}</span>` : ''}
+        ${item.pulse_badge ? `<span class="cat-pill ${pulseClass(item.pulse_badge)}">Tren Terkini (2026): ${displayPulse(item.pulse_badge)}</span>` : ''}
       </div>
     `;
     if (!isKaw) {
@@ -1830,7 +1887,7 @@ def build_html(data):
 
 <footer class="dash-footer max-w-[1280px] mx-auto px-8">
   <div>Mandiri Institute &middot; Riset Spasial Ekonomi</div>
-  <div>Diperbarui 5 Mei 2026 &middot; Metodologi v2.2 &middot; Generator v5.4</div>
+  <div>Diperbarui 5 Mei 2026 &middot; Metodologi v2.2 &middot; Generator v5.7</div>
 </footer>
 
 </div>
@@ -1860,3 +1917,14 @@ if __name__ == '__main__':
     sz = OUTPUT.stat().st_size / 1024
     print(f'Generated: {OUTPUT}')
     print(f'Size: {sz:.0f} KB')
+    # Auto-run language patch (kategori + pulse data values di JSON embed
+    # tetap raw Indonesia karena untuk join; patch_language.py ganti ke
+    # English noun phrase per spec Lead/Scraping audit)
+    patch_script = OUTPUT.parent / 'patch_language.py'
+    if patch_script.exists():
+        print('\nApplying language patch...')
+        import subprocess
+        import sys
+        subprocess.run([sys.executable, str(patch_script)], check=False)
+    else:
+        print('[WARN] patch_language.py not found; language mapping NOT applied')
