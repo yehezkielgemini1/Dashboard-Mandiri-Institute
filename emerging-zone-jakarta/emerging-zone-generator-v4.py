@@ -243,6 +243,46 @@ body { font-family: 'Inter', system-ui, sans-serif; font-weight: 400; letter-spa
 
 *:focus-visible { outline: 2px solid var(--sky); outline-offset: 3px; }
 button, .chip-action { transition: all var(--tr-base); }
+
+/* ============ TOPNAV (canon, sticky) ============ */
+.topnav { background: var(--navy-deep, #002852); padding: 14px 28px; display: flex; align-items: center; gap: 24px; border-bottom: 1px solid rgba(255,255,255,0.08); position: sticky; top: 0; z-index: 1050; color: white; }
+.topnav .burger { font-size: 22px; cursor: pointer; opacity: 0.92; display: none; color: white; }
+.topnav .brand { font-family: 'Source Serif 4', Georgia, serif; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; color: white; }
+.topnav .brand-sub { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--sky); margin-top: 2px; font-weight: 600; }
+.topnav .menu { display: flex; gap: 22px; margin-left: 24px; }
+.topnav .menu a { background: none; border: 0; font-family: inherit; font-size: 13px; font-weight: 500; color: white; opacity: 0.85; padding: 6px 0; cursor: pointer; transition: opacity 0.2s; letter-spacing: -0.003em; text-decoration: none; }
+.topnav .menu a:hover, .topnav .menu a.active { opacity: 1; color: var(--sky); }
+.topnav .right { margin-left: auto; display: flex; gap: 14px; align-items: center; font-size: 12px; opacity: 0.85; }
+.topnav .right a { color: white; text-decoration: none; }
+.topnav .search { font-size: 22px; cursor: pointer; opacity: 0.85; color: white; }
+
+.nav-drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(5,28,44,0.55); z-index: 1100; opacity: 0; transition: opacity 0.3s; }
+.nav-drawer-overlay.open { display: block; opacity: 1; }
+.nav-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(320px, 82vw); background: var(--navy-deep, #002852); z-index: 1200; padding: 76px 28px 28px; box-shadow: -8px 0 32px rgba(0,0,0,0.3); transform: translateX(100%); transition: transform 0.3s ease; color: white; overflow-y: auto; }
+.nav-drawer.open { transform: translateX(0); }
+.nav-drawer .close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; color: white; padding: 6px; font-size: 26px; }
+.nav-drawer .drawer-label { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.55); margin: 18px 0 10px; }
+.nav-drawer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 2px; }
+.nav-drawer a, .nav-drawer button { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 14px 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 19px; color: white; border: 0; border-bottom: 1px solid rgba(255,255,255,0.12); background: none; cursor: pointer; transition: color 0.15s; text-decoration: none; }
+.nav-drawer a:hover, .nav-drawer button:hover { color: var(--sky); }
+.nav-drawer iconify-icon { font-size: 18px; opacity: 0.7; }
+
+@media (max-width: 1100px) {
+  .topnav .menu { display: none; }
+  .topnav .burger { display: inline-flex; }
+  .topnav .right .nav-link { display: none; }
+}
+@media (max-width: 480px) {
+  .topnav { padding: 12px 18px; }
+  .topnav .brand-sub { display: none; }
+}
+
+/* ============ UNIFORM v2: hide legacy sidebar (topnav is now the canonical nav) ============ */
+.sidebar, aside.sidebar { display: none !important; }
+.with-sidebar { margin-left: 0 !important; }
+/* Folio + filter bar offset di bawah topnav (~64px). Topnav dipush ke z-index 1050 supaya di atas folio. */
+.folio { top: 0 !important; z-index: 30 !important; }
+.filter-bar { top: 33px !important; z-index: 25 !important; }
 """
 
 
@@ -270,6 +310,51 @@ SIDEBAR_HTML = """
   <div class="footer">
     <div>270 desa &middot; 21 kawasan &middot; 2021-2025</div>
   </div>
+</aside>
+"""
+
+TOPNAV_HTML = """
+<!-- ============ TOP NAV (canon, sticky) — added 2026-05-05 untuk uniform v2 ============ -->
+<nav class="topnav">
+  <iconify-icon class="burger" icon="mdi:menu" @click="navOpen = true" role="button" aria-label="Buka menu" tabindex="0" @keydown.enter="navOpen = true"></iconify-icon>
+  <div>
+    <div class="brand">Mandiri Institute</div>
+    <div class="brand-sub">Kawasan Komersial Jakarta</div>
+  </div>
+  <div class="menu">
+    <a href="../index.html">Beranda</a>
+    <a href="#" :class="page==='ringkasan' ? 'active' : ''" @click.prevent="setPage('ringkasan')">Ringkasan</a>
+    <a href="#" :class="page==='cahaya-malam' ? 'active' : ''" @click.prevent="setPage('cahaya-malam')">Cahaya Malam</a>
+    <a href="#" :class="page==='aktivitas-komersial' ? 'active' : ''" @click.prevent="setPage('aktivitas-komersial')">Aktivitas Komersial</a>
+    <a href="#" :class="page==='skor-potensi' ? 'active' : ''" @click.prevent="setPage('skor-potensi')">Skor Potensi</a>
+    <a href="#" :class="page==='detail-kawasan' ? 'active' : ''" @click.prevent="setPage('detail-kawasan')">Detail Kawasan</a>
+    <a href="#" :class="page==='metodologi' ? 'active' : ''" @click.prevent="setPage('metodologi')">Metodologi</a>
+  </div>
+  <div class="right">
+    <a class="nav-link" href="../index.html" style="font-weight:500;">Semua Dashboard</a>
+    <iconify-icon class="search" icon="mdi:magnify" role="button" aria-label="Cari" tabindex="0"></iconify-icon>
+  </div>
+</nav>
+
+<!-- Mobile drawer -->
+<div class="nav-drawer-overlay" :class="{ 'open': navOpen }" @click="navOpen = false"></div>
+<aside class="nav-drawer" :class="{ 'open': navOpen }" aria-label="Menu navigasi">
+  <button class="close-btn" @click="navOpen = false" aria-label="Tutup menu">
+    <iconify-icon icon="mdi:close"></iconify-icon>
+  </button>
+  <div class="drawer-label">Navigasi</div>
+  <ul>
+    <li><a href="../index.html" @click="navOpen = false"><iconify-icon icon="mdi:home-outline"></iconify-icon>Beranda</a></li>
+  </ul>
+  <div class="drawer-label">Kawasan Komersial Jakarta</div>
+  <ul>
+    <li><button @click="setPage('ringkasan'); navOpen = false"><iconify-icon icon="mdi:view-dashboard"></iconify-icon>Ringkasan</button></li>
+    <li><button @click="setPage('cahaya-malam'); navOpen = false"><iconify-icon icon="mdi:weather-night"></iconify-icon>Cahaya Malam</button></li>
+    <li><button @click="setPage('aktivitas-komersial'); navOpen = false"><iconify-icon icon="mdi:store"></iconify-icon>Aktivitas Komersial</button></li>
+    <li><button @click="setPage('skor-potensi'); navOpen = false"><iconify-icon icon="mdi:chart-bar"></iconify-icon>Skor Potensi</button></li>
+    <li><button @click="setPage('detail-kawasan'); navOpen = false"><iconify-icon icon="mdi:map-marker"></iconify-icon>Detail Kawasan</button></li>
+    <li><button @click="setPage('metodologi'); navOpen = false"><iconify-icon icon="mdi:book-open-variant"></iconify-icon>Metodologi</button></li>
+  </ul>
 </aside>
 """
 
@@ -1600,6 +1685,7 @@ function dashboard() {
     page5SubTab: 'ntl',
     page3Layer: 'podes',
     map2Year: 'cagr',
+    navOpen: false,
 
     tabs: [
       { id: 'ringkasan', label: 'Ringkasan', icon: 'mdi:view-dashboard' },
@@ -1619,9 +1705,14 @@ function dashboard() {
       this.$watch('tier', () => this.$nextTick(() => this.renderAll()));
       this.$watch('filterCategory', () => this.$nextTick(() => this.renderAll()));
       this.$watch('leaderTab', () => this.$nextTick(() => { if (this.page === 'ringkasan') renderRingkasan(this); }));
+      // Bridge for topnav anchors + landing-page deeplink (#page=...)
+      window.gotoPage = (id) => this.setPage(id);
     },
 
-    setPage(id) { this.page = id; },
+    setPage(id) {
+      this.page = id;
+      try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
+    },
     currentTabLabel() { return (this.tabs.find(t => t.id === this.page) || {}).label || ''; },
 
     getCurrentData() {
@@ -1689,6 +1780,8 @@ def build_html(data):
 <body>
 
 <div x-data="dashboard()" x-init="init()">
+
+{TOPNAV_HTML}
 
 {SIDEBAR_HTML}
 
