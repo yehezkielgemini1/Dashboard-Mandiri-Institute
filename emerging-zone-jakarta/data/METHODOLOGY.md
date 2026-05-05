@@ -1,8 +1,14 @@
 # Metodologi: Pendeteksi Kawasan Komersial Berkembang — DKI Jakarta
 
-**Versi:** 2.1 (2026-05-03 night) — post weighted composite + symmetric winsorize
+**Versi:** 2.2 (2026-05-05) — Sakernas UMKM filter v4 (berusaha-only) + caveat granularity render
 **Owner:** Mandiri Institute — Scraping + data_processing + Dashboard agents
 **Scope awal:** DKI Jakarta (Phase 0); akan diperluas ke Jabodetabek, Bandung Raya, DIY, Surabaya, Malang Raya
+
+**Perubahan v2.2 (2026-05-05):**
+- Sakernas avg revenue per kabkota DKI di-update dengan filter UMKM v4: berusaha-only, exclude pekerja/helper. Rata-rata pendapatan naik 41-194% per kabkota. CAGR 2021-2025 mostly positive post-fix.
+- Filter UMKM Sakernas per tahun didokumentasikan eksplisit (Section 7.1b baru).
+- Caveat granularity Sakernas (Section 7.1) di-render eksplisit di dashboard Halaman 6.
+- Dashboard generator diperbarui ke v5.4.
 
 **Perubahan v2.1 (final lock):**
 - Composite Potensi pakai weighted by kategori: hotel=50, kelompok_pertokoan=30, pasar_permanen=10, restoran=5, minimarket=4, penginapan=4, pasar_semi=3, pasar_tanpa_bangunan=2, warung_mamin=1, toko_kelontong=1

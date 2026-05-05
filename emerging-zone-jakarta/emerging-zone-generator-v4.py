@@ -670,7 +670,33 @@ PAGE_METODOLOGI = """
       <li>OpenStreetMap snapshot 2026 tidak retrospektif &mdash; tidak menggambarkan komposisi 2021.</li>
       <li><span style="color:var(--warning);">&#9888;</span> Indeks Aktivitas adalah proxy untuk peringkat relatif, bukan total revenue absolut.</li>
       <li>Reliability flag muncul ketika &lt;3 sub-komponen tersedia &mdash; baca skor wilayah tersebut dengan hati-hati.</li>
+      <li><span style="color:var(--accent);">&#8635;</span> <strong>Sakernas avg revenue per kabkota di-update 4 Mei 2026 dengan filter UMKM v4 (berusaha-only, exclude pekerja/helper).</strong> Rata-rata pendapatan naik 41-194% per kabkota DKI. CAGR 2021-2025 mostly positive post-fix &mdash; sebelumnya sebagian negatif akibat over-count pekerja yang revenue=0. Lihat tabel filter UMKM di bawah.</li>
+      <li><span style="color:var(--muted);">&#9432;</span> <strong>Granularitas Sakernas: resolusi kabkota&times;KBLI</strong> (12 kombinasi unik di DKI), di-spread homogen ke 267 desa. Efektif sebagai kabkota fixed effect &mdash; bukan data per desa.</li>
     </ol>
+  </div>
+
+  <h3 class="serif-display text-xl mt-10 mb-3">E.1 Filter UMKM Sakernas per Tahun</h3>
+  <div class="chart-card">
+    <p style="font-size:12px;color:var(--muted);margin-bottom:10px;">Filter berikut diterapkan untuk memastikan hanya pekerja UMKM yang berusaha sendiri yang diikutsertakan (UU No. 20/2008: total pekerja &lt; 100). Konsistensi antar-tahun dijaga meski variabel Sakernas berubah nama.</p>
+    <table class="score-table">
+      <thead>
+        <tr>
+          <th>Tahun</th>
+          <th>Var Status Pekerjaan</th>
+          <th>Filter Status</th>
+          <th>Var Jenis Instansi</th>
+          <th>Filter UMKM</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>2021</td><td>r12a</td><td>{1, 2, 3}</td><td>r18</td><td>{3, 4}</td></tr>
+        <tr><td>2022</td><td>r13a</td><td>{1, 2, 3}</td><td>r19</td><td>{3, 4}</td></tr>
+        <tr><td>2023</td><td>r13a</td><td>{1, 2, 3}</td><td>r20</td><td>{3, 4}</td></tr>
+        <tr><td>2024</td><td>r14a</td><td>{1, 2, 3}</td><td>r21</td><td>{3, 4}</td></tr>
+        <tr><td>2025</td><td>mjj_emprel</td><td>== 2 (berusaha)</td><td>mju_ins</td><td>{4, 5, 6, 7}</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:11px;color:var(--muted);margin-top:8px;">Plus filter <code>total_pekerja &lt; 100</code> (definisi UMKM UU 20/2008) untuk semua tahun. Filter v4 (berusaha-only) menggantikan filter v3 yang over-count pekerja dan helper.</p>
   </div>
 
   <h3 class="serif-display text-xl mt-10 mb-3">F. Referensi Akademik</h3>
@@ -1693,7 +1719,7 @@ def build_html(data):
 
 <footer class="dash-footer max-w-[1280px] mx-auto px-8">
   <div>Mandiri Institute &middot; Riset Spasial Ekonomi</div>
-  <div>Diperbarui 3 Mei 2026 &middot; Metodologi v2.1</div>
+  <div>Diperbarui 5 Mei 2026 &middot; Metodologi v2.2 &middot; Generator v5.4</div>
 </footer>
 
 </div>
