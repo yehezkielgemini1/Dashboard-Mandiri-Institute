@@ -3,387 +3,524 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mandiri Institute — Dashboard Suite</title>
-<script src="_assets/tailwind.min.js"></script>
+<title>Mandiri Institute · Dashboard Suite</title>
+<meta name="theme-color" content="#002852">
+<meta name="description" content="Portal riset Mandiri Institute — indikator tahunan, riset tematik, dan inisiatif strategis. Dashboard interaktif konsumsi, kelas masyarakat, ketahanan pangan, dan kawasan komersial Indonesia.">
 <script src="_assets/iconify-icon.min.js"></script>
-<script src="_assets/icons.js"></script>
 <script defer src="_assets/alpine.min.js"></script>
 <link href="_assets/fonts/fonts.css" rel="stylesheet">
 <style>
-  :root {
-    --navy: #003D79; --navy-deep: #002852; --sky: #67B2E8; --yellow: #FFB700;
-    --ink: #051C2C; --rule: #D0D5DD; --muted: #667085;
-    --paper: #FFFFFF; --cream: #F4F1EA; --mist: #EAF1F8;
-  }
-  html, body { background: var(--paper); color: var(--ink); }
-  body { font-family: 'Inter', system-ui, sans-serif; font-weight: 400; letter-spacing: -0.003em; }
-  .serif-display { font-family: 'Source Serif 4', Georgia, serif; font-weight: 500; letter-spacing: -0.015em; line-height: 1.08; }
-  .serif { font-family: 'Source Serif 4', Georgia, serif; }
-  .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sky); }
-  .yellow-accent { display: inline-block; width: 12px; height: 12px; background: var(--yellow); margin-bottom: 12px; }
-  .hero-band { background: var(--navy); color: white; }
-  .card { background: white; border: 1px solid var(--rule); transition: all 0.15s; cursor: pointer; }
-  .card:hover { border-color: var(--navy); box-shadow: 0 8px 24px rgba(5,28,44,0.08); transform: translateY(-2px); }
-  .card .icon-box { background: var(--mist); border-bottom: 3px solid var(--sky); padding: 32px; display: flex; align-items: center; justify-content: center; }
-  .card .icon-box iconify-icon { font-size: 56px; color: var(--navy); }
-  .card .body { padding: 24px; }
-  .card .badge { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--navy); background: var(--mist); border: 1px solid var(--sky); margin-bottom: 12px; }
-  .card .title { font-family: 'Source Serif 4', Georgia, serif; font-size: 22px; font-weight: 600; color: var(--ink); line-height: 1.2; margin-bottom: 8px; }
-  .card .subtitle { font-size: 14px; color: var(--muted); line-height: 1.5; margin-bottom: 16px; }
-  .card .meta { display: flex; gap: 16px; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; padding-top: 16px; border-top: 1px solid var(--rule); }
-  .card .arrow { font-size: 22px; color: var(--navy); margin-left: auto; }
-  .card .badge.coming { background: #F4F1EA; color: var(--muted); border-color: var(--rule); }
-  .card.coming { cursor: not-allowed; opacity: 0.6; }
-  .card.coming:hover { transform: none; box-shadow: none; }
-  .filter-bar { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--rule); margin-bottom: 32px; }
-  .search-box { flex: 1; min-width: 240px; position: relative; }
-  .search-box input { width: 100%; padding: 10px 14px 10px 38px; border: 1px solid var(--rule); font-size: 14px; font-family: 'Inter', sans-serif; background: white; }
-  .search-box input:focus { outline: none; border-color: var(--navy); }
-  .search-box iconify-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 18px; }
-  .tag-chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; font-size: 12px; font-weight: 600; color: var(--ink); background: white; border: 1px solid var(--rule); cursor: pointer; transition: all 0.12s; }
-  .tag-chip:hover { border-color: var(--navy); }
-  .tag-chip.active { background: var(--navy); color: white; border-color: var(--navy); }
-  .tag-chip iconify-icon { font-size: 14px; }
-  *:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
-  .skip-link { position: absolute; top: -100px; left: 8px; background: var(--ink); color: white; padding: 8px 16px; z-index: 200; font-size: 14px; font-weight: 600; }
-  .skip-link:focus { top: 8px; }
+:root {
+  --navy: #003D79; --navy-deep: #002852; --navy-soft: #1A5394;
+  --sky: #67B2E8; --sky-soft: #A9C4DF;
+  --yellow: #FFB700; --yellow-soft: #FFE08A;
+  --ink: #051C2C; --ink-soft: #2A3F52;
+  --rule: #E5E8EC; --rule-strong: #D0D5DD;
+  --muted: #667085; --paper: #FFFFFF; --mist: #F0F6FC;
+  --positive: #00875A; --negative: #C8102E; --warning: #EA7200;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--ink); color: white; }
+body { font-family: 'Inter', system-ui, sans-serif; font-weight: 400; letter-spacing: -0.003em; line-height: 1.45; }
+.serif { font-family: 'Source Serif 4', Georgia, serif; font-weight: 500; letter-spacing: -0.018em; line-height: 1.05; }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
 
-  /* Live ticker hero */
-  .ticker-bar { display: flex; flex-wrap: wrap; gap: 32px; margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.15); }
-  .ticker-item { color: white; }
-  .ticker-item .lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sky); }
-  .ticker-item .num { font-family: 'Source Serif 4', Georgia, serif; font-size: 36px; font-weight: 600; line-height: 1; margin-top: 6px; font-variant-numeric: tabular-nums; }
-  .ticker-item .sub { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+/* ============ NAV ============ */
+.nav { background: var(--navy-deep); padding: 18px 32px; display: flex; align-items: center; gap: 32px; border-bottom: 1px solid rgba(255,255,255,0.08); position: sticky; top: 0; z-index: 50; backdrop-filter: blur(8px); }
+.nav .burger { font-size: 22px; cursor: pointer; opacity: 0.9; }
+.nav .brand { font-family: 'Source Serif 4', Georgia, serif; font-size: 19px; font-weight: 600; letter-spacing: -0.01em; }
+.nav .brand-sub { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--sky); margin-top: 2px; font-weight: 600; }
+.nav .menu { display: flex; gap: 26px; margin-left: 30px; }
+.nav .menu a { font-size: 13px; font-weight: 500; opacity: 0.85; padding: 6px 0; transition: opacity 0.2s; cursor: pointer; }
+.nav .menu a:hover { opacity: 1; color: var(--sky); }
+.nav .right { margin-left: auto; display: flex; gap: 16px; align-items: center; font-size: 12px; opacity: 0.75; }
+.nav .right .pipe { opacity: 0.4; }
+.nav .search { font-size: 22px; cursor: pointer; opacity: 0.85; }
+
+/* ============ HERO ============ */
+.hero { padding: 72px 32px 96px; max-width: 1480px; margin: 0 auto; }
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 32px;
+  min-height: 580px;
+}
+.h-text { padding: 24px 0; display: flex; flex-direction: column; justify-content: space-between; }
+.h-text .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sky); }
+.h-text h1 { font-size: clamp(44px, 5.6vw, 86px); font-weight: 600; margin-top: 20px; }
+.h-text h1 em { font-style: italic; color: var(--sky); font-weight: 500; }
+.h-text .lead { margin-top: 28px; color: rgba(255,255,255,0.78); font-size: 17px; max-width: 540px; line-height: 1.55; }
+.h-text .actions { margin-top: 36px; display: flex; gap: 16px; align-items: center; }
+.h-text .cta { width: 60px; height: 60px; border: 1px solid rgba(255,255,255,0.4); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; transition: all 0.25s; }
+.h-text .cta:hover { background: var(--sky); border-color: var(--sky); color: var(--navy-deep); transform: translateX(4px); }
+.h-text .cta-label { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.85; }
+
+.h-feature {
+  position: relative; overflow: hidden; cursor: pointer;
+  background: var(--navy-deep);
+}
+.h-feature .bg {
+  position: absolute; inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1583209814903-2cb2caab3e02?w=1400&q=80');
+  background-size: cover; background-position: center;
+  transition: transform 0.8s ease;
+}
+.h-feature:hover .bg { transform: scale(1.04); }
+.h-feature::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,40,82,0.15) 0%, rgba(0,40,82,0.55) 50%, rgba(0,40,82,0.95) 100%); z-index: 1; }
+.h-feature-content { position: relative; z-index: 2; height: 100%; padding: 40px; display: flex; flex-direction: column; justify-content: space-between; }
+.h-feature .label { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--yellow); }
+.h-feature h2 { font-size: clamp(28px, 2.6vw, 44px); font-weight: 600; margin-top: 12px; max-width: 95%; line-height: 1.12; color: white; }
+.h-feature .desc { margin-top: 14px; color: rgba(255,255,255,0.82); font-size: 15px; max-width: 90%; line-height: 1.5; }
+.h-feature .more { display: inline-flex; align-items: center; gap: 10px; padding: 12px 22px; background: white; color: var(--ink); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; align-self: flex-start; transition: all 0.2s; }
+.h-feature .more:hover { background: var(--yellow); }
+
+/* ============ SECTIONS ============ */
+.section { background: var(--paper); color: var(--ink); padding: 96px 32px; }
+.section-mist { background: var(--mist); }
+.section-inner { max-width: 1480px; margin: 0 auto; }
+.section-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--navy); }
+.section-title { font-family: 'Source Serif 4', Georgia, serif; font-size: clamp(36px, 4.2vw, 60px); font-weight: 600; letter-spacing: -0.02em; line-height: 1.05; margin-top: 14px; max-width: 900px; }
+.section-sub { font-size: 16px; color: var(--muted); margin-top: 18px; max-width: 720px; line-height: 1.6; }
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 56px;
+}
+
+.product-card {
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  min-height: 460px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s;
+}
+.product-card:hover { box-shadow: 0 16px 40px rgba(5,28,44,0.18); transform: translateY(-4px); }
+.product-card .img-wrap {
+  position: relative;
+  height: 280px;
+  overflow: hidden;
+}
+.product-card .img-bg {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  transition: transform 0.7s ease;
+}
+.product-card:hover .img-bg { transform: scale(1.06); }
+.product-card .img-tint { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 0%, rgba(0,40,82,0.15) 100%); }
+.product-card .body {
+  background: white;
+  border: 1px solid var(--rule);
+  border-top: none;
+  padding: 28px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.product-card .label { font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--navy); }
+.product-card .title { font-family: 'Source Serif 4', Georgia, serif; font-size: 22px; font-weight: 600; line-height: 1.2; margin-top: 10px; color: var(--ink); }
+.product-card .desc { font-size: 13px; color: var(--muted); margin-top: 12px; line-height: 1.55; }
+.product-card .meta-row { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; }
+.product-card .meta { font-size: 11px; color: var(--muted); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
+.product-card .arrow { color: var(--navy); font-size: 22px; transition: transform 0.25s; }
+.product-card:hover .arrow { transform: translateX(6px); }
+
+/* CTA dark variant */
+.product-card.cta-card { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%); color: white; }
+.product-card.cta-card .img-wrap { height: 280px; background: linear-gradient(135deg, var(--navy-soft) 0%, var(--navy-deep) 100%); display: flex; align-items: center; justify-content: center; }
+.product-card.cta-card .body { background: transparent; border: none; }
+.product-card.cta-card .label { color: var(--yellow); }
+.product-card.cta-card .title { color: white; }
+.product-card.cta-card .desc { color: rgba(255,255,255,0.75); }
+.product-card.cta-card .meta { color: var(--sky); }
+.product-card.cta-card .arrow { color: var(--yellow); }
+
+/* ============ BENTO DASHBOARD GRID (asymmetric) ============ */
+.bento-dash {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: 260px;
+  gap: 16px;
+  margin-top: 56px;
+}
+.dash-tile {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--navy-deep);
+  transition: all 0.3s;
+}
+.dash-tile:hover { box-shadow: 0 18px 44px rgba(5,28,44,0.28); transform: translateY(-3px); }
+.dash-tile .bg {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  transition: transform 0.7s ease;
+}
+.dash-tile:hover .bg { transform: scale(1.06); }
+.dash-tile::before {
+  content: ''; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(180deg, rgba(0,40,82,0.10) 0%, rgba(0,40,82,0.55) 55%, rgba(0,40,82,0.95) 100%);
+}
+.dash-tile .content {
+  position: relative; z-index: 2;
+  height: 100%;
+  padding: 26px 28px;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  color: white;
+}
+.dash-tile .label { font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--yellow); }
+.dash-tile .title { font-family: 'Source Serif 4', serif; font-size: 24px; font-weight: 600; margin-top: 8px; line-height: 1.15; color: white; }
+.dash-tile .desc { font-size: 13px; color: rgba(255,255,255,0.82); margin-top: 10px; line-height: 1.5; max-width: 94%; }
+.dash-tile .meta-row { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.18); }
+.dash-tile .meta { font-size: 11px; color: rgba(255,255,255,0.65); letter-spacing: 0.04em; text-transform: uppercase; font-weight: 500; }
+.dash-tile .arrow { color: var(--yellow); font-size: 22px; transition: transform 0.25s; }
+.dash-tile:hover .arrow { transform: translateX(6px); }
+
+/* Big featured tile — large title */
+.dash-tile.big .title { font-size: 38px; line-height: 1.08; max-width: 90%; }
+.dash-tile.big .desc { font-size: 15px; max-width: 80%; }
+
+/* Wide tile — medium title */
+.dash-tile.wide .title { font-size: 28px; }
+
+/* CTA tile (no image, navy gradient) */
+.dash-tile.cta-tile { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%); }
+.dash-tile.cta-tile::before { display: none; }
+.dash-tile.cta-tile .content { justify-content: space-between; padding-top: 28px; }
+.dash-tile.cta-tile .icon-bg { font-size: 96px; color: var(--yellow); opacity: 0.85; align-self: flex-end; }
+
+/* Bento positions — 12-col asymmetric */
+.t-konsumsi  { grid-column: 1 / span 6;  grid-row: 1 / span 2; }   /* BIG FEATURED */
+.t-kelas     { grid-column: 7 / span 3;  grid-row: 1; }
+.t-bbm       { grid-column: 10 / span 3; grid-row: 1; }
+.t-ketahanan { grid-column: 7 / span 6;  grid-row: 2; }            /* WIDE */
+.t-dki       { grid-column: 1 / span 7;  grid-row: 3; }            /* WIDE */
+.t-kendaraan { grid-column: 8 / span 5;  grid-row: 3; }            /* CTA */
+
+/* ============ PUBLISHING STATS ============ */
+.section-dark { background: var(--navy-deep); color: white; padding: 96px 32px; }
+.section-dark .section-eyebrow { color: var(--sky); }
+.section-dark .section-title { color: white; }
+.section-dark .section-sub { color: rgba(255,255,255,0.75); }
+.numbers {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+  background: rgba(255,255,255,0.12);
+  margin-top: 56px;
+}
+.num-card { background: var(--navy-deep); padding: 40px 32px; }
+.num-card .num { font-family: 'Source Serif 4', serif; font-size: 64px; font-weight: 600; color: var(--yellow); line-height: 1; letter-spacing: -0.03em; }
+.num-card .num-label { font-size: 14px; color: white; margin-top: 12px; font-weight: 600; }
+.num-card .num-sub { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 8px; line-height: 1.55; }
+
+/* ============ FOOTER ============ */
+.foot { background: var(--ink); color: rgba(255,255,255,0.55); padding: 32px; font-size: 12px; text-align: center; border-top: 1px solid rgba(255,255,255,0.08); }
+.foot a { color: var(--sky); text-decoration: underline; }
+
+/* ============ MOBILE DRAWER ============ */
+.nav-drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(5,28,44,0.55); z-index: 99; opacity: 0; transition: opacity 0.3s; }
+.nav-drawer-overlay.open { display: block; opacity: 1; }
+.nav-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(320px, 80vw); background: var(--navy-deep); z-index: 100; padding: 80px 32px 32px; box-shadow: -8px 0 32px rgba(0,0,0,0.3); transform: translateX(100%); transition: transform 0.3s ease; color: white; }
+.nav-drawer.open { transform: translateX(0); }
+.nav-drawer .close-btn { position: absolute; top: 22px; right: 22px; background: none; border: none; cursor: pointer; color: white; padding: 6px; font-size: 26px; }
+.nav-drawer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
+.nav-drawer a { display: block; padding: 18px 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 22px; color: white; border-bottom: 1px solid rgba(255,255,255,0.12); text-decoration: none; transition: color 0.15s; }
+.nav-drawer a:hover { color: var(--sky); }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 1100px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .h-feature { min-height: 520px; }
+  .products { grid-template-columns: 1fr; }
+  .numbers { grid-template-columns: repeat(2, 1fr); }
+  .bento-dash { grid-auto-rows: 240px; }
+  .bento-dash > * { grid-column: 1 / span 12 !important; grid-row: auto !important; }
+  .nav .menu { display: none; }
+  .nav .right a { display: none; }
+}
+@media (max-width: 768px) {
+  .nav { padding: 14px 20px; gap: 16px; }
+  .hero { padding: 48px 20px 64px; }
+  .hero-grid { gap: 20px; min-height: auto; }
+  .section { padding: 64px 20px; }
+  .section-dark { padding: 64px 20px; }
+  .numbers { grid-template-columns: 1fr; }
+  .num-card .num { font-size: 48px; }
+  .nav .right { display: none; }
+  .foot { padding: 24px 20px; }
+}
 </style>
 </head>
-<body x-data="portal()">
+<body x-data="{ navOpen: false }">
 
-<a href="#main-content" class="skip-link">Lewati ke konten utama</a>
-
-<!-- Top brand band -->
-<div class="rule-bottom" style="border-bottom: 1px solid var(--rule);">
-  <div class="max-w-[1280px] mx-auto px-8 py-4 flex items-center justify-between text-xs uppercase tracking-widest">
-    <div class="font-semibold" style="color: var(--ink);">
-      <span style="display:inline-block;width:10px;height:10px;background:var(--yellow);margin-right:8px;"></span>
-      Mandiri Institute · Dashboard Suite
-    </div>
-    <div style="color: var(--muted);">Riset Mandiri Institute</div>
+<!-- ============ NAV ============ -->
+<nav class="nav">
+  <iconify-icon class="burger" icon="mdi:menu" @click="navOpen = true" role="button" aria-label="Buka menu" tabindex="0" @keydown.enter="navOpen = true"></iconify-icon>
+  <div>
+    <div class="brand">Mandiri Institute</div>
+    <div class="brand-sub">Dashboard Suite</div>
   </div>
+  <div class="menu">
+    <a href="#dashboard-grid">Annual Indicators</a>
+    <a href="#dashboard-grid">Thematic Research</a>
+    <a href="#dashboard-grid">Initiatives</a>
+    <a href="#publikasi">Publikasi</a>
+  </div>
+  <div class="right">
+    <iconify-icon class="search" icon="mdi:magnify" role="button" aria-label="Cari" tabindex="0"></iconify-icon>
+  </div>
+</nav>
+
+<!-- Mobile drawer -->
+<div class="nav-drawer-overlay" :class="{ 'open': navOpen }" @click="navOpen = false"></div>
+<div class="nav-drawer" :class="{ 'open': navOpen }">
+  <button class="close-btn" @click="navOpen = false" aria-label="Tutup menu">
+    <iconify-icon icon="mdi:close"></iconify-icon>
+  </button>
+  <ul>
+    <li><a href="#dashboard-grid" @click="navOpen = false">Annual Indicators</a></li>
+    <li><a href="#dashboard-grid" @click="navOpen = false">Thematic Research</a></li>
+    <li><a href="#dashboard-grid" @click="navOpen = false">Initiatives</a></li>
+    <li><a href="#publikasi" @click="navOpen = false">Publikasi</a></li>
+  </ul>
 </div>
 
-<!-- Hero -->
-<header class="hero-band">
-  <div class="max-w-[1280px] mx-auto px-8 pt-20 pb-16">
-    <span class="yellow-accent"></span>
-    <div class="eyebrow">Riset Mandiri Institute</div>
-    <h1 class="serif-display text-5xl md:text-6xl mt-4 max-w-4xl text-white">
-      Dashboard ekonomi, demografi, dan konsumsi Indonesia.
-    </h1>
-    <p class="mt-6 text-lg max-w-3xl leading-relaxed" style="color: rgba(255,255,255,0.78);">
-      Dashboard interaktif Susenas BPS 2019-2025: tren, distribusi, dan disparitas
-      geografis per kelas masyarakat.
-    </p>
-    <!-- Live ticker bar -->
-    <div class="ticker-bar">
-      <div class="ticker-item">
-        <div class="lbl">Populasi tertimbang 2025</div>
-        <div class="num" id="tick-pop">281.622.304</div>
-        <div class="sub">individu Susenas Maret BPS</div>
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-grid">
+
+    <div class="h-text">
+      <div>
+        <div class="eyebrow">Mandiri Institute &middot; Membaca Indonesia melalui data</div>
+        <h1 class="serif">Apa <em>wawasan</em><br>ekonomi Anda<br>berikutnya?</h1>
+        <p class="lead">Dashboard interaktif dan publikasi rutin Mandiri Institute mengupas konsumsi, kelas masyarakat, dan dinamika ekonomi Indonesia berbasis data BPS, satelit, dan survei nasional.</p>
       </div>
-      <div class="ticker-item">
-        <div class="lbl">Per kapita / bulan 2025</div>
-        <div class="num" id="tick-rp">Rp 1.580.397</div>
-        <div class="sub">rata-rata tertimbang nasional</div>
-      </div>
-      <div class="ticker-item">
-        <div class="lbl">Cakupan dashboard</div>
-        <div class="num" id="tick-cov">514 + 38 + 316</div>
-        <div class="sub">kab/kota · provinsi · komoditi</div>
-      </div>
-      <div class="ticker-item">
-        <div class="lbl">Update terakhir</div>
-        <div class="num" id="tick-up">2026-04-27</div>
-        <div class="sub">data Susenas terbaru</div>
-      </div>
+      <a href="#dashboard-grid" class="actions" style="text-decoration: none; color: inherit;">
+        <div class="cta"><iconify-icon icon="mdi:arrow-right"></iconify-icon></div>
+        <span class="cta-label">Telusuri dashboard</span>
+      </a>
     </div>
-  </div>
-</header>
 
-<script>
-// Counter animation pas first load
-window.addEventListener('DOMContentLoaded', () => {
-  function animateCount(el, target, suffix = '', duration = 1200) {
-    const start = 0;
-    const startTs = performance.now();
-    function tick(ts) {
-      const t = Math.min((ts - startTs) / duration, 1);
-      const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
-      const current = Math.round(start + (target - start) * eased);
-      el.textContent = current.toLocaleString('id-ID') + suffix;
-      if (t < 1) requestAnimationFrame(tick);
-      else el.textContent = el.dataset.final || target.toLocaleString('id-ID') + suffix;
-    }
-    requestAnimationFrame(tick);
-  }
-  const pop = document.getElementById('tick-pop');
-  if (pop) { pop.dataset.final = '281.622.304'; animateCount(pop, 281622304); }
-  const rp = document.getElementById('tick-rp');
-  if (rp) { rp.dataset.final = 'Rp 1.580.397'; animateCount(rp, 1580397); setTimeout(() => rp.textContent = 'Rp 1.580.397', 1300); }
-});
-</script>
-
-<!-- Cards grid -->
-<main id="main-content" class="max-w-[1280px] mx-auto px-8 py-16" role="main">
-
-  <!-- Search + tag filter -->
-  <div class="filter-bar">
-    <div class="search-box">
-      <iconify-icon icon="mdi:magnify"></iconify-icon>
-      <input type="text" x-model="query" placeholder="Cari dashboard, topik, kata kunci..." aria-label="Cari dashboard">
-    </div>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;">
-      <template x-for="tag in tags" :key="tag.id">
-        <button class="tag-chip" :class="activeTag === tag.id ? 'active' : ''" @click="activeTag = activeTag === tag.id ? null : tag.id">
-          <iconify-icon :icon="tag.icon"></iconify-icon>
-          <span x-text="tag.label"></span>
-        </button>
-      </template>
-    </div>
-  </div>
-
-  <!-- Riset Reguler -->
-  <div class="eyebrow" style="color: var(--navy);">Riset Reguler</div>
-  <h2 class="serif-display text-3xl mt-3 mb-10 max-w-2xl">Dashboard tetap, basis data Susenas.</h2>
-
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-    <a href="konsumsi-susenas/dashboard.html" class="card flex flex-col" data-tags="susenas,geografi">
-      <div class="icon-box">
-        <iconify-icon icon="mdi:cart-outline"></iconify-icon>
-      </div>
-      <div class="body flex flex-col flex-1">
-        <span class="badge"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--sky);"></span>Pengeluaran Konsumsi</span>
-        <div class="title">Konsumsi per Kapita per Bulan</div>
-        <div class="subtitle">Pertumbuhan, makanan vs non-makanan, disparitas geografis, dan rincian 316 komoditi Susenas. 2019-2025.</div>
-        <div class="flex items-center mt-auto">
-          <div class="meta">
-            <span>5 exhibits</span>
-            <span>38 prov</span>
-            <span>316 komoditi</span>
-          </div>
-          <iconify-icon icon="mdi:arrow-right" class="arrow"></iconify-icon>
+    <a class="h-feature" href="https://www.bankmandiri.co.id/-/mandiri-institute" target="_blank">
+      <div class="bg"></div>
+      <div class="h-feature-content">
+        <div>
+          <div class="label">Riset Tahunan &middot; Maret 2026</div>
+          <h2 class="serif">MI Demographic &amp; Consumption 2025</h2>
+          <p class="desc">Mengupas struktur konsumsi rumah tangga Indonesia lintas kelas dan wilayah dalam laporan unggulan tahunan Mandiri Institute.</p>
         </div>
+        <div class="more">Baca laporan lengkap <iconify-icon icon="mdi:arrow-right"></iconify-icon></div>
       </div>
     </a>
 
-    <!-- placeholder Soon dipindahkan ke akhir setelah Kelas -->
-    <a href="kelas-kabkota/dashboard.html" class="card flex flex-col" data-tags="susenas,kelas,geografi">
-      <div class="icon-box">
-        <iconify-icon icon="mdi:account-group-outline"></iconify-icon>
-      </div>
-      <div class="body flex flex-col flex-1">
-        <span class="badge"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--sky);"></span>Kelas Masyarakat</span>
-        <div class="title">Kelas Masyarakat per Kabupaten/Kota</div>
-        <div class="subtitle">Distribusi 8 kelas masyarakat (Poor sampai Upper Class) di 514 kab/kota: tren, peta sebaran, profil per kabupaten.</div>
-        <div class="flex items-center mt-auto">
-          <div class="meta">
-            <span>3 exhibits</span>
-            <span>514 kab</span>
-            <span>8 kelas</span>
-          </div>
-          <iconify-icon icon="mdi:arrow-right" class="arrow"></iconify-icon>
-        </div>
-      </div>
-    </a>
-
-    <div class="card coming flex flex-col">
-      <div class="icon-box" style="background: #F4F1EA; border-bottom-color: var(--rule);">
-        <iconify-icon icon="mdi:dots-horizontal" style="color: var(--muted);"></iconify-icon>
-      </div>
-      <div class="body flex flex-col flex-1">
-        <span class="badge coming">Soon</span>
-        <div class="title" style="color: var(--muted); letter-spacing: 0.3em;">• • • • •</div>
-        <div class="subtitle" style="letter-spacing: 0.3em;">• • • • • • • • • • • • • • • • • • • •</div>
-      </div>
-    </div>
-
   </div>
+</section>
 
-  <!-- Research Initiatives -->
-  <div class="mt-20">
-    <div class="eyebrow" style="color: var(--ink); background: var(--yellow); display: inline-block; padding: 4px 10px;">
-      <iconify-icon icon="mdi:flask-outline" style="font-size: 12px; vertical-align: -2px; margin-right: 4px;"></iconify-icon>Research Initiatives
-    </div>
-    <h2 class="serif-display text-3xl mt-3 mb-3 max-w-2xl">Riset partner-driven dengan output spesifik.</h2>
-    <p class="text-sm muted max-w-2xl mb-10" style="color: var(--muted);">
-      Inisiatif riset dengan partner eksternal: skor komposit, potensi pasar, dan segmentasi konsumen.
-    </p>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- ============ DASHBOARD INTERAKTIF — BENTO ASYMMETRIC ============ -->
+<section id="dashboard-grid" class="section section-mist">
+  <div class="section-inner">
+    <div class="section-eyebrow">Dashboard Interaktif</div>
+    <h2 class="section-title">Telusuri data Indonesia<br>secara interaktif</h2>
+    <p class="section-sub">Enam dashboard mengupas konsumsi, kelas masyarakat, energi, ketahanan pangan, kawasan komersial, dan potensi pasar kendaraan dengan visualisasi yang dapat dijelajahi.</p>
 
-      <a href="peta-potensi-kendaraan/dashboard.html" class="card flex flex-col" data-tags="kendaraan,kredit,susenas,geografi,kelas">
-        <div class="icon-box" style="background: #FFF6E0; border-bottom-color: var(--yellow);">
-          <iconify-icon icon="mdi:car-multiple" style="color: var(--navy);"></iconify-icon>
-        </div>
-        <div class="body flex flex-col flex-1">
-          <span class="badge" style="background: var(--yellow); border-color: var(--ink); color: var(--ink);">
-            <iconify-icon icon="mdi:flask-outline" style="font-size:10px;vertical-align:-1px;"></iconify-icon>Riset 2026
-          </span>
-          <div class="title">Potensi Pasar Kredit Kendaraan</div>
-          <div class="subtitle">Skor komposit 13 indeks Susenas 2019-2025 (Middle Class+) untuk memetakan kabkot prioritas kredit kendaraan.</div>
-          <div class="flex items-center mt-auto">
-            <div class="meta">
-              <span>514 kab</span>
-              <span>5 pillar</span>
-              <span>13 indeks</span>
-            </div>
-            <iconify-icon icon="mdi:arrow-right" class="arrow"></iconify-icon>
+    <div class="bento-dash">
+
+      <a href="konsumsi-susenas/dashboard.html" class="dash-tile big t-konsumsi">
+        <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1542838132-92c53300491e?w=1400&q=80');"></div>
+        <div class="content">
+          <div class="label">Dashboard Unggulan</div>
+          <div class="title">Konsumsi Masyarakat</div>
+          <p class="desc">Memetakan pola dan pertumbuhan pengeluaran rumah tangga Indonesia per kapita per bulan.</p>
+          <div class="meta-row">
+            <span class="meta">Susenas BPS &middot; 2019-2025</span>
+            <span class="arrow"><iconify-icon icon="mdi:arrow-right"></iconify-icon></span>
           </div>
         </div>
       </a>
 
-      <div class="card coming flex flex-col">
-        <div class="icon-box" style="background: #F4F1EA; border-bottom-color: var(--rule);">
-          <iconify-icon icon="mdi:dots-horizontal" style="color: var(--muted);"></iconify-icon>
-        </div>
-        <div class="body flex flex-col flex-1">
-          <span class="badge coming">Soon</span>
-          <div class="title" style="color: var(--muted); letter-spacing: 0.3em;">• • • • •</div>
-          <div class="subtitle" style="letter-spacing: 0.3em;">• • • • • • • • • • • • • • • • • • • •</div>
-        </div>
-      </div>
-
-      <div class="card coming flex flex-col">
-        <div class="icon-box" style="background: #F4F1EA; border-bottom-color: var(--rule);">
-          <iconify-icon icon="mdi:dots-horizontal" style="color: var(--muted);"></iconify-icon>
-        </div>
-        <div class="body flex flex-col flex-1">
-          <span class="badge coming">Soon</span>
-          <div class="title" style="color: var(--muted); letter-spacing: 0.3em;">• • • • •</div>
-          <div class="subtitle" style="letter-spacing: 0.3em;">• • • • • • • • • • • • • • • • • • • •</div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Isu Tematik -->
-  <div class="mt-20">
-    <div class="eyebrow" style="color: var(--yellow); background: var(--ink); display: inline-block; padding: 4px 10px;">
-      <iconify-icon icon="mdi:fire" style="font-size: 12px; vertical-align: -2px; margin-right: 4px;"></iconify-icon>Isu Tematik
-    </div>
-    <h2 class="serif-display text-3xl mt-3 mb-3 max-w-2xl">Topik aktual berbasis riset terkini.</h2>
-    <p class="text-sm muted max-w-2xl mb-10" style="color: var(--muted);">
-      Dashboard tematik per isu (kebijakan, energi, sektor) dengan analisis mendalam dalam satu hub.
-    </p>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-      <a href="emerging-zone-jakarta/260503_NASA_emerging-zone-detector.html" class="card flex flex-col" data-tags="spasial,geografi,komersial,jakarta">
-        <div class="icon-box" style="background: #F0F6FC; border-bottom-color: var(--navy);">
-          <iconify-icon icon="mdi:city-variant-outline" style="color: var(--navy);"></iconify-icon>
-        </div>
-        <div class="body flex flex-col flex-1">
-          <span class="badge" style="background: var(--navy); border-color: var(--navy); color: white;">
-            <iconify-icon icon="mdi:map-marker-radius-outline" style="font-size:10px;vertical-align:-1px;"></iconify-icon>Spasial Ekonomi
-          </span>
-          <div class="title">Pendeteksi Kawasan Komersial Berkembang — DKI Jakarta</div>
-          <div class="subtitle">Skor potensi 270 desa + 21 kawasan utama (Blok M, PIK, Mega Kuningan, dll). Multi-source: cahaya malam NASA VIIRS + Podes BPS + Sakernas + OSM. 2021-2025 + pulse 2026.</div>
-          <div class="flex items-center mt-auto">
-            <div class="meta">
-              <span>6 halaman</span>
-              <span>270 desa</span>
-              <span>21 kawasan</span>
-            </div>
-            <iconify-icon icon="mdi:arrow-right" class="arrow"></iconify-icon>
+      <a href="kelas-kabkota/dashboard.html" class="dash-tile t-kelas">
+        <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1577717903315-1691ae25ab3f?w=1000&q=80');"></div>
+        <div class="content">
+          <div class="label">Dashboard</div>
+          <div class="title">Kelas Masyarakat</div>
+          <div class="meta-row">
+            <span class="meta">514 Kab/Kota</span>
+            <span class="arrow"><iconify-icon icon="mdi:arrow-right"></iconify-icon></span>
           </div>
         </div>
       </a>
 
-      <a href="ketahanan-pangan/ketahanan-pangan-dashboard.html" class="card flex flex-col" data-tags="susenas,geografi,pangan">
-        <div class="icon-box" style="background: #F0F6FC; border-bottom-color: var(--navy);">
-          <iconify-icon icon="mdi:food-apple-outline" style="color: var(--navy);"></iconify-icon>
-        </div>
-        <div class="body flex flex-col flex-1">
-          <span class="badge" style="background: var(--navy); border-color: var(--navy); color: white;">
-            <iconify-icon icon="mdi:food-apple-outline" style="font-size:10px;vertical-align:-1px;"></iconify-icon>Pangan &middot; Sosial
-          </span>
-          <div class="title">Ketahanan Pangan Kabupaten/Kota</div>
-          <div class="subtitle">Distribusi status ketahanan pangan (FIES) per kabupaten/kota, 514 wilayah, 2019-2025. Tren spasial dan temporal rawan pangan.</div>
-          <div class="flex items-center mt-auto">
-            <div class="meta">
-              <span>5 exhibit</span>
-              <span>514 kab/kota</span>
-              <span>7 tahun</span>
-            </div>
-            <iconify-icon icon="mdi:arrow-right" class="arrow"></iconify-icon>
+      <a href="thematic/bbm/dashboard.html" class="dash-tile t-bbm">
+        <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1545459720-aac8509eb02c?w=1000&q=80');"></div>
+        <div class="content">
+          <div class="label">Tematik</div>
+          <div class="title">Konsumsi BBM</div>
+          <div class="meta-row">
+            <span class="meta">Susenas</span>
+            <span class="arrow"><iconify-icon icon="mdi:arrow-right"></iconify-icon></span>
           </div>
         </div>
       </a>
 
-      <a href="thematic/bbm/dashboard.html" class="card flex flex-col" data-tags="susenas,energi,geografi,kelas">
-        <div class="icon-box" style="background: #FFF6E0; border-bottom-color: var(--yellow);">
-          <iconify-icon icon="mdi:gas-station-outline" style="color: var(--navy);"></iconify-icon>
+      <a href="ketahanan-pangan/ketahanan-pangan-dashboard.html" class="dash-tile wide t-ketahanan">
+        <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=1400&q=80');"></div>
+        <div class="content">
+          <div class="label">Dashboard</div>
+          <div class="title">Ketahanan Pangan</div>
+          <p class="desc">Mengukur ketahanan pangan rumah tangga lintas wilayah Indonesia berbasis Skala FIES.</p>
+          <div class="meta-row">
+            <span class="meta">FAO FIES &middot; 514 Kab/Kota</span>
+            <span class="arrow"><iconify-icon icon="mdi:arrow-right"></iconify-icon></span>
+          </div>
         </div>
-        <div class="body flex flex-col flex-1">
-          <span class="badge" style="background: var(--yellow); border-color: var(--ink); color: var(--ink);">
-            <iconify-icon icon="mdi:fire" style="font-size:10px;vertical-align:-1px;"></iconify-icon>Energi
-          </span>
-          <div class="title">Konsumsi BBM per Kelas</div>
-          <div class="subtitle">Komposisi jenis BBM (Premium, Pertalite, Pertamax, Turbo) per kelas masyarakat dan provinsi. Era subsidi Premium vs penghapusan 2022.</div>
-          <div class="flex items-center mt-auto">
-            <div class="meta">
-              <span>3 exhibits</span>
-              <span>38 prov</span>
-              <span>5 jenis BBM</span>
+      </a>
+
+      <a href="emerging-zone-jakarta/260503_NASA_emerging-zone-detector.html" class="dash-tile wide t-dki">
+        <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1555899434-94d1368aa7af?w=1400&q=80');"></div>
+        <div class="content">
+          <div class="label">Dashboard Spasial</div>
+          <div class="title">Kawasan Komersial DKI</div>
+          <p class="desc">Mendeteksi kawasan komersial yang sedang berkembang dari data satelit dan sensus.</p>
+          <div class="meta-row">
+            <span class="meta">NASA VIIRS &middot; Podes &middot; OSM</span>
+            <span class="arrow"><iconify-icon icon="mdi:arrow-right"></iconify-icon></span>
+          </div>
+        </div>
+      </a>
+
+      <a href="peta-potensi-kendaraan/dashboard.html" class="dash-tile cta-tile t-kendaraan">
+        <div class="content">
+          <iconify-icon icon="mdi:car-multiple" class="icon-bg"></iconify-icon>
+          <div>
+            <div class="label">Initiative</div>
+            <div class="title">Riset Kendaraan</div>
+            <p class="desc">Peta potensi pasar kendaraan per kabupaten/kota, kolaborasi dengan Mandiri Utama Finance, 2026.</p>
+            <div class="meta-row">
+              <span class="meta">Partnership MUF</span>
+              <span class="arrow"><iconify-icon icon="mdi:arrow-right"></iconify-icon></span>
             </div>
-            <iconify-icon icon="mdi:arrow-right" class="arrow"></iconify-icon>
           </div>
         </div>
       </a>
 
     </div>
   </div>
+</section>
 
+<!-- ============ PUBLIKASI TERBARU ============ -->
+<section id="publikasi" class="section">
+  <div class="section-inner">
+    <div class="section-eyebrow">Publikasi Terbaru</div>
+    <h2 class="section-title">Edisi terbaru<br>dari setiap seri</h2>
+    <p class="section-sub">Tiga publikasi rutin Mandiri Institute, edisi terbaru per April 2026.</p>
 
-  <footer class="mt-20 pt-8 flex items-center justify-between text-xs uppercase tracking-widest" style="border-top: 1px solid var(--rule); color: var(--muted);">
-    <div>Mandiri Institute · Dashboard Suite</div>
-    <div>Plotly.js · Tailwind CSS · Susenas BPS</div>
-    <div>Palette: Mandiri Official</div>
-  </footer>
-</main>
+    <div class="products">
 
-<script>
-function portal() {
-  return {
-    query: '',
-    activeTag: null,
-    tags: [
-      { id: 'susenas',  label: 'Susenas',     icon: 'mdi:database-outline' },
-      { id: 'kelas',    label: 'Kelas Masyarakat', icon: 'mdi:account-group-outline' },
-      { id: 'geografi', label: 'Geografi',    icon: 'mdi:map-outline' },
-      { id: 'energi',   label: 'Energi',      icon: 'mdi:fire' },
-      { id: 'kendaraan', label: 'Kendaraan',  icon: 'mdi:car-multiple' },
-      { id: 'pangan',    label: 'Pangan',     icon: 'mdi:food-apple-outline' },
-      { id: 'spasial',   label: 'Spasial',    icon: 'mdi:map-marker-radius-outline' },
-      { id: 'jakarta',   label: 'Jakarta',    icon: 'mdi:city-variant-outline' },
-    ],
-    init() {
-      this.$nextTick(() => this.applyFilter());
-      this.$watch('query', () => this.applyFilter());
-      this.$watch('activeTag', () => this.applyFilter());
-    },
-    applyFilter() {
-      const q = (this.query || '').toLowerCase().trim();
-      const tag = this.activeTag;
-      document.querySelectorAll('.card').forEach(c => {
-        const text = (c.textContent || '').toLowerCase();
-        const tags = (c.dataset.tags || '').split(',');
-        const matchQ = !q || text.includes(q);
-        const matchT = !tag || tags.includes(tag);
-        c.style.display = (matchQ && matchT) ? '' : 'none';
-      });
-    },
-  };
-}
-</script>
+      <a class="product-card">
+        <div class="img-wrap">
+          <div class="img-bg" style="background-image: url('https://images.unsplash.com/photo-1573164574572-cb89e39749b4?w=1200&q=80');"></div>
+          <div class="img-tint"></div>
+        </div>
+        <div class="body">
+          <div>
+            <div class="label">Policy Brief</div>
+            <div class="title">MI Policy Brief No. 4</div>
+            <p class="desc">Kajian kebijakan singkat untuk mendukung pengambilan keputusan ekonomi.</p>
+          </div>
+          <div class="meta-row">
+            <span class="meta">April 2026</span>
+            <span class="arrow"><iconify-icon icon="mdi:arrow-right"></iconify-icon></span>
+          </div>
+        </div>
+      </a>
+
+      <a class="product-card">
+        <div class="img-wrap">
+          <div class="img-bg" style="background-image: url('https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200&q=80');"></div>
+          <div class="img-tint"></div>
+        </div>
+        <div class="body">
+          <div>
+            <div class="label">Monthly Gazette</div>
+            <div class="title">Monthly Gazette April 2026</div>
+            <p class="desc">Update bulanan dinamika ekonomi Indonesia dari Mandiri Institute.</p>
+          </div>
+          <div class="meta-row">
+            <span class="meta">April 2026</span>
+            <span class="arrow"><iconify-icon icon="mdi:arrow-right"></iconify-icon></span>
+          </div>
+        </div>
+      </a>
+
+      <a class="product-card">
+        <div class="img-wrap">
+          <div class="img-bg" style="background-image: url('https://images.unsplash.com/photo-1583425423320-7c4928c52527?w=1200&q=80');"></div>
+          <div class="img-tint"></div>
+        </div>
+        <div class="body">
+          <div>
+            <div class="label">Infografis Tematik</div>
+            <div class="title">Belanja Ramadan-Lebaran 2026</div>
+            <p class="desc">Snapshot pola belanja kelas menengah selama momentum Lebaran 2026.</p>
+          </div>
+          <div class="meta-row">
+            <span class="meta">2026</span>
+            <span class="arrow"><iconify-icon icon="mdi:arrow-right"></iconify-icon></span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ STATS ============ -->
+<section class="section-dark">
+  <div class="section-inner">
+    <div class="section-eyebrow">Output 2025-2026</div>
+    <h2 class="section-title">Publikasi dan dashboard<br>Mandiri Institute</h2>
+    <p class="section-sub">Empat seri publikasi rutin dan lima dashboard interaktif, mengupas dimensi berbeda dari ekonomi Indonesia.</p>
+
+    <div class="numbers">
+      <div class="num-card">
+        <div class="num">1</div>
+        <div class="num-label">Riset Tahunan</div>
+        <div class="num-sub">MI Demographic &amp; Consumption sebagai laporan unggulan tahunan</div>
+      </div>
+      <div class="num-card">
+        <div class="num">4</div>
+        <div class="num-label">Policy Brief</div>
+        <div class="num-sub">Kajian kebijakan singkat sepanjang Januari-April 2026</div>
+      </div>
+      <div class="num-card">
+        <div class="num">4</div>
+        <div class="num-label">Monthly Gazette</div>
+        <div class="num-sub">Update bulanan riset, edisi Januari-April 2026</div>
+      </div>
+      <div class="num-card">
+        <div class="num">4</div>
+        <div class="num-label">Infografis</div>
+        <div class="num-sub">Visualisasi tematik untuk momentum dan isu khusus</div>
+      </div>
+      <div class="num-card">
+        <div class="num">5</div>
+        <div class="num-label">Dashboard Interaktif</div>
+        <div class="num-sub">Konsumsi, kelas, BBM, ketahanan pangan, kawasan komersial</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="foot">
+  &copy; 2026 Mandiri Institute &middot; Bank Mandiri (Persero) Tbk &middot; Dashboard Suite &middot; Gambar via Unsplash
+</footer>
+
 </body>
 </html>

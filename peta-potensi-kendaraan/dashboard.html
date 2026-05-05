@@ -99,11 +99,90 @@
   .caveat-banner .text { font-size: 13px; color: var(--ink); margin-top: 4px; line-height: 1.5; }
 
   *:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
+
+  /* ============ TOP NAV (canonical) ============ */
+  .topnav-canon { background: var(--navy-deep); padding: 14px 28px; display: flex; align-items: center; gap: 24px; border-bottom: 1px solid rgba(255,255,255,0.08); position: sticky; top: 0; z-index: 60; color: white; }
+  .topnav-canon .burger { font-size: 22px; cursor: pointer; opacity: 0.92; display: none; color: white; }
+  .topnav-canon .brand { font-family: 'Source Serif 4', Georgia, serif; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; color: white; }
+  .topnav-canon .brand-sub { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--sky); margin-top: 2px; font-weight: 600; }
+  .topnav-canon .menu { display: flex; gap: 22px; margin-left: 24px; }
+  .topnav-canon .menu a, .topnav-canon .menu button { background: none; border: 0; font-family: inherit; font-size: 13px; font-weight: 500; color: white; opacity: 0.85; padding: 6px 0; cursor: pointer; transition: opacity 0.2s; }
+  .topnav-canon .menu a:hover, .topnav-canon .menu button:hover { opacity: 1; color: var(--sky); }
+  .topnav-canon .right { margin-left: auto; display: flex; gap: 14px; align-items: center; font-size: 12px; opacity: 0.8; }
+  .topnav-canon .search { font-size: 22px; cursor: pointer; opacity: 0.85; color: white; }
+  .nav-drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(5,28,44,0.55); z-index: 99; opacity: 0; transition: opacity 0.3s; }
+  .nav-drawer-overlay.open { display: block; opacity: 1; }
+  .nav-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(320px, 82vw); background: var(--navy-deep); z-index: 100; padding: 76px 28px 28px; box-shadow: -8px 0 32px rgba(0,0,0,0.3); transform: translateX(100%); transition: transform 0.3s ease; color: white; overflow-y: auto; }
+  .nav-drawer.open { transform: translateX(0); }
+  .nav-drawer .close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; color: white; padding: 6px; font-size: 26px; }
+  .nav-drawer .drawer-label { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.55); margin: 18px 0 10px; }
+  .nav-drawer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 2px; }
+  .nav-drawer a, .nav-drawer button { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 14px 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 19px; color: white; border: 0; border-bottom: 1px solid rgba(255,255,255,0.12); background: none; cursor: pointer; transition: color 0.15s; }
+  .nav-drawer a:hover, .nav-drawer button:hover { color: var(--sky); }
+  .nav-drawer iconify-icon { font-size: 18px; opacity: 0.7; }
+  .sidebar { top: 64px !important; }
+
+  @media (max-width: 1100px) {
+    .sidebar { display: none; }
+    .with-sidebar { margin-left: 0 !important; }
+    .topnav-canon .burger { display: inline-flex; }
+    .topnav-canon .menu { display: none; }
+    .topnav-canon .right .nav-link { display: none; }
+  }
+  @media (max-width: 768px) {
+    .topnav-canon { padding: 12px 18px; gap: 14px; }
+    .topnav-canon .brand { font-size: 15px; }
+    .topnav-canon .brand-sub { font-size: 9px; letter-spacing: 0.14em; }
+    .grid.grid-cols-1.md\:grid-cols-2 { grid-template-columns: 1fr !important; gap: 24px !important; }
+    .grid.grid-cols-1.md\:grid-cols-3 { grid-template-columns: 1fr !important; }
+    .grid.grid-cols-1.md\:grid-cols-4 { grid-template-columns: repeat(2, 1fr) !important; }
+    #chart-map, #chart-indikator, #chart-trend, #chart-detail { height: 420px !important; }
+    /* Filter panel: collapse padded into accordion-friendly stack */
+    .filter-panel, .filter-row { gap: 10px !important; }
+  }
+  @media (max-width: 480px) {
+    .topnav-canon .brand-sub { display: none; }
+  }
 </style>
 </head>
 <body>
 
 <div x-data="dashboard()" x-init="init()">
+
+<!-- ============ TOP NAV (canon) ============ -->
+<nav class="topnav-canon" x-data="{ navOpen: false }">
+  <iconify-icon class="burger" icon="mdi:menu" @click="navOpen = true" role="button" aria-label="Buka menu" tabindex="0" @keydown.enter="navOpen = true"></iconify-icon>
+  <div>
+    <div class="brand">Mandiri Institute</div>
+    <div class="brand-sub">Potensi Kendaraan</div>
+  </div>
+  <div class="menu">
+    <a href="../index.html">Beranda</a>
+    <a href="#" onclick="window.gotoPage('overview'); return false;">Overview</a>
+    <a href="#" onclick="window.gotoPage('peta'); return false;">Peta Potensi</a>
+    <a href="#" onclick="window.gotoPage('indikator'); return false;">Detail Indikator</a>
+    <a href="#" onclick="window.gotoPage('metodologi'); return false;">Metodologi</a>
+  </div>
+  <div class="right">
+    <a class="nav-link" href="../index.html" style="color:white;opacity:0.85;font-weight:500;">Semua Dashboard</a>
+    <iconify-icon class="search" icon="mdi:magnify" role="button" aria-label="Cari" tabindex="0"></iconify-icon>
+  </div>
+  <div class="nav-drawer-overlay" :class="{ 'open': navOpen }" @click="navOpen = false"></div>
+  <aside class="nav-drawer" :class="{ 'open': navOpen }" aria-label="Menu navigasi">
+    <button class="close-btn" @click="navOpen = false" aria-label="Tutup menu"><iconify-icon icon="mdi:close"></iconify-icon></button>
+    <div class="drawer-label">Navigasi</div>
+    <ul>
+      <li><a href="../index.html" @click="navOpen = false"><iconify-icon icon="mdi:home-outline"></iconify-icon>Beranda</a></li>
+    </ul>
+    <div class="drawer-label">Potensi Kendaraan</div>
+    <ul>
+      <li><button onclick="window.gotoPage('overview')" @click="navOpen = false"><iconify-icon icon="mdi:view-dashboard-outline"></iconify-icon>Overview</button></li>
+      <li><button onclick="window.gotoPage('peta')" @click="navOpen = false"><iconify-icon icon="mdi:map-outline"></iconify-icon>Peta Potensi</button></li>
+      <li><button onclick="window.gotoPage('indikator')" @click="navOpen = false"><iconify-icon icon="mdi:layers-outline"></iconify-icon>Detail Indikator</button></li>
+      <li><button onclick="window.gotoPage('metodologi')" @click="navOpen = false"><iconify-icon icon="mdi:book-open-variant"></iconify-icon>Metodologi</button></li>
+    </ul>
+  </aside>
+</nav>
 
 <aside class="sidebar">
   <div class="brand">
@@ -767,6 +846,17 @@ function dashboard() {
     },
     init() {
       this.$nextTick(() => this.renderForPage(this.page));
+      window.gotoPage = (id) => this.setPage(id);
+      let resizeT;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeT);
+        resizeT = setTimeout(() => {
+          ['chart-map','chart-indikator','chart-trend','chart-detail'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el && el.data) { try { Plotly.Plots.resize(el); } catch(e) {} }
+          });
+        }, 150);
+      });
     },
     setPage(id) { this.page = id; this.renderForPage(id); },
     renderForPage(id) {

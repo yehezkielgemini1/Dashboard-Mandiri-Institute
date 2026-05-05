@@ -87,7 +87,7 @@
   .select-flat:focus { outline: none; border-bottom-color: var(--sky); }
 
   /* Sidebar */
-  .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 220px; background: var(--navy); color: white; padding: 24px 0; z-index: 40; display: flex; flex-direction: column; overflow-y: auto; }
+  .sidebar { position: fixed; top: 64px; left: 0; bottom: 0; width: 220px; background: var(--navy); color: white; padding: 24px 0; z-index: 40; display: flex; flex-direction: column; overflow-y: auto; }
   .sidebar .brand { padding: 0 24px 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.12); }
   .sidebar .brand-title { font-family: 'Source Serif 4', Georgia, serif; font-size: 18px; font-weight: 600; line-height: 1.15; color: white; }
   .sidebar .brand-sub { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sky); margin-top: 4px; font-weight: 600; }
@@ -202,7 +202,7 @@
 /* === EDITORIAL CRAFT LAYER === */
 
   /* Folio header — running small caps (Mandiri Institute · Susenas 2025) */
-  .folio { position: sticky; top: 0; z-index: 30; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--rule); padding: 8px 0; }
+  .folio { position: relative; z-index: 30; background: rgba(255,255,255,0.92); border-bottom: 1px solid var(--rule); padding: 8px 0; }
   .folio-inner { max-width: 1280px; margin: 0 auto; padding: 0 32px; display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
   .folio .left { color: var(--ink); }
   .folio .right { color: var(--muted); }
@@ -251,10 +251,122 @@
   /* Tufte data-ink — chart container minimal chrome */
   .chart-tufte { background: white; }
 
-  
+  /* ============ TOP NAV (canonical, mirrors landing) ============ */
+  .topnav { background: var(--navy-deep); padding: 14px 28px; display: flex; align-items: center; gap: 24px; border-bottom: 1px solid rgba(255,255,255,0.08); position: sticky; top: 0; z-index: 60; color: white; }
+  .topnav .burger { font-size: 22px; cursor: pointer; opacity: 0.92; display: none; }
+  .topnav .brand { font-family: 'Source Serif 4', Georgia, serif; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; color: white; }
+  .topnav .brand-sub { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--sky); margin-top: 2px; font-weight: 600; }
+  .topnav .menu { display: flex; gap: 22px; margin-left: 24px; }
+  .topnav .menu a, .topnav .menu button { background: none; border: 0; font-family: inherit; font-size: 13px; font-weight: 500; color: white; opacity: 0.85; padding: 6px 0; cursor: pointer; transition: opacity 0.2s; letter-spacing: -0.003em; }
+  .topnav .menu a:hover, .topnav .menu button:hover { opacity: 1; color: var(--sky); }
+  .topnav .right { margin-left: auto; display: flex; gap: 14px; align-items: center; font-size: 12px; opacity: 0.8; }
+  .topnav .search { font-size: 22px; cursor: pointer; opacity: 0.85; }
+
+  /* Mobile drawer */
+  .nav-drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(5,28,44,0.55); z-index: 99; opacity: 0; transition: opacity 0.3s; }
+  .nav-drawer-overlay.open { display: block; opacity: 1; }
+  .nav-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(320px, 82vw); background: var(--navy-deep); z-index: 100; padding: 76px 28px 28px; box-shadow: -8px 0 32px rgba(0,0,0,0.3); transform: translateX(100%); transition: transform 0.3s ease; color: white; overflow-y: auto; }
+  .nav-drawer.open { transform: translateX(0); }
+  .nav-drawer .close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; color: white; padding: 6px; font-size: 26px; }
+  .nav-drawer .drawer-label { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.55); margin: 18px 0 10px; }
+  .nav-drawer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 2px; }
+  .nav-drawer a, .nav-drawer button { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 14px 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 19px; color: white; border: 0; border-bottom: 1px solid rgba(255,255,255,0.12); background: none; cursor: pointer; transition: color 0.15s; }
+  .nav-drawer a:hover, .nav-drawer button:hover { color: var(--sky); }
+  .nav-drawer iconify-icon { font-size: 18px; opacity: 0.7; }
+
+  /* ============ MOBILE RESPONSIVE ============ */
+  @media (max-width: 1100px) {
+    /* Hide left sidebar; reveal top-nav burger + drawer */
+    .sidebar { display: none; }
+    .with-sidebar { margin-left: 0; }
+    .topnav .burger { display: inline-flex; }
+    .topnav .menu { display: none; }
+    .topnav .right .pipe, .topnav .right .nav-link { display: none; }
+  }
+  @media (max-width: 768px) {
+    .topnav { padding: 12px 18px; gap: 14px; }
+    .topnav .brand { font-size: 15px; }
+    .topnav .brand-sub { font-size: 9px; letter-spacing: 0.14em; }
+    .folio-inner { padding: 0 18px; font-size: 9px; letter-spacing: 0.14em; }
+    .hero-band header { padding-left: 18px !important; padding-right: 18px !important; padding-top: 40px !important; padding-bottom: 40px !important; }
+    .hero-band h1 { font-size: clamp(26px, 6.4vw, 38px) !important; }
+    .hero-band p { font-size: 14px; }
+    main.max-w-\[1280px\] { padding-left: 18px !important; padding-right: 18px !important; padding-bottom: 48px !important; }
+    /* Filter row → wrap & scroll for chip groups */
+    section .flex.flex-wrap { gap: 14px !important; }
+    .chip-action { padding: 5px 10px; font-size: 10px; }
+    /* Stat grid stacks */
+    .grid.grid-cols-1.md\:grid-cols-4 { grid-template-columns: repeat(2, 1fr) !important; gap: 24px !important; }
+    .grid.grid-cols-1.md\:grid-cols-2 { grid-template-columns: 1fr !important; gap: 32px !important; }
+    .stat-num.text-5xl { font-size: 34px !important; }
+    /* Plotly charts: shrink container heights; keep 100% width */
+    #chart-trend { height: 380px !important; }
+    #chart-map { height: 480px !important; }
+    #chart-detail { height: 420px !important; }
+    #chart-lorenz { height: 380px !important; }
+    /* Rank rows: reduce bar width */
+    .rank-row { grid-template-columns: 22px 1fr 90px !important; gap: 10px !important; }
+    .rank-row .rank-bar-wrap { width: 80px !important; }
+    /* Section headings smaller */
+    .serif-display.text-3xl { font-size: 22px !important; }
+    .serif-display.text-4xl { font-size: 26px !important; }
+    .serif-display.text-5xl { font-size: 30px !important; }
+    /* Pull quote shrink */
+    .pull-quote blockquote { font-size: 20px; }
+    /* Related cards: 1 col */
+    .related-grid { grid-template-columns: 1fr !important; }
+    .related-section { padding-left: 18px; padding-right: 18px; }
+    /* Tables / wide content overflow */
+    .chart-footer { font-size: 10px; gap: 14px; }
+    /* Filter selects full-width */
+    .select-flat { font-size: 14px; min-width: 100% !important; }
+  }
+  @media (max-width: 480px) {
+    .topnav .brand-sub { display: none; }
+    .grid.grid-cols-1.md\:grid-cols-4 { grid-template-columns: 1fr !important; }
+  }
 </style>
 </head>
-<body>
+<body x-data="{ navOpen: false }">
+
+<!-- ============ TOP NAV (canon, sticky) ============ -->
+<nav class="topnav">
+  <iconify-icon class="burger" icon="mdi:menu" @click="navOpen = true" role="button" aria-label="Buka menu" tabindex="0" @keydown.enter="navOpen = true"></iconify-icon>
+  <div>
+    <div class="brand">Mandiri Institute</div>
+    <div class="brand-sub">Kelas Masyarakat</div>
+  </div>
+  <div class="menu">
+    <a href="../index.html">Beranda</a>
+    <a href="#" onclick="window.gotoPage('trend'); return false;">Trend</a>
+    <a href="#" onclick="window.gotoPage('geografi'); return false;">Geografi</a>
+    <a href="#" onclick="window.gotoPage('detail'); return false;">Detail Kab</a>
+    <a href="#" onclick="window.gotoPage('inequality'); return false;">Inequality</a>
+  </div>
+  <div class="right">
+    <a class="nav-link" href="../index.html" style="color:white;opacity:0.85;font-weight:500;">Semua Dashboard</a>
+    <iconify-icon class="search" icon="mdi:magnify" role="button" aria-label="Cari" tabindex="0"></iconify-icon>
+  </div>
+</nav>
+
+<!-- Mobile drawer -->
+<div class="nav-drawer-overlay" :class="{ 'open': navOpen }" @click="navOpen = false"></div>
+<aside class="nav-drawer" :class="{ 'open': navOpen }" aria-label="Menu navigasi">
+  <button class="close-btn" @click="navOpen = false" aria-label="Tutup menu">
+    <iconify-icon icon="mdi:close"></iconify-icon>
+  </button>
+  <div class="drawer-label">Navigasi</div>
+  <ul>
+    <li><a href="../index.html" @click="navOpen = false"><iconify-icon icon="mdi:home-outline"></iconify-icon>Beranda</a></li>
+  </ul>
+  <div class="drawer-label">Kelas Masyarakat</div>
+  <ul>
+    <li><button onclick="window.gotoPage('trend')" @click="navOpen = false"><iconify-icon icon="mdi:trending-up"></iconify-icon>Trend</button></li>
+    <li><button onclick="window.gotoPage('geografi')" @click="navOpen = false"><iconify-icon icon="mdi:map-outline"></iconify-icon>Geografi</button></li>
+    <li><button onclick="window.gotoPage('detail')" @click="navOpen = false"><iconify-icon icon="mdi:city-variant-outline"></iconify-icon>Detail Kab</button></li>
+    <li><button onclick="window.gotoPage('inequality')" @click="navOpen = false"><iconify-icon icon="mdi:chart-bell-curve"></iconify-icon>Inequality</button></li>
+  </ul>
+</aside>
 
 <div x-data="dashboard()" x-init="init()">
 <aside class="sidebar">
@@ -812,6 +924,19 @@ function dashboard() {
     },
     init() {
       this.$nextTick(() => this.renderForPage(this.page));
+      // Expose page setter for top-nav / drawer (outside Alpine scope)
+      window.gotoPage = (id) => this.setPage(id);
+      // Defense-in-depth: resize Plotly charts on viewport change
+      let resizeT;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeT);
+        resizeT = setTimeout(() => {
+          ['chart-trend', 'chart-map', 'chart-detail', 'chart-lorenz'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el && el.data) { try { Plotly.Plots.resize(el); } catch(e) {} }
+          });
+        }, 150);
+      });
     },
     setPage(id) {
       this.page = id;

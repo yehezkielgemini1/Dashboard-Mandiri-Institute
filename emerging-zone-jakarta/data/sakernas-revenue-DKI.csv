@@ -19,16 +19,16 @@
 2022,31,72,Jakarta Timur,9,Akomodasi & Makan Minum (KBLI I),3278415.6562275286,100,80658.0,0
 2022,31,73,Jakarta Pusat,7,Perdagangan Besar/Eceran (KBLI G),5630433.506519458,92,40034.0,0
 2022,31,73,Jakarta Pusat,9,Akomodasi & Makan Minum (KBLI I),4236220.895658936,108,43722.0,0
-2022,31,74,Jakarta Barat,7,Perdagangan Besar/Eceran (KBLI G),6553595.5296431985,171,140302.0,0
+2022,31,74,Jakarta Barat,7,Perdagangan Besar/Eceran (KBLI G),6553595.529643199,171,140302.0,0
 2022,31,74,Jakarta Barat,9,Akomodasi & Makan Minum (KBLI I),4873045.596523392,81,58908.0,0
-2022,31,75,Jakarta Utara,7,Perdagangan Besar/Eceran (KBLI G),12532101.213216593,152,92399.0,0
+2022,31,75,Jakarta Utara,7,Perdagangan Besar/Eceran (KBLI G),12532101.213216592,152,92399.0,0
 2022,31,75,Jakarta Utara,9,Akomodasi & Makan Minum (KBLI I),7141901.288840044,92,50045.0,0
-2023,31,1,Kepulauan Seribu,7,Perdagangan Besar/Eceran (KBLI G),3158297.5064488393,55,1163.0,0
-2023,31,1,Kepulauan Seribu,9,Akomodasi & Makan Minum (KBLI I),1952589.4988066826,74,1676.0,0
+2023,31,1,Kepulauan Seribu,7,Perdagangan Besar/Eceran (KBLI G),3158297.50644884,55,1163.0,0
+2023,31,1,Kepulauan Seribu,9,Akomodasi & Makan Minum (KBLI I),1952589.4988066824,74,1676.0,0
 2023,31,71,Jakarta Selatan,7,Perdagangan Besar/Eceran (KBLI G),6126071.828590392,113,96424.0,0
 2023,31,71,Jakarta Selatan,9,Akomodasi & Makan Minum (KBLI I),5135551.3814678965,95,78793.0,0
 2023,31,72,Jakarta Timur,7,Perdagangan Besar/Eceran (KBLI G),4634572.320573314,126,140935.0,0
-2023,31,72,Jakarta Timur,9,Akomodasi & Makan Minum (KBLI I),3555058.1997222574,71,79210.0,0
+2023,31,72,Jakarta Timur,9,Akomodasi & Makan Minum (KBLI I),3555058.199722257,71,79210.0,0
 2023,31,73,Jakarta Pusat,7,Perdagangan Besar/Eceran (KBLI G),5034722.418116283,97,51048.0,0
 2023,31,73,Jakarta Pusat,9,Akomodasi & Makan Minum (KBLI I),5336470.647927343,79,39418.0,0
 2023,31,74,Jakarta Barat,7,Perdagangan Besar/Eceran (KBLI G),9705195.917728556,135,121403.0,0
@@ -37,9 +37,9 @@
 2023,31,75,Jakarta Utara,9,Akomodasi & Makan Minum (KBLI I),19788744.02072814,84,60208.0,0
 2024,31,1,Kepulauan Seribu,7,Perdagangan Besar/Eceran (KBLI G),3383913.8339920947,54,1265.0,0
 2024,31,1,Kepulauan Seribu,9,Akomodasi & Makan Minum (KBLI I),2678764.367816092,60,1392.0,0
-2024,31,71,Jakarta Selatan,7,Perdagangan Besar/Eceran (KBLI G),10423861.505541407,100,85989.0,0
+2024,31,71,Jakarta Selatan,7,Perdagangan Besar/Eceran (KBLI G),10423861.505541408,100,85989.0,0
 2024,31,71,Jakarta Selatan,9,Akomodasi & Makan Minum (KBLI I),6636351.997327824,96,80833.0,0
-2024,31,72,Jakarta Timur,7,Perdagangan Besar/Eceran (KBLI G),10050607.486972243,113,141045.0,0
+2024,31,72,Jakarta Timur,7,Perdagangan Besar/Eceran (KBLI G),10050607.486972244,113,141045.0,0
 2024,31,72,Jakarta Timur,9,Akomodasi & Makan Minum (KBLI I),6089278.541166616,61,62077.0,0
 2024,31,73,Jakarta Pusat,7,Perdagangan Besar/Eceran (KBLI G),8348953.133916245,96,54325.0,0
 2024,31,73,Jakarta Pusat,9,Akomodasi & Makan Minum (KBLI I),11913664.417343508,77,40753.0,0
@@ -47,15 +47,15 @@
 2024,31,74,Jakarta Barat,9,Akomodasi & Makan Minum (KBLI I),5396332.699327301,81,71503.0,0
 2024,31,75,Jakarta Utara,7,Perdagangan Besar/Eceran (KBLI G),10122155.54293288,120,73941.0,0
 2024,31,75,Jakarta Utara,9,Akomodasi & Makan Minum (KBLI I),11216597.027429117,102,69233.0,0
-2025,31,1,Kepulauan Seribu,7,Perdagangan Besar/Eceran (KBLI G),4313277.995642701,65,1836.0,0
-2025,31,1,Kepulauan Seribu,9,Akomodasi & Makan Minum (KBLI I),3691975.1442521084,82,2253.0,0
-2025,31,71,Jakarta Selatan,7,Perdagangan Besar/Eceran (KBLI G),2652929.3923378647,193,211351.0,0
-2025,31,71,Jakarta Selatan,9,Akomodasi & Makan Minum (KBLI I),3038012.62855285,156,175317.0,0
-2025,31,72,Jakarta Timur,7,Perdagangan Besar/Eceran (KBLI G),2553154.4973054198,214,323427.0,0
-2025,31,72,Jakarta Timur,9,Akomodasi & Makan Minum (KBLI I),3641157.7708845865,101,140235.0,0
-2025,31,73,Jakarta Pusat,7,Perdagangan Besar/Eceran (KBLI G),3427143.5712784994,244,138029.0,0
-2025,31,73,Jakarta Pusat,9,Akomodasi & Makan Minum (KBLI I),4588413.653885909,158,82233.0,0
-2025,31,74,Jakarta Barat,7,Perdagangan Besar/Eceran (KBLI G),3667007.3654959993,248,298690.0,0
-2025,31,74,Jakarta Barat,9,Akomodasi & Makan Minum (KBLI I),2662472.4952955046,111,128069.0,0
-2025,31,75,Jakarta Utara,7,Perdagangan Besar/Eceran (KBLI G),2712721.4236213197,213,190472.0,0
-2025,31,75,Jakarta Utara,9,Akomodasi & Makan Minum (KBLI I),2703055.9555302546,136,119452.0,0
+2025,31,1,Kepulauan Seribu,7,Perdagangan Besar/Eceran (KBLI G),6105765.921356978,46,1297.0,0
+2025,31,1,Kepulauan Seribu,9,Akomodasi & Makan Minum (KBLI I),5845411.103302881,54,1423.0,0
+2025,31,71,Jakarta Selatan,7,Perdagangan Besar/Eceran (KBLI G),6924179.45836472,77,80977.0,0
+2025,31,71,Jakarta Selatan,9,Akomodasi & Makan Minum (KBLI I),8023126.609926941,60,66385.0,0
+2025,31,72,Jakarta Timur,7,Perdagangan Besar/Eceran (KBLI G),6709397.518586228,81,123075.0,0
+2025,31,72,Jakarta Timur,9,Akomodasi & Makan Minum (KBLI I),7691184.816990511,47,66390.0,0
+2025,31,73,Jakarta Pusat,7,Perdagangan Besar/Eceran (KBLI G),9556468.686868686,86,49500.0,0
+2025,31,73,Jakarta Pusat,9,Akomodasi & Makan Minum (KBLI I),8475650.74801204,85,44518.0,0
+2025,31,74,Jakarta Barat,7,Perdagangan Besar/Eceran (KBLI G),10788247.756754361,88,101527.0,0
+2025,31,74,Jakarta Barat,9,Akomodasi & Makan Minum (KBLI I),4380188.962824037,69,77846.0,0
+2025,31,75,Jakarta Utara,7,Perdagangan Besar/Eceran (KBLI G),7216243.610513673,80,71602.0,0
+2025,31,75,Jakarta Utara,9,Akomodasi & Makan Minum (KBLI I),5015929.907413161,73,64372.0,0
