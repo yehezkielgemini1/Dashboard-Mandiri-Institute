@@ -215,6 +215,11 @@ button, .chip-action { transition: all var(--tr-base); }
   .topnav .brand-sub { display: none; }
 }
 
+/* ============ Page 5: Detail Kawasan 2x2+1 grid (all 5 indikator visible) ============ */
+.page5-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.page5-grid .p5-full { grid-column: 1 / -1; }
+@media (max-width: 768px) { .page5-grid { grid-template-columns: 1fr; } }
+
 /* ============ UNIFORM v2: hide legacy sidebar (topnav is now the canonical nav) ============ */
 .sidebar, aside.sidebar { display: none !important; }
 .with-sidebar { margin-left: 0 !important; }
@@ -560,15 +565,14 @@ button, .chip-action { transition: all var(--tr-base); }
 
   <div id="page5-header" class="chart-card mt-6"></div>
 
-  <div class="tab-strip mt-6">
-    <button @click="page5SubTab='ntl'; $nextTick(()=>renderPage5Sub(this))" :class="page5SubTab==='ntl' ? 'tab-btn active' : 'tab-btn'">Luminositas Malam</button>
-    <button @click="page5SubTab='podes'; $nextTick(()=>renderPage5Sub(this))" :class="page5SubTab==='podes' ? 'tab-btn active' : 'tab-btn'">Tempat Usaha</button>
-    <button @click="page5SubTab='sektor'; $nextTick(()=>renderPage5Sub(this))" :class="page5SubTab==='sektor' ? 'tab-btn active' : 'tab-btn'">Sektor Usaha</button>
-    <button @click="page5SubTab='fasilitas'; $nextTick(()=>renderPage5Sub(this))" :class="page5SubTab==='fasilitas' ? 'tab-btn active' : 'tab-btn'">Fasilitas Sekitar</button>
-    <button @click="page5SubTab='akses'; $nextTick(()=>renderPage5Sub(this))" :class="page5SubTab==='akses' ? 'tab-btn active' : 'tab-btn'">Aksesibilitas</button>
+  <!-- All 5 indicators in 2x2+1 grid (single section, no sub-tab) -->
+  <div class="page5-grid mt-6">
+    <div id="p5-ntl"       class="chart-card"></div>
+    <div id="p5-podes"     class="chart-card"></div>
+    <div id="p5-sektor"    class="chart-card"></div>
+    <div id="p5-fasilitas" class="chart-card"></div>
+    <div id="p5-akses"     class="chart-card p5-full"></div>
   </div>
-
-  <div id="page5-subcontent" class="chart-card"></div>
 </section>
 
 
@@ -1628,141 +1632,147 @@ function renderPage5(ctx) {
       </div>
     </div>
   `;
-  renderPage5Sub(ctx);
+  renderPage5AllIndicators(ctx);
 }
-function renderPage5Sub(ctx) {
+// Render all 5 indikator at once into 2x2+1 grid (no sub-tab anymore)
+function renderPage5AllIndicators(ctx) {
   const item = getPage5Item(ctx);
   if (!item) return;
-  const isKaw = ctx.page5Mode === 'kawasan';
-  const sub = ctx.page5SubTab;
-  const c = document.getElementById('page5-subcontent');
+  const isKaw = ctx.page5Mode !== 'desa';
 
-  if (sub === 'ntl') {
-    const lum2021 = isKaw ? null : item.lum_2021;
-    const lum2024 = isKaw ? null : item.lum_2024;
-    const lum2025 = isKaw ? null : item.lum_2025;
-    const cagr = item.ntl_cagr_2021_2025;
-    const qual = item.quality_flag;
-    c.innerHTML = `
-      <div class="eyebrow" style="color:var(--muted);">Luminositas Malam</div>
-      <h3 class="serif-display text-xl mt-1 mb-3">Lintasan ${isKaw ? 'gabungan member' : 'kelurahan'}</h3>
-      ${isKaw ? `<div style="font-size:13px;color:var(--muted);margin-bottom:16px;">Pertumbuhan tahunan rata-rata wilayah: <strong style="color:var(--ink);">${fmtPct(cagr, ' per tahun')}</strong></div>` :
-        `<div id="page5-ntl-bar" style="height:240px;"></div>
-        <div style="font-size:13px;color:var(--muted);margin-top:14px;">Pertumbuhan tahunan rata-rata: <strong style="color:var(--ink);">${fmtPct(cagr, ' per tahun')}</strong>${qual ? ` &middot; Quality flag: <em>${qual}</em>` : ''}</div>`}
-      <div style="margin-top:14px;">
-        ${item.pulse_badge ? `<span class="cat-pill ${pulseClass(item.pulse_badge)}">Tren Terkini (2026): ${displayPulse(item.pulse_badge)}</span>` : ''}
-      </div>
-    `;
-    if (!isKaw) {
-      Plotly.newPlot('page5-ntl-bar', [{
-        type: 'bar',
-        x: ['2021', '2024', '2025'],
-        y: [lum2021, lum2024, lum2025],
-        text: [lum2021, lum2024, lum2025].map(v => v == null ? '-' : Number(v).toFixed(1).replace('.',',')),
-        textposition: 'outside',
-        marker: { color: [PLOT_COLORS.muted, PLOT_COLORS.sky, PLOT_COLORS.navy] }
-      }], basePlotLayout({
-        margin: { l: 50, r: 24, t: 20, b: 40 },
-        yaxis: { title: 'DNB Radiance', gridcolor: '#E5E8EC' }
-      }), PLOT_CFG);
-    }
-  }
-  else if (sub === 'podes') {
-    const cnt = isKaw ? item.podes_count_total : item.podes_count_2025;
-    const cagr = item.podes_cagr_2021_2025;
-    const div = item.podes_diversity_shannon;
-    const flag = item.podes_winsorize_flag;
-    c.innerHTML = `
-      <div class="eyebrow" style="color:var(--muted);">Tempat Usaha (Podes)</div>
-      <h3 class="serif-display text-xl mt-1 mb-3">Skala dan Pertumbuhan</h3>
-      <div id="page5-podes-bar" style="height:240px;"></div>
-      <div style="font-size:13px;color:var(--ink);margin-top:14px;line-height:1.7;">
-        Jumlah tempat usaha 2025: <strong>${fmtNum(cnt)}</strong><br>
-        Pertumbuhan tahunan rata-rata: <strong>${fmtPct(cagr, ' per tahun')}</strong><br>
-        Indeks keberagaman (Shannon): <strong>${fmtScore(div)}</strong>
-        ${flag ? '<br><span style="color:var(--warning);">&#9888; Data podes diwinsorize (outlier ekstrem dipangkas).</span>' : ''}
-      </div>
-    `;
-    Plotly.newPlot('page5-podes-bar', [{
+  // 1. Luminositas Malam
+  const lum2021 = item.lum_2021;
+  const lum2024 = item.lum_2024;
+  const lum2025 = item.lum_2025;
+  const ntlCagr = item.ntl_cagr_2021_2025;
+  const qual = item.quality_flag;
+  const hasLumTrend = (lum2021 != null) && (lum2024 != null) && (lum2025 != null);
+  document.getElementById('p5-ntl').innerHTML = `
+    <div class="eyebrow" style="color:var(--muted);">Luminositas Malam</div>
+    <h3 class="serif-display text-xl mt-1 mb-3">Lintasan ${isKaw ? 'gabungan member' : 'kelurahan'}</h3>
+    ${hasLumTrend ? `<div id="p5-ntl-chart" style="height:220px;"></div>` : ''}
+    <div style="font-size:13px;color:var(--muted);margin-top:14px;line-height:1.6;">
+      Pertumbuhan tahunan rata-rata: <strong style="color:var(--ink);">${fmtPct(ntlCagr, ' per tahun')}</strong>
+      ${qual ? `<br>Quality flag: <em>${qual}</em>` : ''}
+    </div>
+    <div style="margin-top:10px;">
+      ${item.pulse_badge ? `<span class="cat-pill ${pulseClass(item.pulse_badge)}">Tren Terkini (2026): ${displayPulse(item.pulse_badge)}</span>` : ''}
+    </div>
+  `;
+  if (hasLumTrend) {
+    Plotly.newPlot('p5-ntl-chart', [{
       type: 'bar',
-      x: ['Tempat Usaha 2025'],
-      y: [cnt],
-      text: [fmtNum(cnt)],
+      x: ['2021', '2024', '2025'],
+      y: [lum2021, lum2024, lum2025],
+      text: [lum2021, lum2024, lum2025].map(v => v == null ? '-' : Number(v).toFixed(1).replace('.',',')),
       textposition: 'outside',
-      marker: { color: PLOT_COLORS.navy },
-      width: [0.4]
+      marker: { color: [PLOT_COLORS.muted, PLOT_COLORS.sky, PLOT_COLORS.navy] }
     }], basePlotLayout({
-      margin: { l: 50, r: 24, t: 30, b: 30 },
-      yaxis: { gridcolor: '#E5E8EC' },
-      annotations: [{ x: 0, y: cnt, text: fmtPct(cagr, ' per tahun'), showarrow: false, yshift: 30, font: { size: 13, color: PLOT_COLORS.positive } }]
+      margin: { l: 50, r: 24, t: 20, b: 40 },
+      xaxis: { type: 'category' },
+      yaxis: { title: 'DNB Radiance', gridcolor: '#E5E8EC' }
     }), PLOT_CFG);
   }
-  else if (sub === 'sektor') {
-    const perd = isKaw ? null : item.magnitude_perdagangan_2025;
-    const akm = isKaw ? null : item.magnitude_akomamin_2025;
-    if (isKaw) {
-      const total = item.magnitude_total;
-      c.innerHTML = `
-        <div class="eyebrow" style="color:var(--muted);">Sektor Usaha</div>
-        <h3 class="serif-display text-xl mt-1 mb-3">Indeks Aktivitas Komersial Wilayah</h3>
-        <div style="font-size:13px;color:var(--ink);">Total indeks aktivitas wilayah: <strong>${fmtRupiah(total)}</strong></div>
-        <div style="font-size:11px;color:var(--muted);margin-top:8px;font-style:italic;">Indeks proxy: jumlah usaha &times; rata-rata pendapatan pekerja sektor (Sakernas). Bukan klaim Rupiah absolut.</div>
-      `;
-    } else {
-      c.innerHTML = `
-        <div class="eyebrow" style="color:var(--muted);">Sektor Usaha</div>
-        <h3 class="serif-display text-xl mt-1 mb-3">Komposisi Indeks 2025</h3>
-        <div id="page5-donut" style="height:300px;"></div>
-        <div style="font-size:11px;color:var(--muted);margin-top:8px;font-style:italic;">Indeks proxy: jumlah usaha &times; rata-rata pendapatan pekerja sektor (Sakernas). Bukan klaim Rupiah absolut.</div>
-      `;
-      Plotly.newPlot('page5-donut', [{
-        type: 'pie', hole: 0.55,
-        labels: ['Perdagangan', 'Akomodasi & Mamin'],
-        values: [perd || 0, akm || 0],
-        marker: { colors: [PLOT_COLORS.navy, PLOT_COLORS.yellow] },
-        textinfo: 'label+percent'
-      }], { margin: { l: 20, r: 20, t: 20, b: 20 }, paper_bgcolor: 'white', font: PLOT_FONT, showlegend: false }, PLOT_CFG);
-    }
-  }
-  else if (sub === 'fasilitas') {
-    const cats = ['Hiburan / Nightlife', 'Gaya Hidup / Wellness', 'Retail Khusus', 'Wisata / Budaya', 'Layanan Penunjang'];
-    const vals = [item.count_hiburan_nightlife, item.count_gaya_hidup_wellness, item.count_retail_khusus, item.count_wisata_budaya, item.count_layanan_penunjang].map(v => v || 0);
-    c.innerHTML = `
-      <div class="eyebrow" style="color:var(--muted);">Fasilitas Sekitar (OSM)</div>
-      <h3 class="serif-display text-xl mt-1 mb-3">Komposisi Tempat Usaha Gaya Hidup</h3>
-      <div id="page5-facil" style="height:280px;"></div>
+
+  // 2. Tempat Usaha (Podes)
+  const cnt = item.podes_count_2025;
+  const podesCagr = item.podes_cagr_2021_2025;
+  const divShannon = item.podes_diversity_shannon;
+  const flag = item.podes_winsorize_flag;
+  document.getElementById('p5-podes').innerHTML = `
+    <div class="eyebrow" style="color:var(--muted);">Tempat Usaha (Podes)</div>
+    <h3 class="serif-display text-xl mt-1 mb-3">Skala dan Pertumbuhan</h3>
+    <div id="p5-podes-chart" style="height:220px;"></div>
+    <div style="font-size:13px;color:var(--ink);margin-top:14px;line-height:1.7;">
+      Jumlah tempat usaha 2025: <strong>${fmtNum(cnt)}</strong><br>
+      Pertumbuhan tahunan rata-rata: <strong>${fmtPct(podesCagr, ' per tahun')}</strong><br>
+      Indeks keberagaman (Shannon): <strong>${fmtScore(divShannon)}</strong>
+      ${flag ? '<br><span style="color:var(--warning);">&#9888; Data podes diwinsorize.</span>' : ''}
+    </div>
+  `;
+  Plotly.newPlot('p5-podes-chart', [{
+    type: 'bar',
+    x: ['Tempat Usaha 2025'],
+    y: [cnt],
+    text: [fmtNum(cnt)],
+    textposition: 'outside',
+    marker: { color: PLOT_COLORS.navy },
+    width: [0.4]
+  }], basePlotLayout({
+    margin: { l: 50, r: 24, t: 30, b: 30 },
+    yaxis: { gridcolor: '#E5E8EC' },
+    annotations: [{ x: 0, y: cnt, text: fmtPct(podesCagr, ' per tahun'), showarrow: false, yshift: 30, font: { size: 13, color: PLOT_COLORS.positive } }]
+  }), PLOT_CFG);
+
+  // 3. Sektor Usaha
+  const perd = item.magnitude_perdagangan_2025;
+  const akm  = item.magnitude_akomamin_2025;
+  const mag  = item.magnitude_2025;
+  const elSektor = document.getElementById('p5-sektor');
+  if (perd != null && akm != null) {
+    elSektor.innerHTML = `
+      <div class="eyebrow" style="color:var(--muted);">Sektor Usaha</div>
+      <h3 class="serif-display text-xl mt-1 mb-3">Komposisi Indeks 2025</h3>
+      <div id="p5-sektor-chart" style="height:240px;"></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px;font-style:italic;">Indeks proxy: jumlah usaha &times; rata-rata pendapatan pekerja sektor (Sakernas). Bukan klaim Rupiah absolut.</div>
     `;
-    Plotly.newPlot('page5-facil', [{
-      type: 'bar', orientation: 'h',
-      y: cats.slice().reverse(), x: vals.slice().reverse(),
-      text: vals.slice().reverse().map(v => fmtNum(v)),
-      textposition: 'outside',
-      marker: { color: PLOT_COLORS.sky }
-    }], basePlotLayout({
-      margin: { l: 160, r: 60, t: 10, b: 30 },
-      xaxis: { gridcolor: '#E5E8EC' }
-    }), PLOT_CFG);
-  }
-  else if (sub === 'akses') {
-    const trans = item.transport_access_score_raw;
-    const catch_ = isKaw ? item.catchment_density_1km_total : item.catchment_density_1km;
-    c.innerHTML = `
-      <div class="eyebrow" style="color:var(--muted);">Aksesibilitas</div>
-      <h3 class="serif-display text-xl mt-1 mb-3">Akses Transportasi & Catchment</h3>
-      <div id="page5-akses" style="height:240px;"></div>
+    Plotly.newPlot('p5-sektor-chart', [{
+      type: 'pie', hole: 0.55,
+      labels: ['Perdagangan', 'Akomodasi & Mamin'],
+      values: [perd || 0, akm || 0],
+      marker: { colors: [PLOT_COLORS.navy, PLOT_COLORS.yellow] },
+      textinfo: 'label+percent'
+    }], { margin: { l: 20, r: 20, t: 20, b: 20 }, paper_bgcolor: 'white', font: PLOT_FONT, showlegend: false }, PLOT_CFG);
+  } else {
+    elSektor.innerHTML = `
+      <div class="eyebrow" style="color:var(--muted);">Sektor Usaha</div>
+      <h3 class="serif-display text-xl mt-1 mb-3">Indeks Aktivitas Komersial</h3>
+      <div style="margin-top:18px;border-left:3px solid var(--navy);padding:8px 16px;background:linear-gradient(90deg,rgba(0,61,121,0.06),transparent);">
+        <div class="eyebrow" style="color:var(--muted);">Total Indeks Wilayah</div>
+        <div class="stat-num" style="font-size:34px;color:var(--navy);font-family:'Source Serif 4',Georgia,serif;font-weight:600;margin-top:4px;">${fmtRupiah(mag)}</div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:14px;font-style:italic;">Indeks proxy: jumlah usaha &times; rata-rata pendapatan pekerja sektor (Sakernas). Bukan klaim Rupiah absolut.</div>
     `;
-    Plotly.newPlot('page5-akses', [{
-      type: 'bar',
-      x: ['Skor Akses Transportasi', 'Densitas Catchment 1km'],
-      y: [trans || 0, catch_ || 0],
-      text: [fmtScore(trans), fmtNum(catch_)],
-      textposition: 'outside',
-      marker: { color: [PLOT_COLORS.navy, PLOT_COLORS.orange] }
-    }], basePlotLayout({
-      margin: { l: 50, r: 24, t: 30, b: 40 },
-      yaxis: { gridcolor: '#E5E8EC' }
-    }), PLOT_CFG);
   }
+
+  // 4. Fasilitas Sekitar
+  const cats = ['Hiburan / Nightlife', 'Gaya Hidup / Wellness', 'Retail Khusus', 'Wisata / Budaya', 'Layanan Penunjang'];
+  const vals = [item.count_hiburan_nightlife, item.count_gaya_hidup_wellness, item.count_retail_khusus, item.count_wisata_budaya, item.count_layanan_penunjang].map(v => v || 0);
+  document.getElementById('p5-fasilitas').innerHTML = `
+    <div class="eyebrow" style="color:var(--muted);">Fasilitas Sekitar (OSM)</div>
+    <h3 class="serif-display text-xl mt-1 mb-3">Komposisi Tempat Usaha Gaya Hidup</h3>
+    <div id="p5-fasil-chart" style="height:260px;"></div>
+  `;
+  Plotly.newPlot('p5-fasil-chart', [{
+    type: 'bar', orientation: 'h',
+    y: cats.slice().reverse(), x: vals.slice().reverse(),
+    text: vals.slice().reverse().map(v => fmtNum(v)),
+    textposition: 'outside',
+    marker: { color: PLOT_COLORS.sky }
+  }], basePlotLayout({
+    margin: { l: 160, r: 60, t: 10, b: 30 },
+    xaxis: { gridcolor: '#E5E8EC' }
+  }), PLOT_CFG);
+
+  // 5. Aksesibilitas (full width row)
+  const trans = item.transport_access_score_raw;
+  const catch_ = item.catchment_density_1km;
+  document.getElementById('p5-akses').innerHTML = `
+    <div class="eyebrow" style="color:var(--muted);">Aksesibilitas Transportasi</div>
+    <h3 class="serif-display text-xl mt-1 mb-3">Akses Transportasi dan Densitas Catchment</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div style="border-top:3px solid var(--navy);padding-top:14px;">
+        <div class="eyebrow" style="color:var(--muted);">Skor Akses Transportasi</div>
+        <div style="font-family:'Source Serif 4',Georgia,serif;font-size:34px;font-weight:600;color:var(--navy);margin-top:4px;">${fmtScore(trans)}</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:6px;">Komposit halte/stasiun dalam radius 1km, weighted by mode</div>
+      </div>
+      <div style="border-top:3px solid var(--yellow);padding-top:14px;">
+        <div class="eyebrow" style="color:var(--muted);">Densitas Catchment 1km</div>
+        <div style="font-family:'Source Serif 4',Georgia,serif;font-size:34px;font-weight:600;color:var(--ink);margin-top:4px;">${fmtNum(catch_)}</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:6px;">Jumlah node transportasi dalam radius 1km dari centroid</div>
+      </div>
+    </div>
+  `;
 }
 
 // ============ PAGE 6: METODOLOGI ============
@@ -1896,7 +1906,7 @@ window.renderSkorPotensi = renderSkorPotensi;
 window.renderPage4Eczi = renderPage4Eczi;
 window.renderPage4Mag = renderPage4Mag;
 window.renderPage5 = renderPage5;
-window.renderPage5Sub = renderPage5Sub;
+window.renderPage5AllIndicators = renderPage5AllIndicators;
 window.renderMetodologi = renderMetodologi;
 window.renderMap2 = renderMap2;
 window.renderMap3 = renderMap3;
