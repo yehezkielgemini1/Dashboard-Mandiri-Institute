@@ -532,7 +532,7 @@ button, .chip-action { transition: all var(--tr-base); }
     <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
       <span class="filter-bar-label">Pilih wilayah atau kelurahan</span>
       <select
-        @change="const v=$event.target.value; const [m,...rest]=v.split('::'); page5Mode=m; page5Selected=rest.join('::'); $nextTick(()=>renderPage5(this))"
+        @change="const v=$event.target.value; const [m,...rest]=v.split('::'); page5Mode=m; page5Selected=rest.join('::');"
         class="select-flat" style="font-size:14px;min-width:340px;flex:1;max-width:520px;">
         <optgroup label="Wilayah Berpotensi (21)">
           <template x-for="k in KAWASAN_DATA.map(x=>x.kawasan).sort()" :key="'k_'+k">
@@ -1851,6 +1851,9 @@ function dashboard() {
       this.$watch('tier', () => this.$nextTick(() => this.renderAll()));
       this.$watch('filterCategory', () => this.$nextTick(() => this.renderAll()));
       this.$watch('leaderTab', () => this.$nextTick(() => { if (this.page === 'ringkasan') renderRingkasan(this); }));
+      // Page 5 dropdown: re-render setiap kali user pilih wilayah/desa baru
+      this.$watch('page5Selected', () => this.$nextTick(() => { if (this.page === 'detail-kawasan') renderPage5(this); }));
+      this.$watch('page5Mode', () => this.$nextTick(() => { if (this.page === 'detail-kawasan') renderPage5(this); }));
       // Bridge for topnav anchors + landing-page deeplink (#page=...)
       window.gotoPage = (id) => this.setPage(id);
     },
