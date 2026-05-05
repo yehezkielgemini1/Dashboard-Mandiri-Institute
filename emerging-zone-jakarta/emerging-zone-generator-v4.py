@@ -1106,9 +1106,18 @@ function colorScale_level(v) {
 }
 function renderMap2() {
   initMap2();
-  if (_map2Layer) _map2.removeLayer(_map2Layer);
-  const mode = (typeof Alpine !== 'undefined' && Alpine.$data) ? null : null;
-  const ctx = document.querySelector('[x-data]').__x.$data;
+  if (!_map2) return;
+  if (_map2Layer) {
+    try { _map2.removeLayer(_map2Layer); } catch (e) {}
+    _map2Layer = null;
+  }
+  // Alpine v3 API (we load v3, not v2). __x.$data is v2 -> throws "undefined"
+  let ctx = {};
+  try {
+    const root = document.querySelector('[x-data]');
+    if (root && typeof Alpine !== 'undefined' && Alpine.$data) ctx = Alpine.$data(root) || {};
+    else if (root && root._x_dataStack) ctx = root._x_dataStack[0] || {};
+  } catch (e) {}
   const useLevel = ctx.map2Year === 'level';
   _map2Layer = L.geoJSON(GEOJSON, {
     style: function(f) {
