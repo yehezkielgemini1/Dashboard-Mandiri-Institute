@@ -239,7 +239,7 @@ button, .chip-action { transition: all var(--tr-base); }
   <div class="menu">
     <a href="../index.html">Beranda</a>
     <a href="#" :class="page==='ringkasan' ? 'active' : ''" @click.prevent="setPage('ringkasan')">Ringkasan</a>
-    <a href="#" :class="page==='cahaya-malam' ? 'active' : ''" @click.prevent="setPage('cahaya-malam')">Cahaya Malam</a>
+    <a href="#" :class="page==='cahaya-malam' ? 'active' : ''" @click.prevent="setPage('cahaya-malam')">Luminositas Malam</a>
     <a href="#" :class="page==='aktivitas-komersial' ? 'active' : ''" @click.prevent="setPage('aktivitas-komersial')">Aktivitas Komersial</a>
     <a href="#" :class="page==='skor-potensi' ? 'active' : ''" @click.prevent="setPage('skor-potensi')">Skor Potensi</a>
     <a href="#" :class="page==='detail-kawasan' ? 'active' : ''" @click.prevent="setPage('detail-kawasan')">Detail Kawasan</a>
@@ -264,7 +264,7 @@ button, .chip-action { transition: all var(--tr-base); }
   <div class="drawer-label">Kawasan Komersial Jakarta</div>
   <ul>
     <li><button @click="setPage('ringkasan'); navOpen = false"><iconify-icon icon="mdi:view-dashboard"></iconify-icon>Ringkasan</button></li>
-    <li><button @click="setPage('cahaya-malam'); navOpen = false"><iconify-icon icon="mdi:weather-night"></iconify-icon>Cahaya Malam</button></li>
+    <li><button @click="setPage('cahaya-malam'); navOpen = false"><iconify-icon icon="mdi:weather-night"></iconify-icon>Luminositas Malam</button></li>
     <li><button @click="setPage('aktivitas-komersial'); navOpen = false"><iconify-icon icon="mdi:store"></iconify-icon>Aktivitas Komersial</button></li>
     <li><button @click="setPage('skor-potensi'); navOpen = false"><iconify-icon icon="mdi:chart-bar"></iconify-icon>Skor Potensi</button></li>
     <li><button @click="setPage('detail-kawasan'); navOpen = false"><iconify-icon icon="mdi:map-marker"></iconify-icon>Detail Kawasan</button></li>
@@ -301,46 +301,11 @@ button, .chip-action { transition: all var(--tr-base); }
 <div class="with-sidebar">
 
 
-<div class="folio">
-  <div class="folio-inner">
-    <span class="left">Mandiri Institute &middot; Kawasan Komersial Jakarta</span>
-    <span class="right" x-text="currentTabLabel()"></span>
-  </div>
-</div>
-
-
-
-<div class="filter-bar">
-  <div class="filter-bar-inner">
-    <span class="filter-bar-label">Tier Analisis</span>
-    <div class="flex gap-1">
-      <button @click="tier='kawasan'" :class="tier==='kawasan' ? 'chip-action active' : 'chip-action'">Wilayah Berpotensi</button>
-      <button @click="tier='desa'" :class="tier==='desa' ? 'chip-action active' : 'chip-action'">Kelurahan/Desa</button>
-      <button @click="tier='kecamatan'" :class="tier==='kecamatan' ? 'chip-action active' : 'chip-action'">Kecamatan</button>
-      <button @click="tier='kabkota'" :class="tier==='kabkota' ? 'chip-action active' : 'chip-action'">Kabupaten/Kota</button>
-    </div>
-    <div class="sep"></div>
-    <span class="filter-bar-label">Kategori</span>
-    <select x-model="filterCategory" class="select-flat" style="font-size:12px;min-width:200px;">
-      <option value="all">Semua Kategori</option>
-      <option value="Kawasan Komersial Sedang Naik Daun">Sedang Naik Daun</option>
-      <option value="Kawasan Komersial Mapan">Sudah Mapan</option>
-      <option value="Awal Pertumbuhan">Awal Pertumbuhan</option>
-      <option value="Aktivitas Rendah">Aktivitas Rendah</option>
-    </select>
-    <div class="sep"></div>
-    <button @click="tier='kawasan'; filterCategory='all'" style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);background:none;border:none;cursor:pointer;">Reset</button>
-    <span x-text="'&middot; ' + getCurrentData().length + ' wilayah'" style="font-size:10px;color:var(--muted);"></span>
-  </div>
-</div>
-
-
-
 <div class="hero-band">
   <header class="max-w-[1280px] mx-auto px-8 pt-14 pb-14">
     <div class="eyebrow">Riset Mandiri Institute &middot; Spasial Ekonomi</div>
-    <h1 class="serif-display text-4xl md:text-5xl mt-5 max-w-4xl">Pendeteksi Kawasan Komersial Berkembang &mdash; DKI Jakarta 2021-2025</h1>
-    <p class="mt-5 text-base max-w-3xl leading-relaxed">Identifikasi 21 wilayah berpotensi dan 270 kelurahan dengan sinyal pertumbuhan komersial terkuat 2021-2025, melalui composite Cahaya Malam (NASA VIIRS) + Sensus Tempat Usaha (Podes BPS) + Pendapatan Pekerja Sektor (Sakernas BPS) + Pemetaan Tempat Usaha Gaya Hidup (OpenStreetMap).</p>
+    <h1 class="serif-display text-4xl md:text-5xl mt-5 max-w-4xl">Kawasan Komersial Berkembang &mdash; DKI Jakarta 2021-2025</h1>
+    <p class="mt-5 text-base max-w-3xl leading-relaxed">21 wilayah dan 270 kelurahan, diperingkat dari empat sumber: NASA VIIRS, Podes BPS, Sakernas BPS, OpenStreetMap.</p>
   </header>
 </div>
 
@@ -352,8 +317,31 @@ button, .chip-action { transition: all var(--tr-base); }
   <div class="rule-top pt-8">
     <span class="badge"><span class="badge-dot"></span>Ringkasan Eksekutif</span>
     <div class="eyebrow-roman mt-3">I. Ringkasan Eksekutif</div>
-    <h2 class="serif-display text-3xl mt-2 max-w-3xl">Wilayah komersial yang sedang menyalakan diri di Jakarta.</h2>
-    <p class="mt-3 muted text-sm max-w-3xl">Composite empat sumber data mengidentifikasi 21 wilayah berpotensi dan memberi peringkat 270 kelurahan menurut kekuatan pertumbuhan komersial 2021-2025. Skor Potensi mengukur sinyal pertumbuhan tahunan, sementara Skor Magnitude mengukur skala aktivitas saat ini.</p>
+    <h2 class="serif-display text-3xl mt-2 max-w-3xl">Peringkat wilayah berdasarkan dua skor.</h2>
+    <p class="mt-3 muted text-sm max-w-3xl"><strong>Skor Potensi</strong> mengukur sinyal pertumbuhan 2021-2025. <strong>Skor Magnitude</strong> mengukur skala aktivitas 2025.</p>
+  </div>
+
+  <!-- Inline tier filter (replaces global filter bar) -->
+  <div class="chart-card mt-6" style="padding:14px 20px;">
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      <span class="filter-bar-label">Tier</span>
+      <div class="flex gap-1">
+        <button @click="tier='kawasan'" :class="tier==='kawasan' ? 'chip-action active' : 'chip-action'">Wilayah Berpotensi</button>
+        <button @click="tier='desa'" :class="tier==='desa' ? 'chip-action active' : 'chip-action'">Kelurahan/Desa</button>
+        <button @click="tier='kecamatan'" :class="tier==='kecamatan' ? 'chip-action active' : 'chip-action'">Kecamatan</button>
+        <button @click="tier='kabkota'" :class="tier==='kabkota' ? 'chip-action active' : 'chip-action'">Kabupaten/Kota</button>
+      </div>
+      <div class="sep"></div>
+      <span class="filter-bar-label">Kategori</span>
+      <select x-model="filterCategory" class="select-flat" style="font-size:12px;min-width:200px;">
+        <option value="all">Semua Kategori</option>
+        <option value="Kawasan Komersial Sedang Naik Daun">Sedang Naik Daun</option>
+        <option value="Kawasan Komersial Mapan">Sudah Mapan</option>
+        <option value="Awal Pertumbuhan">Awal Pertumbuhan</option>
+        <option value="Aktivitas Rendah">Aktivitas Rendah</option>
+      </select>
+      <span x-text="'&middot; ' + getCurrentData().length + ' wilayah'" style="font-size:11px;color:var(--muted);margin-left:auto;"></span>
+    </div>
   </div>
 
   <div id="kpi-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8"></div>
@@ -373,7 +361,7 @@ button, .chip-action { transition: all var(--tr-base); }
   </div>
 
   <div class="mt-10 chart-card">
-    <div class="eyebrow" style="color:var(--muted)">Tren Cahaya Malam 2019-2025</div>
+    <div class="eyebrow" style="color:var(--muted)">Tren Luminositas Malam 2019-2025</div>
     <h3 class="serif-display text-2xl mt-2 mb-3">Lintasan 5 Wilayah Teratas</h3>
     <div id="ringkasan-spark" style="height:280px;"></div>
     <div class="chart-footer">
@@ -386,10 +374,10 @@ button, .chip-action { transition: all var(--tr-base); }
 
 <section x-show="page === 'cahaya-malam'">
   <div class="rule-top pt-8">
-    <span class="badge"><span class="badge-dot"></span>Cahaya Malam (Satelit)</span>
+    <span class="badge"><span class="badge-dot"></span>Luminositas Malam (Satelit)</span>
     <div class="eyebrow-roman mt-3">II. Sinyal dari Atas Atap</div>
-    <h2 class="serif-display text-3xl mt-2 max-w-3xl">Pertumbuhan cahaya malam per kelurahan, 2021-2025.</h2>
-    <p class="mt-3 muted text-sm max-w-3xl">Cahaya malam dari satelit NASA VIIRS adalah proxy paling konsisten untuk intensitas aktivitas spasial. Pertumbuhan tahunan rata-rata menunjukkan kelurahan mana yang sedang menambah aktivitas, sementara tingkat kecerahan 2025 menunjukkan skala aktivitas saat ini.</p>
+    <h2 class="serif-display text-3xl mt-2 max-w-3xl">Pertumbuhan luminositas per kelurahan, 2021-2025.</h2>
+    <p class="mt-3 muted text-sm max-w-3xl">Luminositas malam (NASA VIIRS) sebagai proxy intensitas aktivitas spasial. Pertumbuhan tahunan menunjukkan kelurahan yang sedang naik; tingkat kecerahan 2025 menunjukkan skala aktivitas saat ini.</p>
   </div>
 
   <div class="chart-card mt-8" style="position:relative;">
@@ -406,7 +394,7 @@ button, .chip-action { transition: all var(--tr-base); }
 
   <div class="chart-card mt-8">
     <div class="eyebrow" style="color:var(--muted)">Tren Multi-Wilayah 2019-2025</div>
-    <h3 class="serif-display text-xl mt-1 mb-4">Lintasan Cahaya Malam per Wilayah</h3>
+    <h3 class="serif-display text-xl mt-1 mb-4">Lintasan Luminositas Malam per Wilayah</h3>
     <div id="chart-ntl-timeseries" style="height:430px;"></div>
     <div class="chart-footer">
       <span><span class="label">Unit</span>DNB Radiance (nW/cm&sup2;/sr), komposit Jul-Sep</span>
@@ -424,7 +412,7 @@ button, .chip-action { transition: all var(--tr-base); }
     <h3 class="serif-display text-xl mt-1 mb-4">Sinyal Awal 2026 per Wilayah</h3>
     <div id="pulse-table"></div>
     <div class="chart-footer">
-      <span><span class="label">Indikator</span>Perubahan tahunan cahaya malam awal 2026 vs awal 2025</span>
+      <span><span class="label">Indikator</span>Perubahan tahunan luminositas malam awal 2026 vs awal 2025</span>
     </div>
   </div>
 </section>
@@ -435,8 +423,8 @@ button, .chip-action { transition: all var(--tr-base); }
   <div class="rule-top pt-8">
     <span class="badge"><span class="badge-dot"></span>Aktivitas Komersial Mikro</span>
     <div class="eyebrow-roman mt-3">III. Tempat Usaha &amp; Gaya Hidup</div>
-    <h2 class="serif-display text-3xl mt-2 max-w-3xl">Kepadatan dan keberagaman tempat usaha per kelurahan.</h2>
-    <p class="mt-3 muted text-sm max-w-3xl">Sensus Podes BPS adalah rujukan jumlah tempat usaha (10 kategori), sementara OpenStreetMap memberikan titik gaya hidup, hiburan, dan layanan untuk visualisasi. Heatmap dan cluster marker membantu melihat klaster usaha gaya hidup yang biasanya di luar cakupan sensus formal.</p>
+    <h2 class="serif-display text-3xl mt-2 max-w-3xl">Kepadatan dan keberagaman tempat usaha.</h2>
+    <p class="mt-3 muted text-sm max-w-3xl">Podes BPS = jumlah tempat usaha (10 kategori). OpenStreetMap = titik gaya hidup di luar cakupan sensus formal.</p>
   </div>
 
   <div class="chart-card mt-8" style="position:relative;">
@@ -478,8 +466,8 @@ button, .chip-action { transition: all var(--tr-base); }
   <div class="rule-top pt-8">
     <span class="badge"><span class="badge-dot"></span>Skor Potensi &amp; Magnitude</span>
     <div class="eyebrow-roman mt-3">IV. Composite Score Detail</div>
-    <h2 class="serif-display text-3xl mt-2 max-w-3xl">Dua perspektif: pertumbuhan dan kepadatan.</h2>
-    <p class="mt-3 muted text-sm max-w-3xl">Skor Potensi mengukur sinyal pertumbuhan tahunan (siapa yang sedang naik). Skor Magnitude mengukur skala aktivitas 2025 (siapa yang sudah besar). Kedua skor independen dan saling melengkapi.</p>
+    <h2 class="serif-display text-3xl mt-2 max-w-3xl">Pertumbuhan vs kepadatan.</h2>
+    <p class="mt-3 muted text-sm max-w-3xl"><strong>Skor Potensi</strong>: siapa yang sedang naik. <strong>Skor Magnitude</strong>: siapa yang sudah besar. Independen, saling melengkapi.</p>
   </div>
 
   <div class="tab-strip mt-8">
@@ -496,7 +484,7 @@ button, .chip-action { transition: all var(--tr-base); }
       </div>
       <div class="chart-card">
         <div class="eyebrow" style="color:var(--muted)">Posisi Strategis</div>
-        <h3 class="serif-display text-xl mt-1 mb-3">Pertumbuhan Cahaya Malam vs Gaya Hidup</h3>
+        <h3 class="serif-display text-xl mt-1 mb-3">Pertumbuhan Luminositas Malam vs Gaya Hidup</h3>
         <div id="chart-quadrant" style="height:380px;"></div>
       </div>
     </div>
@@ -536,8 +524,8 @@ button, .chip-action { transition: all var(--tr-base); }
   <div class="rule-top pt-8">
     <span class="badge"><span class="badge-dot"></span>Detail per Wilayah</span>
     <div class="eyebrow-roman mt-3">V. Drilldown</div>
-    <h2 class="serif-display text-3xl mt-2 max-w-3xl">Profil per wilayah berpotensi atau kelurahan.</h2>
-    <p class="mt-3 muted text-sm max-w-3xl">Pilih satu wilayah berpotensi (21) atau satu kelurahan (270) untuk melihat semua komponen skor secara mendalam.</p>
+    <h2 class="serif-display text-3xl mt-2 max-w-3xl">Profil per wilayah.</h2>
+    <p class="mt-3 muted text-sm max-w-3xl">Pilih 1 dari 21 wilayah berpotensi atau 270 kelurahan untuk membedah semua komponen skor.</p>
   </div>
 
   <div class="chart-card mt-8">
@@ -563,7 +551,7 @@ button, .chip-action { transition: all var(--tr-base); }
   <div id="page5-header" class="chart-card mt-6"></div>
 
   <div class="tab-strip mt-6">
-    <button @click="page5SubTab='ntl'; $nextTick(()=>renderPage5Sub(this))" :class="page5SubTab==='ntl' ? 'tab-btn active' : 'tab-btn'">Cahaya Malam</button>
+    <button @click="page5SubTab='ntl'; $nextTick(()=>renderPage5Sub(this))" :class="page5SubTab==='ntl' ? 'tab-btn active' : 'tab-btn'">Luminositas Malam</button>
     <button @click="page5SubTab='podes'; $nextTick(()=>renderPage5Sub(this))" :class="page5SubTab==='podes' ? 'tab-btn active' : 'tab-btn'">Tempat Usaha</button>
     <button @click="page5SubTab='sektor'; $nextTick(()=>renderPage5Sub(this))" :class="page5SubTab==='sektor' ? 'tab-btn active' : 'tab-btn'">Sektor Usaha</button>
     <button @click="page5SubTab='fasilitas'; $nextTick(()=>renderPage5Sub(this))" :class="page5SubTab==='fasilitas' ? 'tab-btn active' : 'tab-btn'">Fasilitas Sekitar</button>
@@ -579,8 +567,8 @@ button, .chip-action { transition: all var(--tr-base); }
   <div class="rule-top pt-8">
     <span class="badge"><span class="badge-dot"></span>Metodologi</span>
     <div class="eyebrow-roman mt-3">VI. Cara Baca, Sumber, Bobot, Validasi</div>
-    <h2 class="serif-display text-3xl mt-2 max-w-3xl">Bagaimana skor dihitung dan apa batasannya.</h2>
-    <p class="mt-3 muted text-sm max-w-3xl">Dashboard ini menggabungkan 4 sumber data publik: cahaya malam NASA VIIRS, sensus tempat usaha Podes BPS, pendapatan pekerja sektor Sakernas BPS, dan titik tempat usaha OpenStreetMap. Bobot komposit divalidasi terhadap rujukan empiris.</p>
+    <h2 class="serif-display text-3xl mt-2 max-w-3xl">Cara skor dihitung dan batasannya.</h2>
+    <p class="mt-3 muted text-sm max-w-3xl">Empat sumber data publik: NASA VIIRS, Podes BPS, Sakernas BPS, OpenStreetMap. Bobot komposit divalidasi empiris.</p>
   </div>
 
   <h3 class="serif-display text-xl mt-10 mb-3">A. Cara Membaca Dashboard</h3>
@@ -591,7 +579,7 @@ button, .chip-action { transition: all var(--tr-base); }
         <tr><td><strong>Skor Potensi</strong></td><td>Kekuatan sinyal pertumbuhan tahunan 2021-2025</td><td>Skor 0-100. Tinggi = sinyal pertumbuhan kuat dari multi-sumber.</td></tr>
         <tr><td><strong>Skor Magnitude</strong></td><td>Skala aktivitas komersial 2025</td><td>Skor 0-100. Tinggi = wilayah sudah padat aktivitas.</td></tr>
         <tr><td><strong>Tipe Kawasan</strong></td><td>Kombinasi pertumbuhan dan kepadatan</td><td>Naik Daun (tinggi keduanya), Mapan (kepadatan tinggi, pertumbuhan moderat), Awal Pertumbuhan (kepadatan rendah, pertumbuhan tinggi), Aktivitas Rendah (rendah keduanya).</td></tr>
-        <tr><td><strong>Tren 2026</strong></td><td>Sinyal awal 2026 dari cahaya malam</td><td>Lanjut Tumbuh, Stabil, Mulai Melambat &mdash; berdasarkan perubahan tahunan awal 2026 vs awal 2025.</td></tr>
+        <tr><td><strong>Tren 2026</strong></td><td>Sinyal awal 2026 dari luminositas malam</td><td>Lanjut Tumbuh, Stabil, Mulai Melambat &mdash; berdasarkan perubahan tahunan awal 2026 vs awal 2025.</td></tr>
       </tbody>
     </table>
   </div>
@@ -601,7 +589,7 @@ button, .chip-action { transition: all var(--tr-base); }
     <table class="score-table">
       <thead><tr><th>Sumber</th><th>Peran</th><th>Granularity</th><th>Periode</th></tr></thead>
       <tbody>
-        <tr><td>NASA VIIRS Cahaya Malam</td><td>Intensitas aktivitas spasial</td><td>270 kelurahan (173 nilai unik via spatial join)</td><td>2019-2025</td></tr>
+        <tr><td>NASA VIIRS Luminositas Malam</td><td>Intensitas aktivitas spasial</td><td>270 kelurahan (173 nilai unik via spatial join)</td><td>2019-2025</td></tr>
         <tr><td>Podes BPS Sensus Usaha</td><td>Jumlah tempat usaha (10 kategori)</td><td>270 kelurahan (ground truth)</td><td>2018-2025</td></tr>
         <tr><td>Sakernas BPS</td><td>Pendapatan pekerja sektor</td><td>6 kabupaten/kota DKI</td><td>2021-2025</td></tr>
         <tr><td>OpenStreetMap</td><td>Visualisasi titik gaya hidup &amp; aksesibilitas</td><td>8.705 titik gaya hidup + 5.054 transportasi</td><td>Snapshot 2026</td></tr>
@@ -618,7 +606,7 @@ button, .chip-action { transition: all var(--tr-base); }
       <table class="score-table">
         <thead><tr><th>Komponen</th><th>Sub-Komponen</th><th>Bobot</th></tr></thead>
         <tbody>
-          <tr><td rowspan="3"><strong>Cahaya Malam (24%)</strong></td><td>Pertumbuhan tahunan rata-rata</td><td class="num">13%</td></tr>
+          <tr><td rowspan="3"><strong>Luminositas Malam (24%)</strong></td><td>Pertumbuhan tahunan rata-rata</td><td class="num">13%</td></tr>
           <tr><td>Perubahan tahun terakhir</td><td class="num">7%</td></tr>
           <tr><td>Tingkat kecerahan 2025</td><td class="num">4%</td></tr>
           <tr><td rowspan="4"><strong>Tempat Usaha (33%)</strong></td><td>Pertumbuhan tahunan rata-rata</td><td class="num">13%</td></tr>
@@ -643,7 +631,7 @@ button, .chip-action { transition: all var(--tr-base); }
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <div class="chart-card">
       <div class="eyebrow" style="color:var(--muted)">Uji 1</div>
-      <h4 class="serif-display text-lg mt-1 mb-3">Cahaya Malam vs Indeks Komersial</h4>
+      <h4 class="serif-display text-lg mt-1 mb-3">Luminositas Malam vs Indeks Komersial</h4>
       <table class="score-table">
         <thead><tr><th>Korelasi</th><th class="num">Nilai</th></tr></thead>
         <tbody>
@@ -651,7 +639,7 @@ button, .chip-action { transition: all var(--tr-base); }
           <tr><td>Spearman r</td><td class="num">0,124</td></tr>
         </tbody>
       </table>
-      <p style="font-size:13px;margin-top:12px;color:var(--ink);line-height:1.5;">Cahaya malam dan Indeks Komersial mengukur dimensi yang berbeda. Keduanya wajib dipertahankan dalam composite &mdash; tidak bisa saling menggantikan.</p>
+      <p style="font-size:13px;margin-top:12px;color:var(--ink);line-height:1.5;">Luminositas malam dan Indeks Komersial mengukur dimensi berbeda &mdash; keduanya wajib dipertahankan dalam composite.</p>
     </div>
     <div class="chart-card">
       <div class="eyebrow" style="color:var(--muted)">Uji 2</div>
@@ -673,14 +661,14 @@ button, .chip-action { transition: all var(--tr-base); }
   <h3 class="serif-display text-xl mt-10 mb-3">E. Catatan Penting</h3>
   <div class="chart-card">
     <ol style="margin-left:20px;font-size:13px;line-height:1.7;color:var(--ink);">
-      <li>Cahaya malam adalah proxy aktivitas spasial, bukan ukuran langsung PDRB atau transaksi.</li>
+      <li>Luminositas malam adalah proxy aktivitas spasial, bukan ukuran langsung PDRB atau transaksi.</li>
       <li><span style="color:var(--warning);">&#9888;</span> <strong>Sakernas mengukur pendapatan pekerja per bulan, bukan revenue per usaha.</strong> Jangan baca Indeks Aktivitas sebagai total Rupiah absolut.</li>
       <li>Spatial join VIIRS-kelurahan menghasilkan 173 nilai unik untuk 270 kelurahan; kelurahan kecil berbagi pixel.</li>
       <li>Podes BPS hanya mencakup 10 kategori usaha formal; tempat usaha gaya hidup informal sering luput.</li>
       <li>Indeks keberagaman Shannon dihitung dari 10 kategori Podes; nilai tinggi = mix sektor.</li>
       <li>Skor Potensi distandardisasi 0-100 per komponen sebelum di-bobot, sehingga tidak sensitif outlier ekstrem.</li>
       <li>Beberapa kelurahan dengan data podes ekstrem dilakukan winsorize di p1-p99 (lihat flag winsorize).</li>
-      <li>Tren 2026 = perubahan tahunan cahaya malam awal 2026 vs awal 2025; sinyal awal, bukan kesimpulan tahun penuh.</li>
+      <li>Tren 2026 = perubahan tahunan luminositas malam awal 2026 vs awal 2025; sinyal awal, bukan kesimpulan tahun penuh.</li>
       <li>OpenStreetMap snapshot 2026 tidak retrospektif &mdash; tidak menggambarkan komposisi 2021.</li>
       <li><span style="color:var(--warning);">&#9888;</span> Indeks Aktivitas adalah proxy untuk peringkat relatif, bukan total revenue absolut.</li>
       <li>Reliability flag muncul ketika &lt;3 sub-komponen tersedia &mdash; baca skor wilayah tersebut dengan hati-hati.</li>
@@ -721,7 +709,7 @@ button, .chip-action { transition: all var(--tr-base); }
     <table class="score-table">
       <thead><tr><th>Sumber</th><th>Frekuensi</th><th>Implikasi</th></tr></thead>
       <tbody>
-        <tr><td>Cahaya Malam VIIRS</td><td>Bulanan (lag 2-4 minggu)</td><td>Refresh indikator Tren 2026</td></tr>
+        <tr><td>Luminositas Malam VIIRS</td><td>Bulanan (lag 2-4 minggu)</td><td>Refresh indikator Tren 2026</td></tr>
         <tr><td>Podes BPS</td><td>Tahunan</td><td>Refresh composite Skor Potensi</td></tr>
         <tr><td>Sakernas BPS</td><td>Tahunan (Februari &amp; Agustus)</td><td>Refresh Indeks Aktivitas Komersial</td></tr>
         <tr><td>OpenStreetMap</td><td>Snapshot saat regenerate dashboard</td><td>Update peta titik gaya hidup &amp; transportasi</td></tr>
@@ -1395,7 +1383,7 @@ function renderPage4Eczi(ctx) {
   const data = ctx.getCurrentData();
   // Radar — top 5
   const top5 = [...data].sort((a,b) => (b.eczi_score||0) - (a.eczi_score||0)).slice(0, 5);
-  const cats = ['Cahaya Malam','Tempat Usaha','Aktivitas Komersial','Gaya Hidup','Aksesibilitas'];
+  const cats = ['Luminositas Malam','Tempat Usaha','Aktivitas Komersial','Gaya Hidup','Aksesibilitas'];
   const colors = [PLOT_COLORS.navy, PLOT_COLORS.sky, PLOT_COLORS.yellow, PLOT_COLORS.orange, PLOT_COLORS.positive];
   const traces = top5.map((d, i) => {
     let g1, g2, g3, g4, g5;
@@ -1440,7 +1428,7 @@ function renderPage4Eczi(ctx) {
     text: labels, hovertemplate: '%{text}<extra></extra>'
   }], basePlotLayout({
     margin: { l: 60, r: 24, t: 20, b: 60 },
-    xaxis: { title: 'Skor Pertumbuhan Cahaya Malam (0-100)', gridcolor: '#E5E8EC', range: [0, 100] },
+    xaxis: { title: 'Skor Pertumbuhan Luminositas Malam (0-100)', gridcolor: '#E5E8EC', range: [0, 100] },
     yaxis: { title: 'Skor Gaya Hidup (0-100)', gridcolor: '#E5E8EC', range: [0, 100] },
     shapes: [
       { type: 'line', x0: xMed, x1: xMed, y0: 0, y1: 100, line: { color: '#D0D5DD', width: 1, dash: 'dash' } },
@@ -1449,7 +1437,7 @@ function renderPage4Eczi(ctx) {
     annotations: [
       { x: 95, y: 95, text: 'Naik Daun &<br>Gaya Hidup Tinggi', showarrow: false, font: { size: 9, color: '#667085' }, align: 'right' },
       { x: 5, y: 95, text: 'Gaya Hidup<br>Tinggi', showarrow: false, font: { size: 9, color: '#667085' }, align: 'left' },
-      { x: 95, y: 5, text: 'Pertumbuhan<br>Cahaya Tinggi', showarrow: false, font: { size: 9, color: '#667085' }, align: 'right' },
+      { x: 95, y: 5, text: 'Pertumbuhan<br>Luminositas Tinggi', showarrow: false, font: { size: 9, color: '#667085' }, align: 'right' },
       { x: 5, y: 5, text: 'Aktivitas<br>Rendah', showarrow: false, font: { size: 9, color: '#667085' }, align: 'left' }
     ]
   }), PLOT_CFG);
@@ -1461,7 +1449,7 @@ function renderPage4Eczi(ctx) {
   else if (ctx.tier === 'desa') html += '<th>Kelurahan</th><th>Kab/Kota</th>';
   else if (ctx.tier === 'kecamatan') html += '<th>Kecamatan</th><th>Kab/Kota</th>';
   else html += '<th>Kabupaten/Kota</th><th></th>';
-  html += '<th class="num">Skor Potensi</th><th class="num">Cahaya Malam</th><th class="num">Tempat Usaha</th><th class="num">Aktivitas Komersial</th><th class="num">Gaya Hidup</th><th class="num">Aksesibilitas</th><th>Kategori</th><th>Tren 2026</th></tr></thead><tbody>';
+  html += '<th class="num">Skor Potensi</th><th class="num">Luminositas Malam</th><th class="num">Tempat Usaha</th><th class="num">Aktivitas Komersial</th><th class="num">Gaya Hidup</th><th class="num">Aksesibilitas</th><th>Kategori</th><th>Tren 2026</th></tr></thead><tbody>';
   sorted.forEach((d, i) => {
     let g1, g2, g3, g4, g5;
     if (ctx.tier === 'kawasan') { g1=d.g1_cahaya_malam; g2=d.g2_tempat_usaha; g3=d.g3_magnitude; g4=d.g4_gaya_hidup; g5=d.g5_aksesibilitas; }
@@ -1566,7 +1554,7 @@ function renderPage5Sub(ctx) {
     const cagr = item.ntl_cagr_2021_2025;
     const qual = item.quality_flag;
     c.innerHTML = `
-      <div class="eyebrow" style="color:var(--muted);">Cahaya Malam</div>
+      <div class="eyebrow" style="color:var(--muted);">Luminositas Malam</div>
       <h3 class="serif-display text-xl mt-1 mb-3">Trajectory ${isKaw ? 'gabungan member' : 'kelurahan'}</h3>
       ${isKaw ? `<div style="font-size:13px;color:var(--muted);margin-bottom:16px;">Pertumbuhan tahunan rata-rata wilayah: <strong style="color:var(--ink);">${fmtPct(cagr, ' per tahun')}</strong></div>` :
         `<div id="page5-ntl-bar" style="height:240px;"></div>
@@ -1692,7 +1680,7 @@ function renderMetodologi(ctx) {
   // Weights donut
   Plotly.newPlot('chart-weights', [{
     type: 'pie', hole: 0.45,
-    labels: ['Cahaya Malam (24%)', 'Tempat Usaha (33%)', 'Aktivitas Komersial (11%)', 'Gaya Hidup (12%)', 'Aksesibilitas (20%)'],
+    labels: ['Luminositas Malam (24%)', 'Tempat Usaha (33%)', 'Aktivitas Komersial (11%)', 'Gaya Hidup (12%)', 'Aksesibilitas (20%)'],
     values: [24, 33, 11, 12, 20],
     marker: { colors: ['#003D79', '#1A5394', '#67B2E8', '#FFB700', '#EA7200'] },
     textinfo: 'label+percent', textposition: 'outside'
@@ -1700,9 +1688,9 @@ function renderMetodologi(ctx) {
 
   // References
   const refs = [
-    { id: 'R1', cit: 'Henderson, J. V., Storeygard, A., & Weil, D. N. (2012). Measuring Economic Growth from Outer Space. American Economic Review, 102(2), 994-1028.', doi: '10.1257/aer.102.2.994', finding: 'Cahaya malam adalah proxy konsisten untuk pertumbuhan ekonomi sub-nasional.' },
+    { id: 'R1', cit: 'Henderson, J. V., Storeygard, A., & Weil, D. N. (2012). Measuring Economic Growth from Outer Space. American Economic Review, 102(2), 994-1028.', doi: '10.1257/aer.102.2.994', finding: 'Luminositas malam adalah proxy konsisten untuk pertumbuhan ekonomi sub-nasional.' },
     { id: 'R2', cit: 'Donaldson, D., & Storeygard, A. (2016). The View from Above: Applications of Satellite Data in Economics. Journal of Economic Perspectives, 30(4), 171-198.', doi: '10.1257/jep.30.4.171', finding: 'Review penggunaan data satelit untuk ekonomi spasial; mendukung VIIRS sebagai proxy.' },
-    { id: 'R3', cit: 'Bluhm, R., & Krause, M. (2022). Top lights: Bright cities and their contribution to economic development. Journal of Development Economics, 157.', doi: '10.1016/j.jdeveco.2022.102880', finding: 'Saturasi cahaya malam di kota besar; penting koreksi BRDF.' },
+    { id: 'R3', cit: 'Bluhm, R., & Krause, M. (2022). Top lights: Bright cities and their contribution to economic development. Journal of Development Economics, 157.', doi: '10.1016/j.jdeveco.2022.102880', finding: 'Saturasi luminositas malam di kota besar; penting koreksi BRDF.' },
     { id: 'R4', cit: 'Glaeser, E. L., & Gottlieb, J. D. (2009). The Wealth of Cities. Journal of Economic Literature, 47(4), 983-1028.', doi: '10.1257/jel.47.4.983', finding: 'Densitas tempat usaha gaya hidup berkorelasi dengan urbanisasi pendapatan tinggi.' },
     { id: 'R5', cit: 'Couture, V., & Handbury, J. (2020). Urban revival in America. Journal of Urban Economics, 119.', doi: '10.1016/j.jue.2020.103267', finding: 'Konsumsi gaya hidup (restoran, hiburan) memprediksi gentrifikasi urban.' },
     { id: 'R6', cit: 'Rauch, F. (2014). Cities as spatial clusters. Journal of Economic Geography, 14(4), 759-773.', doi: '10.1093/jeg/lbt034', finding: 'Indeks keberagaman ekonomi memprediksi resilience urban.' },
@@ -1757,7 +1745,7 @@ function dashboard() {
 
     tabs: [
       { id: 'ringkasan', label: 'Ringkasan', icon: 'mdi:view-dashboard' },
-      { id: 'cahaya-malam', label: 'Cahaya Malam', icon: 'mdi:weather-night' },
+      { id: 'cahaya-malam', label: 'Luminositas Malam', icon: 'mdi:weather-night' },
       { id: 'aktivitas-komersial', label: 'Aktivitas Komersial', icon: 'mdi:store' },
       { id: 'skor-potensi', label: 'Skor Potensi', icon: 'mdi:chart-bar' },
       { id: 'detail-kawasan', label: 'Detail Kawasan', icon: 'mdi:map-marker' },
