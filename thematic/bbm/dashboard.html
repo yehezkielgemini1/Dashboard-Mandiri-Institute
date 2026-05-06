@@ -302,6 +302,27 @@
   .filter-field { display: flex; flex-direction: column; gap: 6px; min-width: 160px; }
   .filter-field label { font-size: 12px; font-weight: 700; color: var(--ink); }
   .filter-field select { padding: 8px 12px; font-size: 13px; border: 1px solid var(--rule-strong); border-radius: 4px; background: white; cursor: pointer; min-width: 180px; }
+
+  /* ============ MULTI-SELECT DROPDOWN (canon v2) ============ */
+  .ms-dd { position: relative; min-width: 200px; }
+  .ms-dd-btn { width: 100%; padding: 8px 32px 8px 12px; font-size: 13px; border: 1px solid var(--rule-strong); border-radius: 4px; background: white; cursor: pointer; text-align: left; position: relative; min-height: 36px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .ms-dd-btn:focus, .ms-dd-btn.open { outline: 2px solid var(--sky); outline-offset: -1px; }
+  .ms-dd-btn::after { content: ''; position: absolute; right: 12px; top: 50%; width: 6px; height: 6px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: translateY(-65%) rotate(45deg); }
+  .ms-dd-btn .placeholder { color: var(--muted); }
+  .ms-dd-chip { display: inline-flex; align-items: center; background: rgba(103,178,232,0.18); color: var(--navy); padding: 2px 6px; font-size: 11px; font-weight: 600; border-radius: 3px; }
+  .ms-dd-panel { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: white; border: 1px solid var(--rule-strong); border-radius: 4px; box-shadow: 0 8px 24px rgba(5,28,44,0.10); z-index: 50; max-height: 320px; display: flex; flex-direction: column; min-width: 240px; }
+  .ms-dd-search { padding: 8px; border-bottom: 1px solid var(--rule); }
+  .ms-dd-search input { width: 100%; padding: 6px 10px; font-size: 12px; border: 1px solid var(--rule-strong); border-radius: 3px; }
+  .ms-dd-list { overflow-y: auto; padding: 4px 0; flex: 1; }
+  .ms-dd-list label { display: flex; align-items: center; gap: 8px; padding: 6px 12px; font-size: 13px; cursor: pointer; }
+  .ms-dd-list label:hover { background: var(--mist, #F0F6FC); }
+  .ms-dd-list .ms-divider { border-bottom: 1px solid var(--rule); margin: 4px 0; }
+
+  /* ============ CHIP MULTI-TOGGLE (canon v2) ============ */
+  .chip-ms { display: inline-flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+  .chip-ms button { padding: 7px 14px; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; background: white; color: var(--ink); border: 1px solid var(--rule-strong); cursor: pointer; border-radius: 4px; transition: all 0.15s; }
+  .chip-ms button:hover { border-color: var(--sky); color: var(--navy); }
+  .chip-ms button.active { background: var(--navy); color: white; border-color: var(--navy); }
   .btn-submit { padding: 9px 28px; font-size: 13px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; background: var(--sky); color: white; border: none; cursor: pointer; border-radius: 4px; transition: background 0.2s; height: 36px; align-self: flex-end; }
   .btn-submit:hover { background: var(--navy); }
   .btn-submit:disabled { background: var(--muted); cursor: not-allowed; }
@@ -412,40 +433,108 @@
   </header>
 </div>
 
-<!-- STANDARDIZED FILTER BAR (canon untuk semua dashboard) -->
-<div class="filter-canon">
+<!-- ADAPTIVE FILTER BAR (canon v2) -->
+<div class="filter-canon" x-show="filterFields().length > 0">
   <div class="filter-canon-inner">
-    <div class="filter-field">
-      <label>Periode</label>
-      <select x-model="f.periode">
-        <option value="tahunan">Tahunan</option>
-      </select>
-    </div>
-    <div class="filter-field">
+    <!-- Tahun -->
+    <div class="filter-field" x-show="filterFields().includes('tahun')">
       <label>Tahun</label>
-      <select x-model="f.tahun">
-        <template x-for="y in years" :key="y">
-          <option :value="y" x-text="y"></option>
-        </template>
+      <select x-model="f.tahun" style="padding:8px 12px;font-size:13px;border:1px solid var(--rule-strong);border-radius:4px;background:white;cursor:pointer;min-width:120px;">
+        <template x-for="y in years" :key="y"><option :value="y" x-text="y"></option></template>
       </select>
     </div>
-    <div class="filter-field">
+
+    <!-- Wilayah multi-select -->
+    <div class="filter-field" x-show="filterFields().includes('wilayah')">
       <label>Wilayah</label>
-      <select x-model="f.wilayah" @change="f.subwilayah = '__all__'">
-        <template x-for="w in wilayahList" :key="w">
-          <option :value="w" x-text="w"></option>
-        </template>
-      </select>
+      <div class="ms-dd" x-data="{open:false, search:''}" @click.outside="open=false">
+        <button type="button" class="ms-dd-btn" :class="{open}" @click="open=!open">
+          <template x-if="f.wilayah.includes('__all__')"><span class="placeholder">Semua Wilayah</span></template>
+          <template x-if="!f.wilayah.includes('__all__')"><template x-for="w in f.wilayah" :key="w"><span class="ms-dd-chip" x-text="w"></span></template></template>
+        </button>
+        <div class="ms-dd-panel" x-show="open" x-transition.opacity>
+          <div class="ms-dd-search"><input type="text" placeholder="Cari wilayah..." x-model="search" @click.stop></div>
+          <div class="ms-dd-list">
+            <label><input type="checkbox" :checked="f.wilayah.includes('__all__')" @change="toggleWilayah('__all__')"> <strong>Semua Wilayah</strong></label>
+            <div class="ms-divider"></div>
+            <template x-for="w in wilayahList.filter(p => p !== 'Indonesia' && p.toLowerCase().includes(search.toLowerCase()))" :key="w">
+              <label><input type="checkbox" :checked="f.wilayah.includes(w)" @change="toggleWilayah(w)"> <span x-text="w"></span></label>
+            </template>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="filter-field">
-      <label>Sub-wilayah (Kelas)</label>
-      <select x-model="f.subwilayah">
-        <option value="__all__">Semua kelas</option>
-        <template x-for="k in classes" :key="'kf'+k">
-          <option :value="k" x-text="k"></option>
-        </template>
-      </select>
+
+    <!-- Sub-wilayah multi-select (provinsi, hidden kalau Wilayah __all__) -->
+    <div class="filter-field" x-show="filterFields().includes('subwilayah') && !f.wilayah.includes('__all__')">
+      <label>Provinsi</label>
+      <div class="ms-dd" x-data="{open:false, search:''}" @click.outside="open=false">
+        <button type="button" class="ms-dd-btn" :class="{open}" @click="open=!open">
+          <template x-if="f.subwilayah.includes('__all__')"><span class="placeholder">Semua Provinsi</span></template>
+          <template x-if="!f.subwilayah.includes('__all__')"><template x-for="pp in f.subwilayah" :key="pp"><span class="ms-dd-chip" x-text="provNameByCode(pp)"></span></template></template>
+        </button>
+        <div class="ms-dd-panel" x-show="open" x-transition.opacity>
+          <div class="ms-dd-search"><input type="text" placeholder="Cari provinsi..." x-model="search" @click.stop></div>
+          <div class="ms-dd-list">
+            <label><input type="checkbox" :checked="f.subwilayah.includes('__all__')" @change="toggleSubwilayah('__all__')"> <strong>Semua Provinsi</strong></label>
+            <div class="ms-divider"></div>
+            <template x-for="pp in subList().filter(p => p.nama.toLowerCase().includes(search.toLowerCase()))" :key="pp.pcode">
+              <label><input type="checkbox" :checked="f.subwilayah.includes(pp.pcode)" @change="toggleSubwilayah(pp.pcode)"> <span x-text="pp.nama"></span></label>
+            </template>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- Mode: Absolut / Share (Trend, Kelas) -->
+    <div class="filter-field" x-show="filterFields().includes('mode')">
+      <label>Tampilan</label>
+      <div class="chip-ms">
+        <button :class="{active: f.mode === 'abs'}" @click="f.mode = 'abs'">Absolut</button>
+        <button :class="{active: f.mode === 'share'}" @click="f.mode = 'share'">Share</button>
+      </div>
+    </div>
+
+    <!-- Jenis BBM multi-toggle (Trend) -->
+    <div class="filter-field" x-show="filterFields().includes('jenisBBM')">
+      <label>Jenis BBM</label>
+      <div class="chip-ms">
+        <template x-for="ff in mapFuels" :key="'jb'+ff">
+          <button :class="{active: f.jenisBBM.includes(ff)}" @click="toggleArr('jenisBBM', ff)" x-text="ff"></button>
+        </template>
+      </div>
+    </div>
+
+    <!-- Kelas multi-toggle (Kelas page) -->
+    <div class="filter-field" x-show="filterFields().includes('kelas')">
+      <label>Kelas</label>
+      <div class="chip-ms">
+        <template x-for="kk in classes" :key="'kf'+kk">
+          <button :class="{active: f.kelas.includes(kk)}" @click="toggleArr('kelas', kk)" x-text="kk"></button>
+        </template>
+      </div>
+    </div>
+
+    <!-- mapKelas multi-toggle (Geografi) -->
+    <div class="filter-field" x-show="filterFields().includes('mapKelas')">
+      <label>Kelas (Peta)</label>
+      <div class="chip-ms">
+        <template x-for="kk in classes" :key="'mkf'+kk">
+          <button :class="{active: f.mapKelas.includes(kk)}" @click="toggleArr('mapKelas', kk)" x-text="kk"></button>
+        </template>
+      </div>
+    </div>
+
+    <!-- mapFuel multi-toggle (Geografi) -->
+    <div class="filter-field" x-show="filterFields().includes('mapFuel')">
+      <label>Jenis BBM (Peta)</label>
+      <div class="chip-ms">
+        <template x-for="ff in mapFuels" :key="'mff'+ff">
+          <button :class="{active: f.mapFuel.includes(ff)}" @click="toggleArr('mapFuel', ff)" x-text="ff"></button>
+        </template>
+      </div>
+    </div>
+
     <button class="btn-submit" @click="submit()">SUBMIT</button>
   </div>
 </div>
@@ -457,7 +546,7 @@
     <div class="empty-state-canon">
       <iconify-icon icon="mdi:filter-variant-plus" class="icon"></iconify-icon>
       <div class="title">Pilih filter dan klik <strong>SUBMIT</strong></div>
-      <div class="desc">Default: Tahunan &middot; Tahun 2025 &middot; Indonesia &middot; Semua kelas. Anda dapat memilih wilayah atau kelas masyarakat tertentu sebelum submit.</div>
+      <div class="desc">Default: Tahun 2025 &middot; Semua Wilayah &middot; Mode Share. Pilih multi-wilayah/provinsi dan multi-kelas/jenis BBM lewat filter di atas, lalu klik SUBMIT.</div>
     </div>
   </template>
 
@@ -488,10 +577,6 @@
       <h2 class="serif-display text-3xl mt-2 max-w-3xl">Pergeseran konsumsi BBM nasional, 2019-2025.</h2>
       <p class="mt-3 muted text-base max-w-3xl">Komposisi 5 jenis BBM. Premium di phase-out pasca 2022, Pertalite jadi default massal.</p>
       <div class="hair-accent mt-8 pt-2"></div>
-      <div class="mb-3 mt-2 flex gap-2">
-        <button class="chip-action" :class="trendMode==='abs' ? 'active' : ''" @click="trendMode='abs'; renderTrend()">Absolut (juta)</button>
-        <button class="chip-action" :class="trendMode==='share' ? 'active' : ''" @click="trendMode='share'; renderTrend()">Share (%)</button>
-      </div>
       <div id="chart-trend" style="height:520px;"></div>
       <div class="chart-footer">
         <span><span class="label">Sumber</span>Susenas BPS Blok 42</span>
@@ -503,24 +588,7 @@
 
   <!-- PER KELAS -->
   <section x-show="submitted && page === 'kelas'">
-    <div class="rule-top pt-8 flex flex-wrap items-end gap-10">
-      <div class="flex-1">
-        <div class="eyebrow mb-2" style="color: var(--muted);">Tahun</div>
-        <div class="flex items-center gap-3">
-          <div class="stat-num text-3xl text-navy" style="color:var(--navy);min-width:80px" x-text="year"></div>
-          <input type="range" min="0" :max="years.length-1" step="1" :value="years.indexOf(year)"
-            @input="year = years[$event.target.value]; renderKelas()"
-            style="flex:1;max-width:400px">
-        </div>
-      </div>
-      <div>
-        <div class="eyebrow mb-2" style="color: var(--muted);">Tampilan</div>
-        <div class="flex gap-2">
-          <button class="chip-action" :class="kelasMode==='share' ? 'active' : ''" @click="kelasMode='share'; renderKelas()">Share buyers (%)</button>
-          <button class="chip-action" :class="kelasMode==='raw' ? 'active' : ''" @click="kelasMode='raw'; renderKelas()">Jumlah konsumen</button>
-        </div>
-      </div>
-    </div>
+    <div class="rule-top pt-8"></div>
     <div class="mt-12">
       <span class="badge"><span class="badge-dot"></span>8 Kelas wb4</span>
       <div class="eyebrow-roman mt-3">II. Per Kelas</div>
@@ -537,45 +605,10 @@
 
   <!-- GEOGRAFI -->
   <section x-show="submitted && page === 'geografi'">
-    <!-- Unified filter row -->
-    <div class="rule-top pt-8 flex flex-wrap items-end gap-6">
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Tahun</div>
-        <select x-model="year" @change="renderMap()" class="select-flat mt-2" style="min-width:90px;">
-          <template x-for="y in years" :key="'gy'+y"><option :value="y" x-text="y"></option></template>
-        </select>
-      </div>
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Kelas</div>
-        <select x-model="mapKelas" @change="renderMap()" class="select-flat mt-2" style="min-width:140px;">
-          <option value="All">Semua kelas</option>
-          <template x-for="k in classes" :key="'mk'+k"><option :value="k" x-text="k"></option></template>
-        </select>
-      </div>
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Jenis BBM</div>
-        <select x-model="mapFuel" @change="renderMap()" class="select-flat mt-2" style="min-width:160px;">
-          <template x-for="f in mapFuels" :key="'mf'+f"><option :value="f" x-text="f"></option></template>
-        </select>
-      </div>
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Wilayah</div>
-        <select x-model="wilayah" @change="onWilayahChange()" class="select-flat mt-2" style="min-width:170px;">
-          <template x-for="w in wilayahList" :key="'w'+w"><option :value="w" x-text="w"></option></template>
-        </select>
-      </div>
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Provinsi</div>
-        <select x-model="provFilter" @change="renderMap()" class="select-flat mt-2" style="min-width:170px;">
-          <option value="All">Semua provinsi</option>
-          <template x-for="p in provOptions" :key="'po'+p.pcode"><option :value="p.pcode" x-text="p.nama"></option></template>
-        </select>
-      </div>
-      <div style="margin-left:auto">
-        <button class="chip-action" @click="exportPPT('chart-map', 'Sebaran ' + mapFuel + ' per provinsi', 'Tahun ' + year + ' · Kelas ' + mapKelas + ' · Susenas BPS')" style="background:var(--yellow);color:var(--ink);border-color:var(--yellow);font-weight:700;">
-          <iconify-icon icon="mdi:presentation"></iconify-icon>Export PPT
-        </button>
-      </div>
+    <div class="rule-top pt-8 flex justify-end">
+      <button class="chip-action" @click="exportPPT('chart-map', 'Sebaran ' + mapFuel + ' per provinsi', 'Tahun ' + year + ' · Kelas ' + mapKelas + ' · Susenas BPS')" style="background:var(--yellow);color:var(--ink);border-color:var(--yellow);font-weight:700;">
+        <iconify-icon icon="mdi:presentation"></iconify-icon>Export PPT
+      </button>
     </div>
     <div class="mt-12">
       <span class="badge"><span class="badge-dot"></span>34 Provinsi (38 ranking)</span>
@@ -720,10 +753,69 @@ function dashboard() {
     mapKelas: 'All', mapFuel: 'Pertalite', mapFuels: FUELS.slice(1),
     wilayah: 'Indonesia', wilayahList: Object.keys(REGION_PROVS), provFilter: 'All',
     rankTop: [], rankBottom: [],
-    // ===== Canonical filter pattern =====
+    // ===== Canonical filter state v2 (multi-select + adaptive) =====
     submitted: false,
-    f: { periode: 'tahunan', tahun: '2025', wilayah: 'Indonesia', subwilayah: '__all__' },
+    f: {
+      tahun: '2025',
+      wilayah: ['__all__'],
+      subwilayah: ['__all__'],
+      mode: 'share',
+      jenisBBM: ['__all__'],
+      kelas: ['__all__'],
+      mapKelas: ['__all__'],
+      mapFuel: ['Pertalite']
+    },
     applied: null,
+    PAGE_FILTERS: {
+      trend:    ['tahun', 'wilayah', 'jenisBBM', 'mode'],
+      kelas:    ['tahun', 'wilayah', 'kelas', 'mode'],
+      geografi: ['tahun', 'wilayah', 'subwilayah', 'mapKelas', 'mapFuel']
+    },
+    filterFields() { return this.PAGE_FILTERS[this.page] || []; },
+    // Multi-select handlers (canon v2)
+    toggleWilayah(val) {
+      if (val === '__all__') {
+        this.f.wilayah = ['__all__'];
+        this.f.subwilayah = ['__all__'];
+      } else {
+        const arr = this.f.wilayah.filter(v => v !== '__all__' && v !== 'Indonesia');
+        const i = arr.indexOf(val);
+        if (i >= 0) arr.splice(i, 1); else arr.push(val);
+        this.f.wilayah = arr.length ? arr : ['__all__'];
+        this.f.subwilayah = ['__all__'];
+      }
+    },
+    toggleSubwilayah(val) {
+      if (val === '__all__') { this.f.subwilayah = ['__all__']; return; }
+      const arr = this.f.subwilayah.filter(v => v !== '__all__');
+      const i = arr.indexOf(val);
+      if (i >= 0) arr.splice(i, 1); else arr.push(val);
+      this.f.subwilayah = arr.length ? arr : ['__all__'];
+    },
+    toggleArr(key, val) {
+      const arr = (this.f[key] || []).filter(v => v !== '__all__');
+      const i = arr.indexOf(val);
+      if (i >= 0) arr.splice(i, 1); else arr.push(val);
+      this.f[key] = arr.length ? arr : ['__all__'];
+    },
+    subList() {
+      // Provinsi yang ada di wilayah-wilayah terpilih
+      const out = [];
+      const seen = new Set();
+      const wantedRegions = this.f.wilayah.includes('__all__')
+        ? Object.keys(REGION_PROVS).filter(w => w !== 'Indonesia')
+        : this.f.wilayah;
+      const wantedCodes = new Set();
+      wantedRegions.forEach(r => (REGION_PROVS[r] || []).forEach(c => wantedCodes.add(c)));
+      Object.entries(PAYLOAD.prov_meta_38 || {}).forEach(([pcode, nama]) => {
+        const pc2 = pcodeProvCode(pcode);
+        if (wantedCodes.size === 0 || wantedCodes.has(pc2)) {
+          if (!seen.has(pcode)) { seen.add(pcode); out.push({ pcode, nama }); }
+        }
+      });
+      return out.sort((a, b) => a.nama.localeCompare(b.nama));
+    },
+    provNameByCode(pcode) { return (PAYLOAD.prov_meta_38 && PAYLOAD.prov_meta_38[pcode]) || pcode; },
     get pageTitle() { return PAGE_META[this.page].title; },
     get pageSubtitle() { return PAGE_META[this.page].sub; },
     get rankMax() { return this.rankTop.length ? this.rankTop[0].value : 1; },
@@ -784,12 +876,13 @@ function dashboard() {
     },
     init() {
       window.gotoPage = (id) => this.setPage(id);
+      this.$watch('page', () => { if (this.submitted) this.$nextTick(() => this.renderForPage(this.page)); });
       let resizeT;
       window.addEventListener('resize', () => {
         clearTimeout(resizeT);
         resizeT = setTimeout(() => {
           ['chart-trend','chart-kelas','chart-map'].forEach(id => {
-            const el = document.getElementById(id);
+            const id2 = id; const el = document.getElementById(id2);
             if (el && el.data) { try { Plotly.Plots.resize(el); } catch(e) {} }
           });
         }, 150);
@@ -797,11 +890,31 @@ function dashboard() {
     },
     submit() {
       this.applied = JSON.parse(JSON.stringify(this.f));
-      // Sync canonical filter -> internal state
+      // Sync canonical v2 multi-select arrays -> legacy single-value state
       this.year = String(this.applied.tahun);
-      this.wilayah = this.applied.wilayah;
-      this.mapKelas = (this.applied.subwilayah === '__all__') ? 'All' : this.applied.subwilayah;
-      this.provFilter = 'All';
+      // Wilayah: __all__ -> Indonesia. Single -> region. Multi -> Indonesia (chart logic belum support multi-region).
+      if (this.applied.wilayah.includes('__all__')) {
+        this.wilayah = 'Indonesia';
+      } else if (this.applied.wilayah.length === 1) {
+        this.wilayah = this.applied.wilayah[0];
+      } else {
+        this.wilayah = 'Indonesia';
+      }
+      // Sub-wilayah (provinsi pcode list) -> provFilter single
+      if (this.applied.subwilayah.includes('__all__') || this.applied.subwilayah.length !== 1) {
+        this.provFilter = 'All';
+      } else {
+        this.provFilter = this.applied.subwilayah[0];
+      }
+      // Mode -> trendMode + kelasMode (share/raw mapping)
+      this.trendMode = this.applied.mode === 'abs' ? 'abs' : 'share';
+      this.kelasMode = this.applied.mode === 'abs' ? 'raw' : 'share';
+      // mapKelas array -> single (first non-all, else All)
+      const mk = this.applied.mapKelas.filter(v => v !== '__all__');
+      this.mapKelas = mk.length === 1 ? mk[0] : 'All';
+      // mapFuel array -> single (first selected, else Pertalite)
+      const mf = this.applied.mapFuel.filter(v => v !== '__all__');
+      this.mapFuel = mf.length >= 1 ? mf[0] : 'Pertalite';
       this.submitted = true;
       this.$nextTick(() => this.renderForPage(this.page));
     },

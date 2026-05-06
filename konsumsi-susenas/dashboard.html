@@ -504,6 +504,27 @@
   /* ============ STANDARDIZED FILTER BAR (canon untuk semua dashboard) ============ */
   .filter-canon { background: var(--paper); border-bottom: 1px solid var(--rule-strong); padding: 16px 24px; }
   .filter-canon-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+
+  /* ============ MULTI-SELECT DROPDOWN (canon v2) ============ */
+  .ms-dd { position: relative; min-width: 200px; }
+  .ms-dd-btn { width: 100%; padding: 8px 32px 8px 12px; font-size: 13px; border: 1px solid var(--rule-strong); border-radius: 4px; background: white; cursor: pointer; text-align: left; position: relative; min-height: 36px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .ms-dd-btn:focus, .ms-dd-btn.open { outline: 2px solid #67B2E8; outline-offset: -1px; }
+  .ms-dd-btn::after { content: ''; position: absolute; right: 12px; top: 50%; width: 6px; height: 6px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: translateY(-65%) rotate(45deg); }
+  .ms-dd-btn .placeholder { color: var(--muted); }
+  .ms-dd-chip { display: inline-flex; align-items: center; background: rgba(103,178,232,0.18); color: #003D79; padding: 2px 6px; font-size: 11px; font-weight: 600; border-radius: 3px; }
+  .ms-dd-panel { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: white; border: 1px solid var(--rule-strong); border-radius: 4px; box-shadow: 0 8px 24px rgba(5,28,44,0.10); z-index: 50; max-height: 320px; display: flex; flex-direction: column; min-width: 240px; }
+  .ms-dd-search { padding: 8px; border-bottom: 1px solid var(--rule); }
+  .ms-dd-search input { width: 100%; padding: 6px 10px; font-size: 12px; border: 1px solid var(--rule-strong); border-radius: 3px; }
+  .ms-dd-list { overflow-y: auto; padding: 4px 0; flex: 1; }
+  .ms-dd-list label { display: flex; align-items: center; gap: 8px; padding: 6px 12px; font-size: 13px; cursor: pointer; }
+  .ms-dd-list label:hover { background: #F0F6FC; }
+  .ms-dd-list .ms-divider { border-bottom: 1px solid var(--rule); margin: 4px 0; }
+
+  /* ============ CHIP MULTI-TOGGLE (canon v2) ============ */
+  .chip-ms { display: inline-flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+  .chip-ms button { padding: 7px 14px; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; background: white; color: var(--ink); border: 1px solid var(--rule-strong); cursor: pointer; border-radius: 4px; transition: all 0.15s; }
+  .chip-ms button:hover { border-color: #67B2E8; color: #003D79; }
+  .chip-ms button.active { background: #003D79; color: white; border-color: #003D79; }
   .filter-field { display: flex; flex-direction: column; gap: 6px; min-width: 160px; }
   .filter-field label { font-size: 12px; font-weight: 700; color: var(--ink); }
   .filter-field select { padding: 8px 12px; font-size: 13px; border: 1px solid var(--rule-strong); border-radius: 4px; background: white; cursor: pointer; min-width: 180px; font-family: inherit; color: var(--ink); }
@@ -704,40 +725,96 @@
   </header>
 </div>
 
-<!-- STANDARDIZED FILTER BAR (canon untuk semua dashboard) -->
-<div class="filter-canon">
+<!-- ADAPTIVE FILTER BAR (canon v2 — hide kalau page tidak butuh) -->
+<div class="filter-canon" x-show="filterFields().length > 0">
   <div class="filter-canon-inner">
-    <div class="filter-field">
-      <label>Periode</label>
-      <select x-model="f.periode">
-        <option value="tahunan">Tahunan</option>
-      </select>
-    </div>
-    <div class="filter-field">
+    <!-- Tahun -->
+    <div class="filter-field" x-show="filterFields().includes('tahun')">
       <label>Tahun</label>
-      <select x-model="f.tahun">
-        <template x-for="y in years" :key="'fy'+y">
-          <option :value="y" x-text="y"></option>
-        </template>
+      <select x-model="f.tahun" style="padding:8px 12px;font-size:13px;border:1px solid var(--rule-strong);border-radius:4px;background:white;cursor:pointer;min-width:100px;">
+        <template x-for="y in years" :key="'fy'+y"><option :value="y" x-text="y"></option></template>
       </select>
     </div>
-    <div class="filter-field">
+
+    <!-- Wilayah multi-select -->
+    <div class="filter-field" x-show="filterFields().includes('wilayah')">
       <label>Wilayah</label>
-      <select x-model="f.wilayah" @change="f.subwilayah = '__all__'">
-        <template x-for="w in wilayahList" :key="'fw'+w">
-          <option :value="w" x-text="w"></option>
-        </template>
+      <div class="ms-dd" x-data="{open:false, search:''}" @click.outside="open=false">
+        <button type="button" class="ms-dd-btn" :class="{open}" @click="open=!open">
+          <template x-if="f.wilayah.includes('__all__')"><span class="placeholder">Semua Wilayah</span></template>
+          <template x-if="!f.wilayah.includes('__all__')"><template x-for="w in f.wilayah" :key="w"><span class="ms-dd-chip" x-text="w"></span></template></template>
+        </button>
+        <div class="ms-dd-panel" x-show="open" x-transition.opacity>
+          <div class="ms-dd-search"><input type="text" placeholder="Cari wilayah..." x-model="search" @click.stop></div>
+          <div class="ms-dd-list">
+            <label><input type="checkbox" :checked="f.wilayah.includes('__all__')" @change="toggleWilayah('__all__')"> <strong>Semua Wilayah</strong></label>
+            <div class="ms-divider"></div>
+            <template x-for="w in wilayahList.filter(p => p !== 'Indonesia' && p.toLowerCase().includes(search.toLowerCase()))" :key="w">
+              <label><input type="checkbox" :checked="f.wilayah.includes(w)" @change="toggleWilayah(w)"> <span x-text="w"></span></label>
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sub-wilayah (provinsi) multi-select -->
+    <div class="filter-field" x-show="filterFields().includes('subwilayah') && !f.wilayah.includes('__all__')">
+      <label>Provinsi</label>
+      <div class="ms-dd" x-data="{open:false, search:''}" @click.outside="open=false">
+        <button type="button" class="ms-dd-btn" :class="{open}" @click="open=!open">
+          <template x-if="f.subwilayah.includes('__all__')"><span class="placeholder">Semua Provinsi</span></template>
+          <template x-if="!f.subwilayah.includes('__all__')"><template x-for="p in f.subwilayah" :key="p"><span class="ms-dd-chip" x-text="provNameByPcode(p)"></span></template></template>
+        </button>
+        <div class="ms-dd-panel" x-show="open" x-transition.opacity>
+          <div class="ms-dd-search"><input type="text" placeholder="Cari provinsi..." x-model="search" @click.stop></div>
+          <div class="ms-dd-list">
+            <label><input type="checkbox" :checked="f.subwilayah.includes('__all__')" @change="toggleSubwilayah('__all__')"> <strong>Semua Provinsi</strong></label>
+            <div class="ms-divider"></div>
+            <template x-for="p in subProvList().filter(o => o.nama.toLowerCase().includes(search.toLowerCase()))" :key="p.pcode">
+              <label><input type="checkbox" :checked="f.subwilayah.includes(p.pcode)" @change="toggleSubwilayah(p.pcode)"> <span x-text="p.nama"></span></label>
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- compareBaseline chip (Trend) -->
+    <div class="filter-field" x-show="filterFields().includes('compareBaseline')">
+      <label>Baseline</label>
+      <div class="chip-ms">
+        <button :class="{active: f.compareBaseline}" @click="f.compareBaseline = !f.compareBaseline">vs 2019</button>
+      </div>
+    </div>
+
+    <!-- metric chip (Geografi) -->
+    <div class="filter-field" x-show="filterFields().includes('metric')">
+      <label>Metric</label>
+      <div class="chip-ms">
+        <button :class="{active: f.metric === 'per_kapita'}" @click="f.metric = 'per_kapita'">Per kapita</button>
+        <button :class="{active: f.metric === 'share'}" @click="f.metric = 'share'">Share</button>
+      </div>
+    </div>
+
+    <!-- komoditi dropdown (Komoditi page) -->
+    <div class="filter-field" x-show="filterFields().includes('komoditi')">
+      <label>Kelompok</label>
+      <select x-model="f.komKelompok" @change="onKomKelompokFromFilter()" style="padding:8px 12px;font-size:13px;border:1px solid var(--rule-strong);border-radius:4px;background:white;cursor:pointer;min-width:200px;">
+        <template x-for="g in kelompokList" :key="'fkg'+g"><option :value="g" x-text="g"></option></template>
       </select>
     </div>
-    <div class="filter-field">
-      <label>Sub-wilayah</label>
-      <select x-model="f.subwilayah" :disabled="f.wilayah === 'Indonesia'">
-        <option value="__all__">Semua provinsi</option>
-        <template x-for="p in canonProvOptions()" :key="'fsw'+p.pcode">
-          <option :value="p.pcode" x-text="p.nama"></option>
-        </template>
+    <div class="filter-field" x-show="filterFields().includes('komoditi')">
+      <label>Komoditi</label>
+      <select x-model="f.komSelected" style="padding:8px 12px;font-size:13px;border:1px solid var(--rule-strong);border-radius:4px;background:white;cursor:pointer;min-width:240px;">
+        <template x-for="k in komoditiInKelompokFilter" :key="'fkk'+k.key"><option :value="k.key" x-text="k.short"></option></template>
       </select>
     </div>
+    <div class="filter-field" x-show="filterFields().includes('komoditi')">
+      <label>Kelas</label>
+      <select x-model="f.komKelas" style="padding:8px 12px;font-size:13px;border:1px solid var(--rule-strong);border-radius:4px;background:white;cursor:pointer;min-width:140px;">
+        <template x-for="k in classes" :key="'fkc'+k"><option :value="k" x-text="k"></option></template>
+      </select>
+    </div>
+
     <button class="btn-submit" @click="submitCanon()">SUBMIT</button>
   </div>
 </div>
@@ -801,9 +878,6 @@
         </aside>
         <div>
           <div class="flex items-center gap-2 mb-3">
-            <button class="chip-action" :class="compareBaseline ? 'active' : ''" @click="compareBaseline = !compareBaseline; renderTrend()">
-              <iconify-icon icon="mdi:compare-horizontal"></iconify-icon>vs 2019
-            </button>
             <button class="chip-action" @click="exportPPT('chart-trend', 'Pengeluaran per kapita Indonesia, 2019-2025', 'Trend nasional · Susenas Maret BPS')" style="background:var(--yellow);color:var(--ink);border-color:var(--yellow);font-weight:700;">
               <iconify-icon icon="mdi:presentation"></iconify-icon>Export PPT
             </button>
@@ -827,28 +901,7 @@
 
   <!-- ==================== PAGE: ENGEL ==================== -->
   <section x-show="submitted && page === 'engel'">
-    <div class="rule-top pt-8 flex flex-wrap items-end gap-10">
-      <div class="flex-1">
-        <div class="eyebrow mb-2" style="color: var(--muted);">Tahun fokus</div>
-        <div class="year-slider-wrap">
-          <button class="play-btn" @click="togglePlay('renderEngel')">
-            <iconify-icon :icon="playing ? 'mdi:pause' : 'mdi:play'"></iconify-icon>
-          </button>
-          <div class="year-current num" x-text="year"></div>
-          <div class="year-slider">
-            <input type="range" min="0" :max="years.length - 1" step="1"
-              :value="years.indexOf(year)"
-              @input="year = years[$event.target.value]; renderEngel()">
-            <div class="year-ticks">
-              <template x-for="y in years" :key="'ets'+y">
-                <span class="year-tick" :class="y === year ? 'active' : ''" @click="year = y; renderEngel()" x-text="y"></span>
-              </template>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="mt-12">
+    <div class="mt-12 rule-top pt-8">
       <span class="badge"><span class="badge-dot"></span>Buyers + Non-buyers · 8 Kelas wb4</span>
       <div class="eyebrow-roman mt-3">II. Engel</div>
       <h2 class="serif-display text-3xl mt-2 max-w-3xl">Hukum Engel: share makanan turun seiring naiknya kelas.</h2>
@@ -890,28 +943,7 @@
 
   <!-- ==================== PAGE: KOMPOSISI ==================== -->
   <section x-show="submitted && page === 'komposisi'">
-    <div class="rule-top pt-8 flex flex-wrap items-end gap-10">
-      <div class="flex-1">
-        <div class="eyebrow mb-2" style="color: var(--muted);">Tahun fokus</div>
-        <div class="year-slider-wrap">
-          <button class="play-btn" @click="togglePlay('renderHeatmap')">
-            <iconify-icon :icon="playing ? 'mdi:pause' : 'mdi:play'"></iconify-icon>
-          </button>
-          <div class="year-current num" x-text="year"></div>
-          <div class="year-slider">
-            <input type="range" min="0" :max="years.length - 1" step="1"
-              :value="years.indexOf(year)"
-              @input="year = years[$event.target.value]; renderHeatmap()">
-            <div class="year-ticks">
-              <template x-for="y in years" :key="'hts'+y">
-                <span class="year-tick" :class="y === year ? 'active' : ''" @click="year = y; renderHeatmap()" x-text="y"></span>
-              </template>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="mt-12">
+    <div class="mt-12 rule-top pt-8">
       <span class="badge"><span class="badge-dot"></span>Share % · 20 Kelompok × 8 Kelas</span>
       <div class="eyebrow-roman mt-3">III. Komposisi</div>
       <h2 class="serif-display text-3xl mt-2 max-w-3xl">Distribusi share pengeluaran: 20 kelompok × 8 kelas.</h2>
@@ -957,32 +989,13 @@
 
   <!-- ==================== PAGE: GEOGRAFI ==================== -->
   <section x-show="submitted && page === 'geografi'">
-    <!-- Unified filter row: tahun, kelas, wilayah, provinsi + actions -->
+    <!-- Action buttons + Kelas selector (Kelas tetap inline karena banyak opsi & cocok per-page) + play animation -->
     <div class="rule-top pt-8 flex flex-wrap items-end gap-6">
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Tahun</div>
-        <select x-model="year" @change="renderMap()" class="select-flat mt-2" style="min-width:90px;">
-          <template x-for="y in years" :key="'gy'+y"><option :value="y" x-text="y"></option></template>
-        </select>
-      </div>
       <div>
         <div class="eyebrow" style="color: var(--muted);">Kelas</div>
         <select x-model="mapKelas" @change="renderMap()" class="select-flat mt-2" style="min-width:140px;">
           <option value="All">Semua kelas</option>
           <template x-for="k in classes" :key="'mk'+k"><option :value="k" x-text="k"></option></template>
-        </select>
-      </div>
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Wilayah</div>
-        <select x-model="wilayah" @change="onWilayahChange()" class="select-flat mt-2" style="min-width:170px;">
-          <template x-for="w in wilayahList" :key="'w'+w"><option :value="w" x-text="w"></option></template>
-        </select>
-      </div>
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Provinsi</div>
-        <select x-model="provFilter" @change="renderForPage(page)" class="select-flat mt-2" style="min-width:170px;">
-          <option value="All">Semua provinsi</option>
-          <template x-for="p in provOptions" :key="'po'+p.pcode"><option :value="p.pcode" x-text="p.nama"></option></template>
         </select>
       </div>
       <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
@@ -1063,45 +1076,8 @@
 
   <!-- ==================== PAGE: KOMODITI ==================== -->
   <section x-show="submitted && page === 'komoditi'">
-    <!-- Unified filter row -->
+    <!-- Action row only — semua filter sudah di filter bar canon v2 -->
     <div class="rule-top pt-8 flex flex-wrap items-end gap-6">
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Tahun</div>
-        <select x-model="year" @change="renderKomoditi()" class="select-flat mt-2" style="min-width:90px;">
-          <template x-for="y in years" :key="'ky'+y"><option :value="y" x-text="y"></option></template>
-        </select>
-      </div>
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Kelas</div>
-        <select x-model="komKelas" @change="renderKomoditi()" class="select-flat mt-2" style="min-width:140px;">
-          <template x-for="k in classes" :key="'kk'+k"><option :value="k" x-text="k"></option></template>
-        </select>
-      </div>
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Kelompok</div>
-        <select x-model="komKelompok" @change="onKelompokChange()" class="select-flat mt-2" style="min-width:220px;">
-          <template x-for="g in kelompokList" :key="'g'+g"><option :value="g" x-text="g"></option></template>
-        </select>
-      </div>
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Komoditi</div>
-        <select x-model="komSelected" @change="renderKomoditi()" class="select-flat mt-2" style="min-width:260px;">
-          <template x-for="k in komoditiInKelompok" :key="k.key"><option :value="k.key" x-text="k.short"></option></template>
-        </select>
-      </div>
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Wilayah</div>
-        <select x-model="wilayah" @change="onWilayahChange()" class="select-flat mt-2" style="min-width:170px;">
-          <template x-for="w in wilayahList" :key="'wk'+w"><option :value="w" x-text="w"></option></template>
-        </select>
-      </div>
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Provinsi</div>
-        <select x-model="provFilter" @change="renderForPage(page)" class="select-flat mt-2" style="min-width:170px;">
-          <option value="All">Semua provinsi</option>
-          <template x-for="p in provOptions" :key="'pok'+p.pcode"><option :value="p.pcode" x-text="p.nama"></option></template>
-        </select>
-      </div>
       <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
         <button class="play-btn" @click="togglePlay('renderKomoditi')" title="Play tahun">
           <iconify-icon :icon="playing ? 'mdi:pause' : 'mdi:play'"></iconify-icon>
@@ -1203,12 +1179,6 @@
   <!-- COMPARE PROVINSI -->
   <section x-show="submitted && page === 'compare'">
     <div class="rule-top pt-8 flex flex-wrap items-end gap-6">
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Tahun</div>
-        <select x-model="year" @change="renderCompare()" class="select-flat mt-2" style="min-width:90px;">
-          <template x-for="y in years" :key="'cy'+y"><option :value="y" x-text="y"></option></template>
-        </select>
-      </div>
       <div class="flex-1 min-w-[280px]">
         <div class="eyebrow" style="color: var(--muted);">Tambah provinsi (max 4)</div>
         <select @change="addCompareProv($event)" class="select-flat mt-2 w-full">
@@ -1522,7 +1492,27 @@ function dashboard() {
     years: YEARS, classes: CLASSES,
     year: '2025',
     submitted: false,
-    f: { periode: 'tahunan', tahun: '2025', wilayah: 'Indonesia', subwilayah: '__all__' },
+    // ===== Canonical filter state v2 (multi-select + adaptive) =====
+    f: {
+      tahun: '2025',
+      wilayah: ['__all__'],          // multi: array of wilayah names (Indonesia excluded; '__all__' = nasional)
+      subwilayah: ['__all__'],        // multi: array of provinsi pcodes (e.g. 'ID31')
+      compareBaseline: false,         // chip Trend
+      metric: 'per_kapita',           // chip Geografi: 'per_kapita' | 'share'
+      komKelompok: 'Padi-Padian',
+      komSelected: 'Beras (beras lokal, kualitas unggul, impor)',
+      komKelas: 'Poor',
+    },
+    PAGE_FILTERS: {
+      trend:      ['tahun', 'wilayah', 'subwilayah', 'compareBaseline'],
+      engel:      ['tahun', 'wilayah', 'subwilayah'],
+      komposisi:  ['tahun', 'wilayah', 'subwilayah'],
+      geografi:   ['tahun', 'wilayah', 'metric'],
+      komoditi:   ['tahun', 'wilayah', 'subwilayah', 'komoditi'],
+      compare:    ['tahun', 'wilayah', 'subwilayah'],
+      metodologi: [],
+    },
+    filterFields() { return this.PAGE_FILTERS[this.page] || []; },
     mapKelas: 'All',
     rankTop: [], rankBottom: [],
     komKelas: 'Poor',
@@ -1573,20 +1563,74 @@ function dashboard() {
                      .map(([p, n]) => ({ pcode: pcodeProvCode(p), nama: n }));
     },
     onWilayahChange() { this.provFilter = 'All'; this.renderForPage(this.page); },
-    canonProvOptions() {
-      // Daftar prov dalam wilayah canon-filter aktif (untuk Sub-wilayah dropdown)
-      if (!this.f.wilayah || this.f.wilayah === 'Indonesia') return [];
-      const codes = REGION_PROVS[this.f.wilayah];
+    // ===== Multi-select handlers (canon v2) =====
+    toggleWilayah(val) {
+      if (val === '__all__') {
+        this.f.wilayah = ['__all__'];
+        this.f.subwilayah = ['__all__'];
+      } else {
+        const arr = this.f.wilayah.filter(v => v !== '__all__');
+        const i = arr.indexOf(val);
+        if (i >= 0) arr.splice(i, 1); else arr.push(val);
+        this.f.wilayah = arr.length ? arr : ['__all__'];
+        this.f.subwilayah = ['__all__'];
+      }
+    },
+    toggleSubwilayah(val) {
+      if (val === '__all__') { this.f.subwilayah = ['__all__']; return; }
+      const arr = this.f.subwilayah.filter(v => v !== '__all__');
+      const i = arr.indexOf(val);
+      if (i >= 0) arr.splice(i, 1); else arr.push(val);
+      this.f.subwilayah = arr.length ? arr : ['__all__'];
+    },
+    subProvList() {
+      // Pool provinsi dari wilayah-wilayah aktif di f.wilayah
+      const wAct = this.f.wilayah.includes('__all__') ? Object.keys(REGION_PROVS).filter(w => w !== 'Indonesia') : this.f.wilayah;
+      const codeSet = new Set();
+      wAct.forEach(w => (REGION_PROVS[w] || []).forEach(c => codeSet.add(c)));
       const all = Object.entries(PAYLOAD.prov_meta_38);
-      const filtered = codes ? all.filter(([p, _]) => codes.includes(pcodeProvCode(p))) : all;
+      const filtered = codeSet.size ? all.filter(([p, _]) => codeSet.has(pcodeProvCode(p))) : all;
       return filtered.sort((a, b) => a[1].localeCompare(b[1]))
                      .map(([p, n]) => ({ pcode: pcodeProvCode(p), nama: n }));
     },
+    provNameByPcode(pcode) {
+      return (PAYLOAD.prov_meta_38 && PAYLOAD.prov_meta_38[pcode]) || pcode;
+    },
+    onKomKelompokFromFilter() {
+      // Saat user ganti Kelompok di filter bar, auto-pilih komoditi pertama di kelompok itu
+      const items = (window.KOMODITI_LIST || []).filter(k => k.kelompok === this.f.komKelompok);
+      if (items.length) this.f.komSelected = items[0].key;
+    },
+    get komoditiInKelompokFilter() {
+      const list = window.KOMODITI_LIST || [];
+      return list.filter(k => k.kelompok === this.f.komKelompok);
+    },
     submitCanon() {
-      // Apply canon filter values to underlying state, then render
+      // Sync canonical filter (multi-select) → legacy single-string state utk chart logic existing
       this.year = String(this.f.tahun);
-      this.wilayah = this.f.wilayah || 'Indonesia';
-      this.provFilter = (this.f.subwilayah && this.f.subwilayah !== '__all__') ? this.f.subwilayah : 'All';
+      // Wilayah multi → single (ambil 1st kalau exactly 1, else Indonesia)
+      if (this.f.wilayah.includes('__all__')) {
+        this.wilayah = 'Indonesia';
+      } else if (this.f.wilayah.length === 1) {
+        this.wilayah = this.f.wilayah[0];
+      } else {
+        this.wilayah = 'Indonesia';
+      }
+      // Sub-wilayah (provinsi) multi → single pcode (1st kalau exactly 1, else 'All')
+      if (this.f.subwilayah.includes('__all__')) {
+        this.provFilter = 'All';
+      } else if (this.f.subwilayah.length === 1) {
+        this.provFilter = this.f.subwilayah[0];
+      } else {
+        this.provFilter = 'All';
+      }
+      // Sub-controls merged: sync ke per-page state
+      this.compareBaseline = !!this.f.compareBaseline;
+      this.komKelas = this.f.komKelas;
+      this.komKelompok = this.f.komKelompok;
+      this.komSelected = this.f.komSelected;
+      // Geografi metric chip (informational; keep mapKelas terpisah karena banyak opsi)
+      // f.metric tidak ubah Plotly logic existing — disimpan untuk future use
       this.submitted = true;
       this.$nextTick(() => {
         this.renderForPage(this.page);
@@ -1618,10 +1662,16 @@ function dashboard() {
     init() {
       const hadURL = (window.location.hash && window.location.hash.length > 1);
       this.applyURLState();
-      // Sync canon filter dari state aktif
+      // Sync canon filter v2 (multi arrays) dari legacy state aktif
       this.f.tahun = this.year;
-      this.f.wilayah = this.wilayah || 'Indonesia';
-      this.f.subwilayah = (this.provFilter && this.provFilter !== 'All') ? this.provFilter : '__all__';
+      this.f.wilayah = (this.wilayah && this.wilayah !== 'Indonesia') ? [this.wilayah] : ['__all__'];
+      this.f.subwilayah = (this.provFilter && this.provFilter !== 'All') ? [this.provFilter] : ['__all__'];
+      this.f.komKelas = this.komKelas;
+      this.f.komKelompok = this.komKelompok;
+      this.f.komSelected = this.komSelected;
+      this.f.compareBaseline = !!this.compareBaseline;
+      // Re-render kalau page berubah (filter bar adapts)
+      this.$watch('page', () => { if (this.submitted) this.$nextTick(() => this.renderForPage(this.page)); });
       // Auto-submit kalau ada URL state (share link), agar charts langsung tampil
       if (hadURL) {
         this.submitted = true;
