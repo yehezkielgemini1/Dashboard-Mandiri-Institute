@@ -159,6 +159,27 @@
   .empty-state .icon { font-size: 64px; color: var(--rule-strong); margin-bottom: 16px; }
   .empty-state .title { font-family: 'Source Serif 4', serif; font-size: 22px; color: var(--ink); margin-bottom: 8px; }
   .empty-state .desc { font-size: 14px; color: var(--muted); max-width: 480px; margin: 0 auto; }
+
+  /* ============ MULTI-SELECT DROPDOWN (canon v2) ============ */
+  .ms-dd { position: relative; min-width: 200px; }
+  .ms-dd-btn { width: 100%; padding: 8px 32px 8px 12px; font-size: 13px; border: 1px solid var(--rule-strong); border-radius: 4px; background: white; cursor: pointer; text-align: left; position: relative; min-height: 36px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .ms-dd-btn:focus, .ms-dd-btn.open { outline: 2px solid var(--sky); outline-offset: -1px; }
+  .ms-dd-btn::after { content: ''; position: absolute; right: 12px; top: 50%; width: 6px; height: 6px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: translateY(-65%) rotate(45deg); }
+  .ms-dd-btn .placeholder { color: var(--muted); }
+  .ms-dd-chip { display: inline-flex; align-items: center; background: rgba(103,178,232,0.18); color: var(--navy); padding: 2px 6px; font-size: 11px; font-weight: 600; border-radius: 3px; }
+  .ms-dd-panel { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: white; border: 1px solid var(--rule-strong); border-radius: 4px; box-shadow: 0 8px 24px rgba(5,28,44,0.10); z-index: 50; max-height: 320px; display: flex; flex-direction: column; min-width: 240px; }
+  .ms-dd-search { padding: 8px; border-bottom: 1px solid var(--rule); }
+  .ms-dd-search input { width: 100%; padding: 6px 10px; font-size: 12px; border: 1px solid var(--rule-strong); border-radius: 3px; }
+  .ms-dd-list { overflow-y: auto; padding: 4px 0; flex: 1; }
+  .ms-dd-list label { display: flex; align-items: center; gap: 8px; padding: 6px 12px; font-size: 13px; cursor: pointer; }
+  .ms-dd-list label:hover { background: var(--mist, #F0F6FC); }
+  .ms-dd-list .ms-divider { border-bottom: 1px solid var(--rule); margin: 4px 0; }
+
+  /* ============ CHIP MULTI-TOGGLE (canon v2) ============ */
+  .chip-ms { display: inline-flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+  .chip-ms button { padding: 7px 14px; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; background: white; color: var(--ink); border: 1px solid var(--rule-strong); cursor: pointer; border-radius: 4px; transition: all 0.15s; }
+  .chip-ms button:hover { border-color: var(--sky); color: var(--navy); }
+  .chip-ms button.active { background: var(--navy); color: white; border-color: var(--navy); }
 </style>
 
 <!-- UNIFORM v2 OVERRIDE 2026-05-05: hide sidebar entirely, keep topnav as the only nav -->
@@ -213,41 +234,86 @@
   </aside>
 </nav>
 
-<!-- ============ STANDARDIZED FILTER BAR (canon untuk semua dashboard) ============ -->
-<div class="filter-canon">
+<!-- ============ ADAPTIVE FILTER BAR (canon v2 — hide kalau page tidak butuh) ============ -->
+<div class="filter-canon" x-show="filterFields().length > 0">
   <div class="filter-canon-inner">
-    <div class="filter-field">
-      <label>Periode</label>
-      <select x-model="f.periode">
-        <option value="tahunan">Tahunan</option>
-      </select>
-    </div>
-    <div class="filter-field">
+    <!-- Tahun -->
+    <div class="filter-field" x-show="filterFields().includes('tahun')">
       <label>Tahun</label>
-      <select x-model="f.tahun">
-        <template x-for="y in years" :key="y">
-          <option :value="y" x-text="y"></option>
-        </template>
+      <select x-model.number="f.tahun" style="padding:8px 12px;font-size:13px;border:1px solid var(--rule-strong);border-radius:4px;background:white;cursor:pointer;min-width:120px;">
+        <template x-for="y in years" :key="y"><option :value="y" x-text="y"></option></template>
       </select>
     </div>
-    <div class="filter-field">
+
+    <!-- Wilayah multi-select -->
+    <div class="filter-field" x-show="filterFields().includes('wilayah')">
       <label>Wilayah</label>
-      <select x-model="f.wilayah" @change="f.subwilayah = '__all__'">
-        <option value="__all__">Semua Provinsi</option>
-        <template x-for="w in provList" :key="w">
-          <option :value="w" x-text="w"></option>
-        </template>
-      </select>
+      <div class="ms-dd" x-data="{open:false, search:''}" @click.outside="open=false">
+        <button type="button" class="ms-dd-btn" :class="{open}" @click="open=!open">
+          <template x-if="f.wilayah.includes('__all__')"><span class="placeholder">Semua Provinsi</span></template>
+          <template x-if="!f.wilayah.includes('__all__')"><template x-for="w in f.wilayah" :key="w"><span class="ms-dd-chip" x-text="w"></span></template></template>
+        </button>
+        <div class="ms-dd-panel" x-show="open" x-transition.opacity>
+          <div class="ms-dd-search"><input type="text" placeholder="Cari provinsi..." x-model="search" @click.stop></div>
+          <div class="ms-dd-list">
+            <label><input type="checkbox" :checked="f.wilayah.includes('__all__')" @change="toggleWilayah('__all__')"> <strong>Semua Provinsi</strong></label>
+            <div class="ms-divider"></div>
+            <template x-for="w in provList.filter(p => p.toLowerCase().includes(search.toLowerCase()))" :key="w">
+              <label><input type="checkbox" :checked="f.wilayah.includes(w)" @change="toggleWilayah(w)"> <span x-text="w"></span></label>
+            </template>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="filter-field">
+
+    <!-- Sub-wilayah multi-select (hidden kalau Wilayah masih 'Semua') -->
+    <div class="filter-field" x-show="filterFields().includes('subwilayah') && !f.wilayah.includes('__all__')">
       <label>Sub-wilayah</label>
-      <select x-model="f.subwilayah" :disabled="f.wilayah === '__all__'">
-        <option value="__all__">Semua Kab/Kota</option>
-        <template x-for="kk in subList()" :key="kk">
-          <option :value="kk" x-text="kk"></option>
+      <div class="ms-dd" x-data="{open:false, search:''}" @click.outside="open=false">
+        <button type="button" class="ms-dd-btn" :class="{open}" @click="open=!open">
+          <template x-if="f.subwilayah.includes('__all__')"><span class="placeholder">Semua Kab/Kota</span></template>
+          <template x-if="!f.subwilayah.includes('__all__')"><template x-for="kk in f.subwilayah" :key="kk"><span class="ms-dd-chip" x-text="kk"></span></template></template>
+        </button>
+        <div class="ms-dd-panel" x-show="open" x-transition.opacity>
+          <div class="ms-dd-search"><input type="text" placeholder="Cari kab/kota..." x-model="search" @click.stop></div>
+          <div class="ms-dd-list">
+            <label><input type="checkbox" :checked="f.subwilayah.includes('__all__')" @change="toggleSubwilayah('__all__')"> <strong>Semua Kab/Kota</strong></label>
+            <div class="ms-divider"></div>
+            <template x-for="kk in subList().filter(k => k.toLowerCase().includes(search.toLowerCase()))" :key="kk">
+              <label><input type="checkbox" :checked="f.subwilayah.includes(kk)" @change="toggleSubwilayah(kk)"> <span x-text="kk"></span></label>
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tampilan: Skor Komposit / Pasar Potensial (page Peta) -->
+    <div class="filter-field" x-show="filterFields().includes('tampilan')">
+      <label>Tampilan</label>
+      <div class="chip-ms">
+        <button :class="{active: f.tampilan === 'composite'}" @click="f.tampilan = 'composite'">Skor Komposit</button>
+        <button :class="{active: f.tampilan === 'TAM'}" @click="f.tampilan = 'TAM'">Pasar Potensial</button>
+      </div>
+    </div>
+
+    <!-- Tier multi-toggle (page Peta) -->
+    <div class="filter-field" x-show="filterFields().includes('tier')">
+      <label>Tier</label>
+      <div class="chip-ms">
+        <template x-for="t in ['Tier 1','Tier 2','Tier 3','Tier 4','Sampel Terbatas']" :key="'fb'+t">
+          <button :class="{active: f.tier.includes(t)}" @click="toggleTierF(t)" x-text="t.replace('Sampel Terbatas','Sampel')"></button>
         </template>
+      </div>
+    </div>
+
+    <!-- Indikator (page Indikator) -->
+    <div class="filter-field" x-show="filterFields().includes('indikator')">
+      <label>Indikator</label>
+      <select x-model="f.indikator" style="padding:8px 12px;font-size:13px;border:1px solid var(--rule-strong);border-radius:4px;background:white;cursor:pointer;min-width:200px;">
+        <template x-for="m in indMetrics" :key="m"><option :value="m" x-text="indLabels[m]"></option></template>
       </select>
     </div>
+
     <button class="btn-submit" @click="submit()">SUBMIT</button>
   </div>
 </div>
@@ -291,7 +357,7 @@
     <div class="empty-state">
       <iconify-icon icon="mdi:filter-variant-plus" class="icon"></iconify-icon>
       <div class="title">Pilih filter dan klik <strong>SUBMIT</strong></div>
-      <div class="desc">Default: Tahun 2025 &middot; Semua Provinsi &middot; Semua Kab/Kota. Anda dapat memilih provinsi atau kabupaten/kota tertentu sebelum submit.</div>
+      <div class="desc">Default: Tahun 2025 &middot; Semua Provinsi &middot; Tampilan Skor Komposit &middot; Tier 1+2. Bisa pilih multi-provinsi/kab-kota dan multi-tier.</div>
     </div>
   </template>
 
@@ -382,29 +448,12 @@
 
   <!-- ==================== PETA ==================== -->
   <section x-show="submitted && page === 'peta'">
-    <div class="rule-top pt-8 flex flex-wrap items-end gap-6">
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Tampilan</div>
-        <div class="mt-2 flex gap-2">
-          <button class="chip-action" :class="mapMode==='composite' ? 'active' : ''" @click="mapMode='composite'; renderMap()">Skor Komposit</button>
-          <button class="chip-action" :class="mapMode==='TAM' ? 'active' : ''" @click="mapMode='TAM'; renderMap()">Pasar Potensial</button>
-        </div>
-      </div>
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Filter Tier</div>
-        <div class="mt-2 flex gap-2 flex-wrap">
-          <template x-for="t in ['Tier 1','Tier 2','Tier 3','Tier 4','Sampel Terbatas']" :key="'tf'+t">
-            <button class="chip-action" :class="tierFilter.includes(t) ? 'active' : ''" @click="toggleTier(t)" x-text="t"></button>
-          </template>
-        </div>
-      </div>
-      <div style="margin-left:auto">
-        <button class="chip-action" @click="exportPPT()" style="background:var(--yellow);color:var(--ink);border-color:var(--yellow);font-weight:700;">
-          <iconify-icon icon="mdi:presentation"></iconify-icon>Export PPT
-        </button>
-      </div>
+    <div class="rule-top pt-8 flex justify-end">
+      <button class="chip-action" @click="exportPPT()" style="background:var(--yellow);color:var(--ink);border-color:var(--yellow);font-weight:700;">
+        <iconify-icon icon="mdi:presentation"></iconify-icon>Export PPT
+      </button>
     </div>
-    <div class="mt-12">
+    <div class="mt-8">
       <span class="badge"><span class="badge-dot"></span>540 Kab/Kota · 13 Indeks</span>
       <div class="eyebrow-roman mt-3">II. Peta Skor Komposit</div>
       <h2 class="serif-display text-3xl mt-3 max-w-3xl">Kepadatan pasar kredit kendaraan per kab/kota.</h2>
@@ -842,12 +891,19 @@ function dashboard() {
   Object.keys(_PROV_TO_KAB).forEach(p => _PROV_TO_KAB[p].sort());
   return {
     tabs: TABS, page: 'overview',
-    // ===== Canonical filter state =====
+    // ===== Canonical filter state v2 (multi-select + adaptive) =====
     submitted: false,
     years: [2019, 2020, 2021, 2022, 2023, 2024, 2025],
     provList: Object.keys(_PROV_TO_KAB).sort(),
-    f: { periode: 'tahunan', tahun: 2025, wilayah: '__all__', subwilayah: '__all__' },
+    f: { tahun: 2025, wilayah: ['__all__'], subwilayah: ['__all__'], tampilan: 'composite', tier: ['Tier 1', 'Tier 2'], indikator: 'pct_mobil' },
     applied: null,
+    PAGE_FILTERS: {
+      overview:   [],                                                          // HIDDEN (nasional)
+      peta:       ['tahun', 'wilayah', 'subwilayah', 'tampilan', 'tier'],
+      indikator:  ['tahun', 'wilayah', 'subwilayah', 'indikator'],
+      metodologi: []                                                            // HIDDEN
+    },
+    filterFields() { return this.PAGE_FILTERS[this.page] || []; },
     _PROV_TO_KAB: _PROV_TO_KAB,
     _PROV_TO_PCODE: _PROV_TO_PCODE,
     // ===== existing chart-level state =====
@@ -936,26 +992,62 @@ function dashboard() {
     },
     tierColor(t) { return TIER_COLORS[t] || '#999'; },
     toggleTier(t) {
+      // legacy in-page handler — keep for back-compat (kalau masih dipakai)
       const i = this.tierFilter.indexOf(t);
       if (i >= 0) this.tierFilter.splice(i, 1);
       else this.tierFilter.push(t);
       this.renderMap();
     },
+    // Multi-select handlers (canon v2)
+    toggleWilayah(val) {
+      if (val === '__all__') {
+        this.f.wilayah = ['__all__'];
+        this.f.subwilayah = ['__all__'];
+      } else {
+        const arr = this.f.wilayah.filter(v => v !== '__all__');
+        const i = arr.indexOf(val);
+        if (i >= 0) arr.splice(i, 1); else arr.push(val);
+        this.f.wilayah = arr.length ? arr : ['__all__'];
+        this.f.subwilayah = ['__all__'];
+      }
+    },
+    toggleSubwilayah(val) {
+      if (val === '__all__') { this.f.subwilayah = ['__all__']; return; }
+      const arr = this.f.subwilayah.filter(v => v !== '__all__');
+      const i = arr.indexOf(val);
+      if (i >= 0) arr.splice(i, 1); else arr.push(val);
+      this.f.subwilayah = arr.length ? arr : ['__all__'];
+    },
+    toggleTierF(t) {
+      const arr = [...this.f.tier];
+      const i = arr.indexOf(t);
+      if (i >= 0) arr.splice(i, 1); else arr.push(t);
+      this.f.tier = arr;
+    },
     subList() {
-      if (this.f.wilayah === '__all__') return [];
-      return this._PROV_TO_KAB[this.f.wilayah] || [];
+      if (this.f.wilayah.includes('__all__')) {
+        const all = new Set();
+        Object.values(this._PROV_TO_KAB).forEach(arr => arr.forEach(kk => all.add(kk)));
+        return [...all].sort();
+      }
+      const all = new Set();
+      this.f.wilayah.forEach(p => (this._PROV_TO_KAB[p] || []).forEach(kk => all.add(kk)));
+      return [...all].sort();
     },
     submit() {
       this.applied = JSON.parse(JSON.stringify(this.f));
       this.applied.tahun = parseInt(this.applied.tahun, 10);
-      // Sync canonical filter ke per-page state existing (tanpa ubah chart logic)
+      // Sync canonical filter v2 ke per-page state existing (tanpa ubah chart logic)
       this.indYear = String(this.applied.tahun);
-      if (this.applied.wilayah === '__all__') {
+      this.indMetric = this.applied.indikator;
+      this.mapMode = this.applied.tampilan;
+      this.tierFilter = [...this.applied.tier];
+      // Wilayah multi -> sync ke single legacy field (ambil 1st atau Indonesia kalau __all__/multi)
+      if (this.applied.wilayah.includes('__all__')) {
         this.indWilayah = 'Indonesia';  this.indProv = 'All';
         this.rankWilayah = 'Indonesia'; this.rankProv = 'All';
-      } else {
-        // Wilayah canonical = nama provinsi; cari region group yang memuat provinsi tsb
-        const pcode2 = this._PROV_TO_PCODE[this.applied.wilayah];
+      } else if (this.applied.wilayah.length === 1) {
+        const pcode2 = this._PROV_TO_PCODE[this.applied.wilayah[0]];
         let region = 'Indonesia';
         Object.entries(REGION_PROVS).forEach(([reg, codes]) => {
           if (codes && codes.includes(pcode2)) region = reg;
@@ -963,12 +1055,18 @@ function dashboard() {
         this.indWilayah = region;  this.rankWilayah = region;
         this.indProv = pcode2 || 'All';
         this.rankProv = pcode2 || 'All';
+      } else {
+        // Multi-prov: render Indonesia level (chart logic existing belum support multi)
+        this.indWilayah = 'Indonesia';  this.indProv = 'All';
+        this.rankWilayah = 'Indonesia'; this.rankProv = 'All';
       }
       this.submitted = true;
       this.$nextTick(() => this.renderForPage(this.page));
     },
     init() {
       window.gotoPage = (id) => this.setPage(id);
+      // Watch page change: re-render kalau sudah submit (filter bar adapts)
+      this.$watch('page', () => { if (this.submitted) this.$nextTick(() => this.renderForPage(this.page)); });
       let resizeT;
       window.addEventListener('resize', () => {
         clearTimeout(resizeT);
