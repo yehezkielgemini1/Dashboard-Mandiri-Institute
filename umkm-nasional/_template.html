@@ -104,6 +104,7 @@ body { margin: 0; font-family: 'Inter', system-ui, sans-serif; color: var(--ink)
     <a href="#" :class="page==='ringkasan' ? 'active' : ''" @click.prevent="setPage('ringkasan')">Ringkasan</a>
     <a href="#" :class="page==='sektor' ? 'active' : ''" @click.prevent="setPage('sektor')">Sektor</a>
     <a href="#" :class="page==='wilayah' ? 'active' : ''" @click.prevent="setPage('wilayah')">Wilayah</a>
+    <a href="#" :class="page==='peta' ? 'active' : ''" @click.prevent="setPage('peta')">Peta</a>
     <a href="#" :class="page==='metodologi' ? 'active' : ''" @click.prevent="setPage('metodologi')">Metodologi</a>
   </div>
   <div class="right">
@@ -117,7 +118,8 @@ body { margin: 0; font-family: 'Inter', system-ui, sans-serif; color: var(--ink)
     <li><a href="../index.html"><iconify-icon icon="mdi:home-outline"></iconify-icon>Beranda</a></li>
     <li><button @click="setPage('ringkasan'); navOpen=false"><iconify-icon icon="mdi:view-dashboard"></iconify-icon>Ringkasan</button></li>
     <li><button @click="setPage('sektor'); navOpen=false"><iconify-icon icon="mdi:chart-bar"></iconify-icon>Sektor</button></li>
-    <li><button @click="setPage('wilayah'); navOpen=false"><iconify-icon icon="mdi:map-outline"></iconify-icon>Wilayah</button></li>
+    <li><button @click="setPage('wilayah'); navOpen=false"><iconify-icon icon="mdi:chart-bar"></iconify-icon>Wilayah</button></li>
+    <li><button @click="setPage('peta'); navOpen=false"><iconify-icon icon="mdi:map-outline"></iconify-icon>Peta</button></li>
     <li><button @click="setPage('metodologi'); navOpen=false"><iconify-icon icon="mdi:book-open-variant"></iconify-icon>Metodologi</button></li>
   </ul>
 </aside>
@@ -263,6 +265,25 @@ body { margin: 0; font-family: 'Inter', system-ui, sans-serif; color: var(--ink)
   </div>
 </section>
 
+<!-- ====== PAGE: PETA ====== -->
+<section x-show="submitted && page==='peta'">
+  <div class="rule-top pt-8" style="padding-top:24px;">
+    <span class="badge"><span class="badge-dot"></span>Peta</span>
+    <div class="eyebrow-roman" style="margin-top:12px;">IV. Peta Sebaran</div>
+    <h2 class="serif" style="font-size:28px;margin-top:6px;">Sebaran UMKM per provinsi.</h2>
+    <p class="muted" style="font-size:13px;margin-top:8px;" x-text="petaContext()"></p>
+  </div>
+  <div class="chart-card" style="margin-top:24px;">
+    <div id="chart-peta" style="height:560px;"></div>
+    <p class="fig-caption">Choropleth provinsi: warna lebih gelap = UMKM lebih banyak. Klik provinsi untuk filter detail di tab Wilayah. Sumber: Sakernas BPS.</p>
+  </div>
+  <div class="chart-card" style="margin-top:20px;">
+    <div class="eyebrow">Treemap Hierarki</div>
+    <h3 class="serif" style="font-size:18px;margin:6px 0 14px;">Provinsi &rarr; Sektor &rarr; Ukuran</h3>
+    <div id="chart-treemap" style="height:520px;"></div>
+  </div>
+</section>
+
 <!-- ====== PAGE: METODOLOGI ====== -->
 <section x-show="submitted && page==='metodologi'">
   <div class="rule-top pt-8" style="padding-top:24px;">
@@ -372,6 +393,8 @@ function dashboard() {
     },
     submit() {
       this.applied = JSON.parse(JSON.stringify(this.f));
+      // Alpine x-model on <select> returns strings; coerce tahun to number untuk match PAYLOAD.years
+      this.applied.tahun = parseInt(this.applied.tahun, 10);
       this.submitted = true;
       this.computeKPI();
       this.$nextTick(() => this.renderAll());
@@ -427,6 +450,12 @@ function dashboard() {
       if (this.page === 'ringkasan') { this.renderUkuran(); this.renderTrend(); }
       else if (this.page === 'sektor') { this.renderSektorBar(); this.renderSektorTable(); }
       else if (this.page === 'wilayah') { this.renderTopWilayah(); }
+      else if (this.page === 'peta') { this.renderPeta(); this.renderTreemap(); }
+    },
+
+    petaContext() {
+      if (!this.applied) return '';
+      return `Tahun ${this.applied.tahun} &middot; ${this.applied.wilayah === '__all__' ? 'Semua Provinsi (38)' : this.applied.wilayah}`;
     },
 
     renderUkuran() {
@@ -455,7 +484,8 @@ function dashboard() {
         type: 'bar',
         x: PAYLOAD.years.map(String), y: trend,
         text: trend.map(v => fmtJuta(v)),
-        textposition: 'outside',
+        textposition: 'auto',
+        cliponaxis: false,
         marker: { color: PAYLOAD.years.map((y, i) => y === a.tahun ? COLORS.navy : COLORS.sky) }
       }], {
         margin: { l: 60, r: 24, t: 30, b: 40 },
@@ -475,7 +505,8 @@ function dashboard() {
         y: sorted.map(e => e[0]).reverse(),
         x: sorted.map(e => e[1]).reverse(),
         text: sorted.map(e => fmtJuta(e[1])).reverse(),
-        textposition: 'outside',
+        textposition: 'auto',
+        cliponaxis: false,
         marker: { color: COLORS.navy }
       }], {
         margin: { l: 160, r: 80, t: 20, b: 40 },
@@ -518,12 +549,126 @@ function dashboard() {
         y: sorted.map(e => e[0]).reverse(),
         x: sorted.map(e => e[1]).reverse(),
         text: sorted.map(e => fmtJuta(e[1])).reverse(),
-        textposition: 'outside',
+        textposition: 'auto',
+        cliponaxis: false,
         marker: { color: COLORS.navy }
       }], {
         margin: { l: 280, r: 80, t: 20, b: 40 },
         paper_bgcolor: 'white', plot_bgcolor: 'white', font: PLOT_FONT,
         xaxis: { gridcolor: '#E5E8EC', tickformat: ',.0f' }
+      }, PLOT_CFG);
+    },
+
+    // PETA: Plotly choropleth via Indonesia provinces GeoJSON (CDN)
+    async renderPeta() {
+      const a = this.applied;
+      // Aggregate per province for selected tahun
+      const provSums = {};
+      _RC.filter(r => r[0] === a.tahun).forEach(r => {
+        const p = rowProv(r);
+        provSums[p] = (provSums[p] || 0) + r[5];
+      });
+
+      // Load Indonesia provinces GeoJSON (cached after first call)
+      if (!window._idnGeo) {
+        try {
+          const resp = await fetch('https://cdn.jsdelivr.net/gh/superpikar/indonesia-geojson@master/indonesia-province-simple.json');
+          window._idnGeo = await resp.json();
+        } catch (e) {
+          document.getElementById('chart-peta').innerHTML = `<div style="padding:40px;text-align:center;color:var(--muted);"><iconify-icon icon="mdi:wifi-off" style="font-size:48px;"></iconify-icon><p style="margin-top:12px;">Gagal memuat GeoJSON peta. Cek koneksi internet.</p></div>`;
+          return;
+        }
+      }
+      const geo = window._idnGeo;
+
+      // Match GeoJSON property "Propinsi" with PAYLOAD prov names
+      // GeoJSON uses uppercase + "PROVINSI" prefix, normalize both sides
+      const norm = (s) => (s || '').toUpperCase().replace(/PROVINSI\s+/i, '').replace(/^DKI\s+/, 'DKI ').replace(/^DI\s+/, 'DI ').trim();
+      const sumByNorm = {};
+      Object.entries(provSums).forEach(([k, v]) => { sumByNorm[norm(k)] = v; });
+
+      const locations = [];
+      const z = [];
+      const text = [];
+      geo.features.forEach((f, i) => {
+        const propName = f.properties.Propinsi || f.properties.PROPINSI || f.properties.NAME_1 || f.properties.name || '';
+        const key = norm(propName);
+        locations.push(propName);
+        z.push(sumByNorm[key] || 0);
+        text.push(`${propName}<br>${fmtJuta(sumByNorm[key] || 0)} UMKM`);
+      });
+
+      Plotly.newPlot('chart-peta', [{
+        type: 'choropleth',
+        geojson: geo,
+        locations: locations,
+        z: z,
+        text: text,
+        hovertemplate: '%{text}<extra></extra>',
+        featureidkey: 'properties.Propinsi',
+        colorscale: [[0, '#E5E8EC'], [0.2, '#A9C4DF'], [0.5, '#67B2E8'], [0.8, '#1A5394'], [1, '#003D79']],
+        colorbar: { title: 'Jumlah UMKM', tickformat: ',.0f' },
+        marker: { line: { color: 'white', width: 0.5 } }
+      }], {
+        geo: { fitbounds: 'locations', visible: false, projection: { type: 'mercator' } },
+        margin: { l: 0, r: 0, t: 20, b: 0 },
+        paper_bgcolor: 'white', font: PLOT_FONT
+      }, PLOT_CFG);
+    },
+
+    renderTreemap() {
+      const a = this.applied;
+      const data = this.filtered();
+      // Build hierarchy: province -> sektor -> ukuran
+      const hierarchy = {};
+      data.forEach(r => {
+        const p = rowProv(r), s = rowSek(r), u = rowUk(r);
+        if (!hierarchy[p]) hierarchy[p] = {};
+        if (!hierarchy[p][s]) hierarchy[p][s] = {};
+        hierarchy[p][s][u] = (hierarchy[p][s][u] || 0) + r[5];
+      });
+
+      const labels = ['Indonesia'];
+      const parents = [''];
+      const values = [0];
+      Object.entries(hierarchy).forEach(([p, sektors]) => {
+        labels.push(p); parents.push('Indonesia'); values.push(0);
+        Object.entries(sektors).forEach(([s, ukurans]) => {
+          const sektorId = `${p}/${s}`;
+          labels.push(s); parents.push(p); values.push(0);
+          // Patch: use unique ID hack via multi-level via ids array
+        });
+      });
+
+      // Simpler: just province → sektor (2 levels) to keep treemap readable
+      const labels2 = [], parents2 = [], values2 = [], ids2 = [];
+      ids2.push('root'); labels2.push('Total'); parents2.push(''); values2.push(0);
+      Object.entries(hierarchy).forEach(([p, sektors]) => {
+        const pId = `p:${p}`;
+        ids2.push(pId); labels2.push(p); parents2.push('root'); values2.push(0);
+        Object.entries(sektors).forEach(([s, ukurans]) => {
+          const sId = `${pId}/${s}`;
+          const sumS = Object.values(ukurans).reduce((a, b) => a + b, 0);
+          if (sumS > 0) {
+            ids2.push(sId); labels2.push(s); parents2.push(pId); values2.push(sumS);
+          }
+        });
+      });
+
+      Plotly.newPlot('chart-treemap', [{
+        type: 'treemap',
+        ids: ids2,
+        labels: labels2,
+        parents: parents2,
+        values: values2,
+        branchvalues: 'remainder',
+        marker: { colorscale: [[0, '#A9C4DF'], [0.5, '#67B2E8'], [1, '#003D79']] },
+        textinfo: 'label+value',
+        texttemplate: '%{label}<br>%{value:,.0f}',
+        hovertemplate: '<b>%{label}</b><br>%{value:,.0f} UMKM<extra></extra>'
+      }], {
+        margin: { l: 0, r: 0, t: 0, b: 0 },
+        paper_bgcolor: 'white', font: PLOT_FONT
       }, PLOT_CFG);
     }
   };
