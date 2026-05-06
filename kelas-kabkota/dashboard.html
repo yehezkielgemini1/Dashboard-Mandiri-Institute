@@ -337,6 +337,20 @@
   /* Push folio/filter sticky bars below topnav (topnav height ~64px) */
   .folio { top: 64px !important; }
   .filter-bar { top: 96px !important; }
+  /* ============ STANDARDIZED FILTER BAR (canon untuk semua dashboard) ============ */
+  .filter-canon { background: var(--paper); border-bottom: 1px solid var(--rule-strong); padding: 16px 24px; }
+  .filter-canon-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+  .filter-field { display: flex; flex-direction: column; gap: 6px; min-width: 160px; }
+  .filter-field label { font-size: 12px; font-weight: 700; color: var(--ink); }
+  .filter-field select { padding: 8px 12px; font-size: 13px; border: 1px solid var(--rule-strong); border-radius: 4px; background: white; cursor: pointer; min-width: 180px; }
+  .btn-submit { padding: 9px 28px; font-size: 13px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; background: var(--sky); color: white; border: none; cursor: pointer; border-radius: 4px; transition: background 0.2s; height: 36px; align-self: flex-end; }
+  .btn-submit:hover { background: var(--navy); }
+  .btn-submit:disabled { background: var(--muted); cursor: not-allowed; }
+  /* Empty state when no data submitted */
+  .empty-state { background: var(--paper); border: 1px dashed var(--rule-strong); padding: 80px 24px; text-align: center; margin: 24px 0; }
+  .empty-state .icon { font-size: 64px; color: var(--rule-strong); margin-bottom: 16px; }
+  .empty-state .title { font-family: 'Source Serif 4', Georgia, serif; font-size: 22px; color: var(--ink); margin-bottom: 8px; }
+  .empty-state .desc { font-size: 14px; color: var(--muted); max-width: 480px; margin: 0 auto; }
 </style>
 
 </head>
@@ -420,10 +434,51 @@
   </header>
 </div>
 
+<!-- STANDARDIZED FILTER BAR (canon untuk semua dashboard) -->
+<div class="filter-canon">
+  <div class="filter-canon-inner">
+    <div class="filter-field">
+      <label>Periode</label>
+      <select x-model="f.periode">
+        <option value="tahunan">Tahunan</option>
+      </select>
+    </div>
+    <div class="filter-field">
+      <label>Tahun</label>
+      <select x-model="f.tahun">
+        <template x-for="y in years" :key="'fy'+y"><option :value="y" x-text="y"></option></template>
+      </select>
+    </div>
+    <div class="filter-field">
+      <label>Wilayah</label>
+      <select x-model="f.wilayah" @change="f.subwilayah = '__all__'">
+        <template x-for="w in wilayahList" :key="'fw'+w"><option :value="w" x-text="w"></option></template>
+      </select>
+    </div>
+    <div class="filter-field">
+      <label>Sub-wilayah</label>
+      <select x-model="f.subwilayah">
+        <option value="__all__">Semua pemda</option>
+        <template x-for="p in canonProvOptions" :key="'fp'+p.pcode"><option :value="p.pcode" x-text="p.nama"></option></template>
+      </select>
+    </div>
+    <button class="btn-submit" @click="submit()">SUBMIT</button>
+  </div>
+</div>
+
 <main class="max-w-[1280px] mx-auto px-8 pb-16">
 
+  <!-- EMPTY STATE -->
+  <template x-if="!submitted">
+    <div class="empty-state">
+      <iconify-icon icon="mdi:filter-variant-plus" class="icon"></iconify-icon>
+      <div class="title">Pilih filter dan klik <strong>SUBMIT</strong></div>
+      <div class="desc">Default: Tahun 2025 &middot; Indonesia &middot; Semua pemda. Anda dapat memilih wilayah atau provinsi tertentu sebelum submit.</div>
+    </div>
+  </template>
+
   <!-- TREND -->
-  <section x-show="page === 'trend'">
+  <section x-show="submitted && page === 'trend'">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-10 rule-top pt-8">
       <div>
         <div class="eyebrow" style="color: var(--muted);">Populasi 2025</div>
@@ -464,7 +519,7 @@
   </section>
 
   <!-- GEOGRAFI -->
-  <section x-show="page === 'geografi'">
+  <section x-show="submitted && page === 'geografi'">
     <!-- Unified filter row -->
     <div class="rule-top pt-8 flex flex-wrap items-end gap-6">
       <div>
@@ -570,7 +625,7 @@
   </section>
 
   <!-- DETAIL KABKOTA -->
-  <section x-show="page === 'detail'">
+  <section x-show="submitted && page === 'detail'">
     <!-- Cascading filter: provinsi dulu → kab/kota -->
     <div class="rule-top pt-8 flex flex-wrap items-end gap-6">
       <div>
@@ -607,7 +662,7 @@
   </section>
 
   <!-- INEQUALITY -->
-  <section x-show="page === 'inequality'">
+  <section x-show="submitted && page === 'inequality'">
     <div class="rule-top pt-8 flex flex-wrap items-end gap-6">
       <div>
         <div class="eyebrow" style="color: var(--muted);">Tahun</div>
@@ -764,6 +819,9 @@ function fmtNum(v) {
 function dashboard() {
   return {
     tabs: TABS, page: 'trend',
+    submitted: false,
+    f: { periode: 'tahunan', tahun: '2025', wilayah: 'Indonesia', subwilayah: '__all__' },
+    applied: null,
     years: YEARS, year: '2025', classes: CLASSES,
     trendMode: 'share',
     mapKelas: 'Poor', mapMode: 'pct',
@@ -885,6 +943,37 @@ function dashboard() {
       return Object.entries(provMap).sort((a,b) => a[1].localeCompare(b[1])).map(([pc, n]) => ({ pcode: pc, nama: n }));
     },
     onWilayahChange() { this.provFilter = 'All'; this.renderMap(); },
+    // Canonical filter: prov options derived from f.wilayah (region group)
+    get canonProvOptions() {
+      const codes = REGION_PROVS[this.f.wilayah];
+      const provMap = {};
+      Object.entries(PAYLOAD_LIGHT.kab_meta).forEach(([p, m]) => {
+        const pc = pcodeProvCode(p);
+        if (!provMap[pc] && (!codes || codes.includes(pc))) provMap[pc] = m.nama_prov;
+      });
+      return Object.entries(provMap).sort((a,b) => a[1].localeCompare(b[1])).map(([pc, n]) => ({ pcode: pc, nama: n }));
+    },
+    submit() {
+      // Snapshot canonical filter state, coerce tahun ke string (sesuai YEARS array)
+      this.applied = JSON.parse(JSON.stringify(this.f));
+      this.applied.tahun = String(this.applied.tahun);
+      // Push canonical state ke variabel page-level existing supaya render functions tetap pakai pola lama
+      this.year = this.applied.tahun;
+      this.wilayah = this.applied.wilayah;
+      this.provFilter = this.applied.subwilayah === '__all__' ? 'All' : this.applied.subwilayah;
+      // Sync detail-page prov ke pilihan canonical kalau spesifik prov terpilih
+      if (this.applied.subwilayah !== '__all__') {
+        this.detailProv = this.applied.subwilayah;
+        const opts = this.detailKabOptions;
+        if (opts.length) this.detailPcode = opts[0].pcode;
+        // Sync inequality scope juga
+        this.ineqScope = this.applied.subwilayah;
+      } else {
+        this.ineqScope = 'nasional';
+      }
+      this.submitted = true;
+      this.$nextTick(() => this.renderForPage(this.page));
+    },
     kabMeta(p) { return PAYLOAD_LIGHT.kab_meta[p] || {}; },
     formatVal(v) { return this.mapMode === 'pct' ? fmtPct(v) : fmtNum(v); },
     // ----- PPT-ready PNG export with Mandiri branding -----
@@ -936,7 +1025,7 @@ function dashboard() {
       }, 'image/png');
     },
     init() {
-      this.$nextTick(() => this.renderForPage(this.page));
+      // Canonical pattern: jangan render sebelum SUBMIT diklik
       // Expose page setter for top-nav / drawer (outside Alpine scope)
       window.gotoPage = (id) => this.setPage(id);
       // Defense-in-depth: resize Plotly charts on viewport change
@@ -953,7 +1042,7 @@ function dashboard() {
     },
     setPage(id) {
       this.page = id;
-      this.renderForPage(id);
+      if (this.submitted) this.renderForPage(id);
     },
     renderForPage(id) {
       requestAnimationFrame(() => requestAnimationFrame(() => {
