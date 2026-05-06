@@ -83,6 +83,28 @@ body { margin: 0; font-family: 'Inter', system-ui, sans-serif; color: var(--ink)
 .empty-state .title { font-family: 'Source Serif 4', serif; font-size: 22px; color: var(--ink); margin-bottom: 8px; }
 .empty-state .desc { font-size: 14px; color: var(--muted); max-width: 480px; margin: 0 auto; }
 
+/* ============ MULTI-SELECT DROPDOWN (canonical, reusable) ============ */
+.ms-dd { position: relative; min-width: 200px; }
+.ms-dd-btn { width: 100%; padding: 8px 32px 8px 12px; font-size: 13px; border: 1px solid var(--rule-strong); border-radius: 4px; background: white; cursor: pointer; text-align: left; position: relative; min-height: 36px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.ms-dd-btn:focus, .ms-dd-btn.open { outline: 2px solid var(--sky); outline-offset: -1px; }
+.ms-dd-btn::after { content: ''; position: absolute; right: 12px; top: 50%; transform: translateY(-25%); width: 6px; height: 6px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: translateY(-65%) rotate(45deg); }
+.ms-dd-btn .placeholder { color: var(--muted); }
+.ms-dd-chip { display: inline-flex; align-items: center; gap: 4px; background: rgba(103,178,232,0.18); color: var(--navy); padding: 2px 6px; font-size: 11px; font-weight: 600; border-radius: 3px; }
+.ms-dd-panel { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: white; border: 1px solid var(--rule-strong); border-radius: 4px; box-shadow: 0 8px 24px rgba(5,28,44,0.10); z-index: 50; max-height: 320px; display: flex; flex-direction: column; min-width: 240px; }
+.ms-dd-search { padding: 8px; border-bottom: 1px solid var(--rule); }
+.ms-dd-search input { width: 100%; padding: 6px 10px; font-size: 12px; border: 1px solid var(--rule-strong); border-radius: 3px; }
+.ms-dd-list { overflow-y: auto; padding: 4px 0; flex: 1; }
+.ms-dd-list label { display: flex; align-items: center; gap: 8px; padding: 6px 12px; font-size: 13px; cursor: pointer; }
+.ms-dd-list label:hover { background: var(--mist, #F0F6FC); }
+.ms-dd-list label input[type="checkbox"] { margin: 0; cursor: pointer; }
+.ms-dd-list .ms-divider { border-bottom: 1px solid var(--rule); margin: 4px 0; }
+
+/* ============ CHIP MULTI-TOGGLE (canonical) ============ */
+.chip-ms { display: inline-flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+.chip-ms button { padding: 7px 14px; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; background: white; color: var(--ink); border: 1px solid var(--rule-strong); cursor: pointer; border-radius: 4px; transition: all 0.15s; }
+.chip-ms button:hover { border-color: var(--sky); color: var(--navy); }
+.chip-ms button.active { background: var(--navy); color: white; border-color: var(--navy); }
+
 @media (max-width: 1100px) {
   .topnav .menu { display: none; }
   .topnav .burger { display: inline-flex; }
@@ -133,41 +155,65 @@ body { margin: 0; font-family: 'Inter', system-ui, sans-serif; color: var(--ink)
   </div>
 </div>
 
-<!-- STANDARDIZED FILTER BAR (canon untuk semua dashboard) -->
-<div class="filter-canon">
+<!-- ADAPTIVE FILTER BAR (canon — hide kalau page tidak butuh filter) -->
+<div class="filter-canon" x-show="filterFields().length > 0">
   <div class="filter-canon-inner">
-    <div class="filter-field">
-      <label>Periode</label>
-      <select x-model="f.periode">
-        <option value="tahunan">Tahunan</option>
-      </select>
-    </div>
-    <div class="filter-field">
+    <!-- Tahun (single-select dropdown — semua page yang butuh filter pasti perlu Tahun) -->
+    <div class="filter-field" x-show="filterFields().includes('tahun')">
       <label>Tahun</label>
-      <select x-model="f.tahun">
+      <select x-model.number="f.tahun" style="padding:8px 12px;font-size:13px;border:1px solid var(--rule-strong);border-radius:4px;background:white;cursor:pointer;min-width:120px;">
         <template x-for="y in years" :key="y">
           <option :value="y" x-text="y"></option>
         </template>
       </select>
     </div>
-    <div class="filter-field">
+
+    <!-- Wilayah (multi-select dropdown dengan checkbox + search) -->
+    <div class="filter-field" x-show="filterFields().includes('wilayah')">
       <label>Wilayah</label>
-      <select x-model="f.wilayah" @change="f.subwilayah = '__all__'">
-        <option value="__all__">Semua Provinsi</option>
-        <template x-for="w in provList" :key="w">
-          <option :value="w" x-text="w"></option>
-        </template>
-      </select>
+      <div class="ms-dd" x-data="{open:false, search:''}" @click.outside="open=false">
+        <button type="button" class="ms-dd-btn" :class="{open}" @click="open=!open">
+          <template x-if="f.wilayah.includes('__all__')"><span class="placeholder">Semua Provinsi</span></template>
+          <template x-if="!f.wilayah.includes('__all__')">
+            <template x-for="w in f.wilayah" :key="w"><span class="ms-dd-chip" x-text="w"></span></template>
+          </template>
+        </button>
+        <div class="ms-dd-panel" x-show="open" x-transition.opacity>
+          <div class="ms-dd-search"><input type="text" placeholder="Cari provinsi..." x-model="search" @click.stop></div>
+          <div class="ms-dd-list">
+            <label><input type="checkbox" :checked="f.wilayah.includes('__all__')" @change="toggleWilayah('__all__')"> <strong>Semua Provinsi</strong></label>
+            <div class="ms-divider"></div>
+            <template x-for="w in provList.filter(p => p.toLowerCase().includes(search.toLowerCase()))" :key="w">
+              <label><input type="checkbox" :checked="f.wilayah.includes(w)" @change="toggleWilayah(w)"> <span x-text="w"></span></label>
+            </template>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="filter-field">
+
+    <!-- Sub-wilayah (multi-select dropdown — hanya muncul kalau Wilayah dipilih spesifik) -->
+    <div class="filter-field" x-show="filterFields().includes('subwilayah') && !f.wilayah.includes('__all__')">
       <label>Sub-wilayah</label>
-      <select x-model="f.subwilayah" :disabled="f.wilayah === '__all__'">
-        <option value="__all__">Semua pemda</option>
-        <template x-for="kk in subList()" :key="kk">
-          <option :value="kk" x-text="kk"></option>
-        </template>
-      </select>
+      <div class="ms-dd" x-data="{open:false, search:''}" @click.outside="open=false">
+        <button type="button" class="ms-dd-btn" :class="{open}" @click="open=!open">
+          <template x-if="f.subwilayah.includes('__all__')"><span class="placeholder">Semua kab/kota</span></template>
+          <template x-if="!f.subwilayah.includes('__all__')">
+            <template x-for="kk in f.subwilayah" :key="kk"><span class="ms-dd-chip" x-text="kk"></span></template>
+          </template>
+        </button>
+        <div class="ms-dd-panel" x-show="open" x-transition.opacity>
+          <div class="ms-dd-search"><input type="text" placeholder="Cari kab/kota..." x-model="search" @click.stop></div>
+          <div class="ms-dd-list">
+            <label><input type="checkbox" :checked="f.subwilayah.includes('__all__')" @change="toggleSubwilayah('__all__')"> <strong>Semua kab/kota</strong></label>
+            <div class="ms-divider"></div>
+            <template x-for="kk in subList().filter(k => k.toLowerCase().includes(search.toLowerCase()))" :key="kk">
+              <label><input type="checkbox" :checked="f.subwilayah.includes(kk)" @change="toggleSubwilayah(kk)"> <span x-text="kk"></span></label>
+            </template>
+          </div>
+        </div>
+      </div>
     </div>
+
     <button class="btn-submit" @click="submit()">SUBMIT</button>
   </div>
 </div>
@@ -179,7 +225,7 @@ body { margin: 0; font-family: 'Inter', system-ui, sans-serif; color: var(--ink)
   <div class="empty-state">
     <iconify-icon icon="mdi:filter-variant-plus" class="icon"></iconify-icon>
     <div class="title">Pilih filter dan klik <strong>SUBMIT</strong></div>
-    <div class="desc">Default: Tahun 2025 &middot; Semua Provinsi &middot; Semua pemda. Anda dapat memilih provinsi atau kabupaten/kota tertentu sebelum submit.</div>
+    <div class="desc">Default: Tahun 2025 &middot; Semua Provinsi. Anda dapat pilih multi-provinsi atau drill ke kab/kota tertentu sebelum submit.</div>
   </div>
 </template>
 
@@ -375,9 +421,20 @@ function dashboard() {
     submitted: false,
     years: PAYLOAD.years,
     provList: Object.keys(PAYLOAD.wilayah).sort(),
-    f: { periode: 'tahunan', tahun: 2025, wilayah: '__all__', subwilayah: '__all__' },
+    // Multi-select arrays: '__all__' marker means "all selected"
+    f: { tahun: 2025, wilayah: ['__all__'], subwilayah: ['__all__'] },
     applied: null,
     kpi: {},
+
+    // Per-page filter requirement (adaptive)
+    PAGE_FILTERS: {
+      ringkasan: ['tahun', 'wilayah', 'subwilayah'],
+      sektor:    ['tahun', 'wilayah', 'subwilayah'],
+      wilayah:   ['tahun', 'wilayah'],   // sub-wilayah jadi target ranking, jangan filter
+      peta:      ['tahun'],              // peta nasional, hanya tahun
+      metodologi: []                     // statis
+    },
+    filterFields() { return this.PAGE_FILTERS[this.page] || []; },
 
     init() {
       this.$watch('page', () => { if (this.submitted) this.$nextTick(() => this.renderAll()); });
@@ -388,38 +445,73 @@ function dashboard() {
       try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {}
     },
     subList() {
-      if (this.f.wilayah === '__all__') return [];
-      return PAYLOAD.wilayah[this.f.wilayah] || [];
+      // Gabung kabkota dari semua provinsi yang dipilih (atau dari semua kalau "Semua Provinsi")
+      if (this.f.wilayah.includes('__all__')) {
+        const all = new Set();
+        Object.values(PAYLOAD.wilayah).forEach(arr => arr.forEach(kk => all.add(kk)));
+        return [...all].sort();
+      }
+      const all = new Set();
+      this.f.wilayah.forEach(p => (PAYLOAD.wilayah[p] || []).forEach(kk => all.add(kk)));
+      return [...all].sort();
+    },
+    // Multi-select toggle: pilih spesifik auto-deselect "Semua"
+    toggleWilayah(val) {
+      if (val === '__all__') {
+        this.f.wilayah = ['__all__'];
+        this.f.subwilayah = ['__all__'];
+      } else {
+        const arr = this.f.wilayah.filter(v => v !== '__all__');
+        const i = arr.indexOf(val);
+        if (i >= 0) arr.splice(i, 1); else arr.push(val);
+        this.f.wilayah = arr.length ? arr : ['__all__'];
+        this.f.subwilayah = ['__all__']; // reset sub kalau wilayah berubah
+      }
+    },
+    toggleSubwilayah(val) {
+      if (val === '__all__') { this.f.subwilayah = ['__all__']; return; }
+      const arr = this.f.subwilayah.filter(v => v !== '__all__');
+      const i = arr.indexOf(val);
+      if (i >= 0) arr.splice(i, 1); else arr.push(val);
+      this.f.subwilayah = arr.length ? arr : ['__all__'];
     },
     submit() {
       this.applied = JSON.parse(JSON.stringify(this.f));
-      // Alpine x-model on <select> returns strings; coerce tahun to number untuk match PAYLOAD.years
       this.applied.tahun = parseInt(this.applied.tahun, 10);
       this.submitted = true;
       this.computeKPI();
       this.$nextTick(() => this.renderAll());
     },
+    _wilayahLabel() {
+      if (!this.applied) return 'Nasional';
+      if (this.applied.wilayah.includes('__all__')) return 'Nasional';
+      return this.applied.wilayah.join(', ');
+    },
+    _subwilayahLabel() {
+      if (!this.applied || this.applied.subwilayah.includes('__all__')) return '';
+      return ' &middot; ' + this.applied.subwilayah.join(', ');
+    },
     ringkasanContext() {
       if (!this.applied) return '';
-      const w = this.applied.wilayah === '__all__' ? 'Nasional' : this.applied.wilayah;
-      const sw = this.applied.subwilayah === '__all__' ? '' : ' &middot; ' + this.applied.subwilayah;
-      return `Tahun ${this.applied.tahun} &middot; ${w}${sw}`;
+      return `Tahun ${this.applied.tahun} &middot; ${this._wilayahLabel()}${this._subwilayahLabel()}`;
     },
     wilayahContext() {
       if (!this.applied) return '';
-      if (this.applied.wilayah === '__all__') return `Top 20 kabupaten/kota nasional, ${this.applied.tahun}`;
-      return `Top kabupaten/kota di ${this.applied.wilayah}, ${this.applied.tahun}`;
+      if (this.applied.wilayah.includes('__all__')) return `Top 20 kabupaten/kota nasional, ${this.applied.tahun}`;
+      return `Top kabupaten/kota di ${this._wilayahLabel()}, ${this.applied.tahun}`;
     },
 
-    // Filter records by applied filter
+    // Filter records by applied filter (multi-select arrays)
     filtered() {
       const a = this.applied;
-      const provI = a.wilayah === '__all__' ? -1 : _PROVS.indexOf(a.wilayah);
-      const kkI   = a.subwilayah === '__all__' ? -1 : _KK.indexOf(a.subwilayah);
+      const wilayahAll = a.wilayah.includes('__all__');
+      const subwilayahAll = a.subwilayah.includes('__all__');
+      const provIdxs = wilayahAll ? null : new Set(a.wilayah.map(w => _PROVS.indexOf(w)).filter(i => i >= 0));
+      const kkIdxs   = subwilayahAll ? null : new Set(a.subwilayah.map(k => _KK.indexOf(k)).filter(i => i >= 0));
       return _RC.filter(r => {
         if (r[0] !== a.tahun) return false;
-        if (provI !== -1 && r[1] !== provI) return false;
-        if (kkI !== -1 && r[2] !== kkI) return false;
+        if (provIdxs && !provIdxs.has(r[1])) return false;
+        if (kkIdxs && !kkIdxs.has(r[2])) return false;
         return true;
       });
     },
@@ -455,7 +547,7 @@ function dashboard() {
 
     petaContext() {
       if (!this.applied) return '';
-      return `Tahun ${this.applied.tahun} &middot; ${this.applied.wilayah === '__all__' ? 'Semua Provinsi (38)' : this.applied.wilayah}`;
+      return `Tahun ${this.applied.tahun} &middot; semua provinsi (peta nasional)`;
     },
 
     renderUkuran() {
@@ -471,13 +563,15 @@ function dashboard() {
 
     renderTrend() {
       const a = this.applied;
-      const provI = a.wilayah === '__all__' ? -1 : _PROVS.indexOf(a.wilayah);
-      const kkI   = a.subwilayah === '__all__' ? -1 : _KK.indexOf(a.subwilayah);
+      const wilayahAll = a.wilayah.includes('__all__');
+      const subwilayahAll = a.subwilayah.includes('__all__');
+      const provIdxs = wilayahAll ? null : new Set(a.wilayah.map(w => _PROVS.indexOf(w)).filter(i => i >= 0));
+      const kkIdxs   = subwilayahAll ? null : new Set(a.subwilayah.map(k => _KK.indexOf(k)).filter(i => i >= 0));
       const trend = PAYLOAD.years.map(y => {
         return _RC
           .filter(r => r[0] === y &&
-            (provI === -1 || r[1] === provI) &&
-            (kkI === -1 || r[2] === kkI))
+            (!provIdxs || provIdxs.has(r[1])) &&
+            (!kkIdxs || kkIdxs.has(r[2])))
           .reduce((s, r) => s + r[5], 0);
       });
       Plotly.newPlot('chart-trend', [{
@@ -535,12 +629,13 @@ function dashboard() {
 
     renderTopWilayah() {
       const a = this.applied;
-      const provI = a.wilayah === '__all__' ? -1 : _PROVS.indexOf(a.wilayah);
+      const wilayahAll = a.wilayah.includes('__all__');
+      const provIdxs = wilayahAll ? null : new Set(a.wilayah.map(w => _PROVS.indexOf(w)).filter(i => i >= 0));
       const sums = {};
       _RC
-        .filter(r => r[0] === a.tahun && (provI === -1 || r[1] === provI))
+        .filter(r => r[0] === a.tahun && (!provIdxs || provIdxs.has(r[1])))
         .forEach(r => {
-          const k = a.wilayah === '__all__' ? `${rowKk(r)} (${rowProv(r)})` : rowKk(r);
+          const k = wilayahAll ? `${rowKk(r)} (${rowProv(r)})` : rowKk(r);
           sums[k] = (sums[k] || 0) + r[5];
         });
       const sorted = Object.entries(sums).sort((a,b) => b[1]-a[1]).slice(0, 20);
