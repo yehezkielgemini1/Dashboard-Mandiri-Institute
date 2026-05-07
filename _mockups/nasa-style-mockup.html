@@ -53,6 +53,78 @@
   /* Glow filter for bright polygons (will apply via SVG) */
   .leaflet-overlay-pane svg { overflow: visible !important; }
 
+  /* ============ Option F — Lights + Enlarged Map + Side Panel (NEW) ============ */
+  .layout-enlarge {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 18px;
+    margin-top: 20px;
+    margin-bottom: 32px;
+  }
+  .map-card-large { background: white; border: 1px solid var(--rule); display: flex; flex-direction: column; }
+  .map-card-large h3 { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); padding: 12px 16px; border-bottom: 1px solid var(--rule); }
+  .map-card-large .map { flex: 1; height: clamp(600px, 70vh, 820px); position: relative; }
+  .side-panel {
+    background: white; border: 1px solid var(--rule);
+    padding: 20px 22px;
+    display: flex; flex-direction: column; gap: 22px;
+    font-size: 12px;
+  }
+  .side-panel .sp-section h4 {
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink); margin-bottom: 10px;
+    padding-bottom: 6px; border-bottom: 1px solid var(--rule);
+  }
+  .detail-card.empty {
+    color: var(--muted); font-style: italic;
+    padding: 14px 16px; background: rgba(229,232,236,0.45);
+    border-left: 3px solid var(--rule);
+    font-size: 12px; line-height: 1.45;
+  }
+  .detail-card.filled {
+    padding: 12px 14px; background: rgba(0,61,121,0.04);
+    border-left: 3px solid var(--navy);
+  }
+  .detail-card .desa-name { font-weight: 700; color: var(--navy); font-size: 13px; margin-bottom: 8px; font-family: Georgia, serif; }
+  .detail-card .stat-row { display: flex; justify-content: space-between; padding: 3px 0; font-size: 11.5px; }
+  .detail-card .stat-row .label { color: var(--muted); }
+  .detail-card .stat-row .val { font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .top5-list { list-style: none; padding: 0; margin: 0; }
+  .top5-list li {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 4px; border-bottom: 1px solid var(--rule);
+    cursor: pointer; font-size: 12px;
+  }
+  .top5-list li:last-child { border-bottom: 0; }
+  .top5-list li:hover { background: rgba(255,183,0,0.08); }
+  .top5-list li .rank { font-weight: 700; color: var(--yellow); width: 18px; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+  .top5-list li .name { flex: 1; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .top5-list li .val { font-weight: 600; color: var(--navy); font-variant-numeric: tabular-nums; }
+  .legend-gradient { display: flex; flex-direction: column; gap: 8px; }
+  .legend-gradient .grad-bar {
+    height: 14px;
+    background: linear-gradient(to right,
+      #1a1a1a 0%, #382010 15%, #8c4b14 35%,
+      #da871e 55%, #ffc850 75%, #ffe68c 90%, #fffadc 100%);
+    border: 1px solid var(--rule);
+  }
+  .legend-gradient .grad-labels { display: flex; justify-content: space-between; font-size: 9.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .legend-gradient .sparkle-note {
+    font-size: 11px; color: var(--ink);
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 6px;
+  }
+  .legend-gradient .sparkle-note .sparkle-dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: #ffe68c;
+    box-shadow: 0 0 5px rgba(255,230,140,0.9), 0 0 10px rgba(255,200,80,0.55);
+  }
+  @media (max-width: 980px) {
+    .layout-enlarge { grid-template-columns: 1fr; }
+    .side-panel { order: -1; }
+    .map-card-large .map { height: clamp(420px, 55vh, 560px); }
+  }
+
   /* ============ Option D — True NASA Lights ============ */
   .map.nasa-lights { background: #000 !important; position: relative; overflow: hidden; }
   .map.nasa-lights .leaflet-container { background: #000 !important; }
@@ -99,7 +171,8 @@
 </header>
 
 <div class="tabs">
-  <button class="tab-btn active" data-tab="E">★ Option E — Lights + Context (NEW)</button>
+  <button class="tab-btn active" data-tab="F">★ Option F — Enlarge + Side Panel (NEW)</button>
+  <button class="tab-btn" data-tab="E">Option E — Lights + Context</button>
   <button class="tab-btn" data-tab="D">Option D — Pure NASA Lights</button>
   <button class="tab-btn" data-tab="A">Option A — Black Marble (polygon)</button>
   <button class="tab-btn" data-tab="B">Option B — Dark Hybrid</button>
@@ -107,8 +180,81 @@
   <button class="tab-btn" data-tab="ref">Reference (current)</button>
 </div>
 
+<!-- ============ OPTION F — Lights + Enlarged Map + Side Panel ============ -->
+<div class="panel active" id="panel-F">
+  <div class="panel-head">
+    <h2>Option F — Lights + Enlarged Map + Side Panel</h2>
+    <div class="desc">Layout half-page: peta NASA-style besar (<code>clamp(600px, 70vh, 820px)</code>) di kiri, side panel info 340px di kanan. Klik kelurahan di peta atau Top 5 list untuk munculin detail card. Visual identik Option E (Dark Matter + heatmap blend + sparkle), beda hanya layout. Mobile (≤980px): panel collapse stack di atas peta. Production target: <code>emerging-zone-generator-v4.py</code> Page 2 + Page 3.</div>
+    <div class="palette-strip">
+      <div style="background:#1a1a1a">bg</div>
+      <div style="background:#382010">15</div>
+      <div style="background:#8c4b14">35</div>
+      <div style="background:#da871e">55</div>
+      <div style="background:#ffc850;color:#5a3500">75</div>
+      <div style="background:#ffe68c;color:#5a3500">90</div>
+      <div style="background:#fffadc;color:#5a3500">100</div>
+    </div>
+  </div>
+
+  <!-- Page 2 — Luminositas Malam -->
+  <div class="layout-enlarge">
+    <div class="map-card-large">
+      <h3>Page 2 · Luminositas Malam (lum_2025)</h3>
+      <div class="map nasa-hybrid" id="map-F1"></div>
+    </div>
+    <aside class="side-panel" id="side-F1">
+      <div class="sp-section">
+        <h4>Detail kelurahan</h4>
+        <div class="detail-card empty" id="detail-F1">Klik kelurahan di peta atau Top 5 list untuk melihat detail.</div>
+      </div>
+      <div class="sp-section">
+        <h4>Top 5 terang</h4>
+        <ol class="top5-list" id="top5-F1"></ol>
+      </div>
+      <div class="sp-section">
+        <h4>Skala luminositas</h4>
+        <div class="legend-gradient">
+          <div class="grad-bar"></div>
+          <div class="grad-labels"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>
+          <div class="sparkle-note"><span class="sparkle-dot"></span> Sparkle = top 25% kelurahan terang</div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Page 3 — Aktivitas Komersial -->
+  <div class="layout-enlarge">
+    <div class="map-card-large">
+      <h3>Page 3 · Aktivitas Komersial (podes_count_2025)</h3>
+      <div class="map nasa-hybrid" id="map-F2"></div>
+    </div>
+    <aside class="side-panel" id="side-F2">
+      <div class="sp-section">
+        <h4>Detail kelurahan</h4>
+        <div class="detail-card empty" id="detail-F2">Klik kelurahan di peta atau Top 5 list untuk melihat detail.</div>
+      </div>
+      <div class="sp-section">
+        <h4>Top 5 padat usaha</h4>
+        <ol class="top5-list" id="top5-F2"></ol>
+      </div>
+      <div class="sp-section">
+        <h4>Skala density</h4>
+        <div class="legend-gradient">
+          <div class="grad-bar"></div>
+          <div class="grad-labels"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>
+          <div class="sparkle-note"><span class="sparkle-dot"></span> Sparkle = top 25% kelurahan padat</div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="note">
+    <strong>Layout spec:</strong> map <code>clamp(600px, 70vh, 820px)</code> + side panel 340px. <strong>Side panel:</strong> detail klik (default empty) + top 5 ranking (clickable, focus map ke kelurahan + isi detail) + legend gradient + sparkle threshold note. <strong>Visual style:</strong> identik Option E. <strong>Iterasi nanti:</strong> kalau approved, apply ke <code>emerging-zone-generator-v4.py</code> Page 2 + 3.
+  </div>
+</div>
+
 <!-- ============ OPTION E — NASA Lights + Context (hybrid) ============ -->
-<div class="panel active" id="panel-E">
+<div class="panel" id="panel-E">
   <div class="panel-head">
     <h2>Option E — NASA Lights + Context (best of both worlds)</h2>
     <div class="desc">Dark Matter basemap dengan label kota muted (opacity 0.35) sebagai konteks geografis. Heatmap NASA + sparkle markers di atas dengan <code>mix-blend-mode: screen</code> (additive lighting — cahaya menambah, bukan menutupi). User bisa orientasi (Sudirman/Mega Kuningan/Kelapa Gading) tapi tetap kelihatan NASA-style.</div>
@@ -575,15 +721,69 @@ function buildLightsMap(elId, opts) {
     onEachFeature: (f, lyr) => {
       const pc = f.properties.desa_pcode;
       const v = valueMap[pc];
-      lyr.bindPopup(`<div style="font-family:Inter,sans-serif;font-size:12px;min-width:160px;">
-        <strong style="color:#003D79;">desa_pcode: ${pc}</strong><br>
-        ${opts.metric === 'podes' ? 'Tempat Usaha 2025' : 'Luminositas 2025'}: <strong>${v != null ? v.toFixed(1) : '-'}</strong>
-      </div>`);
+      if (typeof opts.onSelect === 'function') {
+        // Option F: side panel mode, no popup
+        lyr.on('click', () => opts.onSelect(pc, v, f));
+      } else {
+        // Option D / E: classic popup
+        lyr.bindPopup(`<div style="font-family:Inter,sans-serif;font-size:12px;min-width:160px;">
+          <strong style="color:#003D79;">desa_pcode: ${pc}</strong><br>
+          ${opts.metric === 'podes' ? 'Tempat Usaha 2025' : 'Luminositas 2025'}: <strong>${v != null ? v.toFixed(1) : '-'}</strong>
+        </div>`);
+      }
     }
   });
   hitLayer.addTo(map);
 
   return map;
+}
+
+// =============== Side panel helpers (Option F) ==================
+function fillDetailCard(elId, pc, v, metricLabel) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.classList.remove('empty');
+  el.classList.add('filled');
+  const cat = v == null ? '-'
+    : v >= 75 ? 'Sangat tinggi'
+    : v >= 50 ? 'Tinggi'
+    : v >= 25 ? 'Sedang'
+    : 'Rendah';
+  el.innerHTML = `
+    <div class="desa-name">desa_pcode: ${pc}</div>
+    <div class="stat-row"><span class="label">${metricLabel}</span><span class="val">${v != null ? v.toFixed(1) : '-'}</span></div>
+    <div class="stat-row"><span class="label">Skala</span><span class="val">0–100 (normalized)</span></div>
+    <div class="stat-row"><span class="label">Kategori</span><span class="val">${cat}</span></div>
+  `;
+}
+
+function buildSidePanel(mapId, sideId, valueMap, metricLabel) {
+  // Top 5 ranking
+  const entries = Object.entries(valueMap)
+    .filter(([k, v]) => v != null && !isNaN(v))
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+  const ol = document.getElementById('top5-' + sideId);
+  if (!ol) return;
+  ol.innerHTML = entries.map(([pc, v], i) => `
+    <li data-pc="${pc}" data-val="${v.toFixed(1)}">
+      <span class="rank">${i + 1}</span>
+      <span class="name">${pc}</span>
+      <span class="val">${v.toFixed(1)}</span>
+    </li>
+  `).join('');
+  // Click handler: focus map + fill detail
+  ol.querySelectorAll('li').forEach(li => {
+    li.addEventListener('click', () => {
+      const pc = li.dataset.pc;
+      const v = parseFloat(li.dataset.val);
+      const map = ALL_MAPS[mapId];
+      const feat = GEOJSON.features.find(f => f.properties.desa_pcode === pc);
+      const c = feat ? getPolyCentroid(feat.geometry) : null;
+      if (c && map) map.setView(c, 13, { animate: true });
+      fillDetailCard('detail-' + sideId, pc, v, metricLabel);
+    });
+  });
 }
 
 // =============== Init after data loaded ==================
@@ -598,7 +798,19 @@ async function init() {
     return;
   }
 
-  // ★ Option E — NASA Lights + Context (Dark Matter basemap + heatmap blend + sparkle)
+  // ★ Option F — Lights + Enlarged Map + Side Panel (default active tab)
+  ALL_MAPS['map-F1'] = buildLightsMap('map-F1', {
+    metric: 'lum', hybrid: true,
+    onSelect: (pc, v) => fillDetailCard('detail-F1', pc, v, 'Luminositas 2025')
+  });
+  ALL_MAPS['map-F2'] = buildLightsMap('map-F2', {
+    metric: 'podes', hybrid: true,
+    onSelect: (pc, v) => fillDetailCard('detail-F2', pc, v, 'Tempat Usaha 2025')
+  });
+  buildSidePanel('map-F1', 'F1', LUM_BY_PCODE,   'Luminositas 2025');
+  buildSidePanel('map-F2', 'F2', PODES_BY_PCODE, 'Tempat Usaha 2025');
+
+  // Option E — NASA Lights + Context (Dark Matter basemap + heatmap blend + sparkle)
   ALL_MAPS['map-E1'] = buildLightsMap('map-E1', { metric: 'lum',   hybrid: true });
   ALL_MAPS['map-E2'] = buildLightsMap('map-E2', { metric: 'podes', hybrid: true });
 
