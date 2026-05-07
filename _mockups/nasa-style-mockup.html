@@ -63,7 +63,7 @@
   }
   .map-card-large { background: white; border: 1px solid var(--rule); display: flex; flex-direction: column; }
   .map-card-large h3 { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); padding: 12px 16px; border-bottom: 1px solid var(--rule); }
-  .map-card-large .map { flex: 1; height: clamp(600px, 70vh, 820px); position: relative; }
+  .map-card-large .map { flex: 1; height: clamp(700px, 85vh, 980px); position: relative; }
   .side-panel {
     background: white; border: 1px solid var(--rule);
     padding: 20px 22px;
@@ -122,7 +122,7 @@
   @media (max-width: 980px) {
     .layout-enlarge { grid-template-columns: 1fr; }
     .side-panel { order: -1; }
-    .map-card-large .map { height: clamp(420px, 55vh, 560px); }
+    .map-card-large .map { height: clamp(500px, 65vh, 680px); }
   }
 
   /* ============ Option D — True NASA Lights ============ */
@@ -152,8 +152,19 @@
       radial-gradient(ellipse 100% 60% at 50% 50%, transparent 60%, rgba(0,0,0,0.45) 100%);
     mix-blend-mode: screen;
   }
-  /* Sparkle markers — extra glow via CSS filter */
-  .nasa-sparkle { filter: drop-shadow(0 0 4px rgba(255,230,140,0.85)) drop-shadow(0 0 8px rgba(255,200,80,0.5)); }
+  /* Sparkle markers — extra glow via CSS filter (3-tier: core white, mid yellow, halo orange) */
+  .nasa-sparkle {
+    filter:
+      drop-shadow(0 0 4px rgba(255,250,220,0.95))
+      drop-shadow(0 0 10px rgba(255,230,140,0.85))
+      drop-shadow(0 0 20px rgba(255,200,80,0.5));
+  }
+  /* Pulse animation on top 5 (subtle ambient breathing — bukan flashy) */
+  @keyframes nasa-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.95; }
+    50%      { transform: scale(1.25); opacity: 1; }
+  }
+  .nasa-sparkle.nasa-pulse-top { animation: nasa-pulse 2.6s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
 
   /* ============ Option E — NASA Lights + Context (hybrid) ============ */
   .map.nasa-hybrid { background: #0a0a0a !important; position: relative; overflow: hidden; }
@@ -575,7 +586,16 @@ async function loadData() {
 
 function buildMap(elId, opts) {
   const map = L.map(elId, {
-    center: [-6.20, 106.84], zoom: 10, zoomControl: true, scrollWheelZoom: false,
+    center: [-6.18, 106.84],
+    zoom: 10.5,
+    zoomControl: true,
+    scrollWheelZoom: true,
+    zoomSnap: 0.25,
+    zoomDelta: 0.5,
+    wheelDebounceTime: 30,
+    wheelPxPerZoomLevel: 90,
+    inertia: true,
+    inertiaDeceleration: 2200,
     attributionControl: false
   });
   if (opts.basemap === 'black') {
@@ -636,7 +656,20 @@ function getPolyCentroid(geom) {
 // =============== NASA Lights map builder (heatmap + sparkle markers) ==================
 function buildLightsMap(elId, opts) {
   const map = L.map(elId, {
-    center: [-6.20, 106.84], zoom: 10, zoomControl: true, scrollWheelZoom: false,
+    center: [-6.18, 106.84],
+    zoom: 10.5,
+    zoomControl: true,
+    // Smooth controls — fractional zoom, faster wheel, inertia pan
+    scrollWheelZoom: true,
+    zoomSnap: 0.25,
+    zoomDelta: 0.5,
+    wheelDebounceTime: 30,
+    wheelPxPerZoomLevel: 90,
+    inertia: true,
+    inertiaDeceleration: 2200,
+    zoomAnimation: true,
+    fadeAnimation: true,
+    markerZoomAnimation: true,
     attributionControl: false
   });
   if (opts.hybrid) {
@@ -666,11 +699,11 @@ function buildLightsMap(elId, opts) {
 
   // Layer 1 — ambient heatmap with NASA sodium-light gradient
   const heat = L.heatLayer(heatPoints, {
-    radius: 38,
-    blur: 50,
+    radius: 42,
+    blur: 55,
     maxZoom: 14,
     max: 1.0,
-    minOpacity: 0.0,
+    minOpacity: 0.18,
     gradient: {
       0.05: 'rgba(20, 10, 4, 0.4)',
       0.15: 'rgba(56, 32, 12, 0.6)',
@@ -695,21 +728,30 @@ function buildLightsMap(elId, opts) {
   const allValues = Object.values(valueMap).filter(v => !isNaN(v));
   allValues.sort((a, b) => b - a);
   const p75 = allValues[Math.floor(allValues.length * 0.25)] || 50;
+  // Top 5 pcodes — kena pulse animation untuk auto-highlight saat init
+  const top5Pcodes = new Set(
+    Object.entries(valueMap)
+      .filter(([k, v]) => v != null && !isNaN(v))
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([k]) => k)
+  );
   GEOJSON.features.forEach(f => {
     const pc = f.properties.desa_pcode;
     const v = valueMap[pc];
     const c = centroidByPcode[pc];
     if (!c || v == null || v < p75) return;
     const norm = Math.max(0, Math.min(100, v)) / 100;
-    const radius = 1.5 + norm * 4.5;  // 1.5-6px
+    const radius = 3 + norm * 6;  // 3-9px (lebih bold dari sebelumnya 1.5-6)
     const baseColor = norm > 0.85 ? '#fffadc' : (norm > 0.65 ? '#ffe68c' : '#ffc850');
+    const isTop5 = top5Pcodes.has(pc);
     const m = L.circleMarker(c, {
-      radius: radius,
+      radius: isTop5 ? radius * 1.2 : radius,
       fillColor: baseColor,
       fillOpacity: 0.95,
       color: baseColor,
       weight: 0,
-      className: 'nasa-sparkle',
+      className: 'nasa-sparkle' + (isTop5 ? ' nasa-pulse-top' : ''),
       interactive: false
     });
     m.addTo(map);
@@ -784,6 +826,11 @@ function buildSidePanel(mapId, sideId, valueMap, metricLabel) {
       fillDetailCard('detail-' + sideId, pc, v, metricLabel);
     });
   });
+  // Auto-fill detail card with Top 1 on load (langsung highlight kelurahan terang #1)
+  if (entries.length > 0) {
+    const [pc, v] = entries[0];
+    fillDetailCard('detail-' + sideId, pc, v, metricLabel);
+  }
 }
 
 // =============== Init after data loaded ==================
