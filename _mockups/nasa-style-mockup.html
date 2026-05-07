@@ -249,37 +249,94 @@ function buildSyntheticGeoJSON() {
   return { type: 'FeatureCollection', features };
 }
 
-async function loadData() {
-  // Try real GeoJSON first; fall back to synthetic grid if fetch fails (file:// or 404)
-  let usingFallback = false;
+async function tryFetch(url) {
   try {
-    const resp = await fetch('../emerging-zone-jakarta/data/dki_desa_simplified.geojson');
-    if (!resp.ok) throw new Error('HTTP ' + resp.status);
-    GEOJSON = await resp.json();
+    const r = await fetch(url);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return await r.json();
   } catch (e) {
-    console.warn('GeoJSON fetch failed, using synthetic grid:', e.message);
+    console.warn('Fetch failed:', url, e.message);
+    return null;
+  }
+}
+
+async function tryFetchCSV(url) {
+  try {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return await r.text();
+  } catch (e) {
+    console.warn('CSV fetch failed:', url, e.message);
+    return null;
+  }
+}
+
+async function loadData() {
+  // Multi-source fallback chain: relative -> raw.githubusercontent (CORS-friendly)
+  const RAW_BASE = 'https://raw.githubusercontent.com/yehezkielgemini1/Dashboard-Mandiri-Institute/main';
+  const urls = [
+    '../emerging-zone-jakarta/data/dki_desa_simplified.geojson',
+    RAW_BASE + '/emerging-zone-jakarta/data/dki_desa_simplified.geojson'
+  ];
+  for (const u of urls) {
+    const data = await tryFetch(u);
+    if (data) { GEOJSON = data; break; }
+  }
+  if (!GEOJSON) {
     GEOJSON = buildSyntheticGeoJSON();
-    usingFallback = true;
-    // Show subtle indicator
     const banner = document.createElement('div');
     banner.style.cssText = 'background:#FFE08A;color:#5a3500;padding:8px 16px;font-size:12px;border-bottom:1px solid #d6960a;';
-    banner.innerHTML = '<strong>Note:</strong> GeoJSON real DKI tidak ke-fetch (kemungkinan akses via <code>file://</code> atau path 404). Pakai synthetic 18&times;12 grid sebagai proxy &mdash; visual palette tetap valid untuk evaluasi.';
+    banner.innerHTML = '<strong>Note:</strong> GeoJSON real DKI tidak ke-fetch dari semua sumber. Pakai synthetic 18&times;12 grid sebagai proxy.';
     document.body.insertBefore(banner, document.body.firstChild.nextSibling);
   }
-  // Populate value lookups (for synthetic, _lum is already in feature properties)
-  GEOJSON.features.forEach((f, i) => {
-    const c = f.properties.desa_pcode;
-    if (usingFallback) {
-      LUM_BY_PCODE[c]   = f.properties._lum;
-      PODES_BY_PCODE[c] = f.properties._podes;
-    } else {
-      // Deterministic synthetic distribution skewed to center Jakarta
+
+  // Try fetch CSV utk REAL lum + podes values (kalau fail, pakai synthetic deterministic)
+  const csvUrls = [
+    '../emerging-zone-jakarta/data/260503_FINAL_eczi_per_desa.csv',
+    RAW_BASE + '/emerging-zone-jakarta/data/260503_FINAL_eczi_per_desa.csv'
+  ];
+  let csvText = null;
+  for (const u of csvUrls) {
+    csvText = await tryFetchCSV(u);
+    if (csvText) break;
+  }
+
+  if (csvText) {
+    // Parse CSV minimal — cari kolom desa_pcode, lum_2025, ntl_level_2025, podes_count_2025
+    const lines = csvText.trim().split(/\r?\n/);
+    const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+    const idxPcode = headers.indexOf('desa_pcode');
+    const idxLum   = headers.indexOf('ntl_level_2025') >= 0 ? headers.indexOf('ntl_level_2025') : headers.indexOf('lum_2025');
+    const idxPodes = headers.indexOf('podes_count_2025');
+    for (let i = 1; i < lines.length; i++) {
+      const cols = lines[i].split(',');
+      const pc = (cols[idxPcode] || '').trim().replace(/^"|"$/g, '');
+      const lumV = parseFloat(cols[idxLum]);
+      const podV = parseFloat(cols[idxPodes]);
+      if (pc && !isNaN(lumV)) LUM_BY_PCODE[pc] = lumV;
+      if (pc && !isNaN(podV)) PODES_BY_PCODE[pc] = podV;
+    }
+    // Compute min-max untuk normalize ke 0-100 scale
+    const lumVals = Object.values(LUM_BY_PCODE).filter(v => !isNaN(v));
+    const podVals = Object.values(PODES_BY_PCODE).filter(v => !isNaN(v));
+    const lumMax = Math.max(...lumVals), lumMin = Math.min(...lumVals);
+    const podMax = Math.max(...podVals);
+    Object.keys(LUM_BY_PCODE).forEach(k => {
+      LUM_BY_PCODE[k] = ((LUM_BY_PCODE[k] - lumMin) / (lumMax - lumMin)) * 100;
+    });
+    Object.keys(PODES_BY_PCODE).forEach(k => {
+      PODES_BY_PCODE[k] = (PODES_BY_PCODE[k] / podMax) * 100;
+    });
+  } else {
+    // Synthetic fallback per pcode
+    GEOJSON.features.forEach((f, i) => {
+      const c = f.properties.desa_pcode;
       const h = Array.from(String(c)).reduce((a, b) => a + b.charCodeAt(0), 0);
       const seed = (h % 100) / 100;
       LUM_BY_PCODE[c]   = Math.max(0, Math.min(100, seed * 90 + (i % 30) - 5));
-      PODES_BY_PCODE[c] = Math.max(0, Math.min(300, seed * 280 + (i * 13) % 50));
-    }
-  });
+      PODES_BY_PCODE[c] = Math.max(0, Math.min(100, seed * 90 + (i * 13) % 30));
+    });
+  }
 }
 
 function buildMap(elId, opts) {
@@ -304,7 +361,7 @@ function buildMap(elId, opts) {
       const v = opts.metric === 'podes'
         ? (PODES_BY_PCODE[f.properties.desa_pcode] || 0)
         : (LUM_BY_PCODE[f.properties.desa_pcode] || 0);
-      const norm = opts.metric === 'podes' ? Math.min(100, v / 3) : v;
+      const norm = v;  // both metrics already normalized 0-100
       return {
         fillColor: opts.colorFn(norm),
         weight: opts.borderWeight,
