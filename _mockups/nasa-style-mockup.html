@@ -54,26 +54,43 @@
   .leaflet-overlay-pane svg { overflow: visible !important; }
 
   /* ============ Option F — Lights + Enlarged Map + Side Panel (NEW) ============ */
+  /* Panel-F clean mode: zero panel padding, map fill viewport minus tab strip */
+  #panel-F.panel { padding: 0; }
   .layout-enlarge {
     display: grid;
     grid-template-columns: 1fr 340px;
-    gap: 18px;
-    margin-top: 20px;
-    margin-bottom: 32px;
+    gap: 8px;
+    margin: 0;
+    padding: 8px 12px;
   }
-  .map-card-large { background: white; border: 1px solid var(--rule); display: flex; flex-direction: column; }
-  .map-card-large h3 { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); padding: 12px 16px; border-bottom: 1px solid var(--rule); }
-  .map-card-large .map { flex: 1; height: calc(100vh - 24px); position: relative; }
+  .map-card-large { background: white; border: 1px solid var(--rule); position: relative; }
+  /* Map h3 → overlay top-left, no vertical space cost */
+  .map-card-large h3 {
+    position: absolute;
+    top: 12px; left: 12px;
+    z-index: 600;
+    background: rgba(0,0,0,0.72);
+    color: white;
+    padding: 7px 14px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid rgba(255,255,255,0.12);
+    margin: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+  }
+  .map-card-large .map { height: calc(100vh - 68px); position: relative; }
   .side-panel {
     background: white; border: 1px solid var(--rule);
-    padding: 20px 22px;
+    padding: 18px 20px;
     display: flex; flex-direction: column; gap: 22px;
     font-size: 12px;
-    /* Sticky scroll — panel tetap visible saat user explore map panjang */
+    /* Sticky below tab strip (tab ~52px + 8 buffer) */
     position: sticky;
-    top: 12px;
+    top: 60px;
     align-self: start;
-    max-height: calc(100vh - 24px);
+    max-height: calc(100vh - 76px);
     overflow-y: auto;
   }
   .side-panel .sp-section h4 {
@@ -199,19 +216,6 @@
 
 <!-- ============ OPTION F — Lights + Enlarged Map + Side Panel ============ -->
 <div class="panel active" id="panel-F">
-  <div class="panel-head">
-    <h2>Option F — Lights + Enlarged Map + Side Panel</h2>
-    <div class="desc">Layout half-page: peta NASA-style besar (<code>clamp(600px, 70vh, 820px)</code>) di kiri, side panel info 340px di kanan. Klik kelurahan di peta atau Top 5 list untuk munculin detail card. Visual identik Option E (Dark Matter + heatmap blend + sparkle), beda hanya layout. Mobile (≤980px): panel collapse stack di atas peta. Production target: <code>emerging-zone-generator-v4.py</code> Page 2 + Page 3.</div>
-    <div class="palette-strip">
-      <div style="background:#1a1a1a">bg</div>
-      <div style="background:#382010">15</div>
-      <div style="background:#8c4b14">35</div>
-      <div style="background:#da871e">55</div>
-      <div style="background:#ffc850;color:#5a3500">75</div>
-      <div style="background:#ffe68c;color:#5a3500">90</div>
-      <div style="background:#fffadc;color:#5a3500">100</div>
-    </div>
-  </div>
 
   <!-- Page 2 — Luminositas Malam -->
   <div class="layout-enlarge">
@@ -265,9 +269,6 @@
     </aside>
   </div>
 
-  <div class="note">
-    <strong>Layout spec:</strong> map <code>clamp(600px, 70vh, 820px)</code> + side panel 340px. <strong>Side panel:</strong> detail klik (default empty) + top 5 ranking (clickable, focus map ke kelurahan + isi detail) + legend gradient + sparkle threshold note. <strong>Visual style:</strong> identik Option E. <strong>Iterasi nanti:</strong> kalau approved, apply ke <code>emerging-zone-generator-v4.py</code> Page 2 + 3.
-  </div>
 </div>
 
 <!-- ============ OPTION E — NASA Lights + Context (hybrid) ============ -->
