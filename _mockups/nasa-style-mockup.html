@@ -215,19 +215,70 @@ let GEOJSON = null;
 let LUM_BY_PCODE = {};
 let PODES_BY_PCODE = {};
 
+// Synthetic 18x12 grid covering DKI bounding box (lon 106.65-107.00, lat -6.40 to -6.10)
+// Each square = "synthetic kelurahan" untuk demonstrasi visual palette.
+function buildSyntheticGeoJSON() {
+  const features = [];
+  const lonMin = 106.65, lonMax = 107.00, latMin = -6.40, latMax = -6.10;
+  const cols = 18, rows = 12;
+  const dLon = (lonMax - lonMin) / cols;
+  const dLat = (latMax - latMin) / rows;
+  // Center hotspot bias (Jakarta CBD area roughly at col 9, row 6)
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const lon0 = lonMin + c * dLon;
+      const lat0 = latMin + r * dLat;
+      const id = `SYN${String(r * cols + c).padStart(3, '0')}`;
+      // Distance from center (col 9, row 6) — closer = brighter
+      const dx = (c - 9) / 9, dy = (r - 6) / 6;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const baseBright = Math.max(0, 95 - dist * 90);
+      // Add some noise for organic look
+      const noise = ((c * 7 + r * 13) % 23 - 11);
+      const lum = Math.max(0, Math.min(100, baseBright + noise));
+      features.push({
+        type: 'Feature',
+        properties: { desa_pcode: id, _lum: lum, _podes: lum * 2.5 },
+        geometry: {
+          type: 'Polygon',
+          coordinates: [[[lon0, lat0], [lon0 + dLon, lat0], [lon0 + dLon, lat0 + dLat], [lon0, lat0 + dLat], [lon0, lat0]]]
+        }
+      });
+    }
+  }
+  return { type: 'FeatureCollection', features };
+}
+
 async function loadData() {
-  const geo = await fetch('../emerging-zone-jakarta/data/dki_desa_simplified.geojson').then(r => r.json());
-  GEOJSON = geo;
-  // Mock data — in real dashboard, this comes from CSV embed
-  // Generate synthetic but realistic distribution: skew toward central Jakarta
-  geo.features.forEach((f, i) => {
+  // Try real GeoJSON first; fall back to synthetic grid if fetch fails (file:// or 404)
+  let usingFallback = false;
+  try {
+    const resp = await fetch('../emerging-zone-jakarta/data/dki_desa_simplified.geojson');
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    GEOJSON = await resp.json();
+  } catch (e) {
+    console.warn('GeoJSON fetch failed, using synthetic grid:', e.message);
+    GEOJSON = buildSyntheticGeoJSON();
+    usingFallback = true;
+    // Show subtle indicator
+    const banner = document.createElement('div');
+    banner.style.cssText = 'background:#FFE08A;color:#5a3500;padding:8px 16px;font-size:12px;border-bottom:1px solid #d6960a;';
+    banner.innerHTML = '<strong>Note:</strong> GeoJSON real DKI tidak ke-fetch (kemungkinan akses via <code>file://</code> atau path 404). Pakai synthetic 18&times;12 grid sebagai proxy &mdash; visual palette tetap valid untuk evaluasi.';
+    document.body.insertBefore(banner, document.body.firstChild.nextSibling);
+  }
+  // Populate value lookups (for synthetic, _lum is already in feature properties)
+  GEOJSON.features.forEach((f, i) => {
     const c = f.properties.desa_pcode;
-    // Use deterministic hash so each refresh shows same pattern
-    const h = Array.from(String(c)).reduce((a,b) => a + b.charCodeAt(0), 0);
-    const seed = (h % 100) / 100;
-    // Simulate higher values toward center (Jakarta Pusat/Selatan)
-    LUM_BY_PCODE[c] = Math.max(0, Math.min(100, seed * 90 + (i % 30) - 5));
-    PODES_BY_PCODE[c] = Math.max(0, Math.min(300, (seed * 280) + ((i*13) % 50)));
+    if (usingFallback) {
+      LUM_BY_PCODE[c]   = f.properties._lum;
+      PODES_BY_PCODE[c] = f.properties._podes;
+    } else {
+      // Deterministic synthetic distribution skewed to center Jakarta
+      const h = Array.from(String(c)).reduce((a, b) => a + b.charCodeAt(0), 0);
+      const seed = (h % 100) / 100;
+      LUM_BY_PCODE[c]   = Math.max(0, Math.min(100, seed * 90 + (i % 30) - 5));
+      PODES_BY_PCODE[c] = Math.max(0, Math.min(300, seed * 280 + (i * 13) % 50));
+    }
   });
 }
 
@@ -280,24 +331,32 @@ function buildMap(elId, opts) {
 }
 
 // =============== Init after data loaded ==================
+const ALL_MAPS = {};  // store for resize on tab switch
+
 async function init() {
-  await loadData();
+  try {
+    await loadData();
+  } catch (e) {
+    console.error('Init failed:', e);
+    document.body.innerHTML += `<div style="padding:40px;text-align:center;color:#c8102e;"><h2>Gagal load data</h2><p>${e.message}</p></div>`;
+    return;
+  }
 
   // Option A — Pure black, NASA yellow, glow ON
-  buildMap('map-A1', { basemap: 'black', metric: 'lum',   colorFn: colorA, borderWeight: 0.2, borderColor: 'rgba(255,255,255,0.05)', fillOpacity: 1, glow: true });
-  buildMap('map-A2', { basemap: 'black', metric: 'podes', colorFn: colorA, borderWeight: 0.2, borderColor: 'rgba(255,255,255,0.05)', fillOpacity: 1, glow: true });
+  ALL_MAPS['map-A1'] = buildMap('map-A1', { basemap: 'black', metric: 'lum',   colorFn: colorA, borderWeight: 0.2, borderColor: 'rgba(255,255,255,0.05)', fillOpacity: 1, glow: true });
+  ALL_MAPS['map-A2'] = buildMap('map-A2', { basemap: 'black', metric: 'podes', colorFn: colorA, borderWeight: 0.2, borderColor: 'rgba(255,255,255,0.05)', fillOpacity: 1, glow: true });
 
   // Option B — Dark Matter basemap, additive blend, glow ON
-  buildMap('map-B1', { basemap: 'darkmatter', metric: 'lum',   colorFn: colorB, borderWeight: 0.3, borderColor: 'rgba(255,255,255,0.10)', fillOpacity: 0.92, glow: true,  blendMode: 'screen' });
-  buildMap('map-B2', { basemap: 'darkmatter', metric: 'podes', colorFn: colorB, borderWeight: 0.3, borderColor: 'rgba(255,255,255,0.10)', fillOpacity: 0.92, glow: true,  blendMode: 'screen' });
+  ALL_MAPS['map-B1'] = buildMap('map-B1', { basemap: 'darkmatter', metric: 'lum',   colorFn: colorB, borderWeight: 0.3, borderColor: 'rgba(255,255,255,0.10)', fillOpacity: 0.92, glow: true,  blendMode: 'screen' });
+  ALL_MAPS['map-B2'] = buildMap('map-B2', { basemap: 'darkmatter', metric: 'podes', colorFn: colorB, borderWeight: 0.3, borderColor: 'rgba(255,255,255,0.10)', fillOpacity: 0.92, glow: true,  blendMode: 'screen' });
 
   // Option C — Voyager basemap, soft halo
-  buildMap('map-C1', { basemap: 'voyager', metric: 'lum',   colorFn: colorC, borderWeight: 0.5, borderColor: '#5a4010', fillOpacity: 0.78, glow: true });
-  buildMap('map-C2', { basemap: 'voyager', metric: 'podes', colorFn: colorC, borderWeight: 0.5, borderColor: '#5a4010', fillOpacity: 0.78, glow: true });
+  ALL_MAPS['map-C1'] = buildMap('map-C1', { basemap: 'voyager', metric: 'lum',   colorFn: colorC, borderWeight: 0.5, borderColor: '#5a4010', fillOpacity: 0.78, glow: true });
+  ALL_MAPS['map-C2'] = buildMap('map-C2', { basemap: 'voyager', metric: 'podes', colorFn: colorC, borderWeight: 0.5, borderColor: '#5a4010', fillOpacity: 0.78, glow: true });
 
   // Reference — current style
-  buildMap('map-R1', { basemap: 'cartolight', metric: 'lum',   colorFn: colorRef, borderWeight: 0.5, borderColor: 'white', fillOpacity: 0.78 });
-  buildMap('map-R2', { basemap: 'cartolight', metric: 'podes', colorFn: colorRef, borderWeight: 0.5, borderColor: 'white', fillOpacity: 0.78 });
+  ALL_MAPS['map-R1'] = buildMap('map-R1', { basemap: 'cartolight', metric: 'lum',   colorFn: colorRef, borderWeight: 0.5, borderColor: 'white', fillOpacity: 0.78 });
+  ALL_MAPS['map-R2'] = buildMap('map-R2', { basemap: 'cartolight', metric: 'podes', colorFn: colorRef, borderWeight: 0.5, borderColor: 'white', fillOpacity: 0.78 });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -307,9 +366,15 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
       btn.classList.add('active');
-      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
-      // Trigger Leaflet resize on visible maps
-      setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
+      const panelId = 'panel-' + btn.dataset.tab;
+      document.getElementById(panelId).classList.add('active');
+      // Force invalidateSize on all maps in newly active panel (Leaflet renders blank if container was display:none at init)
+      setTimeout(() => {
+        document.querySelectorAll('#' + panelId + ' .map').forEach(el => {
+          const m = ALL_MAPS[el.id];
+          if (m) try { m.invalidateSize(); } catch (e) {}
+        });
+      }, 50);
     });
   });
   init();
