@@ -5,6 +5,7 @@
 <title>NASA-style mockup — Pemetaan DKI Jakarta</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
 <style>
   :root {
     --navy: #003D79; --navy-deep: #002852; --yellow: #FFB700; --sky: #67B2E8;
@@ -51,6 +52,36 @@
 
   /* Glow filter for bright polygons (will apply via SVG) */
   .leaflet-overlay-pane svg { overflow: visible !important; }
+
+  /* ============ Option D — True NASA Lights ============ */
+  .map.nasa-lights { background: #000 !important; position: relative; overflow: hidden; }
+  .map.nasa-lights .leaflet-container { background: #000 !important; }
+  /* Stars overlay — sparse white dots in "sky" */
+  .map.nasa-lights::before {
+    content: ''; position: absolute; inset: 0; z-index: 401; pointer-events: none;
+    background-image:
+      radial-gradient(0.8px 0.8px at 12% 8%, rgba(255,255,255,0.9), transparent),
+      radial-gradient(0.5px 0.5px at 24% 14%, rgba(255,255,255,0.6), transparent),
+      radial-gradient(0.7px 0.7px at 38% 5%, rgba(255,255,255,0.8), transparent),
+      radial-gradient(0.6px 0.6px at 52% 11%, rgba(255,255,255,0.7), transparent),
+      radial-gradient(0.5px 0.5px at 67% 6%, rgba(255,255,255,0.5), transparent),
+      radial-gradient(0.7px 0.7px at 81% 13%, rgba(255,255,255,0.85), transparent),
+      radial-gradient(0.4px 0.4px at 92% 4%, rgba(255,255,255,0.6), transparent),
+      radial-gradient(0.5px 0.5px at 8% 22%, rgba(255,255,255,0.5), transparent),
+      radial-gradient(0.6px 0.6px at 71% 19%, rgba(255,255,255,0.65), transparent),
+      radial-gradient(0.4px 0.4px at 30% 25%, rgba(255,255,255,0.4), transparent);
+    mix-blend-mode: screen;
+  }
+  /* Atmosphere horizon glow — subtle orange band at top edge */
+  .map.nasa-lights::after {
+    content: ''; position: absolute; inset: 0; z-index: 402; pointer-events: none;
+    background:
+      radial-gradient(ellipse 130% 35% at 50% 0%, rgba(218,135,30,0.25), rgba(218,135,30,0.08) 25%, transparent 55%),
+      radial-gradient(ellipse 100% 60% at 50% 50%, transparent 60%, rgba(0,0,0,0.45) 100%);
+    mix-blend-mode: screen;
+  }
+  /* Sparkle markers — extra glow via CSS filter */
+  .nasa-sparkle { filter: drop-shadow(0 0 4px rgba(255,230,140,0.85)) drop-shadow(0 0 8px rgba(255,200,80,0.5)); }
 </style>
 </head>
 <body>
@@ -61,14 +92,39 @@
 </header>
 
 <div class="tabs">
-  <button class="tab-btn active" data-tab="A">Option A — True Black Marble</button>
+  <button class="tab-btn active" data-tab="D">★ Option D — True NASA Lights (NEW)</button>
+  <button class="tab-btn" data-tab="A">Option A — Black Marble (polygon)</button>
   <button class="tab-btn" data-tab="B">Option B — Dark Hybrid</button>
   <button class="tab-btn" data-tab="C">Option C — Subtle Atmosphere</button>
   <button class="tab-btn" data-tab="ref">Reference (current)</button>
 </div>
 
+<!-- ============ OPTION D — True NASA Lights ============ -->
+<div class="panel active" id="panel-D">
+  <div class="panel-head">
+    <h2>Option D — True NASA Lights (Black Marble photo style)</h2>
+    <div class="desc">Hybrid 3-layer rendering: pure black canvas + ambient heatmap dengan gradient sodium-light + sparkle markers di top 25% kelurahan terang + atmosphere glow + stars. Mengikuti NASA city-lights ISS reference. <strong>Trade-off:</strong> hilang konteks geografis (no labels/borders), tapi visually paling NASA-like.</div>
+    <div class="palette-strip">
+      <div style="background:#000000">0</div>
+      <div style="background:#38200c">15</div>
+      <div style="background:#8c4b14">35</div>
+      <div style="background:#da871e">55</div>
+      <div style="background:#ffc850;color:#5a3500">75</div>
+      <div style="background:#ffe68c;color:#5a3500">90</div>
+      <div style="background:#fffadc;color:#5a3500">100</div>
+    </div>
+  </div>
+  <div class="map-section">
+    <div class="map-card"><h3>Page 2 · Luminositas Malam (lum_2025)</h3><div class="map nasa-lights" id="map-D1"></div></div>
+    <div class="map-card"><h3>Page 3 · Aktivitas Komersial (Podes density)</h3><div class="map nasa-lights" id="map-D2"></div></div>
+  </div>
+  <div class="note">
+    <strong>Implementation:</strong> Layer 1 = <code>L.heatLayer</code> dengan radius 38px + blur 50, custom gradient sodium-yellow. Layer 2 = circle markers di centroid kelurahan top 25% (radius proportional to value, fillOpacity 0.95, white-yellow). Atmosphere glow via CSS <code>radial-gradient</code> overlay. Stars via CSS <code>::before</code> background-image dengan repeating dots. Click hit-detection via invisible polygon overlay (border opacity 0).
+  </div>
+</div>
+
 <!-- ============ OPTION A ============ -->
-<div class="panel active" id="panel-A">
+<div class="panel" id="panel-A">
   <div class="panel-head">
     <h2>Option A — True Black Marble (full immersion)</h2>
     <div class="desc">Pure black canvas, no basemap tiles. Yellow saturation gradient mengikuti palette NASA Black Marble. Glow halo (SVG drop-shadow) di polygon paling terang. <strong>Trade-off:</strong> hilang konteks geografis (no city labels).</div>
@@ -387,6 +443,103 @@ function buildMap(elId, opts) {
   return map;
 }
 
+// =============== Compute polygon centroid (handle Polygon + MultiPolygon) ==================
+function getPolyCentroid(geom) {
+  let coords;
+  if (geom.type === 'Polygon') coords = geom.coordinates[0];
+  else if (geom.type === 'MultiPolygon') coords = geom.coordinates[0][0];
+  else return null;
+  let sumX = 0, sumY = 0, n = 0;
+  for (const c of coords) { sumX += c[0]; sumY += c[1]; n++; }
+  if (n === 0) return null;
+  return [sumY / n, sumX / n];  // [lat, lng]
+}
+
+// =============== NASA Lights map builder (heatmap + sparkle markers) ==================
+function buildLightsMap(elId, opts) {
+  const map = L.map(elId, {
+    center: [-6.20, 106.84], zoom: 10, zoomControl: true, scrollWheelZoom: false,
+    attributionControl: false
+  });
+  // Pure black background — no tile layer
+  map.getContainer().style.background = '#000000';
+
+  // Build heat points: [lat, lng, intensity]
+  const valueMap = opts.metric === 'podes' ? PODES_BY_PCODE : LUM_BY_PCODE;
+  const heatPoints = [];
+  const centroidByPcode = {};
+  GEOJSON.features.forEach(f => {
+    const c = getPolyCentroid(f.geometry);
+    if (!c) return;
+    const pc = f.properties.desa_pcode;
+    centroidByPcode[pc] = c;
+    const v = valueMap[pc];
+    if (v == null || isNaN(v)) return;
+    // Normalize to 0-1; emphasize higher values via power curve (more dramatic peaks)
+    const norm = Math.pow(Math.max(0, Math.min(100, v)) / 100, 0.85);
+    if (norm > 0.05) heatPoints.push([c[0], c[1], norm]);
+  });
+
+  // Layer 1 — ambient heatmap with NASA sodium-light gradient
+  const heat = L.heatLayer(heatPoints, {
+    radius: 38,
+    blur: 50,
+    maxZoom: 14,
+    max: 1.0,
+    minOpacity: 0.0,
+    gradient: {
+      0.05: 'rgba(20, 10, 4, 0.4)',
+      0.15: 'rgba(56, 32, 12, 0.6)',
+      0.30: 'rgba(140, 75, 20, 0.8)',
+      0.50: 'rgba(218, 135, 30, 0.95)',
+      0.70: 'rgba(255, 200, 80, 1)',
+      0.85: 'rgba(255, 230, 140, 1)',
+      1.00: 'rgba(255, 250, 220, 1)'
+    }
+  });
+  heat.addTo(map);
+
+  // Layer 2 — sparkle markers di top 25% kelurahan (point lights effect)
+  const allValues = Object.values(valueMap).filter(v => !isNaN(v));
+  allValues.sort((a, b) => b - a);
+  const p75 = allValues[Math.floor(allValues.length * 0.25)] || 50;
+  GEOJSON.features.forEach(f => {
+    const pc = f.properties.desa_pcode;
+    const v = valueMap[pc];
+    const c = centroidByPcode[pc];
+    if (!c || v == null || v < p75) return;
+    const norm = Math.max(0, Math.min(100, v)) / 100;
+    const radius = 1.5 + norm * 4.5;  // 1.5-6px
+    const baseColor = norm > 0.85 ? '#fffadc' : (norm > 0.65 ? '#ffe68c' : '#ffc850');
+    const m = L.circleMarker(c, {
+      radius: radius,
+      fillColor: baseColor,
+      fillOpacity: 0.95,
+      color: baseColor,
+      weight: 0,
+      className: 'nasa-sparkle',
+      interactive: false
+    });
+    m.addTo(map);
+  });
+
+  // Layer 3 — invisible polygon overlay untuk click hit-detection (preserve interactivity)
+  const hitLayer = L.geoJSON(GEOJSON, {
+    style: () => ({ fillOpacity: 0.001, weight: 0, color: 'transparent' }),
+    onEachFeature: (f, lyr) => {
+      const pc = f.properties.desa_pcode;
+      const v = valueMap[pc];
+      lyr.bindPopup(`<div style="font-family:Inter,sans-serif;font-size:12px;min-width:160px;">
+        <strong style="color:#003D79;">desa_pcode: ${pc}</strong><br>
+        ${opts.metric === 'podes' ? 'Tempat Usaha 2025' : 'Luminositas 2025'}: <strong>${v != null ? v.toFixed(1) : '-'}</strong>
+      </div>`);
+    }
+  });
+  hitLayer.addTo(map);
+
+  return map;
+}
+
 // =============== Init after data loaded ==================
 const ALL_MAPS = {};  // store for resize on tab switch
 
@@ -398,6 +551,10 @@ async function init() {
     document.body.innerHTML += `<div style="padding:40px;text-align:center;color:#c8102e;"><h2>Gagal load data</h2><p>${e.message}</p></div>`;
     return;
   }
+
+  // ★ Option D — True NASA Lights (heatmap + sparkle markers + black canvas)
+  ALL_MAPS['map-D1'] = buildLightsMap('map-D1', { metric: 'lum' });
+  ALL_MAPS['map-D2'] = buildLightsMap('map-D2', { metric: 'podes' });
 
   // Option A — Pure black, NASA yellow, glow ON
   ALL_MAPS['map-A1'] = buildMap('map-A1', { basemap: 'black', metric: 'lum',   colorFn: colorA, borderWeight: 0.2, borderColor: 'rgba(255,255,255,0.05)', fillOpacity: 1, glow: true });
