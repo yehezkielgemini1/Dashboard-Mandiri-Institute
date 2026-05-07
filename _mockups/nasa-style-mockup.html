@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>NASA-style mockup — Pemetaan DKI Jakarta</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root {
+    --navy: #003D79; --navy-deep: #002852; --yellow: #FFB700; --sky: #67B2E8;
+    --ink: #051C2C; --muted: #667085; --paper: #F8F8F2; --rule: #E5E8EC;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+  header { background: var(--navy-deep); color: white; padding: 18px 28px; }
+  header h1 { font-family: Georgia, serif; font-size: 22px; }
+  header p { font-size: 13px; opacity: 0.8; margin-top: 4px; }
+
+  /* Tab strip */
+  .tabs { display: flex; gap: 0; background: white; border-bottom: 1px solid var(--rule); padding: 0 28px; position: sticky; top: 0; z-index: 100; }
+  .tab-btn { padding: 18px 28px; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; background: none; border: 0; border-bottom: 3px solid transparent; cursor: pointer; color: var(--muted); }
+  .tab-btn.active { color: var(--navy); border-bottom-color: var(--navy); }
+  .tab-btn:hover { color: var(--ink); }
+
+  .panel { display: none; padding: 24px 28px; }
+  .panel.active { display: block; }
+  .panel-head { margin-bottom: 16px; }
+  .panel-head h2 { font-family: Georgia, serif; font-size: 24px; }
+  .panel-head .desc { font-size: 13px; color: var(--muted); margin-top: 6px; max-width: 720px; }
+  .panel-head .palette-strip { margin-top: 14px; display: flex; gap: 0; height: 28px; max-width: 720px; border: 1px solid rgba(0,0,0,0.1); }
+  .palette-strip > div { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 9px; color: rgba(255,255,255,0.7); font-weight: 600; }
+
+  /* Map containers */
+  .map-section { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 20px; }
+  .map-card { background: white; border: 1px solid var(--rule); }
+  .map-card h3 { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); padding: 12px 16px; border-bottom: 1px solid var(--rule); }
+  .map-card .map { height: 540px; position: relative; }
+
+  /* Overlay legend */
+  .legend { position: absolute; bottom: 14px; left: 14px; padding: 10px 14px; font-size: 11px; background: rgba(0,0,0,0.78); color: white; z-index: 500; border: 1px solid rgba(255,255,255,0.15); }
+  .legend.light { background: rgba(255,255,255,0.92); color: var(--ink); border: 1px solid var(--rule); }
+  .legend .row { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
+  .legend .sw { width: 16px; height: 12px; display: inline-block; }
+
+  /* Comparison note */
+  .note { margin-top: 16px; padding: 14px 18px; background: white; border-left: 3px solid var(--yellow); font-size: 13px; color: var(--ink); line-height: 1.5; }
+  .note strong { color: var(--navy); }
+
+  /* For Option A — black canvas basemap */
+  .leaflet-container.opt-a { background: #000000 !important; }
+
+  /* Glow filter for bright polygons (will apply via SVG) */
+  .leaflet-overlay-pane svg { overflow: visible !important; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>NASA-style Map Mockup — DKI Jakarta Emerging Zone</h1>
+  <p>3 visual direction untuk Luminositas Malam + Aktivitas Komersial + Detail Kawasan. Gunakan tab untuk switch.</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" data-tab="A">Option A — True Black Marble</button>
+  <button class="tab-btn" data-tab="B">Option B — Dark Hybrid</button>
+  <button class="tab-btn" data-tab="C">Option C — Subtle Atmosphere</button>
+  <button class="tab-btn" data-tab="ref">Reference (current)</button>
+</div>
+
+<!-- ============ OPTION A ============ -->
+<div class="panel active" id="panel-A">
+  <div class="panel-head">
+    <h2>Option A — True Black Marble (full immersion)</h2>
+    <div class="desc">Pure black canvas, no basemap tiles. Yellow saturation gradient mengikuti palette NASA Black Marble. Glow halo (SVG drop-shadow) di polygon paling terang. <strong>Trade-off:</strong> hilang konteks geografis (no city labels).</div>
+    <div class="palette-strip">
+      <div style="background:#000000">0</div>
+      <div style="background:#0a0e1a">10</div>
+      <div style="background:#2d2410">20</div>
+      <div style="background:#7a4d12">40</div>
+      <div style="background:#d6960a">60</div>
+      <div style="background:#ffd966;color:#5a3500">80</div>
+      <div style="background:#ffffd0;color:#5a3500">100</div>
+    </div>
+  </div>
+  <div class="map-section">
+    <div class="map-card"><h3>Page 2 · Luminositas Malam (lum_2025)</h3><div class="map" id="map-A1"><div class="legend">Brightness DNB</div></div></div>
+    <div class="map-card"><h3>Page 3 · Aktivitas Komersial (Podes density)</h3><div class="map" id="map-A2"><div class="legend">Tempat Usaha 2025</div></div></div>
+  </div>
+  <div class="note">
+    <strong>Kapan cocok:</strong> hero page Luminositas Malam (highly visual). Konsistensi: <strong>OK untuk semua peta density-based</strong> di dashboard ini, karena Podes count + OSM heatmap juga "density yang menyala" — palette yellow ke putih cocok semantically.
+  </div>
+</div>
+
+<!-- ============ OPTION B ============ -->
+<div class="panel" id="panel-B">
+  <div class="panel-head">
+    <h2>Option B — Dark Hybrid (rekomendasi saya)</h2>
+    <div class="desc">CARTO Dark Matter basemap dengan label kota muted, polygon NASA yellow gradient + <code>mix-blend-mode: screen</code> (additive lighting — cahaya beneran "menambah" basemap). <strong>Trade-off:</strong> functional, label terlihat, vibe NASA tetap kuat.</div>
+    <div class="palette-strip">
+      <div style="background:#0a0e1a">0</div>
+      <div style="background:#2d2410">10</div>
+      <div style="background:#7a4d12">25</div>
+      <div style="background:#d6960a">50</div>
+      <div style="background:#ffd966;color:#5a3500">75</div>
+      <div style="background:#ffffd0;color:#5a3500">100</div>
+    </div>
+  </div>
+  <div class="map-section">
+    <div class="map-card"><h3>Page 2 · Luminositas Malam</h3><div class="map" id="map-B1"></div></div>
+    <div class="map-card"><h3>Page 3 · Aktivitas Komersial</h3><div class="map" id="map-B2"></div></div>
+  </div>
+  <div class="note">
+    <strong>Kapan cocok:</strong> default style untuk semua map di dashboard. Konsistensi: <strong>SANGAT cocok</strong> — basemap dark gray menjadi "ground", choropleth jadi "lights" via blend-mode. Untuk Aktivitas Komersial, Podes density + OSM heatmap juga akan terlihat menyala kuning.
+  </div>
+</div>
+
+<!-- ============ OPTION C ============ -->
+<div class="panel" id="panel-C">
+  <div class="panel-head">
+    <h2>Option C — Subtle Atmosphere (lightweight)</h2>
+    <div class="desc">CARTO Voyager basemap (light, ada label kota), polygon NASA gold gradient dengan opacity 0.85 + drop-shadow halo di polygon terang. Tetap "professional dashboard" feel. <strong>Trade-off:</strong> minimal change, no NASA wow factor.</div>
+    <div class="palette-strip">
+      <div style="background:#fff7e0;color:#5a3500">0</div>
+      <div style="background:#ffd966;color:#5a3500">25</div>
+      <div style="background:#d6960a">50</div>
+      <div style="background:#7a4d12">75</div>
+      <div style="background:#2d2410">100</div>
+    </div>
+  </div>
+  <div class="map-section">
+    <div class="map-card"><h3>Page 2 · Luminositas Malam</h3><div class="map" id="map-C1"></div></div>
+    <div class="map-card"><h3>Page 3 · Aktivitas Komersial</h3><div class="map" id="map-C2"></div></div>
+  </div>
+  <div class="note">
+    <strong>Kapan cocok:</strong> kalau prioritas tetap "academic dashboard". Konsistensi: <strong>OK</strong> tapi gak serasa NASA — lebih kayak heat map biasa dengan halo. Buat target audience policy maker yang mau cetak/print, light basemap lebih friendly.
+  </div>
+</div>
+
+<!-- ============ REFERENCE ============ -->
+<div class="panel" id="panel-ref">
+  <div class="panel-head">
+    <h2>Reference — current production style</h2>
+    <div class="desc">Apa yang sekarang live di dashboard: CARTO light basemap + 5-step blue navy choropleth. Ini baseline untuk dibandingkan.</div>
+    <div class="palette-strip">
+      <div style="background:#E5E8EC;color:#000">0</div>
+      <div style="background:#A9C4DF;color:#000">25</div>
+      <div style="background:#67B2E8;color:#000">50</div>
+      <div style="background:#1A5394">75</div>
+      <div style="background:#003D79">100</div>
+    </div>
+  </div>
+  <div class="map-section">
+    <div class="map-card"><h3>Page 2 · Luminositas Malam (current)</h3><div class="map" id="map-R1"></div></div>
+    <div class="map-card"><h3>Page 3 · Aktivitas Komersial (current)</h3><div class="map" id="map-R2"></div></div>
+  </div>
+</div>
+
+<script>
+// =============== Color scales ==================
+function colorA(v) { // True Black Marble (yellow saturation)
+  if (v == null || isNaN(v)) return '#000000';
+  if (v >= 80) return '#ffffd0';
+  if (v >= 60) return '#ffd966';
+  if (v >= 40) return '#d6960a';
+  if (v >= 20) return '#7a4d12';
+  if (v >= 10) return '#2d2410';
+  return '#0a0e1a';
+}
+function colorB(v) { // Dark hybrid (slightly brighter midtones for additive blend)
+  if (v == null || isNaN(v)) return '#0a0e1a';
+  if (v >= 80) return '#fff7c2';
+  if (v >= 60) return '#ffd34d';
+  if (v >= 40) return '#e89a18';
+  if (v >= 20) return '#9a5a14';
+  if (v >= 10) return '#3a2a16';
+  return '#0a0e1a';
+}
+function colorC(v) { // Subtle atmosphere
+  if (v == null || isNaN(v)) return '#fff7e0';
+  if (v >= 80) return '#ffd966';
+  if (v >= 60) return '#e8a920';
+  if (v >= 40) return '#b87614';
+  if (v >= 20) return '#6a410f';
+  return '#fff7e0';
+}
+function colorRef(v) { // Current navy
+  if (v == null || isNaN(v)) return '#F5F5F5';
+  if (v >= 60) return '#003D79';
+  if (v >= 40) return '#1A5394';
+  if (v >= 20) return '#67B2E8';
+  if (v >= 10) return '#A9C4DF';
+  return '#E5E8EC';
+}
+
+// =============== SVG glow filter for bright polygons (Option A & B) ==================
+function injectGlowFilter(map) {
+  const svg = map.getPanes().overlayPane.querySelector('svg');
+  if (!svg || svg.querySelector('#glow-filter')) return;
+  const xmlns = 'http://www.w3.org/2000/svg';
+  const defs = document.createElementNS(xmlns, 'defs');
+  defs.innerHTML = `
+    <filter id="glow-filter" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  `;
+  svg.insertBefore(defs, svg.firstChild);
+}
+
+// =============== Build maps ==================
+let GEOJSON = null;
+let LUM_BY_PCODE = {};
+let PODES_BY_PCODE = {};
+
+async function loadData() {
+  const geo = await fetch('../emerging-zone-jakarta/data/dki_desa_simplified.geojson').then(r => r.json());
+  GEOJSON = geo;
+  // Mock data — in real dashboard, this comes from CSV embed
+  // Generate synthetic but realistic distribution: skew toward central Jakarta
+  geo.features.forEach((f, i) => {
+    const c = f.properties.desa_pcode;
+    // Use deterministic hash so each refresh shows same pattern
+    const h = Array.from(String(c)).reduce((a,b) => a + b.charCodeAt(0), 0);
+    const seed = (h % 100) / 100;
+    // Simulate higher values toward center (Jakarta Pusat/Selatan)
+    LUM_BY_PCODE[c] = Math.max(0, Math.min(100, seed * 90 + (i % 30) - 5));
+    PODES_BY_PCODE[c] = Math.max(0, Math.min(300, (seed * 280) + ((i*13) % 50)));
+  });
+}
+
+function buildMap(elId, opts) {
+  const map = L.map(elId, {
+    center: [-6.20, 106.84], zoom: 10, zoomControl: true, scrollWheelZoom: false,
+    attributionControl: false
+  });
+  if (opts.basemap === 'black') {
+    // No tiles — body bg = black via CSS
+    map.getContainer().style.background = '#000000';
+  } else if (opts.basemap === 'darkmatter') {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', { maxZoom: 19, opacity: 0.85 }).addTo(map);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png', { maxZoom: 19, opacity: 0.45 }).addTo(map);
+  } else if (opts.basemap === 'voyager') {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+  } else if (opts.basemap === 'cartolight') {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+  }
+
+  const layer = L.geoJSON(GEOJSON, {
+    style: f => {
+      const v = opts.metric === 'podes'
+        ? (PODES_BY_PCODE[f.properties.desa_pcode] || 0)
+        : (LUM_BY_PCODE[f.properties.desa_pcode] || 0);
+      const norm = opts.metric === 'podes' ? Math.min(100, v / 3) : v;
+      return {
+        fillColor: opts.colorFn(norm),
+        weight: opts.borderWeight,
+        color: opts.borderColor,
+        fillOpacity: opts.fillOpacity,
+        // Apply glow filter to high-luminosity polygons
+        filter: opts.glow && norm >= 60 ? 'url(#glow-filter)' : undefined
+      };
+    }
+  });
+
+  layer.addTo(map);
+
+  // Apply blend mode if specified (Option B additive lighting)
+  setTimeout(() => {
+    if (opts.blendMode) {
+      const svg = map.getPanes().overlayPane.querySelector('svg');
+      if (svg) svg.style.mixBlendMode = opts.blendMode;
+    }
+    if (opts.glow) injectGlowFilter(map);
+  }, 100);
+
+  return map;
+}
+
+// =============== Init after data loaded ==================
+async function init() {
+  await loadData();
+
+  // Option A — Pure black, NASA yellow, glow ON
+  buildMap('map-A1', { basemap: 'black', metric: 'lum',   colorFn: colorA, borderWeight: 0.2, borderColor: 'rgba(255,255,255,0.05)', fillOpacity: 1, glow: true });
+  buildMap('map-A2', { basemap: 'black', metric: 'podes', colorFn: colorA, borderWeight: 0.2, borderColor: 'rgba(255,255,255,0.05)', fillOpacity: 1, glow: true });
+
+  // Option B — Dark Matter basemap, additive blend, glow ON
+  buildMap('map-B1', { basemap: 'darkmatter', metric: 'lum',   colorFn: colorB, borderWeight: 0.3, borderColor: 'rgba(255,255,255,0.10)', fillOpacity: 0.92, glow: true,  blendMode: 'screen' });
+  buildMap('map-B2', { basemap: 'darkmatter', metric: 'podes', colorFn: colorB, borderWeight: 0.3, borderColor: 'rgba(255,255,255,0.10)', fillOpacity: 0.92, glow: true,  blendMode: 'screen' });
+
+  // Option C — Voyager basemap, soft halo
+  buildMap('map-C1', { basemap: 'voyager', metric: 'lum',   colorFn: colorC, borderWeight: 0.5, borderColor: '#5a4010', fillOpacity: 0.78, glow: true });
+  buildMap('map-C2', { basemap: 'voyager', metric: 'podes', colorFn: colorC, borderWeight: 0.5, borderColor: '#5a4010', fillOpacity: 0.78, glow: true });
+
+  // Reference — current style
+  buildMap('map-R1', { basemap: 'cartolight', metric: 'lum',   colorFn: colorRef, borderWeight: 0.5, borderColor: 'white', fillOpacity: 0.78 });
+  buildMap('map-R2', { basemap: 'cartolight', metric: 'podes', colorFn: colorRef, borderWeight: 0.5, borderColor: 'white', fillOpacity: 0.78 });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Tab switching
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+      // Trigger Leaflet resize on visible maps
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
+    });
+  });
+  init();
+});
+</script>
+</body>
+</html>
