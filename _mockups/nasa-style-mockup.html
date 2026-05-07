@@ -82,6 +82,13 @@
   }
   /* Sparkle markers — extra glow via CSS filter */
   .nasa-sparkle { filter: drop-shadow(0 0 4px rgba(255,230,140,0.85)) drop-shadow(0 0 8px rgba(255,200,80,0.5)); }
+
+  /* ============ Option E — NASA Lights + Context (hybrid) ============ */
+  .map.nasa-hybrid { background: #0a0a0a !important; position: relative; overflow: hidden; }
+  .map.nasa-hybrid .leaflet-container { background: #0a0a0a !important; }
+  /* Tone down basemap labels so lights remain dominant */
+  .map.nasa-hybrid .leaflet-tile-pane .leaflet-layer:nth-child(2) { opacity: 0.35 !important; }
+  /* No stars, no atmosphere glow — keep clean for context */
 </style>
 </head>
 <body>
@@ -92,15 +99,40 @@
 </header>
 
 <div class="tabs">
-  <button class="tab-btn active" data-tab="D">★ Option D — True NASA Lights (NEW)</button>
+  <button class="tab-btn active" data-tab="E">★ Option E — Lights + Context (NEW)</button>
+  <button class="tab-btn" data-tab="D">Option D — Pure NASA Lights</button>
   <button class="tab-btn" data-tab="A">Option A — Black Marble (polygon)</button>
   <button class="tab-btn" data-tab="B">Option B — Dark Hybrid</button>
   <button class="tab-btn" data-tab="C">Option C — Subtle Atmosphere</button>
   <button class="tab-btn" data-tab="ref">Reference (current)</button>
 </div>
 
+<!-- ============ OPTION E — NASA Lights + Context (hybrid) ============ -->
+<div class="panel active" id="panel-E">
+  <div class="panel-head">
+    <h2>Option E — NASA Lights + Context (best of both worlds)</h2>
+    <div class="desc">Dark Matter basemap dengan label kota muted (opacity 0.35) sebagai konteks geografis. Heatmap NASA + sparkle markers di atas dengan <code>mix-blend-mode: screen</code> (additive lighting — cahaya menambah, bukan menutupi). User bisa orientasi (Sudirman/Mega Kuningan/Kelapa Gading) tapi tetap kelihatan NASA-style.</div>
+    <div class="palette-strip">
+      <div style="background:#1a1a1a">bg</div>
+      <div style="background:#382010">15</div>
+      <div style="background:#8c4b14">35</div>
+      <div style="background:#da871e">55</div>
+      <div style="background:#ffc850;color:#5a3500">75</div>
+      <div style="background:#ffe68c;color:#5a3500">90</div>
+      <div style="background:#fffadc;color:#5a3500">100</div>
+    </div>
+  </div>
+  <div class="map-section">
+    <div class="map-card"><h3>Page 2 · Luminositas Malam</h3><div class="map nasa-hybrid" id="map-E1"></div></div>
+    <div class="map-card"><h3>Page 3 · Aktivitas Komersial</h3><div class="map nasa-hybrid" id="map-E2"></div></div>
+  </div>
+  <div class="note">
+    <strong>Stack:</strong> Dark Matter basemap + label opacity 0.35 → Heatmap NASA (blend screen) → Sparkle markers top 25% → Invisible click overlay. <strong>Tanpa</strong> stars (clash dengan basemap) dan <strong>tanpa</strong> atmosphere horizon glow (clash dengan label).
+  </div>
+</div>
+
 <!-- ============ OPTION D — True NASA Lights ============ -->
-<div class="panel active" id="panel-D">
+<div class="panel" id="panel-D">
   <div class="panel-head">
     <h2>Option D — True NASA Lights (Black Marble photo style)</h2>
     <div class="desc">Hybrid 3-layer rendering: pure black canvas + ambient heatmap dengan gradient sodium-light + sparkle markers di top 25% kelurahan terang + atmosphere glow + stars. Mengikuti NASA city-lights ISS reference. <strong>Trade-off:</strong> hilang konteks geografis (no labels/borders), tapi visually paling NASA-like.</div>
@@ -461,8 +493,14 @@ function buildLightsMap(elId, opts) {
     center: [-6.20, 106.84], zoom: 10, zoomControl: true, scrollWheelZoom: false,
     attributionControl: false
   });
-  // Pure black background — no tile layer
-  map.getContainer().style.background = '#000000';
+  if (opts.hybrid) {
+    // Option E: Dark Matter basemap (no labels) + separate label layer (muted via CSS)
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', { maxZoom: 19, opacity: 1 }).addTo(map);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png', { maxZoom: 19, opacity: 1 }).addTo(map);
+  } else {
+    // Pure black canvas — no basemap
+    map.getContainer().style.background = '#000000';
+  }
 
   // Build heat points: [lat, lng, intensity]
   const valueMap = opts.metric === 'podes' ? PODES_BY_PCODE : LUM_BY_PCODE;
@@ -498,6 +536,14 @@ function buildLightsMap(elId, opts) {
     }
   });
   heat.addTo(map);
+
+  // For hybrid mode: heatmap canvas should blend additively with basemap
+  if (opts.hybrid) {
+    setTimeout(() => {
+      const canvas = map.getPanes().overlayPane.querySelector('canvas');
+      if (canvas) canvas.style.mixBlendMode = 'screen';
+    }, 100);
+  }
 
   // Layer 2 — sparkle markers di top 25% kelurahan (point lights effect)
   const allValues = Object.values(valueMap).filter(v => !isNaN(v));
@@ -552,7 +598,11 @@ async function init() {
     return;
   }
 
-  // ★ Option D — True NASA Lights (heatmap + sparkle markers + black canvas)
+  // ★ Option E — NASA Lights + Context (Dark Matter basemap + heatmap blend + sparkle)
+  ALL_MAPS['map-E1'] = buildLightsMap('map-E1', { metric: 'lum',   hybrid: true });
+  ALL_MAPS['map-E2'] = buildLightsMap('map-E2', { metric: 'podes', hybrid: true });
+
+  // Option D — True NASA Lights (pure black canvas, no basemap, stars + atmosphere)
   ALL_MAPS['map-D1'] = buildLightsMap('map-D1', { metric: 'lum' });
   ALL_MAPS['map-D2'] = buildLightsMap('map-D2', { metric: 'podes' });
 
