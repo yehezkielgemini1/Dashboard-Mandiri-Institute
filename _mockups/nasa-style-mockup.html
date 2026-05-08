@@ -463,6 +463,12 @@
           </select>
         </div>
         <div class="filter-group">
+          <label class="filter-label" for="filter-kelurahan">Kelurahan</label>
+          <select class="filter-select" id="filter-kelurahan" disabled>
+            <option value="all">Pilih Kecamatan dulu</option>
+          </select>
+        </div>
+        <div class="filter-group">
           <label class="filter-label" for="filter-kategori">Kategori intensitas</label>
           <select class="filter-select" id="filter-kategori">
             <option value="all">Semua</option>
@@ -1076,6 +1082,7 @@ const FILTER_STATE = {
   poiGroups: new Set(['FNB', 'RETAIL', 'ENT', 'HEALTH', 'FIN', 'FUEL']), // Default semua kategori on saat showPodes=true
   kab: 'all',           // 'all' | '71'..'75' | '01'
   kec: 'all',           // 'all' | '01'..'10' (within selected kab, cascading)
+  kelurahan: 'all',     // Round 5j: full pcode | 'all' (within selected kec, cascading)
   kategori: 'all'       // 'all' | 'sangat-tinggi' | 'tinggi' | 'sedang' | 'rendah'
 };
 let OSM_POI = null;     // Loaded async dari osm-poi.json {groups, categories, points: [[lat, lng, cat, name]]}
@@ -1119,6 +1126,10 @@ function getCurrentMetricLabel() {
 function filterPcode(pc, valueMap) {
   const v = valueMap[pc];
   if (v == null || isNaN(v)) return false;
+  // Round 5j: kelurahan (full pcode) match → filter ke 1 kelurahan saja
+  if (FILTER_STATE.kelurahan !== 'all') {
+    return pc === FILTER_STATE.kelurahan;
+  }
   if (FILTER_STATE.kab !== 'all') {
     const kab = pcodeKab(pc);
     if (kab !== FILTER_STATE.kab) return false;
@@ -1269,6 +1280,7 @@ function updateUrlState() {
   if (FILTER_STATE.showPodes) params.set('podes', '1');
   if (FILTER_STATE.kab !== 'all') params.set('kab', FILTER_STATE.kab);
   if (FILTER_STATE.kec !== 'all') params.set('kec', FILTER_STATE.kec);
+  if (FILTER_STATE.kelurahan !== 'all') params.set('desa', FILTER_STATE.kelurahan);
   if (FILTER_STATE.kategori !== 'all') params.set('kategori', FILTER_STATE.kategori);
   if (PANEL_STATE.F.pcode) params.set('pcode', PANEL_STATE.F.pcode);
   const newHash = params.toString();
@@ -1286,6 +1298,7 @@ function restoreUrlState() {
   if (params.has('podes')) FILTER_STATE.showPodes = params.get('podes') === '1';
   if (params.has('kab')) FILTER_STATE.kab = params.get('kab');
   if (params.has('kec')) FILTER_STATE.kec = params.get('kec');
+  if (params.has('desa')) FILTER_STATE.kelurahan = params.get('desa');
   if (params.has('kategori')) FILTER_STATE.kategori = params.get('kategori');
   // Sync UI: layer pill (lum always active, podes reflects showPodes)
   const lumPill = document.querySelector('.layer-pill[data-layer="lum"]');
@@ -1294,10 +1307,13 @@ function restoreUrlState() {
   if (podesPill) podesPill.classList.toggle('active', FILTER_STATE.showPodes);
   const kabSelect = document.getElementById('filter-kab');
   const kecSelect = document.getElementById('filter-kec');
+  const desaSelect = document.getElementById('filter-kelurahan');
   const katSelect = document.getElementById('filter-kategori');
   if (kabSelect) kabSelect.value = FILTER_STATE.kab;
   repopulateKecDropdown();
   if (kecSelect) kecSelect.value = FILTER_STATE.kec;
+  repopulateKelurahanDropdown();
+  if (desaSelect) desaSelect.value = FILTER_STATE.kelurahan;
   if (katSelect) katSelect.value = FILTER_STATE.kategori;
   // Rebuild map dengan state restored
   rebuildMapLayers();
@@ -1319,6 +1335,8 @@ function restoreUrlState() {
 }
 
 // Search-by-kelurahan autosuggest (search by nama OR pcode)
+// Round 5j: search bypasses filter (cari di semua kelurahan), click auto-set
+// kab/kec/kelurahan dropdowns + auto-zoom ke kelurahan yang dipilih
 function setupSearch() {
   const input = document.getElementById('search-F');
   const dropdown = document.getElementById('search-dropdown-F');
@@ -1328,17 +1346,15 @@ function setupSearch() {
     if (q.length < 2) { dropdown.style.display = 'none'; return; }
     const ql = q.toLowerCase();
     const valueMap = getCurrentValueMap();
-    const allEntries = Object.entries(valueMap)
-      .filter(e => filterPcode(e[0], valueMap))
-      .sort((a, b) => b[1] - a[1]);
-    // Match by pcode OR nama (case-insensitive)
+    // Search across ALL kelurahan (bypass current filter — user expects to find anywhere by name)
+    const allEntries = Object.entries(valueMap).sort((a, b) => b[1] - a[1]);
     const matches = allEntries.filter(e => {
       const pc = String(e[0]).toLowerCase();
       const nama = String(NAMA_BY_PCODE[e[0]] || '').toLowerCase();
       return pc.includes(ql) || nama.includes(ql);
     }).slice(0, 8);
     if (matches.length === 0) {
-      dropdown.innerHTML = '<div class="search-empty">Tidak ada match (cek filter)</div>';
+      dropdown.innerHTML = '<div class="search-empty">Tidak ditemukan</div>';
       dropdown.style.display = 'block';
       return;
     }
@@ -1346,8 +1362,15 @@ function setupSearch() {
       const pc = e[0];
       const nama = NAMA_BY_PCODE[pc];
       const display = nama ? nama : pc;
+      // Show kab+kec context for disambiguation
+      const kab = pcodeKab(pc), kec = pcodeKec(pc);
+      const kabName = KAB_NAMES[kab] || '';
+      const kecName = (KEC_NAMES[kab] || {})[kec] || '';
+      const subline = [kecName, kabName].filter(Boolean).join(' · ');
       return '<div class="search-item" data-pc="' + pc + '" data-val="' + e[1].toFixed(1) + '">'
-        + '<span class="search-pc" style="font-family:inherit;">' + display + '</span>'
+        + '<span class="search-pc"><strong>' + display + '</strong>'
+        + (subline ? '<span style="display:block;font-size:9.5px;opacity:0.6;margin-top:1px;">' + subline + '</span>' : '')
+        + '</span>'
         + '<span class="search-val">' + e[1].toFixed(1) + '</span>'
         + '</div>';
     }).join('');
@@ -1356,13 +1379,28 @@ function setupSearch() {
       item.addEventListener('click', () => {
         const pc = item.dataset.pc;
         const v = parseFloat(item.dataset.val);
-        const map = ALL_MAPS['map-F'];
-        const feat = GEOJSON.features.find(f => f.properties.desa_pcode === pc);
-        const c = feat ? getPolyCentroid(feat.geometry) : null;
-        if (c && map) map.setView(c, 13.5, { animate: true });
+        // Auto-set FILTER_STATE hierarchy: kab → kec → kelurahan
+        FILTER_STATE.kab = pcodeKab(pc);
+        FILTER_STATE.kec = pcodeKec(pc);
+        FILTER_STATE.kelurahan = pc;
+        FILTER_STATE.kategori = 'all'; // clear kategori filter
+        // Sync dropdowns
+        const kabSel = document.getElementById('filter-kab');
+        const kecSel = document.getElementById('filter-kec');
+        const desaSel = document.getElementById('filter-kelurahan');
+        const katSel = document.getElementById('filter-kategori');
+        if (kabSel) kabSel.value = FILTER_STATE.kab;
+        repopulateKecDropdown();
+        if (kecSel) kecSel.value = FILTER_STATE.kec;
+        repopulateKelurahanDropdown();
+        if (desaSel) desaSel.value = FILTER_STATE.kelurahan;
+        if (katSel) katSel.value = 'all';
+        rebuildMapLayers();
+        zoomToFilteredBounds(ALL_MAPS['map-F']);
         selectKelurahan('F', pc, v);
         input.value = pcodeName(pc);
         dropdown.style.display = 'none';
+        updateUrlState();
       });
     });
   }
@@ -1426,15 +1464,19 @@ function setupLayerPills() {
 }
 
 // Round 4: dropdown filter handlers (replace setupFilterChips)
+// Round 5j: tambah kelurahan dropdown (cascade dari kec)
 function setupFilterSelects() {
   const kabSelect = document.getElementById('filter-kab');
   const kecSelect = document.getElementById('filter-kec');
+  const desaSelect = document.getElementById('filter-kelurahan');
   const katSelect = document.getElementById('filter-kategori');
   if (kabSelect) {
     kabSelect.addEventListener('change', () => {
       FILTER_STATE.kab = kabSelect.value;
       FILTER_STATE.kec = 'all'; // Reset kec saat kab berubah (cascading)
+      FILTER_STATE.kelurahan = 'all'; // Reset kelurahan juga
       repopulateKecDropdown();
+      repopulateKelurahanDropdown();
       rebuildMapLayers();
       zoomToFilteredBounds(ALL_MAPS['map-F']);
       updateUrlState();
@@ -1443,8 +1485,23 @@ function setupFilterSelects() {
   if (kecSelect) {
     kecSelect.addEventListener('change', () => {
       FILTER_STATE.kec = kecSelect.value;
+      FILTER_STATE.kelurahan = 'all'; // Reset kelurahan saat kec berubah
+      repopulateKelurahanDropdown();
       rebuildMapLayers();
       zoomToFilteredBounds(ALL_MAPS['map-F']);
+      updateUrlState();
+    });
+  }
+  if (desaSelect) {
+    desaSelect.addEventListener('change', () => {
+      FILTER_STATE.kelurahan = desaSelect.value;
+      rebuildMapLayers();
+      zoomToFilteredBounds(ALL_MAPS['map-F']);
+      // Auto-select kelurahan untuk detail panel
+      if (FILTER_STATE.kelurahan !== 'all') {
+        const v = getCurrentValueMap()[FILTER_STATE.kelurahan];
+        if (v != null) selectKelurahan('F', FILTER_STATE.kelurahan, v);
+      }
       updateUrlState();
     });
   }
@@ -1456,6 +1513,44 @@ function setupFilterSelects() {
       updateUrlState();
     });
   }
+}
+
+// Round 5j: cascading kelurahan dropdown — populate based on selected kec (or kab kalau kec=all)
+function repopulateKelurahanDropdown() {
+  const select = document.getElementById('filter-kelurahan');
+  if (!select) return;
+  if (FILTER_STATE.kab === 'all') {
+    select.innerHTML = '<option value="all">Pilih Kabupaten dulu</option>';
+    select.value = 'all'; select.disabled = true;
+    FILTER_STATE.kelurahan = 'all';
+    return;
+  }
+  if (FILTER_STATE.kec === 'all') {
+    select.innerHTML = '<option value="all">Pilih Kecamatan dulu</option>';
+    select.value = 'all'; select.disabled = true;
+    FILTER_STATE.kelurahan = 'all';
+    return;
+  }
+  select.disabled = false;
+  // Get all kelurahan within current kab+kec, sorted by nama
+  const list = [];
+  GEOJSON.features.forEach(f => {
+    const pc = f.properties.desa_pcode;
+    if (pcodeKab(pc) === FILTER_STATE.kab && pcodeKec(pc) === FILTER_STATE.kec) {
+      list.push({ pc, name: pcodeName(pc) });
+    }
+  });
+  list.sort((a, b) => a.name.localeCompare(b.name));
+  const opts = ['<option value="all">Semua kelurahan</option>'];
+  list.forEach(item => {
+    opts.push('<option value="' + item.pc + '">' + item.name + '</option>');
+  });
+  select.innerHTML = opts.join('');
+  // Reset selection if current pcode not in list
+  if (FILTER_STATE.kelurahan !== 'all' && !list.find(x => x.pc === FILTER_STATE.kelurahan)) {
+    FILTER_STATE.kelurahan = 'all';
+  }
+  select.value = FILTER_STATE.kelurahan;
 }
 
 // Round 4: cascading kec dropdown — populate based on selected kab
@@ -1550,10 +1645,13 @@ function refreshSidePanel() {
 
 function buildSidePanel() {
   setupSearch();
+  // Round 5j: also build kelurahan dropdown initial state
+
   setupTabPills();
   setupLayerPills();
   setupFilterSelects();
   repopulateKecDropdown();
+  repopulateKelurahanDropdown();
   refreshSidePanel();
   // Auto-fill Top 1 jika belum ada selection (dan belum di-restore via URL)
   if (!PANEL_STATE.F.pcode) {
@@ -1752,13 +1850,18 @@ function addMapLayers(map) {
       .slice(0, 5)
       .map(x => x.pc)
   );
+  // Round 5j: kalau filter ke 1 kelurahan, force sparkle visible (bypass top 25% rule)
+  // Plus bigger size supaya user gampang locate
+  const isSingleKelurahanFilter = FILTER_STATE.kelurahan !== 'all';
   filteredFeatures.forEach(f => {
     const pc = f.properties.desa_pcode;
     const v = valueMap[pc];
     const c = centroidByPcode[pc];
-    if (!c || v == null || v < p75) return;
+    if (!c || v == null) return;
+    if (!isSingleKelurahanFilter && v < p75) return;
     const norm = Math.max(0, Math.min(100, v)) / 100;
-    const radius = 3 + norm * 6;
+    const baseRadius = 3 + norm * 6;
+    const radius = isSingleKelurahanFilter ? Math.max(8, baseRadius * 1.6) : baseRadius;
     const baseColor = norm > 0.85 ? '#fffadc' : (norm > 0.65 ? '#ffe68c' : '#ffc850');
     const isTop5 = top5Set.has(pc);
     const m = L.circleMarker(c, {
@@ -1766,7 +1869,7 @@ function addMapLayers(map) {
       fillColor: baseColor,
       fillOpacity: 0.95,
       color: baseColor, weight: 0,
-      className: 'nasa-sparkle' + (isTop5 ? ' nasa-pulse-top' : ''),
+      className: 'nasa-sparkle' + (isTop5 || isSingleKelurahanFilter ? ' nasa-pulse-top' : ''),
       interactive: false
     });
     m.addTo(map);
@@ -1876,7 +1979,7 @@ function zoomToFilteredBounds(map) {
   const filteredFeatures = GEOJSON.features.filter(f => filterPcode(f.properties.desa_pcode, valueMap));
   if (!filteredFeatures.length) return;
   // Skip kalau filter = 'all' di semua dimensi (default view, jangan auto-zoom)
-  if (FILTER_STATE.kab === 'all' && FILTER_STATE.kec === 'all' && FILTER_STATE.kategori === 'all') return;
+  if (FILTER_STATE.kab === 'all' && FILTER_STATE.kec === 'all' && FILTER_STATE.kelurahan === 'all' && FILTER_STATE.kategori === 'all') return;
   // Compute bounds dari semua filtered centroid
   const bounds = L.latLngBounds([]);
   filteredFeatures.forEach(f => {
@@ -1884,8 +1987,11 @@ function zoomToFilteredBounds(map) {
     if (c) bounds.extend(c);
   });
   if (!bounds.isValid()) return;
-  // Cap max zoom supaya tidak terlalu in (max z14 untuk filter wide-area)
-  const targetZoom = FILTER_STATE.kec !== 'all' ? 13.5 : (FILTER_STATE.kab !== 'all' ? 12 : 11);
+  // Cap max zoom: kelurahan=15, kec=13.5, kab=12, kategori-only=11
+  const targetZoom = FILTER_STATE.kelurahan !== 'all' ? 15
+    : FILTER_STATE.kec !== 'all' ? 13.5
+    : FILTER_STATE.kab !== 'all' ? 12
+    : 11;
   // Defer ke next tick supaya rebuildMapLayers/render done dulu
   // animate: false lebih reliable — flyToBounds + animated fitBounds kadang tidak fire
   setTimeout(() => {
