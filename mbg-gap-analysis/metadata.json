@@ -1,0 +1,83 @@
+{
+  "dashboard": "mbg-gap-analysis",
+  "title": "Pemetaan Prioritas Program MBG vs Kerawanan Pangan",
+  "subtitle": "Gap Analysis SPPG x FIES per 514 Kab/Kota Indonesia",
+  "last_updated": "2026-05-07",
+  "data_sources": {
+    "sppg": {
+      "source": "BGN portal scrape (Mandiri Institute scraping agent)",
+      "url": "https://www.bgn.go.id/operasional-sppg",
+      "scrape_date": "2026-05-06",
+      "rows": 27427,
+      "level": "kelurahan"
+    },
+    "fies": {
+      "source": "Susenas Maret 2025 + replication FIES BPS (Mandiri Institute data_processing)",
+      "methodology": "FAO Food Insecurity Experience Scale",
+      "metric_primary": "share_rawan_moderate_severe (FAO standard)",
+      "year": 2025
+    },
+    "population": {
+      "source": "Susenas KOR Maret 2025 (sum weind individu)",
+      "pop_total_2025_jt": 281.62,
+      "pop_anak_6_18_2025_jt": 59.14
+    }
+  },
+  "methodology": {
+    "gap_score": "fies_norm * (1 - sppg_density_norm)",
+    "normalization": "min-max 0-1 cross-kabkota",
+    "tier_logic": "quartile of gap_score (Q75=Tier1, Q50=Tier2, Q25=Tier3)",
+    "quadrant_logic": "median split of FIES x SPPG_per_10k_anak",
+    "thresholds": {
+      "q75_gap": 0.0614,
+      "q50_gap": 0.0318,
+      "q25_gap": 0.0153,
+      "fies_median": 0.019,
+      "sppg_per_10k_anak_median": 3.73
+    }
+  },
+  "distribution": {
+    "tier": {
+      "Tier 1 - Prioritas Tinggi": 129,
+      "Tier 2 - Prioritas Sedang": 128,
+      "Tier 3 - Cukup Tertangani": 128,
+      "Tier 4 - Low Priority": 129
+    },
+    "quadrant": {
+      "GAP": 131,
+      "Over-served": 131,
+      "Sudah Tertangani": 126,
+      "Low Priority": 126
+    }
+  },
+  "cross_links": {
+    "ketahanan_pangan_dashboard": "Dashboard/ketahanan-pangan/index.html (untuk trend FIES 2019-2025)",
+    "kelas_kabkota_dashboard": "Dashboard/kelas-kabkota/index.html (untuk konteks demografi kelas masyarakat)"
+  },
+  "caveats": [
+    "SPPG snapshot 2026 vs FIES 2025 (1 tahun gap, diasumsikan kerawanan pangan struktural).",
+    "Susenas weight di-calibrate ke proyeksi BPS resmi (toleransi 1-2%).",
+    "Phase 0 fokus cross-section. Trend FIES dilihat di dashboard ketahanan pangan terpisah (no duplikat).",
+    "Kapasitas operasional SPPG resmi (Perpres MBG) belum terverifikasi - density relative saja, tidak ada angka defisit unit."
+  ],
+  "schema": {
+    "kode_prov": "int 2-digit BPS",
+    "kode_kabkota": "int 4-digit BPS",
+    "nama_prov": "str",
+    "nama_kab": "str",
+    "n_sppg": "int (count, 0 jika tidak ada)",
+    "pop_total_2025": "int (Susenas weighted)",
+    "pop_anak_6_18_2025": "int (Susenas weighted, filter umur 6-18)",
+    "n_sample_anak_6_18": "int (raw count, untuk QC)",
+    "sppg_per_10k_total": "float",
+    "sppg_per_10k_anak": "float (primary density metric)",
+    "share_rawan_moderate_severe_2025": "float 0-1 (FIES FAO headline)",
+    "share_rawan_severe_2025": "float 0-1 (FIES extreme, untuk hotspot map)",
+    "fies_norm": "float 0-1 (min-max norm)",
+    "sppg_density_norm": "float 0-1",
+    "gap_score": "float 0-1 (composite)",
+    "rank_gap": "int 1-514",
+    "tier": "str Tier 1-4",
+    "quadrant": "str (GAP / Over-served / Sudah Tertangani / Low Priority)"
+  }
+}
