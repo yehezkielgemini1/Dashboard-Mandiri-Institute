@@ -1556,23 +1556,23 @@ function addMapLayers(map) {
     if (norm > 0.05) heatPoints.push([c[0], c[1], norm]);
   });
 
-  // Heat layer (Round 5e: smoother gradient, outer halo low-alpha → soft wash, no banding)
-  // 11 stops dengan delta luminance kecil antar-stop → tidak ada visible "ring contour"
-  // saat blob overlap. Outer halo (alpha 0.10-0.30) tetap visible untuk smooth wash effect.
+  // Heat layer (Round 5e: 12-stop smooth gradient — visible heat di semua zoom, no banding)
+  // Delta luminance + alpha kecil & konsisten antar stop → no visible ring contour.
+  // Alpha boost di low-intensity stops supaya outer halo tetap visible di zoom in.
   const heat = L.heatLayer(heatPoints, {
-    radius: 60, blur: 80, maxZoom: 17, max: 1.0, minOpacity: 0,
+    radius: 60, blur: 60, maxZoom: 17, max: 1.0, minOpacity: 0,
     gradient: {
       0.00: 'rgba(0, 0, 0, 0)',
-      0.06: 'rgba(18, 9, 3, 0.12)',
-      0.14: 'rgba(45, 25, 9, 0.30)',
-      0.24: 'rgba(85, 48, 15, 0.50)',
-      0.34: 'rgba(125, 70, 20, 0.66)',
-      0.44: 'rgba(165, 95, 25, 0.78)',
-      0.54: 'rgba(205, 125, 32, 0.88)',
-      0.64: 'rgba(235, 160, 45, 0.95)',
-      0.74: 'rgba(255, 195, 75, 1)',
-      0.84: 'rgba(255, 220, 115, 1)',
-      0.94: 'rgba(255, 240, 175, 1)',
+      0.04: 'rgba(20, 11, 4, 0.40)',
+      0.10: 'rgba(50, 28, 10, 0.62)',
+      0.18: 'rgba(90, 50, 16, 0.76)',
+      0.28: 'rgba(130, 75, 22, 0.85)',
+      0.38: 'rgba(170, 100, 27, 0.91)',
+      0.48: 'rgba(205, 130, 33, 0.95)',
+      0.58: 'rgba(230, 160, 42, 0.98)',
+      0.68: 'rgba(248, 190, 60, 1)',
+      0.78: 'rgba(255, 215, 95, 1)',
+      0.88: 'rgba(255, 235, 140, 1)',
       1.00: 'rgba(255, 250, 220, 1)'
     }
   });
@@ -1647,17 +1647,18 @@ function updateHeatRadius() {
   const map = ALL_MAPS['map-F'];
   if (!map || !map._heatLayer) return;
   const zoom = map.getZoom();
-  // Radius scaling: grow ke z12 (smooth glow), lalu shrink moderate supaya blob tetap punya
-  // mass tapi nggak overlap berlebihan. Heat tetap visible di semua zoom.
-  // z10.5 = 60px, z12 = 80px (peak), z13.5 = 65px, z15 = 50px, z17 = 38px
+  // Radius scaling: grow ke z12 (smooth glow), lalu shrink minor supaya blob tetap punya
+  // mass yang signifikan di zoom in. Heat tetap visible di semua zoom.
+  // z10.5 = 60px, z12 = 80px (peak), z14 = 72px, z16 = 64px, z17 = 60px (min)
   let newRadius;
   if (zoom <= 12) {
     newRadius = Math.round(60 + Math.max(0, (zoom - 10.5)) * 13);
   } else {
-    newRadius = Math.round(Math.max(38, 80 - (zoom - 12) * 8));
+    newRadius = Math.round(Math.max(60, 80 - (zoom - 12) * 4));
   }
-  // Blur lebih besar di zoom in (relative to radius) supaya gradient halus, tidak banded
-  const blurMult = zoom <= 12 ? 1.4 : 1.7;
+  // Blur ratio: di low zoom > 1 (smooth wash), di high zoom <=1 (visible peaks)
+  // Reason: simpleheat shadowBlur > radius bikin peak alpha drop drastis → heat invisible
+  const blurMult = zoom <= 12 ? 1.3 : 0.95;
   const newBlur = Math.round(newRadius * blurMult);
   if (typeof map._heatLayer.setOptions === 'function') {
     map._heatLayer.setOptions({ radius: newRadius, blur: newBlur });
