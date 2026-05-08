@@ -1,0 +1,56 @@
+{
+  "dashboard": "demografi-kesehatan",
+  "title": "Profil Demografi & Kesehatan Indonesia 2025",
+  "subtitle": "514 Kab/Kota — Demografi, Asuransi Kesehatan, Out-of-Pocket Spending",
+  "last_updated": "2026-05-08",
+  "data_sources": {
+    "susenas_kor_2025": {
+      "source": "Susenas Maret 2025 KOR-Individu + KOR-RT",
+      "rows_pop": 281620000,
+      "metric": "weighted via weind/wert"
+    },
+    "susenas_kp_2025": {
+      "source": "Susenas Maret 2025 KP Blok 4.2 (komoditi kesehatan)",
+      "metric": "avg per RT/bulan"
+    }
+  },
+  "derived_metrics": {
+    "pct_lansia_60": "pop_lansia_60_plus / pop_total",
+    "aging_index": "(lansia/anak) * 100",
+    "aging_profile": "Young <7% / Early 7-10% / Onset 10-15% / Mature >=15%",
+    "insurance_profile": "Very Low <50% / Low 50-75% / Medium 75-90% / High >=90%"
+  },
+  "national_summary": {
+    "pop_total_jt": 281.62,
+    "pct_lansia_60_avg": 0.11458540856031127,
+    "aging_index_median": 43.81,
+    "pct_jkn_total_avg": 0.7583171206225681,
+    "avg_oop_health_rp_bulan": 242437,
+    "oop_burden_pct_avg": 0.09099513618677044
+  },
+  "distribution": {
+    "aging_profile": {
+      "Aging-Onset (10-15%)": 244,
+      "Aging-Early (7-10%)": 145,
+      "Aging-Mature (≥15%)": 83,
+      "Young (<7%)": 42
+    },
+    "insurance_profile": {
+      "Low Coverage (50-75%)": 209,
+      "Medium Coverage (75-90%)": 181,
+      "High Coverage (≥90%)": 101,
+      "Very Low (<50%)": 23
+    }
+  },
+  "cross_links": {
+    "mbg_gap_dashboard": "untuk balita 0-4 nutrition layer",
+    "silver_economy_initiative": "lansia 60+ deep-dive",
+    "kelas_kabkota_dashboard": "kelas masyarakat overlay context"
+  },
+  "caveats": [
+    "JKN coverage 74% lebih rendah dari admin BPJS 85-90% — survey effect normal (RT mungkin tidak tahu detail JKN nya).",
+    "OOP kesehatan termasuk premi asuransi (60% komponen avg), bukan cuma direct out-of-pocket.",
+    "Dependency ratio tinggi (avg 76) — Indonesia masih demographic dividend window tapi dependency naik karena aging onset.",
+    "pct_no_insurance bisa = 100% di sample kecil (kabkota pemekaran), validate dengan n_sample_total."
+  ]
+}
