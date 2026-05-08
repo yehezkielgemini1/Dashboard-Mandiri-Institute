@@ -1488,15 +1488,14 @@ function pointInPolygon(pt, polygon) {
   return inside;
 }
 
-// Round 5: distribute sample points within polygon (4x4 grid filtered inside + centroid)
-// Hasil: heat layer dapat banyak titik per kelurahan -> smooth gradient lintas batas
-function samplePointsInPolygon(geom, gridSize) {
+// Round 5c: random sampling deterministic seeded — hilangkan grid pattern artifact
+// Same polygon = same sample positions (consistent across re-render). count = jumlah points target.
+function samplePointsInPolygon(geom, count) {
   const points = [];  // each = [lat, lng]
   let coords;
   if (geom.type === 'Polygon') coords = geom.coordinates[0];
   else if (geom.type === 'MultiPolygon') coords = geom.coordinates[0][0];
   else return points;
-  // Bounding box (coords are [lng, lat])
   let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
   coords.forEach(c => {
     if (c[0] < minLng) minLng = c[0];
@@ -1504,16 +1503,21 @@ function samplePointsInPolygon(geom, gridSize) {
     if (c[1] < minLat) minLat = c[1];
     if (c[1] > maxLat) maxLat = c[1];
   });
-  const stepLng = (maxLng - minLng) / (gridSize + 1);
-  const stepLat = (maxLat - minLat) / (gridSize + 1);
-  for (let i = 1; i <= gridSize; i++) {
-    for (let j = 1; j <= gridSize; j++) {
-      const lng = minLng + i * stepLng;
-      const lat = minLat + j * stepLat;
-      if (pointInPolygon([lng, lat], coords)) {
-        points.push([lat, lng]);
-      }
+  // Deterministic seeded random (linear congruential generator)
+  let seed = Math.abs(Math.floor((minLng + maxLng + minLat + maxLat) * 100000)) % 233280;
+  function rand() {
+    seed = (seed * 9301 + 49297) % 233280;
+    return seed / 233280;
+  }
+  let attempts = 0;
+  const maxAttempts = count * 30;
+  while (points.length < count && attempts < maxAttempts) {
+    const lng = minLng + rand() * (maxLng - minLng);
+    const lat = minLat + rand() * (maxLat - minLat);
+    if (pointInPolygon([lng, lat], coords)) {
+      points.push([lat, lng]);
     }
+    attempts++;
   }
   return points;
 }
@@ -1550,14 +1554,14 @@ function addMapLayers(map) {
     if (v == null || isNaN(v)) return;
     const norm = Math.pow(Math.max(0, Math.min(100, v)) / 100, 0.85);
     if (norm <= 0.05) return;
-    const samples = samplePointsInPolygon(f.geometry, 3);  // 3x3 grid (was 4) — less overlap
-    samples.push(c);  // pastikan centroid included (kelurahan kecil mungkin gak ke-grab grid)
+    const samples = samplePointsInPolygon(f.geometry, 5);  // 5 random points (deterministic seeded) + centroid
+    samples.push(c);  // pastikan centroid included
     samples.forEach(p => heatPoints.push([p[0], p[1], norm]));
   });
 
-  // Heat layer (Round 5b fix: smaller radius untuk avoid leaflet.heat tile artifact dari over-saturated overlap)
+  // Heat layer (Round 5c: bigger radius untuk overlap fringe area, less individual blob visibility)
   const heat = L.heatLayer(heatPoints, {
-    radius: 38, blur: 50, maxZoom: 17, max: 1.0, minOpacity: 0.2,
+    radius: 48, blur: 64, maxZoom: 17, max: 1.0, minOpacity: 0.2,
     gradient: {
       0.05: 'rgba(20, 10, 4, 0.4)',
       0.15: 'rgba(56, 32, 12, 0.6)',
@@ -1569,13 +1573,10 @@ function addMapLayers(map) {
     }
   });
   heat.addTo(map);
-  // Round 4 fix: blend SVG (polygon + sparkle) AND canvas (heatmap) screen-additive ke basemap
+  // Round 5c: keep canvas mix-blend-mode (heatmap glow), DROP SVG blend (avoid double additive saturation)
   setTimeout(() => {
-    const overlayPane = map.getPanes().overlayPane;
-    const canvas = overlayPane.querySelector('canvas');
+    const canvas = map.getPanes().overlayPane.querySelector('canvas');
     if (canvas) canvas.style.mixBlendMode = 'screen';
-    const svg = overlayPane.querySelector('svg');
-    if (svg) svg.style.mixBlendMode = 'screen';
   }, 100);
 
   // Sparkles top 25% of filtered + top 5 dengan pulse
@@ -1633,14 +1634,13 @@ function addMapLayers(map) {
   map._hitLayer = hitLayer;
 }
 
-// Round 5b fix: zoom-adaptive heat radius — modest scaling untuk avoid tile artifact
-// di low-zoom (over-saturated overlap) dan tetap visible di high-zoom
+// Round 5c: zoom-adaptive heat radius — match new initial radius 48
 function updateHeatRadius() {
   const map = ALL_MAPS['map-F'];
   if (!map || !map._heatLayer) return;
   const zoom = map.getZoom();
-  // Linear scale: zoom 10.5 = 38px, zoom 13 = 73px, zoom 15 = 101px, zoom 17 = 129px
-  const newRadius = Math.round(38 + Math.max(0, (zoom - 10.5)) * 14);
+  // Linear scale: zoom 10.5 = 48px, zoom 13 = 83px, zoom 15 = 111px, zoom 17 = 139px
+  const newRadius = Math.round(48 + Math.max(0, (zoom - 10.5)) * 14);
   const newBlur = Math.round(newRadius * 1.3);
   if (typeof map._heatLayer.setOptions === 'function') {
     map._heatLayer.setOptions({ radius: newRadius, blur: newBlur });
