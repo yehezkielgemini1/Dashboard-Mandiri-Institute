@@ -1556,31 +1556,40 @@ function addMapLayers(map) {
     if (norm > 0.05) heatPoints.push([c[0], c[1], norm]);
   });
 
-  // Heat layer (Round 5e: 12-stop smooth gradient — visible heat di semua zoom, no banding)
-  // Delta luminance + alpha kecil & konsisten antar stop → no visible ring contour.
-  // Alpha boost di low-intensity stops supaya outer halo tetap visible di zoom in.
+  // Heat layer (Round 5f: ultra-smooth 16-stop gradient + CSS blur filter di canvas)
+  // Low-intensity (0.00 → 0.20) sangat gradual: alpha delta cuma ~0.06 per stop
+  // → outer halo tiap blob fade-in halus, ring contour intersection invisible.
+  // CSS filter: blur(3px) di canvas smooth out residual banding.
   const heat = L.heatLayer(heatPoints, {
-    radius: 60, blur: 60, maxZoom: 17, max: 1.0, minOpacity: 0,
+    radius: 65, blur: 65, maxZoom: 17, max: 1.0, minOpacity: 0,
     gradient: {
       0.00: 'rgba(0, 0, 0, 0)',
-      0.04: 'rgba(20, 11, 4, 0.40)',
-      0.10: 'rgba(50, 28, 10, 0.62)',
-      0.18: 'rgba(90, 50, 16, 0.76)',
-      0.28: 'rgba(130, 75, 22, 0.85)',
-      0.38: 'rgba(170, 100, 27, 0.91)',
-      0.48: 'rgba(205, 130, 33, 0.95)',
-      0.58: 'rgba(230, 160, 42, 0.98)',
-      0.68: 'rgba(248, 190, 60, 1)',
-      0.78: 'rgba(255, 215, 95, 1)',
-      0.88: 'rgba(255, 235, 140, 1)',
+      0.03: 'rgba(8, 4, 1, 0.06)',
+      0.06: 'rgba(18, 10, 3, 0.14)',
+      0.10: 'rgba(32, 18, 6, 0.24)',
+      0.14: 'rgba(50, 28, 10, 0.36)',
+      0.19: 'rgba(72, 40, 13, 0.48)',
+      0.25: 'rgba(98, 55, 17, 0.60)',
+      0.32: 'rgba(128, 72, 22, 0.71)',
+      0.40: 'rgba(160, 92, 26, 0.81)',
+      0.48: 'rgba(192, 118, 32, 0.89)',
+      0.56: 'rgba(218, 145, 38, 0.94)',
+      0.64: 'rgba(238, 175, 50, 0.98)',
+      0.72: 'rgba(252, 200, 75, 1)',
+      0.81: 'rgba(255, 220, 110, 1)',
+      0.91: 'rgba(255, 238, 160, 1)',
       1.00: 'rgba(255, 250, 220, 1)'
     }
   });
   heat.addTo(map);
-  // Round 5c: keep canvas mix-blend-mode (heatmap glow), DROP SVG blend (avoid double additive saturation)
+  // Round 5f: mix-blend-mode screen (additive glow) + CSS blur filter untuk smooth out
+  // gradient banding artifact (residual ring contour intersections) tanpa hilangkan visibility.
   setTimeout(() => {
     const canvas = map.getPanes().overlayPane.querySelector('canvas');
-    if (canvas) canvas.style.mixBlendMode = 'screen';
+    if (canvas) {
+      canvas.style.mixBlendMode = 'screen';
+      canvas.style.filter = 'blur(3px)';
+    }
   }, 100);
 
   // Sparkles top 25% of filtered + top 5 dengan pulse
