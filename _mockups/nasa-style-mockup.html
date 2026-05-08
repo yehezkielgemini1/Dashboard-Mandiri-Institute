@@ -230,6 +230,11 @@
   }
   .layer-pill.active { background: var(--yellow); color: var(--ink); }
   .layer-pill:hover:not(.active) { color: white; background: rgba(255,255,255,0.06); }
+  .layer-pill[data-layer="lum"] { cursor: default; }
+  .layer-pill[data-layer="lum"]:hover { background: var(--yellow); color: var(--ink); }
+  .layer-pill[data-layer="podes"] { background: rgba(0,0,0,0); color: rgba(103, 178, 232, 0.85); border-left: 1px solid rgba(255,255,255,0.10); }
+  .layer-pill[data-layer="podes"].active { background: var(--sky); color: var(--ink); }
+  .layer-pill[data-layer="podes"]:hover:not(.active) { color: var(--sky); background: rgba(103, 178, 232, 0.12); }
 
   .sp-filter .filter-group { margin-bottom: 12px; }
   .sp-filter .filter-group:last-child { margin-bottom: 0; }
@@ -334,6 +339,21 @@
   }
   .nasa-sparkle.nasa-pulse-top { animation: nasa-pulse 2.6s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
 
+  /* Round 5h: Aktivitas Komersial overlay points — sky blue, contrasts dengan heatmap orange */
+  .podes-point {
+    filter: drop-shadow(0 0 3px rgba(103, 178, 232, 0.95)) drop-shadow(0 0 8px rgba(103, 178, 232, 0.55));
+  }
+  .podes-point.podes-point-top {
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 1)) drop-shadow(0 0 10px rgba(103, 178, 232, 0.85));
+  }
+  .leaflet-tooltip.podes-tooltip {
+    background: rgba(0, 38, 75, 0.95); color: white;
+    border: 1px solid rgba(103, 178, 232, 0.5);
+    font-size: 11px; font-weight: 600;
+    padding: 4px 8px; border-radius: 0;
+  }
+  .leaflet-tooltip.podes-tooltip::before { display: none; }
+
   /* ============ Option E — NASA Lights + Context (hybrid) ============ */
   .map.nasa-hybrid { background: #0a0a0a !important; position: relative; overflow: hidden; }
   .map.nasa-hybrid .leaflet-container { background: #0a0a0a !important; }
@@ -366,8 +386,8 @@
     <div class="map-card-large">
       <div class="map-header-overlay">
         <div class="layer-pills">
-          <button class="layer-pill active" data-layer="lum">Luminositas Malam</button>
-          <button class="layer-pill" data-layer="podes">Aktivitas Komersial</button>
+          <button class="layer-pill active" data-layer="lum" title="Heatmap base layer">Luminositas Malam</button>
+          <button class="layer-pill" data-layer="podes" title="Toggle overlay points di atas heatmap">+ Aktivitas Komersial</button>
         </div>
       </div>
       <div class="map nasa-hybrid" id="map-F"></div>
@@ -996,10 +1016,11 @@ const PANEL_STATE = {
   F: { pcode: null, value: null, metricLabel: 'Luminositas 2025' }
 };
 const FILTER_STATE = {
-  layer: 'lum',     // 'lum' | 'podes'
-  kab: 'all',       // 'all' | '71'..'75' | '01'
-  kec: 'all',       // 'all' | '01'..'10' (within selected kab, cascading)
-  kategori: 'all'   // 'all' | 'sangat-tinggi' | 'tinggi' | 'sedang' | 'rendah'
+  layer: 'lum',         // 'lum' (selalu lum untuk heatmap base — tidak diubah lagi)
+  showPodes: false,     // Round 5h: toggle overlay aktivitas komersial (points di atas heatmap)
+  kab: 'all',           // 'all' | '71'..'75' | '01'
+  kec: 'all',           // 'all' | '01'..'10' (within selected kab, cascading)
+  kategori: 'all'       // 'all' | 'sangat-tinggi' | 'tinggi' | 'sedang' | 'rendah'
 };
 // Per actual CSV data 260503_FINAL_eczi_per_desa.csv (Round 4 fix)
 const KAB_NAMES = {
@@ -1188,7 +1209,7 @@ function renderSekitar(state, sideId) {
 function updateUrlState() {
   if (typeof URLSearchParams === 'undefined') return;
   const params = new URLSearchParams();
-  if (FILTER_STATE.layer !== 'lum') params.set('layer', FILTER_STATE.layer);
+  if (FILTER_STATE.showPodes) params.set('podes', '1');
   if (FILTER_STATE.kab !== 'all') params.set('kab', FILTER_STATE.kab);
   if (FILTER_STATE.kec !== 'all') params.set('kec', FILTER_STATE.kec);
   if (FILTER_STATE.kategori !== 'all') params.set('kategori', FILTER_STATE.kategori);
@@ -1205,12 +1226,15 @@ function restoreUrlState() {
   const hash = window.location.hash.slice(1);
   if (!hash) return false;
   const params = new URLSearchParams(hash);
-  if (params.has('layer')) FILTER_STATE.layer = params.get('layer');
+  if (params.has('podes')) FILTER_STATE.showPodes = params.get('podes') === '1';
   if (params.has('kab')) FILTER_STATE.kab = params.get('kab');
   if (params.has('kec')) FILTER_STATE.kec = params.get('kec');
   if (params.has('kategori')) FILTER_STATE.kategori = params.get('kategori');
-  // Sync UI: layer pill + dropdown values
-  document.querySelectorAll('.layer-pill').forEach(b => b.classList.toggle('active', b.dataset.layer === FILTER_STATE.layer));
+  // Sync UI: layer pill (lum always active, podes reflects showPodes)
+  const lumPill = document.querySelector('.layer-pill[data-layer="lum"]');
+  const podesPill = document.querySelector('.layer-pill[data-layer="podes"]');
+  if (lumPill) lumPill.classList.add('active');
+  if (podesPill) podesPill.classList.toggle('active', FILTER_STATE.showPodes);
   const kabSelect = document.getElementById('filter-kab');
   const kecSelect = document.getElementById('filter-kec');
   const katSelect = document.getElementById('filter-kategori');
@@ -1307,27 +1331,23 @@ function setupTabPills() {
 }
 
 function setupLayerPills() {
-  document.querySelectorAll('.layer-pill').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const layer = btn.dataset.layer;
-      if (FILTER_STATE.layer === layer) return;
-      document.querySelectorAll('.layer-pill').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      FILTER_STATE.layer = layer;
+  // Round 5h: Lum pill = base (always active), Podes pill = toggle untuk overlay points
+  const lumPill = document.querySelector('.layer-pill[data-layer="lum"]');
+  const podesPill = document.querySelector('.layer-pill[data-layer="podes"]');
+  if (lumPill) {
+    // Lum pill non-clickable, indicates base layer
+    lumPill.addEventListener('click', e => e.preventDefault());
+  }
+  if (podesPill) {
+    // Sync initial state
+    if (FILTER_STATE.showPodes) podesPill.classList.add('active');
+    podesPill.addEventListener('click', () => {
+      FILTER_STATE.showPodes = !FILTER_STATE.showPodes;
+      podesPill.classList.toggle('active', FILTER_STATE.showPodes);
       rebuildMapLayers();
-      // PANEL_STATE value perlu di-update karena metric berubah
-      if (PANEL_STATE.F.pcode) {
-        const newValueMap = getCurrentValueMap();
-        const newValue = newValueMap[PANEL_STATE.F.pcode];
-        if (newValue != null) {
-          PANEL_STATE.F.value = newValue;
-          PANEL_STATE.F.metricLabel = getCurrentMetricLabel();
-          renderActiveTab('F');
-        }
-      }
       updateUrlState();
     });
-  });
+  }
 }
 
 // Round 4: dropdown filter handlers (replace setupFilterChips)
@@ -1692,10 +1712,55 @@ function addMapLayers(map) {
   });
   hitLayer.addTo(map);
 
+  // Round 5h: Aktivitas Komersial overlay points (podes data) — di atas heatmap
+  // Renders sky-blue circle markers di kelurahan dengan top-25% commercial activity.
+  // Color sky blue untuk contrast tinggi terhadap orange luminosity heatmap.
+  const podesOverlay = [];
+  if (FILTER_STATE.showPodes) {
+    const podesValues = filteredFeatures
+      .map(f => PODES_BY_PCODE[f.properties.desa_pcode])
+      .filter(v => v != null && !isNaN(v));
+    podesValues.sort((a, b) => b - a);
+    const podesP75 = podesValues[Math.floor(podesValues.length * 0.25)] || 50;
+    const podesTop10Set = new Set(
+      filteredFeatures
+        .map(f => ({ pc: f.properties.desa_pcode, v: PODES_BY_PCODE[f.properties.desa_pcode] }))
+        .filter(x => x.v != null && !isNaN(x.v))
+        .sort((a, b) => b.v - a.v)
+        .slice(0, 10)
+        .map(x => x.pc)
+    );
+    filteredFeatures.forEach(f => {
+      const pc = f.properties.desa_pcode;
+      const c = centroidByPcode[pc];
+      const v = PODES_BY_PCODE[pc];
+      if (!c || v == null || isNaN(v) || v < podesP75) return;
+      const norm = Math.max(0, Math.min(100, v)) / 100;
+      const radius = 4 + norm * 7;  // 4-11px, scales dengan value
+      const isTop10 = podesTop10Set.has(pc);
+      const m = L.circleMarker(c, {
+        radius: isTop10 ? radius * 1.15 : radius,
+        fillColor: '#67B2E8',
+        fillOpacity: 0.9,
+        color: '#FFFFFF',
+        weight: 1.5,
+        className: 'podes-point' + (isTop10 ? ' podes-point-top' : ''),
+        interactive: true,
+        bubblingMouseEvents: false
+      });
+      m.bindTooltip(pcodeName(pc) + ' · ' + v.toFixed(1), {
+        direction: 'top', offset: [0, -4], opacity: 0.95, className: 'podes-tooltip'
+      });
+      m.addTo(map);
+      podesOverlay.push(m);
+    });
+  }
+
   // Attach references untuk rebuild
   map._heatLayer = heat;
   map._sparkleLayers = sparkleLayers;
   map._hitLayer = hitLayer;
+  map._podesOverlay = podesOverlay;
 }
 
 // Round 5g: GlowLayer self-redraws on zoomend internally; updateHeatRadius is now no-op
@@ -1733,13 +1798,14 @@ function rebuildMapLayers() {
   if (!map) return;
   if (map._heatLayer) map.removeLayer(map._heatLayer);
   (map._sparkleLayers || []).forEach(l => map.removeLayer(l));
+  (map._podesOverlay || []).forEach(l => map.removeLayer(l));
   if (map._hitLayer) map.removeLayer(map._hitLayer);
   map._heatLayer = null;
   map._sparkleLayers = [];
+  map._podesOverlay = [];
   map._hitLayer = null;
   addMapLayers(map);
   refreshSidePanel();
-  // Round 5: re-apply adaptive radius based on current zoom
   updateHeatRadius();
 }
 
