@@ -379,11 +379,11 @@
           <label class="filter-label" for="filter-kab">Kabupaten / Kotamadya</label>
           <select class="filter-select" id="filter-kab">
             <option value="all">Semua</option>
-            <option value="71">Jakarta Pusat</option>
-            <option value="72">Jakarta Utara</option>
-            <option value="73">Jakarta Barat</option>
-            <option value="74">Jakarta Selatan</option>
-            <option value="75">Jakarta Timur</option>
+            <option value="71">Jakarta Selatan</option>
+            <option value="72">Jakarta Timur</option>
+            <option value="73">Jakarta Pusat</option>
+            <option value="74">Jakarta Barat</option>
+            <option value="75">Jakarta Utara</option>
             <option value="01">Kepulauan Seribu</option>
           </select>
         </div>
@@ -732,6 +732,8 @@ async function loadData() {
     // Round 4: nama desa column detection
     const idxNama = ['nama_desa', 'nama_kelurahan', 'NAMA_DESA', 'NAMA_KELURAHAN', 'name', 'NAME']
       .map(k => headers.indexOf(k)).find(i => i >= 0);
+    // Round 4 fix: nama_kecamatan column untuk build KEC_NAMES dinamis (per actual data)
+    const idxKec = headers.indexOf('nama_kecamatan');
     for (let i = 1; i < lines.length; i++) {
       const cols = lines[i].split(',');
       const pc = (cols[idxPcode] || '').trim().replace(/^"|"$/g, '');
@@ -742,6 +744,17 @@ async function loadData() {
       if (pc && idxNama != null && idxNama >= 0) {
         const namaV = (cols[idxNama] || '').trim().replace(/^"|"$/g, '');
         if (namaV) NAMA_BY_PCODE[pc] = namaV;
+      }
+      if (pc && idxKec >= 0) {
+        const kecV = (cols[idxKec] || '').trim().replace(/^"|"$/g, '');
+        if (kecV) {
+          const kabCode = pcodeKab(pc);
+          const kecCode = pcodeKec(pc);
+          if (kabCode && kecCode) {
+            if (!KEC_NAMES[kabCode]) KEC_NAMES[kabCode] = {};
+            KEC_NAMES[kabCode][kecCode] = kecV;
+          }
+        }
       }
     }
     // Compute min-max untuk normalize ke 0-100 scale
@@ -988,19 +1001,13 @@ const FILTER_STATE = {
   kec: 'all',       // 'all' | '01'..'10' (within selected kab, cascading)
   kategori: 'all'   // 'all' | 'sangat-tinggi' | 'tinggi' | 'sedang' | 'rendah'
 };
+// Per actual CSV data 260503_FINAL_eczi_per_desa.csv (Round 4 fix)
 const KAB_NAMES = {
-  '71': 'Pusat', '72': 'Utara', '73': 'Barat',
-  '74': 'Selatan', '75': 'Timur', '01': 'Kep Seribu'
+  '71': 'Selatan', '72': 'Timur', '73': 'Pusat',
+  '74': 'Barat', '75': 'Utara', '01': 'Kep Seribu'
 };
-// BPS DKI kecamatan codes per kabupaten — verify dengan BPS aktual jika real CSV pakai code berbeda
-const KEC_NAMES = {
-  '71': { '01': 'Gambir', '02': 'Sawah Besar', '03': 'Kemayoran', '04': 'Senen', '05': 'Cempaka Putih', '06': 'Menteng', '07': 'Tanah Abang', '08': 'Johar Baru' },
-  '72': { '01': 'Penjaringan', '02': 'Pademangan', '03': 'Tanjung Priok', '04': 'Koja', '05': 'Kelapa Gading', '06': 'Cilincing' },
-  '73': { '01': 'Kembangan', '02': 'Kebon Jeruk', '03': 'Palmerah', '04': 'Grogol Petamburan', '05': 'Tambora', '06': 'Taman Sari', '07': 'Cengkareng', '08': 'Kalideres' },
-  '74': { '01': 'Jagakarsa', '02': 'Pasar Minggu', '03': 'Cilandak', '04': 'Pesanggrahan', '05': 'Kebayoran Lama', '06': 'Kebayoran Baru', '07': 'Mampang Prapatan', '08': 'Pancoran', '09': 'Tebet', '10': 'Setiabudi' },
-  '75': { '01': 'Pasar Rebo', '02': 'Ciracas', '03': 'Cipayung', '04': 'Makasar', '05': 'Kramat Jati', '06': 'Jatinegara', '07': 'Duren Sawit', '08': 'Cakung', '09': 'Pulo Gadung', '10': 'Matraman' },
-  '01': { '01': 'Kep Seribu Utara', '02': 'Kep Seribu Selatan' }
-};
+// KEC_NAMES populated dynamically dari CSV nama_kecamatan column (Round 4 fix)
+let KEC_NAMES = {};
 
 // Helpers
 function pcodeKab(pc) {
