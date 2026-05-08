@@ -1341,6 +1341,7 @@ function setupFilterSelects() {
       FILTER_STATE.kec = 'all'; // Reset kec saat kab berubah (cascading)
       repopulateKecDropdown();
       rebuildMapLayers();
+      zoomToFilteredBounds(ALL_MAPS['map-F']);
       updateUrlState();
     });
   }
@@ -1348,6 +1349,7 @@ function setupFilterSelects() {
     kecSelect.addEventListener('change', () => {
       FILTER_STATE.kec = kecSelect.value;
       rebuildMapLayers();
+      zoomToFilteredBounds(ALL_MAPS['map-F']);
       updateUrlState();
     });
   }
@@ -1355,6 +1357,7 @@ function setupFilterSelects() {
     katSelect.addEventListener('change', () => {
       FILTER_STATE.kategori = katSelect.value;
       rebuildMapLayers();
+      zoomToFilteredBounds(ALL_MAPS['map-F']);
       updateUrlState();
     });
   }
@@ -1535,6 +1538,81 @@ function colorChoropleth(v) {
   return '#0d0703';                 // near-black (still slightly visible)
 }
 
+// Round 5g: Custom canvas glow layer — replace L.heatLayer untuk eliminate gradient banding
+// Tiap kelurahan = 1 radial gradient smooth (3 stops, single hue interpolation = no contour rings).
+// Additive blend ('lighter') untuk NASA-style accumulation effect, tapi gradient smoothness
+// guarantees no visible quarter-circle / wedge artifacts saat blob overlap.
+const GlowLayer = L.Layer.extend({
+  initialize: function(points, options) {
+    L.setOptions(this, options);
+    this._points = points;
+  },
+  onAdd: function(map) {
+    this._map = map;
+    this._canvas = L.DomUtil.create('canvas', 'leaflet-glow-layer leaflet-zoom-hide');
+    this._canvas.style.pointerEvents = 'none';
+    map.getPanes().overlayPane.appendChild(this._canvas);
+    map.on({ viewreset: this._reset, moveend: this._reset, zoomend: this._reset, resize: this._reset }, this);
+    this._reset();
+  },
+  onRemove: function(map) {
+    map.off({ viewreset: this._reset, moveend: this._reset, zoomend: this._reset, resize: this._reset }, this);
+    if (this._canvas && this._canvas.parentNode) this._canvas.parentNode.removeChild(this._canvas);
+    this._map = null;
+    this._canvas = null;
+  },
+  setPoints: function(points) {
+    this._points = points;
+    if (this._map) this._reset();
+  },
+  _getRadius: function(zoom) {
+    // Constant-ish: smooth wash di low zoom, visible smoke di high zoom
+    if (zoom <= 11) return 90;
+    if (zoom <= 12) return 78;
+    if (zoom <= 13) return 70;
+    if (zoom <= 14) return 65;
+    if (zoom <= 16) return 62;
+    return 58;
+  },
+  _reset: function() {
+    if (!this._map) return;
+    const map = this._map;
+    const size = map.getSize();
+    const canvas = this._canvas;
+    canvas.width = size.x;
+    canvas.height = size.y;
+    canvas.style.width = size.x + 'px';
+    canvas.style.height = size.y + 'px';
+    L.DomUtil.setPosition(canvas, map.containerPointToLayerPoint([0, 0]));
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, size.x, size.y);
+    // Pakai source-over (default alpha blend) — NOT 'lighter' (additive bikin saturate ke putih
+    // saat banyak blob overlap di area dense). Mix-blend-mode: screen di CSS handle additive
+    // effect terhadap basemap. Source-over di canvas = no internal saturation, smooth result.
+    ctx.globalCompositeOperation = 'source-over';
+    const radius = this._getRadius(map.getZoom());
+    const margin = radius;
+    // Sort by value ascending → lebih bright di-render belakangan, ada di atas (z-order yang benar)
+    const sorted = this._points.slice().sort((a, b) => a[2] - b[2]);
+    sorted.forEach(p => {
+      const lat = p[0], lng = p[1], norm = p[2];
+      const cp = map.latLngToContainerPoint([lat, lng]);
+      if (cp.x < -margin || cp.x > size.x + margin || cp.y < -margin || cp.y > size.y + margin) return;
+      const peak = Math.pow(Math.max(0, Math.min(1, norm)), 0.6);
+      const grad = ctx.createRadialGradient(cp.x, cp.y, 0, cp.x, cp.y, radius);
+      // Single-hue smooth gradient → cuma alpha yang berubah, no contour band
+      grad.addColorStop(0.00, 'rgba(255, 235, 165, ' + (peak * 0.85).toFixed(3) + ')');
+      grad.addColorStop(0.18, 'rgba(252, 195, 80, ' + (peak * 0.70).toFixed(3) + ')');
+      grad.addColorStop(0.42, 'rgba(225, 140, 35, ' + (peak * 0.45).toFixed(3) + ')');
+      grad.addColorStop(0.68, 'rgba(165, 88, 20, ' + (peak * 0.22).toFixed(3) + ')');
+      grad.addColorStop(1.00, 'rgba(80, 38, 10, 0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(cp.x - radius, cp.y - radius, radius * 2, radius * 2);
+    });
+  }
+});
+function glowLayer(points, options) { return new GlowLayer(points, options); }
+
 function addMapLayers(map) {
   const valueMap = getCurrentValueMap();
   const filteredFeatures = GEOJSON.features.filter(f => filterPcode(f.properties.desa_pcode, valueMap));
@@ -1556,41 +1634,14 @@ function addMapLayers(map) {
     if (norm > 0.05) heatPoints.push([c[0], c[1], norm]);
   });
 
-  // Heat layer (Round 5f: ultra-smooth 16-stop gradient + CSS blur filter di canvas)
-  // Low-intensity (0.00 → 0.20) sangat gradual: alpha delta cuma ~0.06 per stop
-  // → outer halo tiap blob fade-in halus, ring contour intersection invisible.
-  // CSS filter: blur(3px) di canvas smooth out residual banding.
-  const heat = L.heatLayer(heatPoints, {
-    radius: 65, blur: 65, maxZoom: 17, max: 1.0, minOpacity: 0,
-    gradient: {
-      0.00: 'rgba(0, 0, 0, 0)',
-      0.03: 'rgba(8, 4, 1, 0.06)',
-      0.06: 'rgba(18, 10, 3, 0.14)',
-      0.10: 'rgba(32, 18, 6, 0.24)',
-      0.14: 'rgba(50, 28, 10, 0.36)',
-      0.19: 'rgba(72, 40, 13, 0.48)',
-      0.25: 'rgba(98, 55, 17, 0.60)',
-      0.32: 'rgba(128, 72, 22, 0.71)',
-      0.40: 'rgba(160, 92, 26, 0.81)',
-      0.48: 'rgba(192, 118, 32, 0.89)',
-      0.56: 'rgba(218, 145, 38, 0.94)',
-      0.64: 'rgba(238, 175, 50, 0.98)',
-      0.72: 'rgba(252, 200, 75, 1)',
-      0.81: 'rgba(255, 220, 110, 1)',
-      0.91: 'rgba(255, 238, 160, 1)',
-      1.00: 'rgba(255, 250, 220, 1)'
-    }
-  });
+  // Round 5g: Custom GlowLayer (replace L.heatLayer) — single-hue smooth gradient,
+  // 'lighter' blend untuk NASA accumulation, NO banding karena gradient cuma alpha-fade.
+  const heat = glowLayer(heatPoints, {});
   heat.addTo(map);
-  // Round 5f: mix-blend-mode screen (additive glow) + CSS blur filter untuk smooth out
-  // gradient banding artifact (residual ring contour intersections) tanpa hilangkan visibility.
+  // Apply mix-blend-mode: screen untuk additive glow effect terhadap basemap
   setTimeout(() => {
-    const canvas = map.getPanes().overlayPane.querySelector('canvas');
-    if (canvas) {
-      canvas.style.mixBlendMode = 'screen';
-      canvas.style.filter = 'blur(3px)';
-    }
-  }, 100);
+    if (heat._canvas) heat._canvas.style.mixBlendMode = 'screen';
+  }, 50);
 
   // Sparkles top 25% of filtered + top 5 dengan pulse
   const filteredValues = filteredFeatures
@@ -1647,37 +1698,34 @@ function addMapLayers(map) {
   map._hitLayer = hitLayer;
 }
 
-// Round 5e: zoom-adaptive radius + smaller blob di zoom in supaya overlap minimal.
-// Reason: gradient banding contour bisa visible saat blob tetangga overlap. Solusi:
-// (a) gradient start transparent (lower-intensity halo invisible),
-// (b) radius shrink di zoom in (less overlap = less ring intersection).
-// Heat tetap visible di semua zoom — orange glow tetap ada saat zoom in, tapi tighter.
-function updateHeatRadius() {
-  const map = ALL_MAPS['map-F'];
-  if (!map || !map._heatLayer) return;
-  const zoom = map.getZoom();
-  // Radius scaling: grow ke z12 (smooth glow), lalu shrink minor supaya blob tetap punya
-  // mass yang signifikan di zoom in. Heat tetap visible di semua zoom.
-  // z10.5 = 60px, z12 = 80px (peak), z14 = 72px, z16 = 64px, z17 = 60px (min)
-  let newRadius;
-  if (zoom <= 12) {
-    newRadius = Math.round(60 + Math.max(0, (zoom - 10.5)) * 13);
-  } else {
-    newRadius = Math.round(Math.max(60, 80 - (zoom - 12) * 4));
-  }
-  // Blur ratio: di low zoom > 1 (smooth wash), di high zoom <=1 (visible peaks)
-  // Reason: simpleheat shadowBlur > radius bikin peak alpha drop drastis → heat invisible
-  const blurMult = zoom <= 12 ? 1.3 : 0.95;
-  const newBlur = Math.round(newRadius * blurMult);
-  if (typeof map._heatLayer.setOptions === 'function') {
-    map._heatLayer.setOptions({ radius: newRadius, blur: newBlur });
-    if (typeof map._heatLayer.redraw === 'function') {
-      map._heatLayer.redraw();
-    }
-  }
-  // Reset opacity (in case sebelumnya di-set 0 dari version lama)
-  const canvas = map.getPanes().overlayPane.querySelector('canvas.leaflet-heatmap-layer');
-  if (canvas) canvas.style.opacity = '';
+// Round 5g: GlowLayer self-redraws on zoomend internally; updateHeatRadius is now no-op
+// kept untuk backward compat di rebuildMapLayers/init.
+function updateHeatRadius() { /* GlowLayer handles zoom adaptive radius internally */ }
+
+// Round 5g: auto-zoom ke bounding box filtered features setelah filter berubah
+function zoomToFilteredBounds(map) {
+  if (!map || !GEOJSON) return;
+  const valueMap = getCurrentValueMap();
+  const filteredFeatures = GEOJSON.features.filter(f => filterPcode(f.properties.desa_pcode, valueMap));
+  if (!filteredFeatures.length) return;
+  // Skip kalau filter = 'all' di semua dimensi (default view, jangan auto-zoom)
+  if (FILTER_STATE.kab === 'all' && FILTER_STATE.kec === 'all' && FILTER_STATE.kategori === 'all') return;
+  // Compute bounds dari semua filtered centroid
+  const bounds = L.latLngBounds([]);
+  filteredFeatures.forEach(f => {
+    const c = getPolyCentroid(f.geometry);
+    if (c) bounds.extend(c);
+  });
+  if (!bounds.isValid()) return;
+  // Cap max zoom supaya tidak terlalu in (max z14 untuk filter wide-area)
+  const targetZoom = FILTER_STATE.kec !== 'all' ? 13.5 : (FILTER_STATE.kab !== 'all' ? 12 : 11);
+  // Defer ke next tick supaya rebuildMapLayers/render done dulu
+  // animate: false lebih reliable — flyToBounds + animated fitBounds kadang tidak fire
+  setTimeout(() => {
+    try {
+      map.fitBounds(bounds, { padding: [50, 50], maxZoom: targetZoom, animate: false });
+    } catch (e) { console.warn('fitBounds error:', e); }
+  }, 80);
 }
 
 function rebuildMapLayers() {
