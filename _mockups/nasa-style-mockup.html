@@ -6,6 +6,8 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <style>
   :root {
     --navy: #003D79; --navy-deep: #002852; --yellow: #FFB700; --sky: #67B2E8;
@@ -339,20 +341,58 @@
   }
   .nasa-sparkle.nasa-pulse-top { animation: nasa-pulse 2.6s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
 
-  /* Round 5h: Aktivitas Komersial overlay points — sky blue, contrasts dengan heatmap orange */
-  .podes-point {
-    filter: drop-shadow(0 0 3px rgba(103, 178, 232, 0.95)) drop-shadow(0 0 8px rgba(103, 178, 232, 0.55));
+  /* Round 5i: POI category chips + custom pin markers */
+  .poi-chips {
+    position: absolute; top: 64px; left: 12px; z-index: 600;
+    display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+    background: rgba(0,0,0,0.78); border: 1px solid rgba(255,255,255,0.15);
+    padding: 8px 10px; max-width: calc(100% - 24px);
   }
-  .podes-point.podes-point-top {
-    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 1)) drop-shadow(0 0 10px rgba(103, 178, 232, 0.85));
+  .poi-chip-label {
+    font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.55); margin-right: 4px;
   }
-  .leaflet-tooltip.podes-tooltip {
+  .poi-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 10px; font-size: 10.5px; font-weight: 600;
+    letter-spacing: 0.04em; background: transparent;
+    border: 1px solid rgba(255,255,255,0.18); color: rgba(255,255,255,0.45);
+    cursor: pointer; font-family: inherit; transition: all 0.15s ease;
+    text-decoration: line-through; text-decoration-color: rgba(255,255,255,0.30);
+  }
+  .poi-chip:hover { color: rgba(255,255,255,0.75); }
+  .poi-chip.active {
+    background: rgba(255,255,255,0.10); color: white;
+    border-color: rgba(255,255,255,0.55);
+    text-decoration: none;
+  }
+  .poi-chip .poi-dot { opacity: 0.45; }
+  .poi-chip.active .poi-dot { opacity: 1; }
+  .poi-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; transition: opacity 0.15s; }
+
+  /* Custom POI pin marker — SVG drop pin shape, color-coded per group */
+  .poi-marker { background: transparent; border: 0; }
+  .poi-marker svg { display: block; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.55)); }
+  .poi-cluster {
+    background: rgba(0,40,82,0.85); color: white;
+    border: 2px solid rgba(255,255,255,0.7); border-radius: 50%;
+    text-align: center; font-weight: 700; font-size: 12px;
+    line-height: 1;
+    box-shadow: 0 0 6px rgba(0,0,0,0.4);
+  }
+  .poi-cluster div { display: flex; align-items: center; justify-content: center; height: 100%; }
+
+  .leaflet-tooltip.poi-tooltip {
     background: rgba(0, 38, 75, 0.95); color: white;
-    border: 1px solid rgba(103, 178, 232, 0.5);
-    font-size: 11px; font-weight: 600;
-    padding: 4px 8px; border-radius: 0;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    font-size: 11px; font-weight: 500; padding: 5px 9px; border-radius: 0;
+    pointer-events: none;
   }
-  .leaflet-tooltip.podes-tooltip::before { display: none; }
+  .leaflet-tooltip.poi-tooltip::before { display: none; }
+  .leaflet-tooltip.poi-tooltip .poi-tt-cat {
+    display: block; font-size: 9px; letter-spacing: 0.08em;
+    text-transform: uppercase; opacity: 0.7; margin-top: 2px; font-weight: 600;
+  }
 
   /* ============ Option E — NASA Lights + Context (hybrid) ============ */
   .map.nasa-hybrid { background: #0a0a0a !important; position: relative; overflow: hidden; }
@@ -387,7 +427,16 @@
       <div class="map-header-overlay">
         <div class="layer-pills">
           <button class="layer-pill active" data-layer="lum" title="Heatmap base layer">Luminositas Malam</button>
-          <button class="layer-pill" data-layer="podes" title="Toggle overlay points di atas heatmap">+ Aktivitas Komersial</button>
+          <button class="layer-pill" data-layer="podes" title="Toggle POI overlay">+ Aktivitas Komersial</button>
+        </div>
+        <div class="poi-chips" id="poi-chips-F" style="display:none;">
+          <span class="poi-chip-label">JENIS USAHA:</span>
+          <button class="poi-chip" data-group="FNB"><span class="poi-dot" style="background:#FF6B35"></span>F&amp;B</button>
+          <button class="poi-chip" data-group="RETAIL"><span class="poi-dot" style="background:#4D96FF"></span>Retail</button>
+          <button class="poi-chip" data-group="ENT"><span class="poi-dot" style="background:#9B5DE5"></span>Hiburan</button>
+          <button class="poi-chip" data-group="HEALTH"><span class="poi-dot" style="background:#00B894"></span>Kesehatan</button>
+          <button class="poi-chip" data-group="FIN"><span class="poi-dot" style="background:#FDCB6E"></span>Finansial</button>
+          <button class="poi-chip" data-group="FUEL"><span class="poi-dot" style="background:#E84545"></span>SPBU</button>
         </div>
       </div>
       <div class="map nasa-hybrid" id="map-F"></div>
@@ -723,6 +772,12 @@ async function loadData() {
     const data = await tryFetch(u);
     if (data) { GEOJSON = data; break; }
   }
+  // Round 5i: load OSM POI data (15.9k points: F&B, Retail, Ent, Health, Fin, Fuel)
+  const poiUrls = ['./osm-poi.json', RAW_BASE + '/_mockups/osm-poi.json'];
+  for (const u of poiUrls) {
+    const data = await tryFetch(u);
+    if (data && data.points) { OSM_POI = data; break; }
+  }
   if (!GEOJSON) {
     GEOJSON = buildSyntheticGeoJSON();
     const banner = document.createElement('div');
@@ -1017,11 +1072,13 @@ const PANEL_STATE = {
 };
 const FILTER_STATE = {
   layer: 'lum',         // 'lum' (selalu lum untuk heatmap base — tidak diubah lagi)
-  showPodes: false,     // Round 5h: toggle overlay aktivitas komersial (points di atas heatmap)
+  showPodes: false,     // Master toggle "+ Aktivitas Komersial" — controls visibility of POI chips + markers
+  poiGroups: new Set(['FNB', 'RETAIL', 'ENT', 'HEALTH', 'FIN', 'FUEL']), // Default semua kategori on saat showPodes=true
   kab: 'all',           // 'all' | '71'..'75' | '01'
   kec: 'all',           // 'all' | '01'..'10' (within selected kab, cascading)
   kategori: 'all'       // 'all' | 'sangat-tinggi' | 'tinggi' | 'sedang' | 'rendah'
 };
+let OSM_POI = null;     // Loaded async dari osm-poi.json {groups, categories, points: [[lat, lng, cat, name]]}
 // Per actual CSV data 260503_FINAL_eczi_per_desa.csv (Round 4 fix)
 const KAB_NAMES = {
   '71': 'Selatan', '72': 'Timur', '73': 'Pusat',
@@ -1331,23 +1388,41 @@ function setupTabPills() {
 }
 
 function setupLayerPills() {
-  // Round 5h: Lum pill = base (always active), Podes pill = toggle untuk overlay points
+  // Round 5i: Lum pill = base, Podes pill = master toggle untuk POI overlay + chips
   const lumPill = document.querySelector('.layer-pill[data-layer="lum"]');
   const podesPill = document.querySelector('.layer-pill[data-layer="podes"]');
-  if (lumPill) {
-    // Lum pill non-clickable, indicates base layer
-    lumPill.addEventListener('click', e => e.preventDefault());
+  const chipsRow = document.getElementById('poi-chips-F');
+  if (lumPill) lumPill.addEventListener('click', e => e.preventDefault());
+  function syncChipsVisible() {
+    if (chipsRow) chipsRow.style.display = FILTER_STATE.showPodes ? 'flex' : 'none';
+  }
+  function syncChipsActive() {
+    document.querySelectorAll('#poi-chips-F .poi-chip').forEach(c => {
+      c.classList.toggle('active', FILTER_STATE.poiGroups.has(c.dataset.group));
+    });
   }
   if (podesPill) {
-    // Sync initial state
     if (FILTER_STATE.showPodes) podesPill.classList.add('active');
+    syncChipsVisible(); syncChipsActive();
     podesPill.addEventListener('click', () => {
       FILTER_STATE.showPodes = !FILTER_STATE.showPodes;
       podesPill.classList.toggle('active', FILTER_STATE.showPodes);
+      syncChipsVisible();
       rebuildMapLayers();
       updateUrlState();
     });
   }
+  // Setup chip click handlers
+  document.querySelectorAll('#poi-chips-F .poi-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const g = chip.dataset.group;
+      if (FILTER_STATE.poiGroups.has(g)) FILTER_STATE.poiGroups.delete(g);
+      else FILTER_STATE.poiGroups.add(g);
+      syncChipsActive();
+      rebuildMapLayers();
+      updateUrlState();
+    });
+  });
 }
 
 // Round 4: dropdown filter handlers (replace setupFilterChips)
@@ -1712,55 +1787,82 @@ function addMapLayers(map) {
   });
   hitLayer.addTo(map);
 
-  // Round 5h: Aktivitas Komersial overlay points (podes data) — di atas heatmap
-  // Renders sky-blue circle markers di kelurahan dengan top-25% commercial activity.
-  // Color sky blue untuk contrast tinggi terhadap orange luminosity heatmap.
-  const podesOverlay = [];
-  if (FILTER_STATE.showPodes) {
-    const podesValues = filteredFeatures
-      .map(f => PODES_BY_PCODE[f.properties.desa_pcode])
-      .filter(v => v != null && !isNaN(v));
-    podesValues.sort((a, b) => b - a);
-    const podesP75 = podesValues[Math.floor(podesValues.length * 0.25)] || 50;
-    const podesTop10Set = new Set(
-      filteredFeatures
-        .map(f => ({ pc: f.properties.desa_pcode, v: PODES_BY_PCODE[f.properties.desa_pcode] }))
-        .filter(x => x.v != null && !isNaN(x.v))
-        .sort((a, b) => b.v - a.v)
-        .slice(0, 10)
-        .map(x => x.pc)
-    );
-    filteredFeatures.forEach(f => {
-      const pc = f.properties.desa_pcode;
-      const c = centroidByPcode[pc];
-      const v = PODES_BY_PCODE[pc];
-      if (!c || v == null || isNaN(v) || v < podesP75) return;
-      const norm = Math.max(0, Math.min(100, v)) / 100;
-      const radius = 4 + norm * 7;  // 4-11px, scales dengan value
-      const isTop10 = podesTop10Set.has(pc);
-      const m = L.circleMarker(c, {
-        radius: isTop10 ? radius * 1.15 : radius,
-        fillColor: '#67B2E8',
-        fillOpacity: 0.9,
-        color: '#FFFFFF',
-        weight: 1.5,
-        className: 'podes-point' + (isTop10 ? ' podes-point-top' : ''),
-        interactive: true,
-        bubblingMouseEvents: false
-      });
-      m.bindTooltip(pcodeName(pc) + ' · ' + v.toFixed(1), {
-        direction: 'top', offset: [0, -4], opacity: 0.95, className: 'podes-tooltip'
-      });
-      m.addTo(map);
-      podesOverlay.push(m);
-    });
+  // Round 5i: POI overlay dengan cluster + custom pin markers (OSM data)
+  // Render hanya kalau showPodes=true & ada group yang dipilih & data sudah loaded.
+  let poiClusterGroup = null;
+  if (FILTER_STATE.showPodes && FILTER_STATE.poiGroups.size > 0 && OSM_POI) {
+    poiClusterGroup = buildPoiClusterLayer(map);
+    map.addLayer(poiClusterGroup);
   }
 
   // Attach references untuk rebuild
   map._heatLayer = heat;
   map._sparkleLayers = sparkleLayers;
   map._hitLayer = hitLayer;
-  map._podesOverlay = podesOverlay;
+  map._poiCluster = poiClusterGroup;
+}
+
+// Round 5i: Build POI cluster group dari OSM_POI data, filtered by FILTER_STATE.poiGroups + kab/kec extent
+function buildPoiClusterLayer(map) {
+  const groupColors = OSM_POI.groups; // { FNB: {label, color}, ... }
+  // Helper: SVG drop pin icon (24x32) dengan color
+  const pinSvg = (color) => '<svg width="22" height="30" viewBox="0 0 22 30" xmlns="http://www.w3.org/2000/svg">' +
+    '<path d="M11 0 C5 0 0 5 0 11 c0 9 11 19 11 19 s11 -10 11 -19 c0 -6 -5 -11 -11 -11 z" fill="' + color + '" stroke="white" stroke-width="1.5"/>' +
+    '<circle cx="11" cy="11" r="4" fill="white"/></svg>';
+  // Build cluster group dengan custom cluster icon
+  const cluster = L.markerClusterGroup({
+    chunkedLoading: true,
+    spiderfyOnMaxZoom: true,
+    showCoverageOnHover: false,
+    maxClusterRadius: zoom => zoom < 13 ? 60 : (zoom < 15 ? 40 : 25),
+    iconCreateFunction: c => {
+      const n = c.getChildCount();
+      const size = n < 50 ? 32 : (n < 200 ? 38 : (n < 1000 ? 44 : 52));
+      const display = n >= 1000 ? Math.round(n/100)/10 + 'k' : n;
+      return L.divIcon({
+        html: '<div>' + display + '</div>',
+        className: 'poi-cluster',
+        iconSize: [size, size]
+      });
+    }
+  });
+  // Compute kab/kec geographic extent from filtered kelurahan (kalau filter aktif)
+  // → POI di luar extent disembunyikan supaya match dengan filter kelurahan
+  let bbox = null;
+  if (FILTER_STATE.kab !== 'all' || FILTER_STATE.kec !== 'all') {
+    const valueMap = getCurrentValueMap();
+    const ff = GEOJSON.features.filter(f => filterPcode(f.properties.desa_pcode, valueMap));
+    bbox = L.latLngBounds([]);
+    ff.forEach(f => {
+      const c = getPolyCentroid(f.geometry);
+      if (c) bbox.extend(c);
+    });
+    if (bbox.isValid()) bbox = bbox.pad(0.10); // 10% padding
+  }
+  // Add markers
+  const markers = [];
+  OSM_POI.points.forEach(p => {
+    const lat = p[0], lng = p[1], cat = p[2], name = p[3];
+    const catInfo = OSM_POI.categories[cat];
+    if (!catInfo) return;
+    const group = catInfo.group;
+    if (!FILTER_STATE.poiGroups.has(group)) return;
+    if (bbox && !bbox.contains([lat, lng])) return;
+    const color = groupColors[group].color;
+    const icon = L.divIcon({
+      html: pinSvg(color),
+      className: 'poi-marker',
+      iconSize: [22, 30],
+      iconAnchor: [11, 30],
+      tooltipAnchor: [0, -22]
+    });
+    const m = L.marker([lat, lng], { icon, riseOnHover: true });
+    const ttHtml = (name || catInfo.label) + '<span class="poi-tt-cat">' + catInfo.label + '</span>';
+    m.bindTooltip(ttHtml, { direction: 'top', opacity: 0.95, className: 'poi-tooltip' });
+    markers.push(m);
+  });
+  cluster.addLayers(markers);
+  return cluster;
 }
 
 // Round 5g: GlowLayer self-redraws on zoomend internally; updateHeatRadius is now no-op
@@ -1798,11 +1900,11 @@ function rebuildMapLayers() {
   if (!map) return;
   if (map._heatLayer) map.removeLayer(map._heatLayer);
   (map._sparkleLayers || []).forEach(l => map.removeLayer(l));
-  (map._podesOverlay || []).forEach(l => map.removeLayer(l));
+  if (map._poiCluster) map.removeLayer(map._poiCluster);
   if (map._hitLayer) map.removeLayer(map._hitLayer);
   map._heatLayer = null;
   map._sparkleLayers = [];
-  map._podesOverlay = [];
+  map._poiCluster = null;
   map._hitLayer = null;
   addMapLayers(map);
   refreshSidePanel();
