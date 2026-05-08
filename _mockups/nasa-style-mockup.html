@@ -1929,18 +1929,32 @@ function buildPoiClusterLayer(map) {
       });
     }
   });
-  // Compute kab/kec geographic extent from filtered kelurahan (kalau filter aktif)
-  // → POI di luar extent disembunyikan supaya match dengan filter kelurahan
+  // Compute geographic extent dari filtered kelurahan (kalau filter aktif)
+  // Pakai POLYGON BOUNDS (bukan centroid) supaya single-kelurahan tetap dapat area meaningful.
+  // Padding minimum absolute supaya POI sekitarnya tetap terlihat sebagai konteks.
   let bbox = null;
-  if (FILTER_STATE.kab !== 'all' || FILTER_STATE.kec !== 'all') {
+  if (FILTER_STATE.kab !== 'all' || FILTER_STATE.kec !== 'all' || FILTER_STATE.kelurahan !== 'all') {
     const valueMap = getCurrentValueMap();
     const ff = GEOJSON.features.filter(f => filterPcode(f.properties.desa_pcode, valueMap));
     bbox = L.latLngBounds([]);
     ff.forEach(f => {
-      const c = getPolyCentroid(f.geometry);
-      if (c) bbox.extend(c);
+      // Iterate semua coordinate vertex dari polygon (bukan cuma centroid)
+      const geom = f.geometry;
+      let polys = [];
+      if (geom.type === 'Polygon') polys = [geom.coordinates[0]];
+      else if (geom.type === 'MultiPolygon') polys = geom.coordinates.map(p => p[0]);
+      polys.forEach(ring => ring.forEach(c => bbox.extend([c[1], c[0]])));
     });
-    if (bbox.isValid()) bbox = bbox.pad(0.10); // 10% padding
+    if (bbox.isValid()) {
+      // Single-kelurahan: pad dengan ~0.005° (~500m) supaya POI tetangga visible
+      // Wide filter (kec/kab): pad dengan 10% (proportional)
+      if (FILTER_STATE.kelurahan !== 'all') {
+        const sw = bbox.getSouthWest(), ne = bbox.getNorthEast();
+        bbox = L.latLngBounds([sw.lat - 0.005, sw.lng - 0.005], [ne.lat + 0.005, ne.lng + 0.005]);
+      } else {
+        bbox = bbox.pad(0.10);
+      }
+    }
   }
   // Add markers
   const markers = [];
