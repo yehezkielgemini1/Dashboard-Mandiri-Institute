@@ -1473,12 +1473,44 @@ function buildSidePanel() {
 
 // =============== Map layers builder + rebuilder ==================
 
+// Round 4 fix: Choropleth palette — kelurahan polygon fill (always visible at all zooms).
+// Tuned NASA sodium-yellow gradient: low values masih visible (dim), high values vibrant.
+function colorChoropleth(v) {
+  if (v == null || isNaN(v)) return '#000000';
+  if (v >= 80) return '#fff5b3';   // brightest white-yellow
+  if (v >= 65) return '#ffe68c';   // bright yellow
+  if (v >= 50) return '#ffc850';   // amber
+  if (v >= 35) return '#e89518';   // orange
+  if (v >= 20) return '#a35a14';   // burnt sienna
+  if (v >= 10) return '#5a2f0c';   // dark brown
+  if (v >= 3)  return '#2a1606';   // very dark
+  return '#0d0703';                 // near-black (still slightly visible)
+}
+
 function addMapLayers(map) {
   const valueMap = getCurrentValueMap();
   const filteredFeatures = GEOJSON.features.filter(f => filterPcode(f.properties.desa_pcode, valueMap));
   const heatPoints = [];
   const sparkleLayers = [];
   const centroidByPcode = {};
+
+  // Round 4 fix: Polygon choropleth (always visible at all zooms — base "kuning redup di mana-mana")
+  // Stack order: polygon (bottom) → heatmap glow (mid) → sparkle peaks (top)
+  const polyLayer = L.geoJSON({
+    type: 'FeatureCollection',
+    features: filteredFeatures
+  }, {
+    style: f => {
+      const v = valueMap[f.properties.desa_pcode];
+      return {
+        fillColor: colorChoropleth(v),
+        fillOpacity: 0.6,
+        weight: 0,
+        color: 'transparent'
+      };
+    }
+  });
+  polyLayer.addTo(map);
 
   filteredFeatures.forEach(f => {
     const c = getPolyCentroid(f.geometry);
@@ -1505,9 +1537,13 @@ function addMapLayers(map) {
     }
   });
   heat.addTo(map);
+  // Round 4 fix: blend SVG (polygon + sparkle) AND canvas (heatmap) screen-additive ke basemap
   setTimeout(() => {
-    const canvas = map.getPanes().overlayPane.querySelector('canvas');
+    const overlayPane = map.getPanes().overlayPane;
+    const canvas = overlayPane.querySelector('canvas');
     if (canvas) canvas.style.mixBlendMode = 'screen';
+    const svg = overlayPane.querySelector('svg');
+    if (svg) svg.style.mixBlendMode = 'screen';
   }, 100);
 
   // Sparkles top 25% of filtered + top 5 dengan pulse
@@ -1563,14 +1599,17 @@ function addMapLayers(map) {
   map._heatLayer = heat;
   map._sparkleLayers = sparkleLayers;
   map._hitLayer = hitLayer;
+  map._polyLayer = polyLayer;
 }
 
 function rebuildMapLayers() {
   const map = ALL_MAPS['map-F'];
   if (!map) return;
+  if (map._polyLayer) map.removeLayer(map._polyLayer);
   if (map._heatLayer) map.removeLayer(map._heatLayer);
   (map._sparkleLayers || []).forEach(l => map.removeLayer(l));
   if (map._hitLayer) map.removeLayer(map._hitLayer);
+  map._polyLayer = null;
   map._heatLayer = null;
   map._sparkleLayers = [];
   map._hitLayer = null;
