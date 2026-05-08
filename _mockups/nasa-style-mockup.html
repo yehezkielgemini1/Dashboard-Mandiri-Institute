@@ -207,6 +207,51 @@
   .neighbor-row .val-up { color: #C8102E; }
   .neighbor-row .val-down { color: #00A859; }
 
+  /* ============ Round 3 — Single map: layer pills + filter chips ============ */
+  .map-header-overlay {
+    position: absolute;
+    top: 12px; left: 12px;
+    z-index: 600;
+    display: flex; gap: 8px; align-items: center;
+  }
+  .layer-pills {
+    display: flex;
+    background: rgba(0,0,0,0.78);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 2px;
+    gap: 0;
+  }
+  .layer-pill {
+    padding: 8px 16px; font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    background: none; border: 0; color: rgba(255,255,255,0.65);
+    cursor: pointer; font-family: inherit;
+    transition: all 0.15s ease;
+  }
+  .layer-pill.active { background: var(--yellow); color: var(--ink); }
+  .layer-pill:hover:not(.active) { color: white; background: rgba(255,255,255,0.06); }
+
+  .sp-filter .filter-group { margin-bottom: 12px; }
+  .sp-filter .filter-group:last-child { margin-bottom: 0; }
+  .filter-label {
+    font-size: 9.5px; font-weight: 600;
+    color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.06em; margin-bottom: 6px;
+  }
+  .filter-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+  .filter-chip {
+    padding: 4px 10px; font-size: 10.5px;
+    background: white; border: 1px solid var(--rule);
+    color: var(--ink); cursor: pointer;
+    font-family: inherit;
+    border-radius: 0;
+    transition: all 0.12s ease;
+  }
+  .filter-chip:hover { background: rgba(0,61,121,0.05); }
+  .filter-chip.active {
+    background: var(--navy); color: white; border-color: var(--navy);
+  }
+
   @media (max-width: 980px) {
     .layout-enlarge { grid-template-columns: 1fr; }
     .side-panel { order: -1; }
@@ -279,84 +324,73 @@
   <button class="tab-btn" data-tab="ref">Reference (current)</button>
 </div>
 
-<!-- ============ OPTION F — Lights + Enlarged Map + Side Panel ============ -->
+<!-- ============ OPTION F — Single Map + Layer Toggle + Filter Chips (Round 3) ============ -->
 <div class="panel active" id="panel-F">
 
-  <!-- Page 2 — Luminositas Malam -->
   <div class="layout-enlarge">
     <div class="map-card-large">
-      <h3>Page 2 · Luminositas Malam (lum_2025)</h3>
-      <div class="map nasa-hybrid" id="map-F1"></div>
+      <div class="map-header-overlay">
+        <div class="layer-pills">
+          <button class="layer-pill active" data-layer="lum">Luminositas Malam</button>
+          <button class="layer-pill" data-layer="podes">Aktivitas Komersial</button>
+        </div>
+      </div>
+      <div class="map nasa-hybrid" id="map-F"></div>
     </div>
-    <aside class="side-panel" id="side-F1">
+    <aside class="side-panel" id="side-F">
+      <div class="sp-section sp-filter">
+        <h4>Filter</h4>
+        <div class="filter-group">
+          <div class="filter-label">Kabupaten / Kotamadya</div>
+          <div class="filter-chips">
+            <button class="filter-chip active" data-filter="kab" data-value="all">Semua</button>
+            <button class="filter-chip" data-filter="kab" data-value="71">Pusat</button>
+            <button class="filter-chip" data-filter="kab" data-value="72">Utara</button>
+            <button class="filter-chip" data-filter="kab" data-value="73">Barat</button>
+            <button class="filter-chip" data-filter="kab" data-value="74">Selatan</button>
+            <button class="filter-chip" data-filter="kab" data-value="75">Timur</button>
+            <button class="filter-chip" data-filter="kab" data-value="01">Kep Seribu</button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-label">Kategori intensitas</div>
+          <div class="filter-chips">
+            <button class="filter-chip active" data-filter="kategori" data-value="all">Semua</button>
+            <button class="filter-chip" data-filter="kategori" data-value="sangat-tinggi">Sangat tinggi</button>
+            <button class="filter-chip" data-filter="kategori" data-value="tinggi">Tinggi</button>
+            <button class="filter-chip" data-filter="kategori" data-value="sedang">Sedang</button>
+            <button class="filter-chip" data-filter="kategori" data-value="rendah">Rendah</button>
+          </div>
+        </div>
+      </div>
       <div class="sp-section sp-search">
         <h4>Cari kelurahan</h4>
         <div class="search-wrap">
-          <input type="text" class="search-input" id="search-F1" placeholder="Ketik kode desa (e.g. 3175)...">
-          <div class="search-dropdown" id="search-dropdown-F1"></div>
+          <input type="text" class="search-input" id="search-F" placeholder="Ketik kode desa (e.g. 3175)...">
+          <div class="search-dropdown" id="search-dropdown-F"></div>
         </div>
       </div>
       <div class="sp-section">
         <h4>Detail kelurahan</h4>
         <div class="tab-pills">
-          <button class="tab-pill active" data-tab="profil" data-side="F1">Profil</button>
-          <button class="tab-pill" data-tab="tren" data-side="F1">Tren 10thn</button>
-          <button class="tab-pill" data-tab="sekitar" data-side="F1">Vs sekitar</button>
+          <button class="tab-pill active" data-tab="profil" data-side="F">Profil</button>
+          <button class="tab-pill" data-tab="tren" data-side="F">Tren 10thn</button>
+          <button class="tab-pill" data-tab="sekitar" data-side="F">Vs sekitar</button>
         </div>
-        <div class="detail-content" id="detail-F1">
+        <div class="detail-content" id="detail-F">
           <div class="detail-card empty">Klik kelurahan di peta, Top 5, atau search untuk lihat detail.</div>
         </div>
       </div>
       <div class="sp-section">
-        <h4>Top 5 terang</h4>
-        <ol class="top5-list" id="top5-F1"></ol>
+        <h4 id="top5-header-F">Top 5 terang</h4>
+        <ol class="top5-list" id="top5-F"></ol>
       </div>
       <div class="sp-section">
-        <h4>Skala luminositas</h4>
+        <h4 id="legend-header-F">Skala luminositas</h4>
         <div class="legend-gradient">
           <div class="grad-bar"></div>
           <div class="grad-labels"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>
-          <div class="sparkle-note"><span class="sparkle-dot"></span> Sparkle = top 25% kelurahan terang</div>
-        </div>
-      </div>
-    </aside>
-  </div>
-
-  <!-- Page 3 — Aktivitas Komersial -->
-  <div class="layout-enlarge">
-    <div class="map-card-large">
-      <h3>Page 3 · Aktivitas Komersial (podes_count_2025)</h3>
-      <div class="map nasa-hybrid" id="map-F2"></div>
-    </div>
-    <aside class="side-panel" id="side-F2">
-      <div class="sp-section sp-search">
-        <h4>Cari kelurahan</h4>
-        <div class="search-wrap">
-          <input type="text" class="search-input" id="search-F2" placeholder="Ketik kode desa (e.g. 3175)...">
-          <div class="search-dropdown" id="search-dropdown-F2"></div>
-        </div>
-      </div>
-      <div class="sp-section">
-        <h4>Detail kelurahan</h4>
-        <div class="tab-pills">
-          <button class="tab-pill active" data-tab="profil" data-side="F2">Profil</button>
-          <button class="tab-pill" data-tab="tren" data-side="F2">Tren 10thn</button>
-          <button class="tab-pill" data-tab="sekitar" data-side="F2">Vs sekitar</button>
-        </div>
-        <div class="detail-content" id="detail-F2">
-          <div class="detail-card empty">Klik kelurahan di peta, Top 5, atau search untuk lihat detail.</div>
-        </div>
-      </div>
-      <div class="sp-section">
-        <h4>Top 5 padat usaha</h4>
-        <ol class="top5-list" id="top5-F2"></ol>
-      </div>
-      <div class="sp-section">
-        <h4>Skala density</h4>
-        <div class="legend-gradient">
-          <div class="grad-bar"></div>
-          <div class="grad-labels"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>
-          <div class="sparkle-note"><span class="sparkle-dot"></span> Sparkle = top 25% kelurahan padat</div>
+          <div class="sparkle-note" id="sparkle-note-F"><span class="sparkle-dot"></span> Sparkle = top 25% kelurahan terang</div>
         </div>
       </div>
     </aside>
@@ -880,20 +914,64 @@ function buildLightsMap(elId, opts) {
   return map;
 }
 
-// =============== Side panel helpers (Option F + Round 2 enhancements) ==================
+// =============== Side panel + filter + layer toggle (Option F single map, Round 3) ==================
 
-// State machine — track current selection per panel
+// State machine — single panel + filter
 const PANEL_STATE = {
-  F1: { pcode: null, value: null, metricLabel: 'Luminositas 2025' },
-  F2: { pcode: null, value: null, metricLabel: 'Tempat Usaha 2025' }
+  F: { pcode: null, value: null, metricLabel: 'Luminositas 2025' }
+};
+const FILTER_STATE = {
+  layer: 'lum',     // 'lum' | 'podes'
+  kab: 'all',       // 'all' | '71'..'75' | '01'
+  kategori: 'all'   // 'all' | 'sangat-tinggi' | 'tinggi' | 'sedang' | 'rendah'
+};
+const KAB_NAMES = {
+  '71': 'Pusat', '72': 'Utara', '73': 'Barat',
+  '74': 'Selatan', '75': 'Timur', '01': 'Kep Seribu'
 };
 
+// Helpers
+function pcodeKab(pc) {
+  if (!pc) return null;
+  const clean = String(pc).replace(/^ID/i, '').replace(/\./g, '');
+  if (clean.length < 4) return null;
+  return clean.substring(2, 4);
+}
+function valueKategori(v) {
+  if (v == null || isNaN(v)) return null;
+  if (v >= 75) return 'sangat-tinggi';
+  if (v >= 50) return 'tinggi';
+  if (v >= 25) return 'sedang';
+  return 'rendah';
+}
+function getCurrentValueMap() {
+  return FILTER_STATE.layer === 'lum' ? LUM_BY_PCODE : PODES_BY_PCODE;
+}
+function getCurrentMetricLabel() {
+  return FILTER_STATE.layer === 'lum' ? 'Luminositas 2025' : 'Tempat Usaha 2025';
+}
+function filterPcode(pc, valueMap) {
+  const v = valueMap[pc];
+  if (v == null || isNaN(v)) return false;
+  if (FILTER_STATE.kab !== 'all') {
+    const kab = pcodeKab(pc);
+    if (kab !== FILTER_STATE.kab) return false;
+  }
+  if (FILTER_STATE.kategori !== 'all') {
+    const cat = valueKategori(v);
+    if (cat !== FILTER_STATE.kategori) return false;
+  }
+  return true;
+}
+
+// State change → re-render detail tab
 function selectKelurahan(sideId, pcode, value) {
   if (!PANEL_STATE[sideId]) return;
   PANEL_STATE[sideId].pcode = pcode;
   PANEL_STATE[sideId].value = value;
+  PANEL_STATE[sideId].metricLabel = getCurrentMetricLabel();
   renderActiveTab(sideId);
-  updateUrlState(sideId, pcode);
+  updateUrlState();
 }
 
 function renderActiveTab(sideId) {
@@ -918,10 +996,12 @@ function renderProfil(state) {
     : value >= 50 ? 'Tinggi'
     : value >= 25 ? 'Sedang'
     : 'Rendah';
+  const kab = pcodeKab(pcode);
+  const kabName = kab && KAB_NAMES[kab] ? 'Jakarta ' + KAB_NAMES[kab] : '-';
   return '<div class="detail-card filled">'
     + '<div class="desa-name">desa_pcode: ' + pcode + '</div>'
+    + '<div class="stat-row"><span class="label">Kabupaten</span><span class="val">' + kabName + '</span></div>'
     + '<div class="stat-row"><span class="label">' + metricLabel + '</span><span class="val">' + (value != null ? value.toFixed(1) : '-') + '</span></div>'
-    + '<div class="stat-row"><span class="label">Skala</span><span class="val">0-100 (normalized)</span></div>'
     + '<div class="stat-row"><span class="label">Kategori</span><span class="val">' + cat + '</span></div>'
     + '</div>';
 }
@@ -947,8 +1027,7 @@ function renderSparkline(values, width, height) {
 }
 
 function renderTren(state) {
-  const { pcode, value } = state;
-  // Generate deterministic dummy time-series 2014-2024 dari pcode hash (data demo untuk mockup)
+  const { pcode, value, metricLabel } = state;
   const seed = String(pcode).split('').reduce((s, c) => s + c.charCodeAt(0), 0);
   const yrs = [];
   for (let y = 2014; y <= 2024; y++) {
@@ -959,7 +1038,7 @@ function renderTren(state) {
   const values = yrs.map(d => d.value);
   const delta = values[values.length - 1] - values[0];
   return '<div class="detail-card filled">'
-    + '<div class="desa-name">' + pcode + ' &middot; Tren 10 tahun</div>'
+    + '<div class="desa-name">' + pcode + ' &middot; Tren 10 tahun (' + metricLabel + ')</div>'
     + renderSparkline(values, 280, 60)
     + '<div class="trend-labels">'
     +   '<span>2014: <strong>' + values[0].toFixed(1) + '</strong></span>'
@@ -972,7 +1051,7 @@ function renderTren(state) {
 
 function renderSekitar(state, sideId) {
   const { pcode, value } = state;
-  const valueMap = sideId === 'F1' ? LUM_BY_PCODE : PODES_BY_PCODE;
+  const valueMap = getCurrentValueMap();
   const targetFeat = GEOJSON.features.find(f => f.properties.desa_pcode === pcode);
   if (!targetFeat) return '<div class="detail-card empty">Data tidak ditemukan.</div>';
   const targetC = getPolyCentroid(targetFeat.geometry);
@@ -1002,15 +1081,18 @@ function renderSekitar(state, sideId) {
     + '</div>';
 }
 
-// URL state encoding (share zone link via #f1=<pcode>&f2=<pcode>)
-function updateUrlState(sideId, pcode) {
+// URL state encoding (#layer=lum&kab=75&kategori=tinggi&pcode=ID3175040006)
+function updateUrlState() {
   if (typeof URLSearchParams === 'undefined') return;
-  const hash = window.location.hash.slice(1);
-  const params = new URLSearchParams(hash);
-  params.set(sideId.toLowerCase(), pcode);
+  const params = new URLSearchParams();
+  if (FILTER_STATE.layer !== 'lum') params.set('layer', FILTER_STATE.layer);
+  if (FILTER_STATE.kab !== 'all') params.set('kab', FILTER_STATE.kab);
+  if (FILTER_STATE.kategori !== 'all') params.set('kategori', FILTER_STATE.kategori);
+  if (PANEL_STATE.F.pcode) params.set('pcode', PANEL_STATE.F.pcode);
   const newHash = params.toString();
-  if (newHash !== hash) {
-    window.history.replaceState(null, '', '#' + newHash);
+  const currentHash = window.location.hash.slice(1);
+  if (newHash !== currentHash) {
+    window.history.replaceState(null, '', newHash ? '#' + newHash : window.location.pathname + window.location.search);
   }
 }
 
@@ -1019,40 +1101,48 @@ function restoreUrlState() {
   const hash = window.location.hash.slice(1);
   if (!hash) return false;
   const params = new URLSearchParams(hash);
-  let restored = false;
-  ['F1', 'F2'].forEach(sideId => {
-    const pc = params.get(sideId.toLowerCase());
-    if (!pc) return;
-    const valueMap = sideId === 'F1' ? LUM_BY_PCODE : PODES_BY_PCODE;
+  if (params.has('layer')) FILTER_STATE.layer = params.get('layer');
+  if (params.has('kab')) FILTER_STATE.kab = params.get('kab');
+  if (params.has('kategori')) FILTER_STATE.kategori = params.get('kategori');
+  // Sync UI active states
+  document.querySelectorAll('.layer-pill').forEach(b => b.classList.toggle('active', b.dataset.layer === FILTER_STATE.layer));
+  document.querySelectorAll('.filter-chip[data-filter="kab"]').forEach(b => b.classList.toggle('active', b.dataset.value === FILTER_STATE.kab));
+  document.querySelectorAll('.filter-chip[data-filter="kategori"]').forEach(b => b.classList.toggle('active', b.dataset.value === FILTER_STATE.kategori));
+  // Rebuild map dengan state restored
+  rebuildMapLayers();
+  // Restore selected pcode
+  const pc = params.get('pcode');
+  if (pc) {
+    const valueMap = getCurrentValueMap();
     const v = valueMap[pc];
-    if (v == null || isNaN(v)) return;
-    selectKelurahan(sideId, pc, v);
-    const feat = GEOJSON.features.find(f => f.properties.desa_pcode === pc);
-    if (feat) {
-      const c = getPolyCentroid(feat.geometry);
-      if (c && ALL_MAPS['map-' + sideId]) ALL_MAPS['map-' + sideId].setView(c, 13);
+    if (v != null && !isNaN(v)) {
+      selectKelurahan('F', pc, v);
+      const feat = GEOJSON.features.find(f => f.properties.desa_pcode === pc);
+      if (feat) {
+        const c = getPolyCentroid(feat.geometry);
+        if (c && ALL_MAPS['map-F']) ALL_MAPS['map-F'].setView(c, 13);
+      }
     }
-    restored = true;
-  });
-  return restored;
+  }
+  return true;
 }
 
 // Search-by-kelurahan autosuggest
-function setupSearch(sideId) {
-  const input = document.getElementById('search-' + sideId);
-  const dropdown = document.getElementById('search-dropdown-' + sideId);
+function setupSearch() {
+  const input = document.getElementById('search-F');
+  const dropdown = document.getElementById('search-dropdown-F');
   if (!input || !dropdown) return;
-  const valueMap = sideId === 'F1' ? LUM_BY_PCODE : PODES_BY_PCODE;
-  const allEntries = Object.entries(valueMap)
-    .filter(e => e[1] != null && !isNaN(e[1]))
-    .sort((a, b) => b[1] - a[1]);
 
   function showMatches(q) {
     if (q.length < 2) { dropdown.style.display = 'none'; return; }
     const ql = q.toLowerCase();
+    const valueMap = getCurrentValueMap();
+    const allEntries = Object.entries(valueMap)
+      .filter(e => filterPcode(e[0], valueMap))
+      .sort((a, b) => b[1] - a[1]);
     const matches = allEntries.filter(e => String(e[0]).toLowerCase().includes(ql)).slice(0, 8);
     if (matches.length === 0) {
-      dropdown.innerHTML = '<div class="search-empty">Tidak ada match</div>';
+      dropdown.innerHTML = '<div class="search-empty">Tidak ada match (cek filter)</div>';
       dropdown.style.display = 'block';
       return;
     }
@@ -1066,11 +1156,11 @@ function setupSearch(sideId) {
       item.addEventListener('click', () => {
         const pc = item.dataset.pc;
         const v = parseFloat(item.dataset.val);
-        const map = ALL_MAPS['map-' + sideId];
+        const map = ALL_MAPS['map-F'];
         const feat = GEOJSON.features.find(f => f.properties.desa_pcode === pc);
         const c = feat ? getPolyCentroid(feat.geometry) : null;
         if (c && map) map.setView(c, 13.5, { animate: true });
-        selectKelurahan(sideId, pc, v);
+        selectKelurahan('F', pc, v);
         input.value = pc;
         dropdown.style.display = 'none';
       });
@@ -1086,7 +1176,6 @@ function setupSearch(sideId) {
   });
 }
 
-// Tab pills click handler
 function setupTabPills() {
   document.querySelectorAll('#panel-F .tab-pill').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1098,44 +1187,224 @@ function setupTabPills() {
   });
 }
 
-function buildSidePanel(mapId, sideId, valueMap, metricLabel) {
-  // Init metric label di state
-  if (PANEL_STATE[sideId]) PANEL_STATE[sideId].metricLabel = metricLabel;
+function setupLayerPills() {
+  document.querySelectorAll('.layer-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const layer = btn.dataset.layer;
+      if (FILTER_STATE.layer === layer) return;
+      document.querySelectorAll('.layer-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      FILTER_STATE.layer = layer;
+      rebuildMapLayers();
+      // PANEL_STATE value perlu di-update karena metric berubah
+      if (PANEL_STATE.F.pcode) {
+        const newValueMap = getCurrentValueMap();
+        const newValue = newValueMap[PANEL_STATE.F.pcode];
+        if (newValue != null) {
+          PANEL_STATE.F.value = newValue;
+          PANEL_STATE.F.metricLabel = getCurrentMetricLabel();
+          renderActiveTab('F');
+        }
+      }
+      updateUrlState();
+    });
+  });
+}
 
-  // Top 5 ranking
+function setupFilterChips() {
+  document.querySelectorAll('.filter-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const filterKey = btn.dataset.filter;
+      const value = btn.dataset.value;
+      if (FILTER_STATE[filterKey] === value) return;
+      document.querySelectorAll('.filter-chip[data-filter="' + filterKey + '"]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      FILTER_STATE[filterKey] = value;
+      rebuildMapLayers();
+      updateUrlState();
+    });
+  });
+}
+
+function refreshSidePanel() {
+  const valueMap = getCurrentValueMap();
+  const isLum = FILTER_STATE.layer === 'lum';
+  PANEL_STATE.F.metricLabel = getCurrentMetricLabel();
+
+  // Top 5 (filtered)
   const entries = Object.entries(valueMap)
-    .filter(([k, v]) => v != null && !isNaN(v))
+    .filter(e => filterPcode(e[0], valueMap))
     .sort((a, b) => b[1] - a[1])
     .slice(0, 5);
-  const ol = document.getElementById('top5-' + sideId);
+  const ol = document.getElementById('top5-F');
   if (ol) {
-    ol.innerHTML = entries.map(([pc, v], i) => `
-      <li data-pc="${pc}" data-val="${v.toFixed(1)}">
-        <span class="rank">${i + 1}</span>
-        <span class="name">${pc}</span>
-        <span class="val">${v.toFixed(1)}</span>
-      </li>
-    `).join('');
-    ol.querySelectorAll('li').forEach(li => {
-      li.addEventListener('click', () => {
-        const pc = li.dataset.pc;
-        const v = parseFloat(li.dataset.val);
-        const map = ALL_MAPS[mapId];
-        const feat = GEOJSON.features.find(f => f.properties.desa_pcode === pc);
-        const c = feat ? getPolyCentroid(feat.geometry) : null;
-        if (c && map) map.setView(c, 13, { animate: true });
-        selectKelurahan(sideId, pc, v);
+    if (entries.length === 0) {
+      ol.innerHTML = '<li class="empty-row" style="padding:8px 4px;color:var(--muted);font-style:italic;font-size:11.5px;list-style:none;">Tidak ada kelurahan match filter</li>';
+    } else {
+      ol.innerHTML = entries.map(([pc, v], i) => `
+        <li data-pc="${pc}" data-val="${v.toFixed(1)}">
+          <span class="rank">${i + 1}</span>
+          <span class="name">${pc}</span>
+          <span class="val">${v.toFixed(1)}</span>
+        </li>
+      `).join('');
+      ol.querySelectorAll('li[data-pc]').forEach(li => {
+        li.addEventListener('click', () => {
+          const pc = li.dataset.pc;
+          const v = parseFloat(li.dataset.val);
+          const map = ALL_MAPS['map-F'];
+          const feat = GEOJSON.features.find(f => f.properties.desa_pcode === pc);
+          const c = feat ? getPolyCentroid(feat.geometry) : null;
+          if (c && map) map.setView(c, 13, { animate: true });
+          selectKelurahan('F', pc, v);
+        });
       });
+    }
+  }
+
+  // Update labels (Top 5 + Legend + Sparkle note) berdasarkan current layer
+  const top5Header = document.getElementById('top5-header-F');
+  if (top5Header) top5Header.textContent = isLum ? 'Top 5 terang' : 'Top 5 padat usaha';
+  const legendHeader = document.getElementById('legend-header-F');
+  if (legendHeader) legendHeader.textContent = isLum ? 'Skala luminositas' : 'Skala density';
+  const sparkleNote = document.getElementById('sparkle-note-F');
+  if (sparkleNote) sparkleNote.innerHTML = '<span class="sparkle-dot"></span> Sparkle = top 25% kelurahan ' + (isLum ? 'terang' : 'padat');
+
+  // Sync detail panel kalau pcode ke-filter-out
+  if (PANEL_STATE.F.pcode) {
+    const newValue = valueMap[PANEL_STATE.F.pcode];
+    if (newValue != null && filterPcode(PANEL_STATE.F.pcode, valueMap)) {
+      PANEL_STATE.F.value = newValue;
+      renderActiveTab('F');
+    }
+  }
+}
+
+function buildSidePanel() {
+  setupSearch();
+  setupTabPills();
+  setupLayerPills();
+  setupFilterChips();
+  refreshSidePanel();
+  // Auto-fill Top 1 jika belum ada selection (dan belum di-restore via URL)
+  if (!PANEL_STATE.F.pcode) {
+    const valueMap = getCurrentValueMap();
+    const top1 = Object.entries(valueMap)
+      .filter(e => filterPcode(e[0], valueMap))
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 1);
+    if (top1.length > 0) {
+      const [pc, v] = top1[0];
+      selectKelurahan('F', pc, v);
+    }
+  }
+}
+
+// =============== Map layers builder + rebuilder ==================
+
+function addMapLayers(map) {
+  const valueMap = getCurrentValueMap();
+  const filteredFeatures = GEOJSON.features.filter(f => filterPcode(f.properties.desa_pcode, valueMap));
+  const heatPoints = [];
+  const sparkleLayers = [];
+  const centroidByPcode = {};
+
+  filteredFeatures.forEach(f => {
+    const c = getPolyCentroid(f.geometry);
+    if (!c) return;
+    const pc = f.properties.desa_pcode;
+    centroidByPcode[pc] = c;
+    const v = valueMap[pc];
+    if (v == null || isNaN(v)) return;
+    const norm = Math.pow(Math.max(0, Math.min(100, v)) / 100, 0.85);
+    if (norm > 0.05) heatPoints.push([c[0], c[1], norm]);
+  });
+
+  // Heat layer
+  const heat = L.heatLayer(heatPoints, {
+    radius: 42, blur: 55, maxZoom: 14, max: 1.0, minOpacity: 0.18,
+    gradient: {
+      0.05: 'rgba(20, 10, 4, 0.4)',
+      0.15: 'rgba(56, 32, 12, 0.6)',
+      0.30: 'rgba(140, 75, 20, 0.8)',
+      0.50: 'rgba(218, 135, 30, 0.95)',
+      0.70: 'rgba(255, 200, 80, 1)',
+      0.85: 'rgba(255, 230, 140, 1)',
+      1.00: 'rgba(255, 250, 220, 1)'
+    }
+  });
+  heat.addTo(map);
+  setTimeout(() => {
+    const canvas = map.getPanes().overlayPane.querySelector('canvas');
+    if (canvas) canvas.style.mixBlendMode = 'screen';
+  }, 100);
+
+  // Sparkles top 25% of filtered + top 5 dengan pulse
+  const filteredValues = filteredFeatures
+    .map(f => valueMap[f.properties.desa_pcode])
+    .filter(v => v != null && !isNaN(v));
+  filteredValues.sort((a, b) => b - a);
+  const p75 = filteredValues[Math.floor(filteredValues.length * 0.25)] || 50;
+  const top5Set = new Set(
+    filteredFeatures
+      .map(f => ({ pc: f.properties.desa_pcode, v: valueMap[f.properties.desa_pcode] }))
+      .filter(x => x.v != null && !isNaN(x.v))
+      .sort((a, b) => b.v - a.v)
+      .slice(0, 5)
+      .map(x => x.pc)
+  );
+  filteredFeatures.forEach(f => {
+    const pc = f.properties.desa_pcode;
+    const v = valueMap[pc];
+    const c = centroidByPcode[pc];
+    if (!c || v == null || v < p75) return;
+    const norm = Math.max(0, Math.min(100, v)) / 100;
+    const radius = 3 + norm * 6;
+    const baseColor = norm > 0.85 ? '#fffadc' : (norm > 0.65 ? '#ffe68c' : '#ffc850');
+    const isTop5 = top5Set.has(pc);
+    const m = L.circleMarker(c, {
+      radius: isTop5 ? radius * 1.2 : radius,
+      fillColor: baseColor,
+      fillOpacity: 0.95,
+      color: baseColor, weight: 0,
+      className: 'nasa-sparkle' + (isTop5 ? ' nasa-pulse-top' : ''),
+      interactive: false
     });
-  }
-  // Setup search
-  setupSearch(sideId);
-  // Auto-fill Top 1 saat load (kecuali ada URL state akan restore)
-  const urlHasState = window.location.hash.includes(sideId.toLowerCase() + '=');
-  if (!urlHasState && entries.length > 0) {
-    const [pc, v] = entries[0];
-    selectKelurahan(sideId, pc, v);
-  }
+    m.addTo(map);
+    sparkleLayers.push(m);
+  });
+
+  // Hit layer (filtered features only)
+  const hitLayer = L.geoJSON({
+    type: 'FeatureCollection',
+    features: filteredFeatures
+  }, {
+    style: () => ({ fillOpacity: 0.001, weight: 0, color: 'transparent' }),
+    onEachFeature: (f, lyr) => {
+      const pc = f.properties.desa_pcode;
+      const v = valueMap[pc];
+      lyr.on('click', () => selectKelurahan('F', pc, v));
+    }
+  });
+  hitLayer.addTo(map);
+
+  // Attach references untuk rebuild
+  map._heatLayer = heat;
+  map._sparkleLayers = sparkleLayers;
+  map._hitLayer = hitLayer;
+}
+
+function rebuildMapLayers() {
+  const map = ALL_MAPS['map-F'];
+  if (!map) return;
+  if (map._heatLayer) map.removeLayer(map._heatLayer);
+  (map._sparkleLayers || []).forEach(l => map.removeLayer(l));
+  if (map._hitLayer) map.removeLayer(map._hitLayer);
+  map._heatLayer = null;
+  map._sparkleLayers = [];
+  map._hitLayer = null;
+  addMapLayers(map);
+  refreshSidePanel();
 }
 
 // =============== Init after data loaded ==================
@@ -1150,19 +1419,25 @@ async function init() {
     return;
   }
 
-  // ★ Option F — Lights + Enlarged Map + Side Panel (default active tab)
-  ALL_MAPS['map-F1'] = buildLightsMap('map-F1', {
-    metric: 'lum', hybrid: true,
-    onSelect: (pc, v) => selectKelurahan('F1', pc, v)
+  // ★ Option F — Single map + layer toggle + filter chips (Round 3)
+  const fMap = L.map('map-F', {
+    center: [-6.18, 106.84],
+    zoom: 10.5,
+    zoomControl: true,
+    scrollWheelZoom: true,
+    zoomSnap: 0.25, zoomDelta: 0.5,
+    wheelDebounceTime: 30, wheelPxPerZoomLevel: 90,
+    inertia: true, inertiaDeceleration: 2200,
+    zoomAnimation: true, fadeAnimation: true,
+    markerZoomAnimation: true,
+    attributionControl: false
   });
-  ALL_MAPS['map-F2'] = buildLightsMap('map-F2', {
-    metric: 'podes', hybrid: true,
-    onSelect: (pc, v) => selectKelurahan('F2', pc, v)
-  });
-  buildSidePanel('map-F1', 'F1', LUM_BY_PCODE,   'Luminositas 2025');
-  buildSidePanel('map-F2', 'F2', PODES_BY_PCODE, 'Tempat Usaha 2025');
-  // Round 2: tab pills click handler + URL state restore (override Top 1 auto-fill kalau ada hash)
-  setupTabPills();
+  // Hybrid basemap: Dark Matter no-labels + label muted overlay
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', { maxZoom: 19, opacity: 1 }).addTo(fMap);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png', { maxZoom: 19, opacity: 1 }).addTo(fMap);
+  ALL_MAPS['map-F'] = fMap;
+  addMapLayers(fMap);
+  buildSidePanel();
   restoreUrlState();
 
   // Option E — NASA Lights + Context (Dark Matter basemap + heatmap blend + sparkle)
