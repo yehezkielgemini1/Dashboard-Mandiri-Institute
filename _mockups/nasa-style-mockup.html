@@ -1556,16 +1556,23 @@ function addMapLayers(map) {
     if (norm > 0.05) heatPoints.push([c[0], c[1], norm]);
   });
 
-  // Heat layer (Round 5d: bigger radius untuk overlap antar kelurahan di low zoom, smooth circles di high zoom)
+  // Heat layer (Round 5e: smoother gradient, outer halo low-alpha → soft wash, no banding)
+  // 11 stops dengan delta luminance kecil antar-stop → tidak ada visible "ring contour"
+  // saat blob overlap. Outer halo (alpha 0.10-0.30) tetap visible untuk smooth wash effect.
   const heat = L.heatLayer(heatPoints, {
-    radius: 55, blur: 70, maxZoom: 17, max: 1.0, minOpacity: 0.2,
+    radius: 60, blur: 80, maxZoom: 17, max: 1.0, minOpacity: 0,
     gradient: {
-      0.05: 'rgba(20, 10, 4, 0.4)',
-      0.15: 'rgba(56, 32, 12, 0.6)',
-      0.30: 'rgba(140, 75, 20, 0.8)',
-      0.50: 'rgba(218, 135, 30, 0.95)',
-      0.70: 'rgba(255, 200, 80, 1)',
-      0.85: 'rgba(255, 230, 140, 1)',
+      0.00: 'rgba(0, 0, 0, 0)',
+      0.06: 'rgba(18, 9, 3, 0.12)',
+      0.14: 'rgba(45, 25, 9, 0.30)',
+      0.24: 'rgba(85, 48, 15, 0.50)',
+      0.34: 'rgba(125, 70, 20, 0.66)',
+      0.44: 'rgba(165, 95, 25, 0.78)',
+      0.54: 'rgba(205, 125, 32, 0.88)',
+      0.64: 'rgba(235, 160, 45, 0.95)',
+      0.74: 'rgba(255, 195, 75, 1)',
+      0.84: 'rgba(255, 220, 115, 1)',
+      0.94: 'rgba(255, 240, 175, 1)',
       1.00: 'rgba(255, 250, 220, 1)'
     }
   });
@@ -1631,31 +1638,36 @@ function addMapLayers(map) {
   map._hitLayer = hitLayer;
 }
 
-// Round 5e: zoom-adaptive heat radius + opacity fade-out di zoom tinggi.
-// Reason: di zoom >=14, heatmap blob overlap antar kelurahan bikin "lens/quarter-circle" artifact
-// dari gradient banding contour. Solusi: heat dominan di low zoom (smooth glow), faded di high zoom
-// supaya sparkle markers ambil-alih sebagai visual utama (NASA city-lights look).
+// Round 5e: zoom-adaptive radius + smaller blob di zoom in supaya overlap minimal.
+// Reason: gradient banding contour bisa visible saat blob tetangga overlap. Solusi:
+// (a) gradient start transparent (lower-intensity halo invisible),
+// (b) radius shrink di zoom in (less overlap = less ring intersection).
+// Heat tetap visible di semua zoom — orange glow tetap ada saat zoom in, tapi tighter.
 function updateHeatRadius() {
   const map = ALL_MAPS['map-F'];
   if (!map || !map._heatLayer) return;
   const zoom = map.getZoom();
-  // Radius scaling: gentle growth, capped — bukan unbounded linear
-  // zoom 10.5 = 55px, zoom 12 = 70px, zoom 13.5 = 80px (cap), zoom 15+ = 80px (constant)
-  const newRadius = Math.round(Math.min(80, 55 + Math.max(0, (zoom - 10.5)) * 8));
-  const newBlur = Math.round(newRadius * 1.3);
-  // Opacity fade: full di zoom <=12, linear fade ke 0 di zoom 12.75
-  // Artifacts (quarter-circle/lens shapes dari gradient banding) muncul di z12-13.
-  // → di zoom >=12.75, heat hilang total, hanya sparkle markers visible (no artifact)
-  const fadeStart = 12, fadeEnd = 12.75;
-  const opacity = zoom <= fadeStart ? 1 : zoom >= fadeEnd ? 0 : 1 - (zoom - fadeStart) / (fadeEnd - fadeStart);
+  // Radius scaling: grow ke z12 (smooth glow), lalu shrink moderate supaya blob tetap punya
+  // mass tapi nggak overlap berlebihan. Heat tetap visible di semua zoom.
+  // z10.5 = 60px, z12 = 80px (peak), z13.5 = 65px, z15 = 50px, z17 = 38px
+  let newRadius;
+  if (zoom <= 12) {
+    newRadius = Math.round(60 + Math.max(0, (zoom - 10.5)) * 13);
+  } else {
+    newRadius = Math.round(Math.max(38, 80 - (zoom - 12) * 8));
+  }
+  // Blur lebih besar di zoom in (relative to radius) supaya gradient halus, tidak banded
+  const blurMult = zoom <= 12 ? 1.4 : 1.7;
+  const newBlur = Math.round(newRadius * blurMult);
   if (typeof map._heatLayer.setOptions === 'function') {
     map._heatLayer.setOptions({ radius: newRadius, blur: newBlur });
     if (typeof map._heatLayer.redraw === 'function') {
       map._heatLayer.redraw();
     }
   }
+  // Reset opacity (in case sebelumnya di-set 0 dari version lama)
   const canvas = map.getPanes().overlayPane.querySelector('canvas.leaflet-heatmap-layer');
-  if (canvas) canvas.style.opacity = opacity.toFixed(3);
+  if (canvas) canvas.style.opacity = '';
 }
 
 function rebuildMapLayers() {
