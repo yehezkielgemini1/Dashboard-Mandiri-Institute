@@ -142,6 +142,71 @@
     background: #ffe68c;
     box-shadow: 0 0 5px rgba(255,230,140,0.9), 0 0 10px rgba(255,200,80,0.55);
   }
+
+  /* ============ Round 2 — search + tab pills + sparkline + neighbor list ============ */
+  .sp-search { position: relative; }
+  .search-wrap { position: relative; }
+  .search-input {
+    width: 100%; padding: 9px 11px;
+    background: white; border: 1px solid var(--rule);
+    font-size: 12px; color: var(--ink); outline: none;
+    border-radius: 0; font-family: inherit;
+  }
+  .search-input:focus { border-color: var(--navy); }
+  .search-dropdown {
+    display: none; position: absolute; top: 100%; left: 0; right: 0;
+    background: white; border: 1px solid var(--rule); border-top: 0;
+    max-height: 240px; overflow-y: auto; z-index: 10;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .search-dropdown .search-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 11px; font-size: 11.5px; cursor: pointer;
+    border-bottom: 1px solid var(--rule);
+  }
+  .search-dropdown .search-item:hover { background: rgba(255,183,0,0.10); }
+  .search-dropdown .search-item:last-child { border-bottom: 0; }
+  .search-dropdown .search-pc { color: var(--ink); font-family: 'Courier New', monospace; font-size: 11px; }
+  .search-dropdown .search-val { color: var(--navy); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .search-dropdown .search-empty { padding: 9px 11px; font-size: 11.5px; color: var(--muted); font-style: italic; }
+
+  .tab-pills {
+    display: flex; gap: 0; margin-bottom: 12px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .tab-pill {
+    padding: 6px 12px; font-size: 10.5px; font-weight: 600;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    background: none; border: 0; border-bottom: 2px solid transparent;
+    cursor: pointer; color: var(--muted); margin-bottom: -1px;
+    font-family: inherit;
+  }
+  .tab-pill.active { color: var(--navy); border-bottom-color: var(--navy); }
+  .tab-pill:hover { color: var(--ink); }
+
+  .trend-labels {
+    display: flex; gap: 14px; margin-top: 10px; flex-wrap: wrap;
+    font-size: 10.5px; color: var(--muted);
+  }
+  .trend-labels strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .trend-labels .trend-delta strong { color: var(--yellow); }
+  .caveat { font-size: 9.5px; color: var(--muted); font-style: italic; margin-top: 8px; line-height: 1.4; }
+
+  .neighbor-list { display: flex; flex-direction: column; gap: 0; margin-top: 4px; }
+  .neighbor-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 4px; font-size: 11.5px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .neighbor-row:last-child { border-bottom: 0; }
+  .neighbor-row.neighbor-target { background: rgba(0,61,121,0.06); margin: 0 -4px; padding-left: 8px; padding-right: 8px; }
+  .neighbor-row .rank { width: 18px; flex-shrink: 0; color: var(--muted); font-weight: 700; text-align: center; }
+  .neighbor-row.neighbor-target .rank { color: var(--yellow); }
+  .neighbor-row .name { flex: 1; color: var(--ink); font-family: 'Courier New', monospace; font-size: 10.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .neighbor-row .val { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .neighbor-row .val-up { color: #C8102E; }
+  .neighbor-row .val-down { color: #00A859; }
+
   @media (max-width: 980px) {
     .layout-enlarge { grid-template-columns: 1fr; }
     .side-panel { order: -1; }
@@ -224,9 +289,23 @@
       <div class="map nasa-hybrid" id="map-F1"></div>
     </div>
     <aside class="side-panel" id="side-F1">
+      <div class="sp-section sp-search">
+        <h4>Cari kelurahan</h4>
+        <div class="search-wrap">
+          <input type="text" class="search-input" id="search-F1" placeholder="Ketik kode desa (e.g. 3175)...">
+          <div class="search-dropdown" id="search-dropdown-F1"></div>
+        </div>
+      </div>
       <div class="sp-section">
         <h4>Detail kelurahan</h4>
-        <div class="detail-card empty" id="detail-F1">Klik kelurahan di peta atau Top 5 list untuk melihat detail.</div>
+        <div class="tab-pills">
+          <button class="tab-pill active" data-tab="profil" data-side="F1">Profil</button>
+          <button class="tab-pill" data-tab="tren" data-side="F1">Tren 10thn</button>
+          <button class="tab-pill" data-tab="sekitar" data-side="F1">Vs sekitar</button>
+        </div>
+        <div class="detail-content" id="detail-F1">
+          <div class="detail-card empty">Klik kelurahan di peta, Top 5, atau search untuk lihat detail.</div>
+        </div>
       </div>
       <div class="sp-section">
         <h4>Top 5 terang</h4>
@@ -250,9 +329,23 @@
       <div class="map nasa-hybrid" id="map-F2"></div>
     </div>
     <aside class="side-panel" id="side-F2">
+      <div class="sp-section sp-search">
+        <h4>Cari kelurahan</h4>
+        <div class="search-wrap">
+          <input type="text" class="search-input" id="search-F2" placeholder="Ketik kode desa (e.g. 3175)...">
+          <div class="search-dropdown" id="search-dropdown-F2"></div>
+        </div>
+      </div>
       <div class="sp-section">
         <h4>Detail kelurahan</h4>
-        <div class="detail-card empty" id="detail-F2">Klik kelurahan di peta atau Top 5 list untuk melihat detail.</div>
+        <div class="tab-pills">
+          <button class="tab-pill active" data-tab="profil" data-side="F2">Profil</button>
+          <button class="tab-pill" data-tab="tren" data-side="F2">Tren 10thn</button>
+          <button class="tab-pill" data-tab="sekitar" data-side="F2">Vs sekitar</button>
+        </div>
+        <div class="detail-content" id="detail-F2">
+          <div class="detail-card empty">Klik kelurahan di peta, Top 5, atau search untuk lihat detail.</div>
+        </div>
       </div>
       <div class="sp-section">
         <h4>Top 5 padat usaha</h4>
@@ -787,56 +880,261 @@ function buildLightsMap(elId, opts) {
   return map;
 }
 
-// =============== Side panel helpers (Option F) ==================
-function fillDetailCard(elId, pc, v, metricLabel) {
-  const el = document.getElementById(elId);
-  if (!el) return;
-  el.classList.remove('empty');
-  el.classList.add('filled');
-  const cat = v == null ? '-'
-    : v >= 75 ? 'Sangat tinggi'
-    : v >= 50 ? 'Tinggi'
-    : v >= 25 ? 'Sedang'
+// =============== Side panel helpers (Option F + Round 2 enhancements) ==================
+
+// State machine — track current selection per panel
+const PANEL_STATE = {
+  F1: { pcode: null, value: null, metricLabel: 'Luminositas 2025' },
+  F2: { pcode: null, value: null, metricLabel: 'Tempat Usaha 2025' }
+};
+
+function selectKelurahan(sideId, pcode, value) {
+  if (!PANEL_STATE[sideId]) return;
+  PANEL_STATE[sideId].pcode = pcode;
+  PANEL_STATE[sideId].value = value;
+  renderActiveTab(sideId);
+  updateUrlState(sideId, pcode);
+}
+
+function renderActiveTab(sideId) {
+  const state = PANEL_STATE[sideId];
+  const container = document.getElementById('detail-' + sideId);
+  if (!container) return;
+  if (!state.pcode) {
+    container.innerHTML = '<div class="detail-card empty">Klik kelurahan di peta, Top 5, atau search untuk lihat detail.</div>';
+    return;
+  }
+  const activeTab = document.querySelector('.tab-pill.active[data-side="' + sideId + '"]');
+  const tabType = activeTab ? activeTab.dataset.tab : 'profil';
+  if (tabType === 'tren')         container.innerHTML = renderTren(state);
+  else if (tabType === 'sekitar') container.innerHTML = renderSekitar(state, sideId);
+  else                            container.innerHTML = renderProfil(state);
+}
+
+function renderProfil(state) {
+  const { pcode, value, metricLabel } = state;
+  const cat = value == null ? '-'
+    : value >= 75 ? 'Sangat tinggi'
+    : value >= 50 ? 'Tinggi'
+    : value >= 25 ? 'Sedang'
     : 'Rendah';
-  el.innerHTML = `
-    <div class="desa-name">desa_pcode: ${pc}</div>
-    <div class="stat-row"><span class="label">${metricLabel}</span><span class="val">${v != null ? v.toFixed(1) : '-'}</span></div>
-    <div class="stat-row"><span class="label">Skala</span><span class="val">0–100 (normalized)</span></div>
-    <div class="stat-row"><span class="label">Kategori</span><span class="val">${cat}</span></div>
-  `;
+  return '<div class="detail-card filled">'
+    + '<div class="desa-name">desa_pcode: ' + pcode + '</div>'
+    + '<div class="stat-row"><span class="label">' + metricLabel + '</span><span class="val">' + (value != null ? value.toFixed(1) : '-') + '</span></div>'
+    + '<div class="stat-row"><span class="label">Skala</span><span class="val">0-100 (normalized)</span></div>'
+    + '<div class="stat-row"><span class="label">Kategori</span><span class="val">' + cat + '</span></div>'
+    + '</div>';
+}
+
+function renderSparkline(values, width, height) {
+  if (!values || values.length === 0) return '';
+  const max = Math.max.apply(null, values);
+  const min = Math.min.apply(null, values);
+  const range = (max - min) || 1;
+  const stepX = width / Math.max(1, values.length - 1);
+  let pts = '';
+  for (let i = 0; i < values.length; i++) {
+    const x = i * stepX;
+    const y = height - ((values[i] - min) / range) * height;
+    pts += x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+  }
+  const lastX = (values.length - 1) * stepX;
+  const lastY = height - ((values[values.length - 1] - min) / range) * height;
+  return '<svg width="' + width + '" height="' + height + '" viewBox="0 0 ' + width + ' ' + height + '" style="display:block;margin-top:10px;">'
+    + '<polyline points="' + pts.trim() + '" fill="none" stroke="#003D79" stroke-width="2"/>'
+    + '<circle cx="' + lastX.toFixed(1) + '" cy="' + lastY.toFixed(1) + '" r="3" fill="#FFB700"/>'
+    + '</svg>';
+}
+
+function renderTren(state) {
+  const { pcode, value } = state;
+  // Generate deterministic dummy time-series 2014-2024 dari pcode hash (data demo untuk mockup)
+  const seed = String(pcode).split('').reduce((s, c) => s + c.charCodeAt(0), 0);
+  const yrs = [];
+  for (let y = 2014; y <= 2024; y++) {
+    const offset = ((seed + y * 7) % 41) - 20;
+    const v = Math.max(0, Math.min(100, value + offset * 0.7 - (2024 - y) * 1.0));
+    yrs.push({ year: y, value: v });
+  }
+  const values = yrs.map(d => d.value);
+  const delta = values[values.length - 1] - values[0];
+  return '<div class="detail-card filled">'
+    + '<div class="desa-name">' + pcode + ' &middot; Tren 10 tahun</div>'
+    + renderSparkline(values, 280, 60)
+    + '<div class="trend-labels">'
+    +   '<span>2014: <strong>' + values[0].toFixed(1) + '</strong></span>'
+    +   '<span>2024: <strong>' + values[values.length - 1].toFixed(1) + '</strong></span>'
+    +   '<span class="trend-delta">&Delta;: <strong>' + (delta >= 0 ? '+' : '') + delta.toFixed(1) + '</strong></span>'
+    + '</div>'
+    + '<div class="caveat">*Data demo sintetik (mockup). Production akan tarik VIIRS time-series 2014-2024 actual.</div>'
+    + '</div>';
+}
+
+function renderSekitar(state, sideId) {
+  const { pcode, value } = state;
+  const valueMap = sideId === 'F1' ? LUM_BY_PCODE : PODES_BY_PCODE;
+  const targetFeat = GEOJSON.features.find(f => f.properties.desa_pcode === pcode);
+  if (!targetFeat) return '<div class="detail-card empty">Data tidak ditemukan.</div>';
+  const targetC = getPolyCentroid(targetFeat.geometry);
+  if (!targetC) return '<div class="detail-card empty">Centroid tidak ditemukan.</div>';
+  const neighbors = [];
+  GEOJSON.features.forEach(f => {
+    const otherPc = f.properties.desa_pcode;
+    if (otherPc === pcode) return;
+    const otherC = getPolyCentroid(f.geometry);
+    if (!otherC) return;
+    const v = valueMap[otherPc];
+    if (v == null || isNaN(v)) return;
+    const dist = Math.sqrt(Math.pow(otherC[0] - targetC[0], 2) + Math.pow(otherC[1] - targetC[1], 2));
+    neighbors.push({ pcode: otherPc, value: v, dist: dist });
+  });
+  neighbors.sort((a, b) => a.dist - b.dist);
+  const top5 = neighbors.slice(0, 5);
+  let rows = '<div class="neighbor-row neighbor-target"><span class="rank">&starf;</span><span class="name">' + pcode + '</span><span class="val">' + value.toFixed(1) + '</span></div>';
+  top5.forEach(n => {
+    const cls = n.value > value ? 'val-up' : 'val-down';
+    rows += '<div class="neighbor-row"><span class="rank">&middot;</span><span class="name">' + n.pcode + '</span><span class="val ' + cls + '">' + n.value.toFixed(1) + '</span></div>';
+  });
+  return '<div class="detail-card filled">'
+    + '<div class="desa-name">' + pcode + ' &middot; vs 5 tetangga terdekat</div>'
+    + '<div class="neighbor-list">' + rows + '</div>'
+    + '<div class="caveat">Merah = lebih tinggi · hijau = lebih rendah dari ' + pcode + '</div>'
+    + '</div>';
+}
+
+// URL state encoding (share zone link via #f1=<pcode>&f2=<pcode>)
+function updateUrlState(sideId, pcode) {
+  if (typeof URLSearchParams === 'undefined') return;
+  const hash = window.location.hash.slice(1);
+  const params = new URLSearchParams(hash);
+  params.set(sideId.toLowerCase(), pcode);
+  const newHash = params.toString();
+  if (newHash !== hash) {
+    window.history.replaceState(null, '', '#' + newHash);
+  }
+}
+
+function restoreUrlState() {
+  if (typeof URLSearchParams === 'undefined') return false;
+  const hash = window.location.hash.slice(1);
+  if (!hash) return false;
+  const params = new URLSearchParams(hash);
+  let restored = false;
+  ['F1', 'F2'].forEach(sideId => {
+    const pc = params.get(sideId.toLowerCase());
+    if (!pc) return;
+    const valueMap = sideId === 'F1' ? LUM_BY_PCODE : PODES_BY_PCODE;
+    const v = valueMap[pc];
+    if (v == null || isNaN(v)) return;
+    selectKelurahan(sideId, pc, v);
+    const feat = GEOJSON.features.find(f => f.properties.desa_pcode === pc);
+    if (feat) {
+      const c = getPolyCentroid(feat.geometry);
+      if (c && ALL_MAPS['map-' + sideId]) ALL_MAPS['map-' + sideId].setView(c, 13);
+    }
+    restored = true;
+  });
+  return restored;
+}
+
+// Search-by-kelurahan autosuggest
+function setupSearch(sideId) {
+  const input = document.getElementById('search-' + sideId);
+  const dropdown = document.getElementById('search-dropdown-' + sideId);
+  if (!input || !dropdown) return;
+  const valueMap = sideId === 'F1' ? LUM_BY_PCODE : PODES_BY_PCODE;
+  const allEntries = Object.entries(valueMap)
+    .filter(e => e[1] != null && !isNaN(e[1]))
+    .sort((a, b) => b[1] - a[1]);
+
+  function showMatches(q) {
+    if (q.length < 2) { dropdown.style.display = 'none'; return; }
+    const ql = q.toLowerCase();
+    const matches = allEntries.filter(e => String(e[0]).toLowerCase().includes(ql)).slice(0, 8);
+    if (matches.length === 0) {
+      dropdown.innerHTML = '<div class="search-empty">Tidak ada match</div>';
+      dropdown.style.display = 'block';
+      return;
+    }
+    dropdown.innerHTML = matches.map(e =>
+      '<div class="search-item" data-pc="' + e[0] + '" data-val="' + e[1].toFixed(1) + '">'
+      + '<span class="search-pc">' + e[0] + '</span><span class="search-val">' + e[1].toFixed(1) + '</span>'
+      + '</div>'
+    ).join('');
+    dropdown.style.display = 'block';
+    dropdown.querySelectorAll('.search-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const pc = item.dataset.pc;
+        const v = parseFloat(item.dataset.val);
+        const map = ALL_MAPS['map-' + sideId];
+        const feat = GEOJSON.features.find(f => f.properties.desa_pcode === pc);
+        const c = feat ? getPolyCentroid(feat.geometry) : null;
+        if (c && map) map.setView(c, 13.5, { animate: true });
+        selectKelurahan(sideId, pc, v);
+        input.value = pc;
+        dropdown.style.display = 'none';
+      });
+    });
+  }
+
+  input.addEventListener('input', () => showMatches(input.value.trim()));
+  input.addEventListener('focus', () => { if (input.value.trim().length >= 2) showMatches(input.value.trim()); });
+  document.addEventListener('click', e => {
+    if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.style.display = 'none';
+    }
+  });
+}
+
+// Tab pills click handler
+function setupTabPills() {
+  document.querySelectorAll('#panel-F .tab-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const side = btn.dataset.side;
+      document.querySelectorAll('.tab-pill[data-side="' + side + '"]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderActiveTab(side);
+    });
+  });
 }
 
 function buildSidePanel(mapId, sideId, valueMap, metricLabel) {
+  // Init metric label di state
+  if (PANEL_STATE[sideId]) PANEL_STATE[sideId].metricLabel = metricLabel;
+
   // Top 5 ranking
   const entries = Object.entries(valueMap)
     .filter(([k, v]) => v != null && !isNaN(v))
     .sort((a, b) => b[1] - a[1])
     .slice(0, 5);
   const ol = document.getElementById('top5-' + sideId);
-  if (!ol) return;
-  ol.innerHTML = entries.map(([pc, v], i) => `
-    <li data-pc="${pc}" data-val="${v.toFixed(1)}">
-      <span class="rank">${i + 1}</span>
-      <span class="name">${pc}</span>
-      <span class="val">${v.toFixed(1)}</span>
-    </li>
-  `).join('');
-  // Click handler: focus map + fill detail
-  ol.querySelectorAll('li').forEach(li => {
-    li.addEventListener('click', () => {
-      const pc = li.dataset.pc;
-      const v = parseFloat(li.dataset.val);
-      const map = ALL_MAPS[mapId];
-      const feat = GEOJSON.features.find(f => f.properties.desa_pcode === pc);
-      const c = feat ? getPolyCentroid(feat.geometry) : null;
-      if (c && map) map.setView(c, 13, { animate: true });
-      fillDetailCard('detail-' + sideId, pc, v, metricLabel);
+  if (ol) {
+    ol.innerHTML = entries.map(([pc, v], i) => `
+      <li data-pc="${pc}" data-val="${v.toFixed(1)}">
+        <span class="rank">${i + 1}</span>
+        <span class="name">${pc}</span>
+        <span class="val">${v.toFixed(1)}</span>
+      </li>
+    `).join('');
+    ol.querySelectorAll('li').forEach(li => {
+      li.addEventListener('click', () => {
+        const pc = li.dataset.pc;
+        const v = parseFloat(li.dataset.val);
+        const map = ALL_MAPS[mapId];
+        const feat = GEOJSON.features.find(f => f.properties.desa_pcode === pc);
+        const c = feat ? getPolyCentroid(feat.geometry) : null;
+        if (c && map) map.setView(c, 13, { animate: true });
+        selectKelurahan(sideId, pc, v);
+      });
     });
-  });
-  // Auto-fill detail card with Top 1 on load (langsung highlight kelurahan terang #1)
-  if (entries.length > 0) {
+  }
+  // Setup search
+  setupSearch(sideId);
+  // Auto-fill Top 1 saat load (kecuali ada URL state akan restore)
+  const urlHasState = window.location.hash.includes(sideId.toLowerCase() + '=');
+  if (!urlHasState && entries.length > 0) {
     const [pc, v] = entries[0];
-    fillDetailCard('detail-' + sideId, pc, v, metricLabel);
+    selectKelurahan(sideId, pc, v);
   }
 }
 
@@ -855,14 +1153,17 @@ async function init() {
   // ★ Option F — Lights + Enlarged Map + Side Panel (default active tab)
   ALL_MAPS['map-F1'] = buildLightsMap('map-F1', {
     metric: 'lum', hybrid: true,
-    onSelect: (pc, v) => fillDetailCard('detail-F1', pc, v, 'Luminositas 2025')
+    onSelect: (pc, v) => selectKelurahan('F1', pc, v)
   });
   ALL_MAPS['map-F2'] = buildLightsMap('map-F2', {
     metric: 'podes', hybrid: true,
-    onSelect: (pc, v) => fillDetailCard('detail-F2', pc, v, 'Tempat Usaha 2025')
+    onSelect: (pc, v) => selectKelurahan('F2', pc, v)
   });
   buildSidePanel('map-F1', 'F1', LUM_BY_PCODE,   'Luminositas 2025');
   buildSidePanel('map-F2', 'F2', PODES_BY_PCODE, 'Tempat Usaha 2025');
+  // Round 2: tab pills click handler + URL state restore (override Top 1 auto-fill kalau ada hash)
+  setupTabPills();
+  restoreUrlState();
 
   // Option E — NASA Lights + Context (Dark Matter basemap + heatmap blend + sparkle)
   ALL_MAPS['map-E1'] = buildLightsMap('map-E1', { metric: 'lum',   hybrid: true });
