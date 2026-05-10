@@ -232,8 +232,8 @@
   }
   .layer-pill.active { background: var(--yellow); color: var(--ink); }
   .layer-pill:hover:not(.active) { color: white; background: rgba(255,255,255,0.06); }
-  .layer-pill[data-layer="lum"] { cursor: default; }
-  .layer-pill[data-layer="lum"]:hover { background: var(--yellow); color: var(--ink); }
+  .layer-pill[data-layer="lum"] { cursor: pointer; }
+  .layer-pill[data-layer="lum"]:hover:not(.active) { color: white; background: rgba(255,255,255,0.06); }
   .layer-pill[data-layer="podes"] { background: rgba(0,0,0,0); color: rgba(103, 178, 232, 0.85); border-left: 1px solid rgba(255,255,255,0.10); }
   .layer-pill[data-layer="podes"].active { background: var(--sky); color: var(--ink); }
   .layer-pill[data-layer="podes"]:hover:not(.active) { color: var(--sky); background: rgba(103, 178, 232, 0.12); }
@@ -1077,9 +1077,10 @@ const PANEL_STATE = {
   F: { pcode: null, value: null, metricLabel: 'Luminositas 2025' }
 };
 const FILTER_STATE = {
-  layer: 'lum',         // 'lum' (selalu lum untuk heatmap base — tidak diubah lagi)
+  layer: 'lum',         // legacy field (tidak dipakai untuk visibility)
+  showLum: true,        // Round 5k: toggle luminositas malam layer (heatmap + sparkles)
   showPodes: false,     // Master toggle "+ Aktivitas Komersial" — controls visibility of POI chips + markers
-  poiGroups: new Set(['FNB', 'RETAIL', 'ENT', 'HEALTH', 'FIN', 'FUEL']), // Default semua kategori on saat showPodes=true
+  poiGroups: new Set(),  // Round 5k: default EMPTY (anti-lag) — user explicit pilih kategori
   kab: 'all',           // 'all' | '71'..'75' | '01'
   kec: 'all',           // 'all' | '01'..'10' (within selected kab, cascading)
   kelurahan: 'all',     // Round 5j: full pcode | 'all' (within selected kec, cascading)
@@ -1277,7 +1278,9 @@ function renderSekitar(state, sideId) {
 function updateUrlState() {
   if (typeof URLSearchParams === 'undefined') return;
   const params = new URLSearchParams();
+  if (!FILTER_STATE.showLum) params.set('lum', '0');
   if (FILTER_STATE.showPodes) params.set('podes', '1');
+  if (FILTER_STATE.poiGroups.size) params.set('poi', Array.from(FILTER_STATE.poiGroups).join(','));
   if (FILTER_STATE.kab !== 'all') params.set('kab', FILTER_STATE.kab);
   if (FILTER_STATE.kec !== 'all') params.set('kec', FILTER_STATE.kec);
   if (FILTER_STATE.kelurahan !== 'all') params.set('desa', FILTER_STATE.kelurahan);
@@ -1295,16 +1298,24 @@ function restoreUrlState() {
   const hash = window.location.hash.slice(1);
   if (!hash) return false;
   const params = new URLSearchParams(hash);
+  if (params.has('lum')) FILTER_STATE.showLum = params.get('lum') !== '0';
   if (params.has('podes')) FILTER_STATE.showPodes = params.get('podes') === '1';
+  if (params.has('poi')) FILTER_STATE.poiGroups = new Set(params.get('poi').split(',').filter(Boolean));
   if (params.has('kab')) FILTER_STATE.kab = params.get('kab');
   if (params.has('kec')) FILTER_STATE.kec = params.get('kec');
   if (params.has('desa')) FILTER_STATE.kelurahan = params.get('desa');
   if (params.has('kategori')) FILTER_STATE.kategori = params.get('kategori');
-  // Sync UI: layer pill (lum always active, podes reflects showPodes)
+  // Sync UI: both pills reflect showLum / showPodes
   const lumPill = document.querySelector('.layer-pill[data-layer="lum"]');
   const podesPill = document.querySelector('.layer-pill[data-layer="podes"]');
-  if (lumPill) lumPill.classList.add('active');
+  if (lumPill) lumPill.classList.toggle('active', FILTER_STATE.showLum);
   if (podesPill) podesPill.classList.toggle('active', FILTER_STATE.showPodes);
+  // Sync chip + chips row visibility
+  document.querySelectorAll('#poi-chips-F .poi-chip').forEach(c => {
+    c.classList.toggle('active', FILTER_STATE.poiGroups.has(c.dataset.group));
+  });
+  const chipsRow = document.getElementById('poi-chips-F');
+  if (chipsRow) chipsRow.style.display = FILTER_STATE.showPodes ? 'flex' : 'none';
   const kabSelect = document.getElementById('filter-kab');
   const kecSelect = document.getElementById('filter-kec');
   const desaSelect = document.getElementById('filter-kelurahan');
@@ -1426,11 +1437,13 @@ function setupTabPills() {
 }
 
 function setupLayerPills() {
-  // Round 5i: Lum pill = base, Podes pill = master toggle untuk POI overlay + chips
+  // Round 5k: BOTH pills independently toggleable
+  // - Lum pill: toggle luminositas heatmap + sparkles (default ON)
+  // - Podes pill: toggle POI overlay + chip visibility (default OFF)
+  // - Chips: default ALL OFF (anti-lag) — user explicit pilih kategori untuk render
   const lumPill = document.querySelector('.layer-pill[data-layer="lum"]');
   const podesPill = document.querySelector('.layer-pill[data-layer="podes"]');
   const chipsRow = document.getElementById('poi-chips-F');
-  if (lumPill) lumPill.addEventListener('click', e => e.preventDefault());
   function syncChipsVisible() {
     if (chipsRow) chipsRow.style.display = FILTER_STATE.showPodes ? 'flex' : 'none';
   }
@@ -1439,8 +1452,17 @@ function setupLayerPills() {
       c.classList.toggle('active', FILTER_STATE.poiGroups.has(c.dataset.group));
     });
   }
+  if (lumPill) {
+    lumPill.classList.toggle('active', FILTER_STATE.showLum);
+    lumPill.addEventListener('click', () => {
+      FILTER_STATE.showLum = !FILTER_STATE.showLum;
+      lumPill.classList.toggle('active', FILTER_STATE.showLum);
+      rebuildMapLayers();
+      updateUrlState();
+    });
+  }
   if (podesPill) {
-    if (FILTER_STATE.showPodes) podesPill.classList.add('active');
+    podesPill.classList.toggle('active', FILTER_STATE.showPodes);
     syncChipsVisible(); syncChipsActive();
     podesPill.addEventListener('click', () => {
       FILTER_STATE.showPodes = !FILTER_STATE.showPodes;
@@ -1450,7 +1472,7 @@ function setupLayerPills() {
       updateUrlState();
     });
   }
-  // Setup chip click handlers
+  // Setup chip click handlers — toggle individual category
   document.querySelectorAll('#poi-chips-F .poi-chip').forEach(chip => {
     chip.addEventListener('click', () => {
       const g = chip.dataset.group;
@@ -1829,12 +1851,15 @@ function addMapLayers(map) {
 
   // Round 5g: Custom GlowLayer (replace L.heatLayer) — single-hue smooth gradient,
   // 'lighter' blend untuk NASA accumulation, NO banding karena gradient cuma alpha-fade.
-  const heat = glowLayer(heatPoints, {});
-  heat.addTo(map);
-  // Apply mix-blend-mode: screen untuk additive glow effect terhadap basemap
-  setTimeout(() => {
-    if (heat._canvas) heat._canvas.style.mixBlendMode = 'screen';
-  }, 50);
+  // Round 5k: gate behind FILTER_STATE.showLum supaya bisa toggle off
+  let heat = null;
+  if (FILTER_STATE.showLum) {
+    heat = glowLayer(heatPoints, {});
+    heat.addTo(map);
+    setTimeout(() => {
+      if (heat._canvas) heat._canvas.style.mixBlendMode = 'screen';
+    }, 50);
+  }
 
   // Sparkles top 25% of filtered + top 5 dengan pulse
   const filteredValues = filteredFeatures
@@ -1852,8 +1877,9 @@ function addMapLayers(map) {
   );
   // Round 5j: kalau filter ke 1 kelurahan, force sparkle visible (bypass top 25% rule)
   // Plus bigger size supaya user gampang locate
+  // Round 5k: gate sparkles behind showLum (sparkle = visualisasi luminositas)
   const isSingleKelurahanFilter = FILTER_STATE.kelurahan !== 'all';
-  filteredFeatures.forEach(f => {
+  if (FILTER_STATE.showLum) filteredFeatures.forEach(f => {
     const pc = f.properties.desa_pcode;
     const v = valueMap[pc];
     const c = centroidByPcode[pc];
