@@ -430,7 +430,7 @@
           <button class="layer-pill" data-layer="podes" title="Toggle POI overlay">+ Aktivitas Komersial</button>
         </div>
         <div class="poi-chips" id="poi-chips-F" style="display:none;">
-          <span class="poi-chip-label">JENIS USAHA:</span>
+          <span class="poi-chip-label">PILIH KATEGORI:</span>
           <button class="poi-chip" data-group="FNB"><span class="poi-dot" style="background:#FF6B35"></span>F&amp;B</button>
           <button class="poi-chip" data-group="RETAIL"><span class="poi-dot" style="background:#4D96FF"></span>Retail</button>
           <button class="poi-chip" data-group="ENT"><span class="poi-dot" style="background:#9B5DE5"></span>Hiburan</button>
@@ -482,7 +482,7 @@
       <div class="sp-section sp-search">
         <h4>Cari kelurahan</h4>
         <div class="search-wrap">
-          <input type="text" class="search-input" id="search-F" placeholder="Ketik kode desa (e.g. 3175)...">
+          <input type="text" class="search-input" id="search-F" placeholder="Cari nama kelurahan, kecamatan, atau kode...">
           <div class="search-dropdown" id="search-dropdown-F"></div>
         </div>
       </div>
@@ -490,23 +490,23 @@
         <h4>Detail kelurahan</h4>
         <div class="tab-pills">
           <button class="tab-pill active" data-tab="profil" data-side="F">Profil</button>
-          <button class="tab-pill" data-tab="tren" data-side="F">Tren 10thn</button>
-          <button class="tab-pill" data-tab="sekitar" data-side="F">Vs sekitar</button>
+          <button class="tab-pill" data-tab="tren" data-side="F">Histori 10 Tahun</button>
+          <button class="tab-pill" data-tab="sekitar" data-side="F">Wilayah Sekitar</button>
         </div>
         <div class="detail-content" id="detail-F">
-          <div class="detail-card empty">Klik kelurahan di peta, Top 5, atau search untuk lihat detail.</div>
+          <div class="detail-card empty">Pilih kelurahan dari peta, daftar peringkat, atau pencarian untuk melihat detail.</div>
         </div>
       </div>
       <div class="sp-section">
-        <h4 id="top5-header-F">Top 5 terang</h4>
+        <h4 id="top5-header-F">Peringkat Tertinggi</h4>
         <ol class="top5-list" id="top5-F"></ol>
       </div>
       <div class="sp-section">
-        <h4 id="legend-header-F">Skala luminositas</h4>
+        <h4 id="legend-header-F">Skala Luminositas</h4>
         <div class="legend-gradient">
           <div class="grad-bar"></div>
           <div class="grad-labels"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>
-          <div class="sparkle-note" id="sparkle-note-F"><span class="sparkle-dot"></span> Sparkle = top 25% kelurahan terang</div>
+          <div class="sparkle-note" id="sparkle-note-F"><span class="sparkle-dot"></span> Penanda titik = 25% kelurahan dengan luminositas tertinggi</div>
         </div>
       </div>
     </aside>
@@ -1161,7 +1161,7 @@ function renderActiveTab(sideId) {
   const container = document.getElementById('detail-' + sideId);
   if (!container) return;
   if (!state.pcode) {
-    container.innerHTML = '<div class="detail-card empty">Klik kelurahan di peta, Top 5, atau search untuk lihat detail.</div>';
+    container.innerHTML = '<div class="detail-card empty">Pilih kelurahan dari peta, daftar peringkat, atau pencarian untuk melihat detail.</div>';
     return;
   }
   const activeTab = document.querySelector('.tab-pill.active[data-side="' + sideId + '"]');
@@ -1230,7 +1230,7 @@ function renderTren(state) {
   const delta = values[values.length - 1] - values[0];
   const nama = pcodeName(pcode);
   return '<div class="detail-card filled">'
-    + '<div class="desa-name">' + nama + ' &middot; Tren 10 thn (' + metricLabel + ')</div>'
+    + '<div class="desa-name">' + nama + ' &middot; Histori 10 Tahun (' + metricLabel + ')</div>'
     + renderSparkline(values, 280, 60)
     + '<div class="trend-labels">'
     +   '<span>2014: <strong>' + values[0].toFixed(1) + '</strong></span>'
@@ -1268,9 +1268,9 @@ function renderSekitar(state, sideId) {
     rows += '<div class="neighbor-row"><span class="rank">&middot;</span><span class="name">' + pcodeName(n.pcode) + '</span><span class="val ' + cls + '">' + n.value.toFixed(1) + '</span></div>';
   });
   return '<div class="detail-card filled">'
-    + '<div class="desa-name">' + targetNama + ' &middot; vs 5 tetangga terdekat</div>'
+    + '<div class="desa-name">' + targetNama + ' &middot; Perbandingan 5 Kelurahan Terdekat</div>'
     + '<div class="neighbor-list">' + rows + '</div>'
-    + '<div class="caveat">Merah = lebih tinggi · hijau = lebih rendah</div>'
+    + '<div class="caveat">Merah = nilai lebih tinggi &middot; Hijau = nilai lebih rendah</div>'
     + '</div>';
 }
 
@@ -1649,11 +1649,11 @@ function refreshSidePanel() {
 
   // Update labels (Top 5 + Legend + Sparkle note) berdasarkan current layer
   const top5Header = document.getElementById('top5-header-F');
-  if (top5Header) top5Header.textContent = isLum ? 'Top 5 terang' : 'Top 5 padat usaha';
+  if (top5Header) top5Header.textContent = isLum ? 'Peringkat Tertinggi' : 'Aktivitas Komersial Tertinggi';
   const legendHeader = document.getElementById('legend-header-F');
-  if (legendHeader) legendHeader.textContent = isLum ? 'Skala luminositas' : 'Skala density';
+  if (legendHeader) legendHeader.textContent = isLum ? 'Skala Luminositas' : 'Skala Densitas Usaha';
   const sparkleNote = document.getElementById('sparkle-note-F');
-  if (sparkleNote) sparkleNote.innerHTML = '<span class="sparkle-dot"></span> Sparkle = top 25% kelurahan ' + (isLum ? 'terang' : 'padat');
+  if (sparkleNote) sparkleNote.innerHTML = '<span class="sparkle-dot"></span> Penanda titik = 25% kelurahan ' + (isLum ? 'paling terang' : 'paling padat usaha');
 
   // Sync detail panel kalau pcode ke-filter-out
   if (PANEL_STATE.F.pcode) {
