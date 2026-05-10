@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metodologi &amp; Sumber Data · Aktivitas Ekonomi · Mandiri Institute</title>
+<meta name="theme-color" content="#002852">
+<meta name="description" content="Sumber data, definisi metric, dan caveat untuk dashboard pemetaan aktivitas ekonomi Mandiri Institute.">
+<style>
+:root {
+  --navy: #003D79; --navy-deep: #002852; --navy-soft: #1A5394;
+  --sky: #67B2E8; --yellow: #FFB700;
+  --ink: #051C2C; --paper: #FFFFFF; --mist: #F0F6FC;
+  --rule: #E5E8EC; --muted: #667085;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--paper); color: var(--ink); }
+body { font-family: 'Inter', system-ui, -apple-system, sans-serif; line-height: 1.6; }
+.serif { font-family: 'Source Serif 4', Georgia, serif; font-weight: 600; letter-spacing: -0.018em; }
+a { color: var(--navy); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.nav { background: var(--navy-deep); color: white; padding: 16px 28px; display: flex; align-items: center; gap: 24px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.nav .brand { font-family: 'Source Serif 4', Georgia, serif; font-size: 18px; font-weight: 600; }
+.nav .brand-sub { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--sky); margin-top: 2px; font-weight: 600; }
+.nav .crumb { margin-left: auto; font-size: 12px; opacity: 0.85; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.nav .crumb a { color: white; }
+.nav .crumb a:hover { color: var(--sky); text-decoration: none; }
+.nav .crumb .sep { opacity: 0.4; }
+
+.hero {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%); color: white;
+  padding: 64px 28px 56px;
+}
+.hero-inner { max-width: 980px; margin: 0 auto; }
+.hero .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sky); }
+.hero h1 { font-size: clamp(34px, 4.2vw, 52px); font-weight: 600; margin-top: 14px; max-width: 820px; }
+.hero p { margin-top: 20px; color: rgba(255,255,255,0.82); font-size: 16px; max-width: 720px; line-height: 1.65; }
+
+main { max-width: 980px; margin: 0 auto; padding: 56px 28px 80px; }
+section { margin-bottom: 56px; }
+section .eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--navy); }
+section h2 { font-family: 'Source Serif 4', Georgia, serif; font-size: 28px; font-weight: 600; margin-top: 8px; line-height: 1.18; }
+section .intro { color: var(--muted); margin-top: 12px; font-size: 14px; max-width: 740px; line-height: 1.65; }
+section h3 { font-family: 'Source Serif 4', Georgia, serif; font-size: 18px; font-weight: 600; margin-top: 28px; line-height: 1.3; }
+section p { margin-top: 12px; font-size: 14px; line-height: 1.7; color: var(--ink); }
+section ul { margin-top: 12px; padding-left: 22px; font-size: 14px; line-height: 1.7; }
+section li { margin-bottom: 8px; }
+section li strong { color: var(--navy); font-weight: 600; }
+
+table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { background: var(--mist); font-weight: 700; color: var(--navy); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+td:first-child { font-weight: 600; color: var(--ink); }
+
+.callout {
+  background: var(--mist); border-left: 3px solid var(--navy); padding: 18px 22px;
+  margin-top: 18px; font-size: 13px; line-height: 1.65; color: var(--ink);
+}
+.callout strong { color: var(--navy); }
+
+.cross-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px; margin-top: 18px;
+}
+.cross-card {
+  background: white; border: 1px solid var(--rule); padding: 16px 18px;
+  transition: all 0.2s; display: block;
+}
+.cross-card:hover { border-color: var(--navy); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(5,28,44,0.08); text-decoration: none; }
+.cross-card .label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.cross-card .title { font-family: 'Source Serif 4', Georgia, serif; font-size: 16px; font-weight: 600; color: var(--ink); margin-top: 6px; line-height: 1.25; }
+.cross-card .desc { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+
+.foot {
+  background: var(--ink); color: rgba(255,255,255,0.55); padding: 28px;
+  text-align: center; font-size: 12px;
+}
+.foot a { color: var(--sky); }
+
+@media (max-width: 700px) {
+  .hero { padding: 48px 20px 40px; }
+  main { padding: 40px 20px 56px; }
+  .nav { flex-wrap: wrap; padding: 14px 20px; }
+  .nav .crumb { margin-left: 0; width: 100%; }
+  table { font-size: 12px; }
+  th, td { padding: 8px 10px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div>
+    <div class="brand">Mandiri Institute</div>
+    <div class="brand-sub">Aktivitas Ekonomi</div>
+  </div>
+  <div class="crumb">
+    <a href="../index.html">Beranda</a>
+    <span class="sep">/</span>
+    <a href="index.html">Aktivitas Ekonomi</a>
+    <span class="sep">/</span>
+    <span>Metodologi</span>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Metodologi &amp; Sumber Data</div>
+    <h1 class="serif">Bagaimana dashboard ini dibangun</h1>
+    <p>Pemetaan aktivitas ekonomi Mandiri Institute mengkombinasikan luminositas malam dari satelit NASA, jejak aktivitas komersial dari OpenStreetMap, serta data sensus dan survei BPS. Dokumen ini merangkum sumber data, definisi metric, dan keterbatasan yang perlu diketahui pembaca.</p>
+  </div>
+</header>
+
+<main>
+
+  <section>
+    <div class="eyebrow">A. Sumber Data</div>
+    <h2 class="serif">Tiga lapis input utama</h2>
+
+    <table>
+      <thead>
+        <tr><th>Sumber</th><th>Cakupan</th><th>Frekuensi</th><th>Kegunaan</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>NASA VIIRS Black Marble (VNP46A2)</td>
+          <td>Global, ~500 m grid, agregasi ke polygon kelurahan / kabupaten</td>
+          <td>Harian, agregasi tahunan</td>
+          <td>Luminositas malam sebagai proxy intensitas aktivitas ekonomi</td>
+        </tr>
+        <tr>
+          <td>OpenStreetMap (OSM) via Overpass API</td>
+          <td>Indonesia, point-in-polygon ke unit administratif</td>
+          <td>Snapshot terkini (bulan rilis dashboard)</td>
+          <td>Jejak komersial: F&amp;B, retail, hiburan, kesehatan, finansial, otomotif</td>
+        </tr>
+        <tr>
+          <td>BPS Podes</td>
+          <td>83 ribu desa/kelurahan Indonesia</td>
+          <td>3-tahunan (2018, 2021, 2024)</td>
+          <td>Jumlah tempat usaha menurut 10 kategori (warung, toko, mall, pasar, dll)</td>
+        </tr>
+        <tr>
+          <td>BPS Sakernas Agustus</td>
+          <td>514 kabupaten/kota, sampel rumah tangga</td>
+          <td>Tahunan</td>
+          <td>Revenue UMKM, struktur pekerja berusaha, sektor KBLI</td>
+        </tr>
+        <tr>
+          <td>BPS Shapefile Adm-4 (kelurahan)</td>
+          <td>83 ribu polygon kelurahan Indonesia</td>
+          <td>Update tahunan</td>
+          <td>Unit spasial untuk join VIIRS pixel dan OSM POI</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <strong>Catatan resolusi:</strong> tampilan nasional menggunakan agregasi kabupaten/kota (514 unit), tampilan regional DKI Jakarta menggunakan resolusi kelurahan (270 unit) dengan true spatial join VIIRS pixel ke polygon BPS, bukan proxy centroid.
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">B. Definisi Metric</div>
+    <h2 class="serif">Indikator yang ditampilkan</h2>
+
+    <h3>Luminositas Malam</h3>
+    <p>Rata-rata radiansi cahaya malam (nano-watts per cm&sup2; per steradian) per unit polygon, agregasi tahunan dari pixel VIIRS bebas awan. Tinggi luminositas mengindikasikan kepadatan aktivitas urban dan ekonomi, namun tidak menangkap aktivitas siang-hari atau aktivitas di luar ruangan tanpa pencahayaan listrik.</p>
+
+    <h3>Kategori Intensitas</h3>
+    <p>Empat tier diskret berdasarkan kuartil distribusi nasional: rendah, sedang, tinggi, dan sangat tinggi. Pemetaan ini relatif terhadap distribusi Indonesia, bukan benchmark internasional.</p>
+
+    <h3>Aktivitas Komersial</h3>
+    <p>Densitas titik POI per polygon (kelurahan/kabupaten/kota), dipisah dalam enam grup: F&amp;B, Retail, Hiburan, Kesehatan &amp; Wellness, Finansial, dan Otomotif. Skor agregat tertimbang dari titik OSM dan jumlah tempat usaha Podes BPS.</p>
+
+    <h3>Pertumbuhan Tahunan (CAGR)</h3>
+    <p>Tingkat pertumbuhan majemuk tahunan luminositas atau jumlah usaha periode 2021-2025. Angka positif menandakan kawasan yang sedang naik daun, negatif menandakan stagnasi atau penurunan.</p>
+  </section>
+
+  <section>
+    <div class="eyebrow">C. Keterbatasan</div>
+    <h2 class="serif">Caveat yang perlu diketahui</h2>
+
+    <ul>
+      <li><strong>Luminositas bukan revenue.</strong> Korelasi luminositas malam dengan pendapatan UMKM Sakernas pada level kelurahan rendah (r ~ 0,05). Luminositas memetakan intensitas aktivitas, bukan nilai ekonomi langsung.</li>
+      <li><strong>Snapshot OSM single point in time.</strong> Coverage POI bervariasi dari 4,6% sampai 52,6% relatif Podes BPS, tergantung kategori. Heatmap POI lebih akurat untuk kawasan urban dengan kontributor OSM aktif.</li>
+      <li><strong>Granularitas Sakernas terbatas.</strong> Sakernas resolusi kabupaten/kota disebarkan homogen ke kelurahan untuk komponen revenue UMKM. Effectively kabupaten/kota fixed effect, bukan true heterogeneity per kelurahan.</li>
+      <li><strong>Cloud cover &amp; pixel masking.</strong> Pixel VIIRS yang tertutup awan persisten di-drop dari agregasi, sehingga estimate area dengan cuaca berawan ekstrem (sebagian Papua, Kalimantan Tengah) lebih bising.</li>
+      <li><strong>Waktu pengamatan VIIRS ~01:30 WIT.</strong> Aktivitas malam yang terekam adalah pencahayaan tetap (lampu jalan, papan reklame) dan aktivitas after-hours, bukan aktivitas peak siang-sore.</li>
+      <li><strong>Definisi UMKM Sakernas v4 (per 2026-05-04).</strong> Filter berusaha-only (mengeluarkan pekerja/helper). Avg revenue per kabupaten/kota DKI naik 41-194% pasca-fix. CAGR 2021-2025 mostly positive post-fix.</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="eyebrow">D. Cadence Pembaruan</div>
+    <h2 class="serif">Jadwal refresh</h2>
+    <ul>
+      <li><strong>VIIRS NTL</strong> &mdash; refresh tahunan setiap Maret (data tahun sebelumnya).</li>
+      <li><strong>OSM POI</strong> &mdash; snapshot manual saat update generator, dengan dedupe by lat/lng + nama.</li>
+      <li><strong>Podes BPS</strong> &mdash; refresh saat rilis publikasi baru (tiga-tahunan).</li>
+      <li><strong>Sakernas</strong> &mdash; refresh tahunan setelah data Agustus tersedia (sekitar Februari tahun berikutnya).</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="eyebrow">E. Dashboard Lain</div>
+    <h2 class="serif">Lihat juga</h2>
+    <p class="intro">Dashboard tematik Mandiri Institute lain yang relevan untuk dipasangkan dengan pemetaan aktivitas ekonomi.</p>
+    <div class="cross-grid">
+      <a class="cross-card" href="../kelas-kabkota/dashboard.html">
+        <div class="label">Dashboard</div>
+        <div class="title">Kelas Masyarakat</div>
+        <div class="desc">Distribusi kelas per 514 kabupaten/kota berbasis Susenas BPS.</div>
+      </a>
+      <a class="cross-card" href="../ketahanan-pangan/ketahanan-pangan-dashboard.html">
+        <div class="label">Dashboard</div>
+        <div class="title">Ketahanan Pangan</div>
+        <div class="desc">Skor FIES rumah tangga lintas kabupaten/kota Indonesia.</div>
+      </a>
+      <a class="cross-card" href="../mbg-gap-analysis/dashboard.html">
+        <div class="label">Tematik</div>
+        <div class="title">Pemetaan Prioritas MBG</div>
+        <div class="desc">Gap analysis SPPG &times; kerawanan pangan &times; stunting.</div>
+      </a>
+      <a class="cross-card" href="../demografi-kesehatan/dashboard.html">
+        <div class="label">Tematik</div>
+        <div class="title">Demografi &amp; Kesehatan</div>
+        <div class="desc">Aging, JKN coverage, OOP burden per kabupaten/kota.</div>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  &copy; 2026 Mandiri Institute &middot; Bank Mandiri (Persero) Tbk &middot; <a href="index.html">Hub Aktivitas Ekonomi</a> &middot; <a href="../index.html">Portal</a>
+</footer>
+
+</body>
+</html>

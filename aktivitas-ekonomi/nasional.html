@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tampilan Nasional · Aktivitas Ekonomi · Mandiri Institute</title>
+<meta name="theme-color" content="#002852">
+<meta name="description" content="Tampilan nasional luminositas malam 514 kabupaten/kota Indonesia (segera hadir).">
+<style>
+:root {
+  --navy: #003D79; --navy-deep: #002852; --navy-soft: #1A5394;
+  --sky: #67B2E8; --yellow: #FFB700;
+  --ink: #051C2C; --paper: #FFFFFF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--ink); color: white; min-height: 100vh; }
+body { font-family: 'Inter', system-ui, -apple-system, sans-serif; line-height: 1.5; display: flex; flex-direction: column; }
+.serif { font-family: 'Source Serif 4', Georgia, serif; font-weight: 600; letter-spacing: -0.018em; }
+a { color: inherit; text-decoration: none; }
+
+.nav { background: var(--navy-deep); padding: 16px 28px; display: flex; align-items: center; gap: 24px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.nav .brand { font-family: 'Source Serif 4', Georgia, serif; font-size: 18px; font-weight: 600; }
+.nav .brand-sub { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--sky); margin-top: 2px; font-weight: 600; }
+.nav .crumb { margin-left: auto; font-size: 12px; opacity: 0.78; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.nav .crumb a:hover { color: var(--sky); }
+.nav .crumb .sep { opacity: 0.4; }
+
+main { flex: 1; padding: 80px 28px 48px; max-width: 880px; width: 100%; margin: 0 auto; }
+.eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sky); }
+h1 { font-size: clamp(36px, 4.4vw, 56px); font-weight: 600; margin-top: 16px; }
+.lead { margin-top: 22px; color: rgba(255,255,255,0.78); font-size: 16px; max-width: 720px; line-height: 1.65; }
+.lead + .lead { margin-top: 14px; }
+
+.callout {
+  margin-top: 36px; padding: 24px 26px;
+  border: 1px dashed rgba(103,178,232,0.40); border-radius: 6px;
+  background: rgba(103,178,232,0.05);
+}
+.callout h3 { font-family: 'Source Serif 4', Georgia, serif; font-size: 17px; font-weight: 600; color: var(--sky); }
+.callout ul { margin-top: 12px; padding-left: 22px; font-size: 14px; color: rgba(255,255,255,0.80); }
+.callout li { margin-bottom: 6px; line-height: 1.55; }
+
+.cta-row { margin-top: 36px; display: flex; gap: 14px; flex-wrap: wrap; }
+.btn { padding: 12px 20px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.25); transition: all 0.2s; }
+.btn:hover { background: var(--yellow); color: var(--navy-deep); border-color: var(--yellow); }
+.btn.primary { background: var(--yellow); color: var(--navy-deep); border-color: var(--yellow); }
+.btn.primary:hover { background: white; border-color: white; }
+
+.foot {
+  background: var(--ink); border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 24px 28px; color: rgba(255,255,255,0.55); font-size: 12px; text-align: center;
+}
+.foot a { color: var(--sky); }
+.foot a:hover { text-decoration: underline; }
+
+@media (max-width: 600px) {
+  main { padding: 56px 20px 32px; }
+  .nav { flex-wrap: wrap; padding: 14px 20px; }
+  .nav .crumb { margin-left: 0; width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div>
+    <div class="brand">Mandiri Institute</div>
+    <div class="brand-sub">Aktivitas Ekonomi</div>
+  </div>
+  <div class="crumb">
+    <a href="../index.html">Beranda</a>
+    <span class="sep">/</span>
+    <a href="index.html">Aktivitas Ekonomi</a>
+    <span class="sep">/</span>
+    <span>Nasional</span>
+  </div>
+</nav>
+
+<main>
+  <div class="eyebrow">Segera Hadir</div>
+  <h1 class="serif">Tampilan Nasional</h1>
+  <p class="lead">Visualisasi luminositas malam 514 kabupaten/kota Indonesia berbasis data satelit NASA VIIRS Black Marble, ditambah jejak aktivitas komersial dari titik OSM POI dan kategori Podes BPS.</p>
+  <p class="lead">Section ini akan segera live setelah data nasional disiapkan oleh tim data processing. Sementara ini, tampilan regional DKI Jakarta sudah tersedia untuk eksplorasi metodologi dan bentuk visualisasi.</p>
+
+  <div class="callout">
+    <h3>Apa yang akan tersedia</h3>
+    <ul>
+      <li>Choropleth nasional 514 kabupaten/kota dengan skala luminositas dan pertumbuhan tahunan.</li>
+      <li>Bivariate map luminositas malam &times; kategori aktivitas komersial Podes.</li>
+      <li>Time-series 2019-2025 per kabupaten/kota dan agregasi provinsi.</li>
+      <li>Cross-link ke dashboard tematik terkait (Kelas Masyarakat, Ketahanan Pangan, MBG Gap, Demografi-Kesehatan).</li>
+    </ul>
+  </div>
+
+  <div class="cta-row">
+    <a class="btn primary" href="regional/dki-jakarta.html">Buka Tampilan Regional DKI Jakarta &rarr;</a>
+    <a class="btn" href="metodologi.html">Lihat Metodologi</a>
+    <a class="btn" href="index.html">Kembali ke Hub</a>
+  </div>
+</main>
+
+<footer class="foot">
+  &copy; 2026 Mandiri Institute &middot; Bank Mandiri (Persero) Tbk &middot; <a href="../index.html">Portal Mandiri Institute</a>
+</footer>
+
+</body>
+</html>

@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 import pandas as pd
 
-DATA_DIR = Path('../emerging-zone-jakarta/data')
+DATA_DIR = Path('../../../emerging-zone-jakarta/data')
 OUT_PATH = Path('osm-poi.json')
 
 GROUP_MAP = {

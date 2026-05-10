@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pemetaan Aktivitas Ekonomi Indonesia · Mandiri Institute</title>
+<meta name="theme-color" content="#002852">
+<meta name="description" content="Visualisasi luminositas malam dan aktivitas komersial per kabupaten/kota dan kelurahan, berbasis data satelit NASA VIIRS dan OpenStreetMap.">
+<style>
+:root {
+  --navy: #003D79; --navy-deep: #002852; --navy-soft: #1A5394;
+  --sky: #67B2E8; --sky-soft: #A9C4DF;
+  --yellow: #FFB700; --yellow-soft: #FFE08A;
+  --ink: #051C2C; --ink-soft: #2A3F52;
+  --rule: #E5E8EC; --rule-strong: #D0D5DD;
+  --muted: #667085; --paper: #FFFFFF; --mist: #F0F6FC;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--ink); color: white; }
+body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif; font-weight: 400; letter-spacing: -0.003em; line-height: 1.5; }
+.serif { font-family: 'Source Serif 4', Georgia, serif; font-weight: 600; letter-spacing: -0.018em; line-height: 1.08; }
+a { color: inherit; text-decoration: none; }
+
+/* ============ TOPNAV ============ */
+.nav { background: var(--navy-deep); padding: 16px 28px; display: flex; align-items: center; gap: 24px; border-bottom: 1px solid rgba(255,255,255,0.08); position: sticky; top: 0; z-index: 50; }
+.nav .brand { font-family: 'Source Serif 4', Georgia, serif; font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+.nav .brand-sub { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--sky); margin-top: 2px; font-weight: 600; }
+.nav .crumb { margin-left: auto; font-size: 12px; opacity: 0.75; display: flex; gap: 10px; align-items: center; }
+.nav .crumb a:hover { color: var(--sky); }
+.nav .crumb .sep { opacity: 0.4; }
+
+/* ============ HERO ============ */
+.hero { padding: 64px 28px 48px; max-width: 1280px; margin: 0 auto; }
+.hero .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sky); }
+.hero h1 { font-size: clamp(36px, 4.6vw, 60px); font-weight: 600; margin-top: 16px; max-width: 920px; }
+.hero .lead { margin-top: 22px; color: rgba(255,255,255,0.78); font-size: 16px; max-width: 720px; line-height: 1.6; }
+
+/* ============ CARD GRID ============ */
+.cards { padding: 0 28px 80px; max-width: 1280px; margin: 0 auto; }
+.card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+.card {
+  position: relative; overflow: hidden; background: var(--navy-deep);
+  border: 1px solid rgba(255,255,255,0.10);
+  min-height: 360px; display: flex; flex-direction: column; cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.card:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,0.32); border-color: rgba(103,178,232,0.45); }
+.card.disabled { cursor: not-allowed; opacity: 0.62; }
+.card.disabled:hover { transform: none; box-shadow: none; border-color: rgba(255,255,255,0.10); }
+.card .top { padding: 28px 28px 0; flex: 1; }
+.card .badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; padding: 4px 10px; border-radius: 12px; }
+.card .badge.live { background: var(--yellow); color: var(--navy-deep); }
+.card .badge.soon { background: rgba(255,255,255,0.10); color: rgba(255,255,255,0.7); }
+.card h2 { font-family: 'Source Serif 4', Georgia, serif; font-size: 28px; font-weight: 600; margin-top: 18px; line-height: 1.15; }
+.card p { font-size: 14px; color: rgba(255,255,255,0.78); margin-top: 12px; line-height: 1.55; max-width: 460px; }
+.card .meta { font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 18px; letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; }
+.card .footer-row { padding: 22px 28px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: space-between; font-size: 12px; }
+.card .cta { color: var(--yellow); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.card .arrow { font-size: 18px; color: var(--yellow); }
+.card.disabled .cta { color: rgba(255,255,255,0.55); }
+.card.disabled .arrow { color: rgba(255,255,255,0.45); }
+
+/* Decorative gradient */
+.card.regional::before {
+  content: ''; position: absolute; top: 0; right: 0; width: 60%; height: 100%;
+  background: radial-gradient(circle at 80% 30%, rgba(255,183,0,0.18) 0%, transparent 55%);
+  pointer-events: none;
+}
+.card.nasional::before {
+  content: ''; position: absolute; top: 0; right: 0; width: 60%; height: 100%;
+  background: radial-gradient(circle at 70% 40%, rgba(103,178,232,0.14) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+/* ============ FOOTER ============ */
+.foot {
+  background: var(--ink); border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 28px 28px 36px; color: rgba(255,255,255,0.55); font-size: 12px;
+}
+.foot-inner { max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 18px; align-items: center; justify-content: space-between; }
+.foot a { color: var(--sky); }
+.foot a:hover { text-decoration: underline; }
+.foot .links { display: flex; gap: 18px; flex-wrap: wrap; }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 900px) {
+  .card-grid { grid-template-columns: 1fr; }
+  .nav { flex-wrap: wrap; gap: 14px; padding: 14px 20px; }
+  .nav .crumb { margin-left: 0; width: 100%; }
+  .hero { padding: 48px 20px 32px; }
+  .cards { padding: 0 20px 56px; }
+  .foot-inner { flex-direction: column; align-items: flex-start; gap: 12px; }
+}
+@media (max-width: 480px) {
+  .card .top { padding: 22px 22px 0; }
+  .card .footer-row { padding: 18px 22px; }
+  .card h2 { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div>
+    <div class="brand">Mandiri Institute</div>
+    <div class="brand-sub">Aktivitas Ekonomi</div>
+  </div>
+  <div class="crumb">
+    <a href="../index.html">Beranda</a>
+    <span class="sep">/</span>
+    <span>Aktivitas Ekonomi</span>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="eyebrow">Pemetaan Spasial &middot; Luminositas Malam &amp; Aktivitas Komersial</div>
+  <h1 class="serif">Pemetaan Aktivitas Ekonomi Indonesia</h1>
+  <p class="lead">Visualisasi luminositas malam dan aktivitas komersial per kabupaten/kota dan kelurahan, berbasis data satelit NASA VIIRS dan titik POI OpenStreetMap. Tersedia tampilan nasional 514 kabupaten/kota dan tampilan regional kelurahan untuk DKI Jakarta.</p>
+</section>
+
+<section class="cards">
+  <div class="card-grid">
+
+    <a class="card nasional disabled" href="nasional.html" aria-disabled="true">
+      <div class="top">
+        <span class="badge soon">Segera Hadir</span>
+        <h2>Tampilan Nasional</h2>
+        <p>Luminositas malam dan jejak komersial 514 kabupaten/kota Indonesia, dari Sumatra sampai Papua. Section ini akan live setelah data nasional disiapkan.</p>
+        <div class="meta">514 Kab/Kota &middot; NASA VIIRS &middot; OSM POI</div>
+      </div>
+      <div class="footer-row">
+        <span class="cta">Pratinjau</span>
+        <span class="arrow">&rarr;</span>
+      </div>
+    </a>
+
+    <a class="card regional" href="regional/dki-jakarta.html">
+      <div class="top">
+        <span class="badge live">Live</span>
+        <h2>Regional: DKI Jakarta</h2>
+        <p>Pemetaan kelurahan DKI Jakarta dengan luminositas malam, kepadatan POI komersial, serta zona aktivitas dari titik F&amp;B, retail, dan fasilitas publik.</p>
+        <div class="meta">270 Kelurahan &middot; 16 ribu titik POI &middot; 2021-2025</div>
+      </div>
+      <div class="footer-row">
+        <span class="cta">Buka Dashboard</span>
+        <span class="arrow">&rarr;</span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="foot-inner">
+    <div>&copy; 2026 Mandiri Institute &middot; Bank Mandiri (Persero) Tbk</div>
+    <div class="links">
+      <a href="metodologi.html">Metodologi &amp; Sumber Data</a>
+      <a href="../index.html">Kembali ke Portal</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -811,7 +811,7 @@ async function loadData() {
   // Multi-source fallback chain: relative -> raw.githubusercontent (CORS-friendly)
   const RAW_BASE = 'https://raw.githubusercontent.com/yehezkielgemini1/Dashboard-Mandiri-Institute/main';
   const urls = [
-    '../emerging-zone-jakarta/data/dki_desa_simplified.geojson',
+    '../../emerging-zone-jakarta/data/dki_desa_simplified.geojson',
     RAW_BASE + '/emerging-zone-jakarta/data/dki_desa_simplified.geojson'
   ];
   for (const u of urls) {
@@ -819,7 +819,7 @@ async function loadData() {
     if (data) { GEOJSON = data; break; }
   }
   // Round 5i: load OSM POI data (15.9k points: F&B, Retail, Ent, Health, Fin, Fuel)
-  const poiUrls = ['./osm-poi.json', RAW_BASE + '/_mockups/osm-poi.json'];
+  const poiUrls = ['../data/dki-jakarta/osm-poi.json', RAW_BASE + '/aktivitas-ekonomi/data/dki-jakarta/osm-poi.json'];
   for (const u of poiUrls) {
     const data = await tryFetch(u);
     if (data && data.points) { OSM_POI = data; break; }
@@ -834,7 +834,7 @@ async function loadData() {
 
   // Try fetch CSV utk REAL lum + podes values (kalau fail, pakai synthetic deterministic)
   const csvUrls = [
-    '../emerging-zone-jakarta/data/260503_FINAL_eczi_per_desa.csv',
+    '../../emerging-zone-jakarta/data/260503_FINAL_eczi_per_desa.csv',
     RAW_BASE + '/emerging-zone-jakarta/data/260503_FINAL_eczi_per_desa.csv'
   ];
   let csvText = null;
