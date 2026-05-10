@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>NASA-style mockup — Pemetaan DKI Jakarta</title>
+<title>Pemetaan Aktivitas Ekonomi DKI Jakarta · Mandiri Institute</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
@@ -341,6 +341,44 @@
   }
   .nasa-sparkle.nasa-pulse-top { animation: nasa-pulse 2.6s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
 
+  /* Round 5m: Reset filter button + filter status badge + loading spinner + empty state */
+  .sp-filter h4 { display: flex; justify-content: space-between; align-items: center; }
+  .reset-filter-btn {
+    background: transparent; border: 1px solid rgba(255,255,255,0.18); color: rgba(255,255,255,0.55);
+    font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 3px 8px; cursor: pointer; transition: all 0.15s; font-family: inherit;
+  }
+  .reset-filter-btn:hover { color: white; border-color: rgba(255,255,255,0.45); background: rgba(255,255,255,0.08); }
+  .filter-status {
+    position: absolute; bottom: 12px; left: 12px; right: 12px; max-width: max-content; z-index: 600;
+    background: rgba(0, 38, 75, 0.92); color: rgba(255,255,255,0.85);
+    border: 1px solid rgba(103, 178, 232, 0.30); padding: 6px 12px;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.02em;
+    pointer-events: none;
+  }
+  .filter-status .fs-label { color: var(--sky); font-weight: 700; margin-right: 6px; letter-spacing: 0.08em; text-transform: uppercase; font-size: 9.5px; }
+  .loading-overlay {
+    position: absolute; inset: 0; z-index: 800; display: flex !important;
+    align-items: center; justify-content: center; gap: 12px;
+    background: rgba(5, 28, 44, 0.55); backdrop-filter: blur(2px);
+    color: rgba(255,255,255,0.9); font-size: 12px; font-weight: 600;
+    pointer-events: none;
+  }
+  .loading-overlay .spinner {
+    width: 22px; height: 22px; border: 2.5px solid rgba(255,255,255,0.2);
+    border-top-color: var(--yellow); border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .empty-poi-hint {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background: rgba(0, 38, 75, 0.92); border: 1px solid rgba(255, 255, 255, 0.20);
+    color: rgba(255,255,255,0.85); padding: 12px 20px;
+    font-size: 12px; font-weight: 500; max-width: 320px; text-align: center;
+    z-index: 600; pointer-events: none;
+  }
+  .empty-poi-hint strong { color: var(--yellow); display: block; margin-bottom: 4px; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+
   /* Round 5i: POI category chips + custom pin markers */
   .poi-chips {
     position: absolute; top: 64px; left: 12px; z-index: 600;
@@ -390,8 +428,8 @@
   }
   .leaflet-tooltip.poi-tooltip::before { display: none; }
   .leaflet-tooltip.poi-tooltip .poi-tt-cat {
-    display: block; font-size: 9px; letter-spacing: 0.08em;
-    text-transform: uppercase; opacity: 0.7; margin-top: 2px; font-weight: 600;
+    display: block; font-size: 10px; letter-spacing: 0.02em;
+    opacity: 0.75; margin-top: 2px; font-weight: 500; font-style: italic;
   }
 
   /* ============ Option E — NASA Lights + Context (hybrid) ============ */
@@ -405,18 +443,18 @@
 <body>
 
 <header>
-  <h1>NASA-style Map Mockup — DKI Jakarta Emerging Zone</h1>
-  <p>3 visual direction untuk Luminositas Malam + Aktivitas Komersial + Detail Kawasan. Gunakan tab untuk switch.</p>
+  <h1>Pemetaan Aktivitas Ekonomi DKI Jakarta</h1>
+  <p>Visualisasi luminositas malam dan aktivitas komersial per kelurahan. Pilih tampilan di tab bawah ini.</p>
 </header>
 
 <div class="tabs">
-  <button class="tab-btn active" data-tab="F">★ Option F — Enlarge + Side Panel (NEW)</button>
-  <button class="tab-btn" data-tab="E">Option E — Lights + Context</button>
-  <button class="tab-btn" data-tab="D">Option D — Pure NASA Lights</button>
-  <button class="tab-btn" data-tab="A">Option A — Black Marble (polygon)</button>
-  <button class="tab-btn" data-tab="B">Option B — Dark Hybrid</button>
-  <button class="tab-btn" data-tab="C">Option C — Subtle Atmosphere</button>
-  <button class="tab-btn" data-tab="ref">Reference (current)</button>
+  <button class="tab-btn active" data-tab="F">Tampilan Utama</button>
+  <button class="tab-btn" data-tab="E">Lights + Context</button>
+  <button class="tab-btn" data-tab="D">Pure NASA Lights</button>
+  <button class="tab-btn" data-tab="A">Black Marble</button>
+  <button class="tab-btn" data-tab="B">Dark Hybrid</button>
+  <button class="tab-btn" data-tab="C">Subtle Atmosphere</button>
+  <button class="tab-btn" data-tab="ref">Referensi</button>
 </div>
 
 <!-- ============ OPTION F — Single Map + Layer Toggle + Filter Chips (Round 3) ============ -->
@@ -440,10 +478,12 @@
         </div>
       </div>
       <div class="map nasa-hybrid" id="map-F"></div>
+      <div class="filter-status" id="filter-status-F" style="display:none;"></div>
+      <div class="loading-overlay" id="loading-F" style="display:none;"><div class="spinner"></div><span>Memuat data...</span></div>
     </div>
     <aside class="side-panel" id="side-F">
       <div class="sp-section sp-filter">
-        <h4>Filter</h4>
+        <h4>Filter <button class="reset-filter-btn" id="reset-filter-F" title="Reset semua filter">Reset</button></h4>
         <div class="filter-group">
           <label class="filter-label" for="filter-kab">Kabupaten / Kotamadya</label>
           <select class="filter-select" id="filter-kab">
@@ -1665,16 +1705,79 @@ function refreshSidePanel() {
   }
 }
 
+// Round 5m: Reset semua filter ke default (kecuali layer toggles)
+function setupResetFilter() {
+  const btn = document.getElementById('reset-filter-F');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    FILTER_STATE.kab = 'all';
+    FILTER_STATE.kec = 'all';
+    FILTER_STATE.kelurahan = 'all';
+    FILTER_STATE.kategori = 'all';
+    document.getElementById('filter-kab').value = 'all';
+    repopulateKecDropdown();
+    repopulateKelurahanDropdown();
+    document.getElementById('filter-kategori').value = 'all';
+    const search = document.getElementById('search-F');
+    if (search) search.value = '';
+    rebuildMapLayers();
+    const m = ALL_MAPS['map-F'];
+    if (m) m.setView([-6.18, 106.84], 10.5, { animate: true });
+    refreshFilterStatusBadge();
+    updateUrlState();
+  });
+}
+
+// Round 5m: Filter status badge — tampilkan filter aktif di overlay peta
+function refreshFilterStatusBadge() {
+  const badge = document.getElementById('filter-status-F');
+  if (!badge) return;
+  const parts = [];
+  const kabPrefix = (k) => (k === '01' ? 'Kepulauan Seribu' : 'Jakarta ' + (KAB_NAMES[k] || ''));
+  if (FILTER_STATE.kelurahan !== 'all') {
+    parts.push(pcodeName(FILTER_STATE.kelurahan) + ', ' + kabPrefix(FILTER_STATE.kab));
+  } else if (FILTER_STATE.kec !== 'all') {
+    const kecName = (KEC_NAMES[FILTER_STATE.kab] || {})[FILTER_STATE.kec] || '';
+    parts.push((kecName ? 'Kec ' + kecName + ', ' : '') + kabPrefix(FILTER_STATE.kab));
+  } else if (FILTER_STATE.kab !== 'all') {
+    parts.push(kabPrefix(FILTER_STATE.kab));
+  }
+  if (FILTER_STATE.kategori !== 'all') {
+    const labels = { 'sangat-tinggi': 'Sangat Tinggi', 'tinggi': 'Tinggi', 'sedang': 'Sedang', 'rendah': 'Rendah' };
+    parts.push('Intensitas ' + (labels[FILTER_STATE.kategori] || FILTER_STATE.kategori));
+  }
+  if (FILTER_STATE.showPodes && FILTER_STATE.poiGroups.size > 0) {
+    parts.push(FILTER_STATE.poiGroups.size + ' kategori POI');
+  }
+  if (parts.length === 0) {
+    badge.style.display = 'none';
+    badge.innerHTML = '';
+    return;
+  }
+  badge.style.display = 'block';
+  badge.innerHTML = '<span class="fs-label">Filter Aktif</span>' + parts.join(' &middot; ');
+}
+
+// Round 5m: Loading overlay
+function showLoading() {
+  const el = document.getElementById('loading-F');
+  if (el) el.style.display = 'flex';
+}
+function hideLoading() {
+  const el = document.getElementById('loading-F');
+  if (el) el.style.display = 'none';
+}
+
 function buildSidePanel() {
   setupSearch();
-  // Round 5j: also build kelurahan dropdown initial state
-
   setupTabPills();
   setupLayerPills();
   setupFilterSelects();
+  setupResetFilter();
   repopulateKecDropdown();
   repopulateKelurahanDropdown();
   refreshSidePanel();
+  refreshFilterStatusBadge();
   // Auto-fill Top 1 jika belum ada selection (dan belum di-restore via URL)
   if (!PANEL_STATE.F.pcode) {
     const valueMap = getCurrentValueMap();
@@ -2048,13 +2151,41 @@ function rebuildMapLayers() {
   (map._sparkleLayers || []).forEach(l => map.removeLayer(l));
   if (map._poiCluster) map.removeLayer(map._poiCluster);
   if (map._hitLayer) map.removeLayer(map._hitLayer);
+  // Round 5m: clear empty-poi hint kalau ada
+  const oldHint = document.querySelector('#panel-F .empty-poi-hint');
+  if (oldHint) oldHint.remove();
   map._heatLayer = null;
   map._sparkleLayers = [];
   map._poiCluster = null;
   map._hitLayer = null;
+  // Round 5m: show loading kalau POI rendering (heavy)
+  const willRenderPOI = FILTER_STATE.showPodes && FILTER_STATE.poiGroups.size > 0 && OSM_POI;
+  if (willRenderPOI) showLoading();
   addMapLayers(map);
   refreshSidePanel();
+  refreshFilterStatusBadge();
   updateHeatRadius();
+  // Round 5m: empty POI hint kalau podes on + chips selected tapi 0 markers di area
+  if (willRenderPOI && map._poiCluster && map._poiCluster.getLayers().length === 0) {
+    showEmptyPoiHint();
+  }
+  if (willRenderPOI) setTimeout(hideLoading, 250);
+}
+
+// Round 5m: hint kalau POI category dipilih tapi 0 markers di filtered area
+function showEmptyPoiHint() {
+  const mapEl = document.getElementById('map-F');
+  if (!mapEl) return;
+  const hint = document.createElement('div');
+  hint.className = 'empty-poi-hint';
+  let areaName = 'wilayah ini';
+  if (FILTER_STATE.kelurahan !== 'all') areaName = pcodeName(FILTER_STATE.kelurahan);
+  else if (FILTER_STATE.kec !== 'all') areaName = (KEC_NAMES[FILTER_STATE.kab] || {})[FILTER_STATE.kec] || areaName;
+  else if (FILTER_STATE.kab !== 'all') areaName = KAB_NAMES[FILTER_STATE.kab] || areaName;
+  const groupLabels = { FNB: 'F&B', RETAIL: 'Retail', ENT: 'Hiburan', HEALTH: 'Kesehatan', FIN: 'Finansial', FUEL: 'SPBU' };
+  const cats = Array.from(FILTER_STATE.poiGroups).map(g => groupLabels[g] || g).join(', ');
+  hint.innerHTML = '<strong>Tidak ada data POI</strong>Tidak ditemukan ' + cats + ' di ' + areaName + '. Coba pilih kategori lain atau perluas area filter.';
+  mapEl.appendChild(hint);
 }
 
 // =============== Init after data loaded ==================
