@@ -227,19 +227,65 @@ button, .chip-action { transition: all var(--tr-base); }
 .folio { top: 0 !important; z-index: 30 !important; }
 .filter-bar { top: 33px !important; z-index: 25 !important; }
 
-/* ============ PETA SECTION (Round 5o + Round 5p enlarge) — scoped under .peta-scope ============ */
-/* Map shell: hero-style full-bleed, near-fullscreen height untuk impact maksimal. */
-.peta-scope { width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; padding: 0 24px; }
-.peta-scope .peta-shell { background: white; border: 1px solid var(--rule); margin: 0 auto; max-width: 1800px; }
+/* ============ PETA SECTION (Round 5q McKinsey hero treatment) — scoped .peta-scope ============ */
+/* Hero feel: dark bg, big Source Serif headline, generous breathing room (56-72px padding). */
+.peta-scope {
+  width: 100vw; position: relative; left: 50%; right: 50%;
+  margin-left: -50vw; margin-right: -50vw;
+  padding: 56px 64px 72px;
+  background: #051C2C;  /* navy-deep hero */
+  color: white;
+}
+.peta-scope > .rule-top {
+  border-top: 0; padding-top: 0;
+  max-width: 1700px; margin: 0 auto 36px;
+}
+/* Hero header overrides — McKinsey-style: large serif, hairline yellow accent */
+.peta-scope .badge {
+  background: rgba(255, 183, 0, 0.12); color: #FFE08A;
+  border: 1px solid rgba(255, 183, 0, 0.30);
+  padding: 4px 10px; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.peta-scope .badge .badge-dot { background: var(--yellow); }
+.peta-scope .eyebrow-roman {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  font-weight: 600; margin-top: 16px; display: block;
+}
+.peta-scope .eyebrow-roman::before {
+  background: var(--yellow); width: 32px; margin-right: 14px;
+}
+.peta-scope h2.serif-display {
+  color: white !important;
+  font-family: 'Source Serif 4', Georgia, serif !important;
+  font-size: clamp(48px, 5.6vw, 84px) !important;
+  font-weight: 500; line-height: 1.04; letter-spacing: -0.018em;
+  margin-top: 20px; max-width: 1200px;
+}
+.peta-scope p.muted, .peta-scope p {
+  color: rgba(255, 255, 255, 0.75) !important;
+  font-size: 16px; line-height: 1.55; margin-top: 20px;
+  max-width: 760px;
+}
+.peta-scope p strong { color: white; }
+
+/* Map shell — borderless, seamless integrated dengan dark bg */
+.peta-scope .peta-shell {
+  background: transparent; border: 0;
+  margin: 36px auto 0; max-width: 1700px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45);
+}
 .peta-scope .layout-enlarge {
-  display: grid; grid-template-columns: 1fr 320px; gap: 0;
+  display: grid; grid-template-columns: 1fr 340px; gap: 0;
   margin: 0; padding: 0;
 }
-.peta-scope .map-card-large { background: #0a0a0a; border: 0; border-right: 1px solid var(--rule); position: relative; overflow: hidden; }
-.peta-scope .map-card-large .map { height: clamp(720px, 88vh, 940px); position: relative; }
+.peta-scope .map-card-large { background: #0a0a0a; border: 0; position: relative; overflow: hidden; }
+.peta-scope .map-card-large .map { height: clamp(720px, 86vh, 920px); position: relative; }
+
 @media (max-width: 1100px) {
+  .peta-scope { padding: 40px 32px 48px; }
+  .peta-scope h2.serif-display { font-size: clamp(36px, 6vw, 56px) !important; }
   .peta-scope .layout-enlarge { grid-template-columns: 1fr; }
-  .peta-scope .map-card-large { border-right: 0; border-bottom: 1px solid var(--rule); }
   .peta-scope .map-card-large .map { height: clamp(500px, 65vh, 680px); }
   .peta-scope .side-panel { position: static !important; max-height: none !important; }
 }
