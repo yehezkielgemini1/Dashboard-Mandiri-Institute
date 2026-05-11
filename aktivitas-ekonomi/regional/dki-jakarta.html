@@ -22,6 +22,7 @@
   --navy: #003D79; --navy-deep: #002852; --navy-soft: #1A5394;
   --sky: #67B2E8; --sky-soft: #A9C4DF;
   --yellow: #FFB700; --yellow-soft: #FFE08A;
+  --ice-blue: #00A3E0; --ice-blue-soft: #67C7E8; --ice-blue-deep: #0078A8;
   --ink: #051C2C; --ink-soft: #2A3F52;
   --rule: #E5E8EC; --rule-strong: #D0D5DD;
   --muted: #667085; --muted-soft: #98A2B3;
@@ -240,20 +241,20 @@ button, .chip-action { transition: all var(--tr-base); }
   border-top: 0; padding-top: 0;
   max-width: 1700px; margin: 0 auto 36px;
 }
-/* Hero header overrides — McKinsey-style: large serif, hairline yellow accent */
+/* Hero header overrides — McKinsey-style: large serif, ice blue accent (Round 5r) */
 .peta-scope .badge {
-  background: rgba(255, 183, 0, 0.12); color: #FFE08A;
-  border: 1px solid rgba(255, 183, 0, 0.30);
+  background: rgba(0, 163, 224, 0.12); color: #67C7E8;
+  border: 1px solid rgba(0, 163, 224, 0.35);
   padding: 4px 10px; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase;
 }
-.peta-scope .badge .badge-dot { background: var(--yellow); }
+.peta-scope .badge .badge-dot { background: var(--ice-blue); }
 .peta-scope .eyebrow-roman {
   color: rgba(255, 255, 255, 0.55);
   font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
   font-weight: 600; margin-top: 16px; display: block;
 }
 .peta-scope .eyebrow-roman::before {
-  background: var(--yellow); width: 32px; margin-right: 14px;
+  background: var(--ice-blue); width: 32px; margin-right: 14px;
 }
 .peta-scope h2.serif-display {
   color: white !important;
@@ -295,10 +296,10 @@ button, .chip-action { transition: all var(--tr-base); }
 .peta-scope .map.nasa-hybrid .leaflet-tile-pane .leaflet-layer:nth-child(2) { opacity: 0.35 !important; }
 
 .peta-scope .side-panel {
-  background: white; border: 1px solid var(--rule);
-  padding: 18px 20px;
-  display: flex; flex-direction: column; gap: 22px;
-  font-size: 12px;
+  background: #FFFFFF; border: 1px solid #E2E8F0;
+  padding: 22px 22px;
+  display: flex; flex-direction: column; gap: 24px;
+  font-size: 12.5px;
   position: sticky; top: 60px;
   align-self: start;
   max-height: calc(100vh - 76px);
@@ -338,7 +339,7 @@ button, .chip-action { transition: all var(--tr-base); }
 }
 .peta-scope .top5-list li:last-child { border-bottom: 0; }
 .peta-scope .top5-list li:hover { background: rgba(255,183,0,0.08); }
-.peta-scope .top5-list li .rank { font-weight: 700; color: var(--yellow); width: 18px; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.peta-scope .top5-list li .rank { font-weight: 700; color: var(--ice-blue); width: 18px; flex-shrink: 0; font-variant-numeric: tabular-nums; }
 .peta-scope .top5-list li .name { flex: 1; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .peta-scope .top5-list li .val { font-weight: 600; color: var(--navy); font-variant-numeric: tabular-nums; }
 
@@ -408,7 +409,7 @@ button, .chip-action { transition: all var(--tr-base); }
   font-size: 10.5px; color: var(--muted);
 }
 .peta-scope .trend-labels strong { color: var(--ink); font-variant-numeric: tabular-nums; }
-.peta-scope .trend-labels .trend-delta strong { color: var(--yellow); }
+.peta-scope .trend-labels .trend-delta strong { color: var(--ice-blue); }
 .peta-scope .caveat { font-size: 9.5px; color: var(--muted); font-style: italic; margin-top: 8px; line-height: 1.4; }
 
 .peta-scope .neighbor-list { display: flex; flex-direction: column; gap: 0; margin-top: 4px; }
@@ -420,7 +421,7 @@ button, .chip-action { transition: all var(--tr-base); }
 .peta-scope .neighbor-row:last-child { border-bottom: 0; }
 .peta-scope .neighbor-row.neighbor-target { background: rgba(0,61,121,0.06); margin: 0 -4px; padding-left: 8px; padding-right: 8px; }
 .peta-scope .neighbor-row .rank { width: 18px; flex-shrink: 0; color: var(--muted); font-weight: 700; text-align: center; }
-.peta-scope .neighbor-row.neighbor-target .rank { color: var(--yellow); }
+.peta-scope .neighbor-row.neighbor-target .rank { color: var(--ice-blue); }
 .peta-scope .neighbor-row .name { flex: 1; color: var(--ink); font-family: 'Courier New', monospace; font-size: 10.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .peta-scope .neighbor-row .val { font-weight: 600; font-variant-numeric: tabular-nums; }
 .peta-scope .neighbor-row .val-up { color: #C8102E; }
@@ -447,7 +448,7 @@ button, .chip-action { transition: all var(--tr-base); }
   cursor: pointer; font-family: inherit;
   transition: all 0.15s ease;
 }
-.peta-scope .layer-pill.active { background: var(--yellow); color: var(--ink); }
+.peta-scope .layer-pill.active { background: var(--ice-blue); color: white; }
 .peta-scope .layer-pill:hover:not(.active) { color: white; background: rgba(255,255,255,0.06); }
 .peta-scope .layer-pill[data-layer="podes"] { background: rgba(0,0,0,0); color: rgba(103, 178, 232, 0.85); border-left: 1px solid rgba(255,255,255,0.10); }
 .peta-scope .layer-pill[data-layer="podes"].active { background: var(--sky); color: var(--ink); }
@@ -501,7 +502,7 @@ button, .chip-action { transition: all var(--tr-base); }
   font-size: 11px; font-weight: 500; letter-spacing: 0.02em;
   pointer-events: none;
 }
-.peta-scope .filter-status .fs-label { color: var(--sky); font-weight: 700; margin-right: 6px; letter-spacing: 0.08em; text-transform: uppercase; font-size: 9.5px; }
+.peta-scope .filter-status .fs-label { color: var(--ice-blue-soft); font-weight: 700; margin-right: 6px; letter-spacing: 0.08em; text-transform: uppercase; font-size: 9.5px; }
 .peta-scope .loading-overlay {
   position: absolute; inset: 0; z-index: 800;
   align-items: center; justify-content: center; gap: 12px;
@@ -511,7 +512,7 @@ button, .chip-action { transition: all var(--tr-base); }
 }
 .peta-scope .loading-overlay .spinner {
   width: 22px; height: 22px; border: 2.5px solid rgba(255,255,255,0.2);
-  border-top-color: var(--yellow); border-radius: 50%;
+  border-top-color: var(--ice-blue); border-radius: 50%;
   animation: peta-spin 0.8s linear infinite;
 }
 @keyframes peta-spin { to { transform: rotate(360deg); } }
@@ -522,7 +523,7 @@ button, .chip-action { transition: all var(--tr-base); }
   font-size: 12px; font-weight: 500; max-width: 320px; text-align: center;
   z-index: 600; pointer-events: none;
 }
-.peta-scope .empty-poi-hint strong { color: var(--yellow); display: block; margin-bottom: 4px; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+.peta-scope .empty-poi-hint strong { color: var(--ice-blue); display: block; margin-bottom: 4px; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
 
 /* POI category chips + custom pin markers */
 .peta-scope .poi-chips {
