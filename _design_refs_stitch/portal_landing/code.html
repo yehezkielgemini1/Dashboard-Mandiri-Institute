@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mandiri Institute</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Source+Serif+4:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<style data-purpose="custom-fonts">
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    h1, h2, h3, h4, h5, h6, .font-serif {
+      font-family: 'Source Serif 4', serif;
+    }
+    .text-mandiri-navy { color: #003D79; }
+    .bg-mandiri-navy { background-color: #003D79; }
+    .text-mandiri-deep { color: #002852; }
+    .bg-mandiri-deep { background-color: #002852; }
+    .text-ice-blue { color: #00A3E0; }
+    .bg-ice-blue { background-color: #00A3E0; }
+    .border-ice-blue { border-color: #00A3E0; }
+  </style>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "secondary-fixed-dim": "#81cfff",
+                "tertiary-fixed-dim": "#ffba26",
+                "background": "#f8f9ff",
+                "on-primary": "#ffffff",
+                "inverse-surface": "#233144",
+                "secondary-fixed": "#c6e7ff",
+                "on-secondary-container": "#004b69",
+                "error": "#ba1a1a",
+                "primary-container": "#003d79",
+                "on-primary-fixed": "#001b3c",
+                "surface": "#f8f9ff",
+                "primary-fixed": "#d5e3ff",
+                "on-secondary-fixed-variant": "#004c6b",
+                "on-surface-variant": "#434750",
+                "secondary-container": "#41befd",
+                "on-primary-fixed-variant": "#134783",
+                "surface-container-lowest": "#ffffff",
+                "surface-container-high": "#dde9ff",
+                "on-tertiary-fixed": "#271900",
+                "surface-bright": "#f8f9ff",
+                "error-container": "#ffdad6",
+                "inverse-on-surface": "#ebf1ff",
+                "on-surface": "#0d1c2f",
+                "tertiary-container": "#523900",
+                "inverse-primary": "#a8c8ff",
+                "surface-tint": "#335f9c",
+                "surface-variant": "#d5e3fd",
+                "primary": "#002752",
+                "outline": "#737781",
+                "on-primary-container": "#80aaec",
+                "primary-fixed-dim": "#a8c8ff",
+                "on-secondary": "#ffffff",
+                "on-error-container": "#93000a",
+                "surface-container": "#e6eeff",
+                "on-tertiary-fixed-variant": "#5e4100",
+                "secondary": "#00658d",
+                "outline-variant": "#c3c6d1",
+                "tertiary-fixed": "#ffdea9",
+                "on-error": "#ffffff",
+                "on-background": "#0d1c2f",
+                "tertiary": "#372400",
+                "on-tertiary-container": "#dc9d00",
+                "surface-container-low": "#eff4ff",
+                "on-tertiary": "#ffffff",
+                "on-secondary-fixed": "#001e2d",
+                "surface-dim": "#ccdbf4",
+                "surface-container-highest": "#d5e3fd"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+        },
+        "spacing": {
+                "gutter": "32px",
+                "unit": "8px",
+                "section-padding": "80px",
+                "container-max": "1280px",
+                "card-gap": "24px"
+        },
+        "fontFamily": {
+                "headline-lg-mobile": [
+                        "Source Serif 4"
+                ],
+                "display-lg": [
+                        "Source Serif 4"
+                ],
+                "headline-lg": [
+                        "Source Serif 4"
+                ],
+                "label-caps": [
+                        "Source Sans 3"
+                ],
+                "body-sm": [
+                        "Source Sans 3"
+                ],
+                "body-md": [
+                        "Source Sans 3"
+                ],
+                "headline-xl": [
+                        "Source Serif 4"
+                ]
+        },
+        "fontSize": {
+                "headline-lg-mobile": [
+                        "24px",
+                        {
+                                "lineHeight": "1.3",
+                                "fontWeight": "500"
+                        }
+                ],
+                "display-lg": [
+                        "48px",
+                        {
+                                "lineHeight": "1.1",
+                                "letterSpacing": "0.02em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-lg": [
+                        "28px",
+                        {
+                                "lineHeight": "1.3",
+                                "letterSpacing": "0.01em",
+                                "fontWeight": "500"
+                        }
+                ],
+                "label-caps": [
+                        "12px",
+                        {
+                                "lineHeight": "1",
+                                "letterSpacing": "0.08em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "body-sm": [
+                        "14px",
+                        {
+                                "lineHeight": "1.5",
+                                "fontWeight": "400"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "1.6",
+                                "letterSpacing": "0.01em",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-xl": [
+                        "36px",
+                        {
+                                "lineHeight": "1.2",
+                                "letterSpacing": "0.01em",
+                                "fontWeight": "600"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+</head>
+<body class="bg-white text-gray-800">
+<!-- BEGIN: MainHeader -->
+<header class="border-b border-gray-200">
+<div class="max-w-7xl mx-auto px-8 sm:px-12 lg:px-16">
+<div class="flex justify-between items-center h-16">
+<div class="flex-shrink-0 flex items-center">
+<a class="text-2xl font-bold text-mandiri-navy font-serif tracking-tight" href="#">Mandiri Institute</a>
+</div>
+<nav class="hidden md:flex space-x-8">
+<a class="text-gray-600 hover:text-ice-blue px-3 py-2 text-sm font-medium border-b-2 border-transparent hover:border-ice-blue transition-colors" href="#">Research</a>
+<a class="text-gray-600 hover:text-ice-blue px-3 py-2 text-sm font-medium border-b-2 border-transparent hover:border-ice-blue transition-colors" href="#">Insights</a>
+<a class="text-gray-600 hover:text-ice-blue px-3 py-2 text-sm font-medium border-b-2 border-transparent hover:border-ice-blue transition-colors" href="#">Economy</a>
+<a class="text-gray-600 hover:text-ice-blue px-3 py-2 text-sm font-medium border-b-2 border-transparent hover:border-ice-blue transition-colors" href="#">Markets</a>
+</nav>
+<div class="flex items-center space-x-4">
+<button class="text-gray-500 hover:text-ice-blue transition-colors">
+<svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+<a class="text-sm font-semibold text-gray-600 hover:text-ice-blue uppercase tracking-wider transition-colors" href="#">Log In</a>
+</div>
+</div>
+</div>
+</header>
+<!-- END: MainHeader -->
+<main>
+<!-- BEGIN: Hero Section -->
+<section class="py-20 text-center max-w-5xl mx-auto px-8">
+<div class="w-12 h-1 bg-ice-blue mx-auto mb-6"></div>
+<p class="text-xs font-bold tracking-[0.2em] text-ice-blue uppercase mb-6">Welcome to Mandiri Institute</p>
+<h1 class="text-4xl sm:text-5xl lg:text-6xl font-serif text-mandiri-navy leading-tight font-light">Unlocking the Potential of Those Who Advance the World</h1>
+</section>
+<!-- END: Hero Section -->
+<!-- BEGIN: Featured Carousel Section -->
+<section class="pb-24 max-w-7xl mx-auto px-8 lg:px-16 overflow-hidden relative">
+<div class="relative flex justify-center items-center h-[500px] w-full mx-auto space-x-4 md:space-x-8" id="carousel-container">
+<!-- Carousel Items will be manipulated by JS to cycle classes -->
+<!-- Item 1 (Far Left) -->
+<div class="carousel-item hidden lg:block w-48 h-[300px] relative opacity-40 transform scale-90 transition-all duration-700 ease-in-out shrink-0" data-pos="1">
+<img alt="Background Data" class="w-full h-full object-cover rounded-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8ekli1OaM_4GzlbQ47cLuX7fIEUSATDyxHGtql0egqaip3lS7lbOA7fqbt1q4Ppfmcmxx4LeY3XOfJCzHQJi3ccb_morUbnTi0NeDIvDIsH7mEap60mRgaUs1-PQGVH90toaSHF06B9xEwwPZnyw2eni4Klu0yQPRBHMk9kFsG4M_hGtspHE7lSteYlqGYfEXO5DE-N9gxM2i62gh85ewUb7maUO5YTe_Rp1aMc8pyICCXVeB37NmcaLCr55dALrgv7oXHT8s8pg"/>
+</div>
+<!-- Item 2 (Mid Left) -->
+<div class="carousel-item hidden md:block w-56 h-[380px] relative opacity-60 transform scale-95 transition-all duration-700 ease-in-out shrink-0" data-pos="2">
+<img alt="Previous Article" class="w-full h-full object-cover rounded-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1j4OQYWzjytiKn2BR6-0Fr2pUlIq5NhX-WIErn-A7NeQLVppHUN2OsdbNwW9XYNhpOx_ms0gijucacEiS-7HcuuesedCMyDvV7sSvnq9Tmoh5MNR-ckIeJO_gRIn1ToQNXxGC-GC8W43BzqQe2yvvjErjwooVTqm9vCE6Bk6lg5-UGZ295m8-_fGykiWZR36-H1sIWYPwWwocSBZwTDETb75ydVstPPsENLIb0mX6i6OXsRdHU1EQzfqa7H-Kl8doITkrfDHhwj4"/>
+</div>
+<!-- Item 3 (Center) -->
+<div class="carousel-item w-80 h-[420px] md:w-96 md:h-[480px] relative z-10 shadow-2xl transition-all duration-700 ease-in-out shrink-0" data-pos="3">
+<img alt="Membaca Indonesia melalui data" class="w-full h-full object-cover rounded-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEvK6eM2KhbFrnVxWVtWcIqYh054OEmJUkwhmhfOd-jDNrP-FsUrKJQwfOSwL6Laz0PU228cc0pgyNXmqHVdlKl9ojvm9XGBUWtj1mpZIwfS8wwZj1-WwqHkt0J6cSBkxLMuCbPp3uDN7K_j22Sx1bkSCzL6glbORlK5jkhulNbn7T3V5Ur3mJ4mBw7b3s1n1H9j8fM0jBPrZaCbRTTe0EEsiX_tkUtgxTNbv0xPUYrZOxsoBDhL_6p1L3pDtNaXXtSwTcyaoeTfA"/>
+<div class="absolute top-4 left-4 border border-ice-blue text-ice-blue text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest bg-white/90 backdrop-blur-sm">Executive Brief</div>
+<div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-6 rounded-sm shadow-lg transition-opacity duration-700 ease-in-out content-overlay border-l-4 border-ice-blue">
+<p class="text-[10px] text-ice-blue uppercase tracking-[0.15em] mb-2 font-bold">Article | November 18, 2025</p>
+<h2 class="text-2xl font-serif text-mandiri-deep leading-tight font-medium">Membaca Indonesia melalui data</h2>
+</div>
+</div>
+<!-- Item 4 (Mid Right) -->
+<div class="carousel-item hidden md:block w-56 h-[380px] relative opacity-60 transform scale-95 transition-all duration-700 ease-in-out shrink-0" data-pos="4">
+<img alt="Next Article" class="w-full h-full object-cover rounded-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfI24dniAVqT5dlaIsRUICFZzZYxV_CuGTWNN4XUE9GF0H_2IOB_wodsuRGByil7HjqVARea29Ciw7Lu1Fb2zzGw4uIDANjkOeqt9G-v0EW7eVmrNbc8RzhQWKoCItphwNbOeCaCViyzv_bhHlOYtsqCW1RCHPbSE5gnyvn-JNpzKb5xH-NqCj2cQpF7ahfodCSqYX0DO02Bp2ffBtjAjhz5HM9Pgr0WjkdV8PDypqyk47-_hcCSpVYyUbw5MpG9mAVx-iYKUrtZM"/>
+</div>
+<!-- Item 5 (Far Right) -->
+<div class="carousel-item hidden lg:block w-48 h-[300px] relative opacity-40 transform scale-90 transition-all duration-700 ease-in-out shrink-0" data-pos="5">
+<img alt="Market Data" class="w-full h-full object-cover rounded-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB31XsFL8NTX2jQeFUVp53mZs33ThUhnMcOz3lvm6Z2JOClvucYxWXAdxwlBRTW0iveTF3cSjEpG6FfgSmne0fccQ57wdCsifEjz7IKULwoTiYlopmC5QwX2RMX0inzyiy-vU4CkbitJUoKzP6X7KbxoLjrT7bMcF52xr3wT854OttqkBMD9EOs8modQ_Yn1M7HVy9zMchqnn5ujlhEqj8_nw7rbJA90yP6Qr95mz-bBZPkeyEVw2-AA-dwXxd1QeOuhFsFlhfjRfk"/>
+</div>
+</div>
+<!-- Carousel Controls -->
+<div class="flex justify-center space-x-4 mt-12">
+<button class="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:border-ice-blue hover:text-ice-blue transition-colors bg-white shadow-sm" id="btn-prev">
+<svg class="h-4 w-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+<button class="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:border-ice-blue hover:text-ice-blue transition-colors bg-white shadow-sm" id="btn-pause">
+<svg class="h-4 w-4" fill="currentColor" viewbox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z"></path></svg>
+</button>
+<button class="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:border-ice-blue hover:text-ice-blue transition-colors bg-white shadow-sm" id="btn-next">
+<svg class="h-4 w-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('carousel-container');
+    const prevBtn = document.getElementById('btn-prev');
+    const nextBtn = document.getElementById('btn-next');
+    const pauseBtn = document.getElementById('btn-pause');
+    
+    // Classes for positions: 1 (far left) to 5 (far right)
+    const positionClasses = [
+      ['hidden', 'lg:block', 'w-48', 'h-[300px]', 'opacity-40', 'scale-90', 'z-0'],
+      ['hidden', 'md:block', 'w-56', 'h-[380px]', 'opacity-60', 'scale-95', 'z-0'],
+      ['w-80', 'h-[420px]', 'md:w-96', 'md:h-[480px]', 'z-10', 'shadow-2xl', 'scale-100', 'opacity-100'],
+      ['hidden', 'md:block', 'w-56', 'h-[380px]', 'opacity-60', 'scale-95', 'z-0'],
+      ['hidden', 'lg:block', 'w-48', 'h-[300px]', 'opacity-40', 'scale-90', 'z-0']
+    ];
+
+    let items = Array.from(container.querySelectorAll('.carousel-item'));
+    let autoSlideInterval;
+    let isPaused = false;
+
+    function updateCarousel() {
+      items.forEach((item, index) => {
+        // Remove all position classes
+        positionClasses.forEach(clsArray => item.classList.remove(...clsArray));
+        // Add classes for current position
+        item.classList.add(...positionClasses[index]);
+        
+        // Handle content overlay visibility (only show on center item)
+        const overlay = item.querySelector('.content-overlay');
+        const badge = item.querySelector('.border-ice-blue');
+        if (overlay) overlay.style.opacity = index === 2 ? '1' : '0';
+        if (badge) badge.style.opacity = index === 2 ? '1' : '0';
+      });
+    }
+
+    function slideNext() {
+      const firstItem = items.shift();
+      items.push(firstItem);
+      container.appendChild(firstItem);
+      updateCarousel();
+    }
+
+    function slidePrev() {
+      const lastItem = items.pop();
+      items.unshift(lastItem);
+      container.insertBefore(lastItem, container.firstChild);
+      updateCarousel();
+    }
+
+    function startAutoSlide() {
+      autoSlideInterval = setInterval(slideNext, 4000);
+    }
+
+    function stopAutoSlide() {
+      clearInterval(autoSlideInterval);
+    }
+
+    nextBtn.addEventListener('click', () => {
+      slideNext();
+      if (!isPaused) { stopAutoSlide(); startAutoSlide(); }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      slidePrev();
+      if (!isPaused) { stopAutoSlide(); startAutoSlide(); }
+    });
+
+    pauseBtn.addEventListener('click', () => {
+      isPaused = !isPaused;
+      if (isPaused) {
+        stopAutoSlide();
+        pauseBtn.innerHTML = '<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M8 5v10l7-5-7-5z"/></svg>';
+      } else {
+        startAutoSlide();
+        pauseBtn.innerHTML = '<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>';
+      }
+    });
+
+    // Initialize overlay opacity
+    updateCarousel();
+    startAutoSlide();
+  });
+</script>
+</section>
+<!-- END: Featured Carousel Section -->
+<!-- BEGIN: Dashboard Sections -->
+<!-- Section 1: Annual Dashboards (Regular) -->
+<section class="py-24 bg-gray-50 border-t border-gray-200">
+<div class="max-w-7xl mx-auto px-8 lg:px-16">
+<div class="mb-12 flex items-center">
+<h2 class="text-3xl font-serif text-mandiri-navy font-medium tracking-tight">Annual Dashboards</h2>
+<div class="ml-6 flex-grow h-px bg-gray-300"></div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Card 1: Consumer Consumption -->
+<article class="relative h-[480px] group overflow-hidden rounded-sm shadow-sm hover:shadow-xl transition-shadow flex flex-col justify-end bg-gray-200">
+<div class="absolute inset-0 bg-gray-200"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
+<div class="absolute top-6 left-6 bg-white/90 text-ice-blue text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest backdrop-blur-sm">Retail Sector</div>
+<div class="relative z-10 p-6 bg-white m-4 rounded-sm shadow-lg border-t-4 border-ice-blue">
+<p class="text-[10px] text-ice-blue uppercase tracking-[0.15em] mb-2 font-bold">Dashboard | 2025</p>
+<h3 class="text-2xl font-serif text-mandiri-navy mb-3 font-medium">Consumer Consumption</h3>
+<p class="text-sm text-gray-600 mb-6 line-clamp-3 leading-relaxed">Aggregate analysis of household expenditure patterns and retail momentum across Indonesia's demographic segments.</p>
+<a class="inline-flex items-center text-sm font-bold text-mandiri-navy hover:text-ice-blue transition-colors uppercase tracking-wider" href="#">Explore Data <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>
+</div>
+</article>
+<!-- Card 2: Social Class Mobility -->
+<article class="relative h-[480px] group overflow-hidden rounded-sm shadow-sm hover:shadow-xl transition-shadow flex flex-col justify-end bg-gray-200">
+<div class="absolute inset-0 bg-gray-200"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
+<div class="absolute top-6 left-6 bg-white/90 text-ice-blue text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest backdrop-blur-sm">Demographics</div>
+<div class="relative z-10 p-6 bg-white m-4 rounded-sm shadow-lg border-t-4 border-ice-blue">
+<p class="text-[10px] text-ice-blue uppercase tracking-[0.15em] mb-2 font-bold">Dashboard | 2025</p>
+<h3 class="text-2xl font-serif text-mandiri-navy mb-3 font-medium">Social Class Mobility</h3>
+<p class="text-sm text-gray-600 mb-6 line-clamp-3 leading-relaxed">Longitudinal study on wealth distribution and the expansion of the middle-class as a driver of national economic stability.</p>
+<a class="inline-flex items-center text-sm font-bold text-mandiri-navy hover:text-ice-blue transition-colors uppercase tracking-wider" href="#">Explore Data <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>
+</div>
+</article>
+<!-- Card 3: MSME National -->
+<article class="relative h-[480px] group overflow-hidden rounded-sm shadow-sm hover:shadow-xl transition-shadow flex flex-col justify-end bg-gray-200">
+<div class="absolute inset-0 bg-gray-200"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
+<div class="absolute top-6 left-6 bg-white/90 text-ice-blue text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest backdrop-blur-sm">Digital Economy</div>
+<div class="relative z-10 p-6 bg-white m-4 rounded-sm shadow-lg border-t-4 border-ice-blue">
+<p class="text-[10px] text-ice-blue uppercase tracking-[0.15em] mb-2 font-bold">Dashboard | 2025</p>
+<h3 class="text-2xl font-serif text-mandiri-navy mb-3 font-medium">MSME National</h3>
+<p class="text-sm text-gray-600 mb-6 line-clamp-3 leading-relaxed">Comprehensive mapping of Indonesia's 57 million MSMEs by sector, scale, and regional economic contribution.</p>
+<a class="inline-flex items-center text-sm font-bold text-mandiri-navy hover:text-ice-blue transition-colors uppercase tracking-wider" href="#">Explore Data <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>
+</div>
+</article>
+</div>
+</div>
+</section>
+<!-- Section 2: Thematic Research -->
+<section class="py-24 bg-white border-t border-gray-200">
+<div class="max-w-7xl mx-auto px-8 lg:px-16">
+<div class="mb-12 flex items-center">
+<h2 class="text-3xl font-serif text-mandiri-navy font-medium tracking-tight">Thematic Research</h2>
+<div class="ml-6 flex-grow h-px bg-gray-300"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Card 1: Energy & BBM -->
+<article class="relative h-[400px] group overflow-hidden rounded-sm shadow-sm flex flex-col justify-end bg-gray-200">
+<div class="absolute inset-0 bg-gray-200"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
+<div class="absolute top-6 left-6 bg-white/90 text-ice-blue text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest backdrop-blur-sm">Energy Sector</div>
+<div class="relative z-10 p-6 bg-white m-4 rounded-sm shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 border-l-4 border-ice-blue">
+<p class="text-[10px] text-ice-blue uppercase tracking-[0.15em] mb-2 font-bold">Research | 2025</p>
+<h3 class="text-xl font-serif text-mandiri-navy mb-3 font-medium">Energy &amp; BBM</h3>
+<p class="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">Thematic assessment of subsidized fuel consumption dynamics and the impact of energy policy on household welfare.</p>
+<a class="inline-flex items-center text-sm font-bold text-mandiri-navy hover:text-ice-blue transition-colors uppercase tracking-wider" href="#">Explore Data <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>
+</div>
+</article>
+<!-- Card 2: Food Security -->
+<article class="relative h-[400px] group overflow-hidden rounded-sm shadow-sm flex flex-col justify-end bg-gray-200">
+<div class="absolute inset-0 bg-gray-200"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
+<div class="absolute top-6 left-6 bg-white/90 text-ice-blue text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest backdrop-blur-sm">Commodities</div>
+<div class="relative z-10 p-6 bg-white m-4 rounded-sm shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 border-l-4 border-ice-blue">
+<p class="text-[10px] text-ice-blue uppercase tracking-[0.15em] mb-2 font-bold">Research | 2025</p>
+<h3 class="text-xl font-serif text-mandiri-navy mb-3 font-medium">Food Security</h3>
+<p class="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">Strategic monitoring of food availability and household access using the FAO-standard FIES framework.</p>
+<a class="inline-flex items-center text-sm font-bold text-mandiri-navy hover:text-ice-blue transition-colors uppercase tracking-wider" href="#">Explore Data <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>
+</div>
+</article>
+<!-- Card 3: Health Profile -->
+<article class="relative h-[400px] group overflow-hidden rounded-sm shadow-sm flex flex-col justify-end bg-gray-200">
+<div class="absolute inset-0 bg-gray-200"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
+<div class="absolute top-6 left-6 bg-white/90 text-ice-blue text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest backdrop-blur-sm">Healthcare</div>
+<div class="relative z-10 p-6 bg-white m-4 rounded-sm shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 border-l-4 border-ice-blue">
+<p class="text-[10px] text-ice-blue uppercase tracking-[0.15em] mb-2 font-bold">Research | 2026</p>
+<h3 class="text-xl font-serif text-mandiri-navy mb-3 font-medium">Health Profile</h3>
+<p class="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">Analytical review of aging demographics, JKN coverage effectiveness, and healthcare spending burdens.</p>
+<a class="inline-flex items-center text-sm font-bold text-mandiri-navy hover:text-ice-blue transition-colors uppercase tracking-wider" href="#">Explore Data <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>
+</div>
+</article>
+<!-- Card 4: Priority Mapping/MBG -->
+<article class="relative h-[400px] group overflow-hidden rounded-sm shadow-sm flex flex-col justify-end bg-gray-200">
+<div class="absolute inset-0 bg-gray-200"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
+<div class="absolute top-6 left-6 bg-white/90 text-ice-blue text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest backdrop-blur-sm">Public Policy</div>
+<div class="relative z-10 p-6 bg-white m-4 rounded-sm shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 border-l-4 border-ice-blue">
+<p class="text-[10px] text-ice-blue uppercase tracking-[0.15em] mb-2 font-bold">Research | 2026</p>
+<h3 class="text-xl font-serif text-mandiri-navy mb-3 font-medium">Priority Mapping / MBG</h3>
+<p class="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">Gap analysis cross-referencing nutritional program readiness with regional stunting and food insecurity data.</p>
+<a class="inline-flex items-center text-sm font-bold text-mandiri-navy hover:text-ice-blue transition-colors uppercase tracking-wider" href="#">Explore Data <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>
+</div>
+</article>
+</div>
+</div>
+</section>
+<!-- Section 3: Key Insights (Replaces Research Initiatives) -->
+<section class="py-24 bg-mandiri-deep border-t border-gray-200">
+<div class="max-w-7xl mx-auto px-8 lg:px-16">
+<div class="mb-12 flex items-center">
+<h2 class="text-3xl font-serif text-white font-medium tracking-tight">Key Insights</h2>
+<div class="ml-6 flex-grow h-px bg-mandiri-navy"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Card 1: Vehicle Sales & Logistics -->
+<article class="flex flex-col md:flex-row border border-gray-200/20 rounded-sm overflow-hidden hover:shadow-2xl transition-shadow bg-white">
+<div class="md:w-2/5 h-64 md:h-auto relative bg-gray-200">
+<div class="absolute inset-0 bg-gray-200"></div>
+</div>
+<div class="p-8 md:w-3/5 flex flex-col justify-center border-t-4 md:border-t-0 md:border-l-4 border-ice-blue">
+<div class="inline-block px-3 py-1 bg-gray-100 text-ice-blue text-[10px] font-bold rounded-sm uppercase tracking-[0.15em] mb-4 self-start">Logistics</div>
+<h3 class="text-2xl font-serif text-mandiri-navy mb-3 font-medium">Vehicle Sales &amp; Logistics</h3>
+<p class="text-sm text-gray-600 mb-8 leading-relaxed">Strategic assessment of automotive credit potential and supply chain logistics across 540 districts.</p>
+<a class="inline-flex items-center text-sm font-bold text-mandiri-navy hover:text-ice-blue transition-colors mt-auto uppercase tracking-wider" href="#">Explore Data <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>
+</div>
+</article>
+<!-- Card 2: Economic Activity -->
+<article class="flex flex-col md:flex-row border border-gray-200/20 rounded-sm overflow-hidden hover:shadow-2xl transition-shadow bg-white">
+<div class="md:w-2/5 h-64 md:h-auto relative bg-gray-200">
+<div class="absolute inset-0 bg-gray-200"></div>
+</div>
+<div class="p-8 md:w-3/5 flex flex-col justify-center border-t-4 md:border-t-0 md:border-l-4 border-ice-blue">
+<div class="inline-block px-3 py-1 bg-gray-100 text-ice-blue text-[10px] font-bold rounded-sm uppercase tracking-[0.15em] mb-4 self-start">Logistics</div>
+<h3 class="text-2xl font-serif text-mandiri-navy mb-3 font-medium">Economic Activity</h3>
+<p class="text-sm text-gray-600 mb-8 leading-relaxed">Spatial analysis of national economic vitality using NASA VIIRS night-light data and commercial POI density.</p>
+<a class="inline-flex items-center text-sm font-bold text-mandiri-navy hover:text-ice-blue transition-colors mt-auto uppercase tracking-wider" href="#">Explore Data <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>
+</div>
+</article>
+</div>
+</div>
+</section>
+<!-- END: Dashboard Sections -->
+</main>
+<!-- BEGIN: MainFooter -->
+<footer class="bg-gray-50 border-t border-gray-200 py-16">
+<div class="max-w-7xl mx-auto px-8 lg:px-16 flex flex-col md:flex-row justify-between items-center md:items-start">
+<div class="mb-8 md:mb-0 text-center md:text-left">
+<a class="text-2xl font-bold text-mandiri-navy font-serif mb-3 block tracking-tight" href="#">Mandiri Institute</a>
+<p class="text-sm text-gray-500 max-w-xs mx-auto md:mx-0 leading-relaxed">© 2024 Mandiri Institute. Analytical rigor for executive insight.</p>
+</div>
+<div class="flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-12 text-sm font-medium text-gray-500 items-center md:items-start">
+<div class="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-8 text-center md:text-left">
+<a class="hover:text-ice-blue transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-ice-blue transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-ice-blue transition-colors" href="#">Contact Us</a>
+</div>
+<div class="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-8 pt-6 md:pt-0 border-t md:border-none border-gray-300 w-full md:w-auto text-center md:text-left">
+<a class="hover:text-ice-blue transition-colors" href="#">Global Network</a>
+<a class="hover:text-ice-blue transition-colors" href="#">Research Archive</a>
+</div>
+</div>
+</div>
+</footer>
+<!-- END: MainFooter -->
+</body></html>

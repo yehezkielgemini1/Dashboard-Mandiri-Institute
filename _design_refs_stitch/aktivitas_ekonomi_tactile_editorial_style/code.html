@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aktivitas Ekonomi DKI Jakarta · Mandiri Institute</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy-deep: #051C2C;
+    --navy-primary: #003D79;
+    --ice-blue: #00A3E0;
+    --ice-blue-soft: #E6F6FC;
+    --yellow-sparkle: #FFB700;
+    --ink: #0F172A;
+    --ink-soft: #475569;
+    --paper: #FFFFFF;
+    --canvas: #F9F9F8; /* Subtly warmer for paper feel */
+    --rule: #E5E7EB;
+    --radius-lg: 4px; /* Sharper corners for editorial feel */
+    --shadow-subtle: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    --shadow-card: 0 12px 36px -8px rgba(0, 0, 0, 0.08), 0 4px 12px -4px rgba(0, 0, 0, 0.04); /* Deep, soft shadows */
+  }
+
+  body { 
+    font-family: 'Inter', sans-serif; 
+    background-color: var(--canvas); 
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.015'/%3E%3C/svg%3E"); /* Subtle paper texture */
+    color: var(--ink); 
+    margin: 0; 
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  .serif { font-family: 'Source Serif 4', serif; }
+
+  /* --- Canonical TopNav --- */
+  .topnav {
+    background: linear-gradient(to right, #002852, #001a35);
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    flex-shrink: 0;
+  }
+  .topnav .brand { color: white; display: flex; flex-direction: column; }
+  .topnav .brand .main { font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 1.1rem; line-height: 1; letter-spacing: 0.02em; }
+  .topnav .brand .sub { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ice-blue); margin-top: 2px; }
+  .topnav .nav-links { display: flex; gap: 1.5rem; }
+  .topnav .nav-links a { color: rgba(255,255,255,0.7); font-size: 0.85rem; font-weight: 500; text-decoration: none; transition: color 0.2s; }
+  .topnav .nav-links a:hover, .topnav .nav-links a.active { color: white; }
+
+  /* --- Refactored Executive Pulse Strip --- */
+  .global-pulse {
+    background: #FFFFFF;
+    padding: 2.5rem 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    border-bottom: 4px solid var(--ice-blue); /* Simplified to solid Ice Blue */
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 4px 20px -10px rgba(0,0,0,0.05);
+  }
+  .pulse-item {
+    background: transparent;
+    padding: 0 1.5rem;
+    border-radius: 0;
+    border: none;
+    border-right: 1px solid var(--rule);
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  .pulse-item:last-child {
+    border-right: none;
+  }
+  .pulse-item:hover {
+    transform: translateY(-2px);
+  }
+  .pulse-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-soft);
+    margin-bottom: 0.75rem;
+  }
+  .pulse-value {
+    font-family: 'Source Serif 4', serif;
+    font-size: 2.75rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .pulse-trend {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .trend-up { color: var(--ice-blue); }
+  .pulse-sublabel {
+     font-size: 0.75rem; 
+     font-weight: 500; 
+     color: var(--ink-soft); 
+     margin-top: 0.75rem; 
+     text-transform: uppercase;
+     letter-spacing: 0.05em;
+  }
+
+  /* --- Map Container --- */
+  .map-wrapper {
+    position: relative;
+    height: 850px;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+  }
+  #main-map {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: #020c14;
+  }
+
+  /* --- Floating Side Panel --- */
+  .floating-panel {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    width: 380px;
+    bottom: 2rem;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-glass);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .panel-header { padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .panel-body { padding: 1.5rem; overflow-y: auto; flex-grow: 1; }
+  .eyebrow { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ice-blue); margin-bottom: 0.5rem; display: block; }
+  .hero-title { font-size: 1.75rem; font-weight: 600; line-height: 1.1; margin-bottom: 0.5rem; color: white; letter-spacing: -0.01em; }
+  .hero-lead { font-size: 0.9rem; color: #94A3B8; line-height: 1.5; margin-bottom: 1.5rem; }
+  .filter-label { font-size: 0.75rem; font-weight: 600; color: #CBD5E1; margin-bottom: 0.5rem; display: block; text-transform: uppercase; letter-spacing: 0.05em;}
+  .select-styled {
+    width: 100%; padding: 0.75rem 1rem; border: 1px solid rgba(255,255,255,0.2); border-radius: var(--radius-lg);
+    background: rgba(0,0,0,0.2); font-size: 0.9rem; appearance: none; color: white;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat; background-position: right 1rem center; background-size: 1rem;
+  }
+  .custom-checkbox { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border-radius: var(--radius-lg); cursor: pointer; transition: background 0.2s; }
+  .custom-checkbox:hover { background: rgba(255, 255, 255, 0.05); }
+
+  /* --- Top 5 List in Panel --- */
+  .rank-item { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 1.25rem; }
+  .rank-header { display: flex; justify-content: space-between; align-items: center; }
+  .rank-name { font-size: 0.85rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; color: #F1F5F9; }
+  .rank-num { width: 1.25rem; height: 1.25rem; display: flex; align-items: center; justify-content: center; background: rgba(0, 163, 224, 0.2); color: var(--ice-blue); font-size: 0.65rem; font-weight: 700; border-radius: 4px; }
+  .rank-score { font-size: 0.85rem; font-weight: 700; color: white; }
+  .rank-bar-bg { width: 100%; background: rgba(255,255,255,0.1); height: 4px; border-radius: 2px; overflow: hidden; }
+  .rank-bar-fill { background: var(--ice-blue); height: 100%; border-radius: 2px; }
+
+  .action-btn {
+    width: 100%; padding: 0.875rem; background: var(--ice-blue); color: white; font-weight: 600; font-size: 0.9rem; border-radius: var(--radius-lg); text-align: center; transition: background 0.2s; margin-top: 1.5rem; display: block; border: none; cursor: pointer;
+  }
+
+  /* Map Controls Overlay */
+  .map-overlay-controls { position: absolute; top: 2rem; left: 2rem; z-index: 100; display: flex; gap: 0.5rem; }
+  .map-pill { 
+    background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; color: #CBD5E1; box-shadow: 0 2px 4px rgba(0,0,0,0.2); cursor: pointer; transition: all 0.2s; 
+  }
+  .map-pill.active { background: var(--ice-blue); color: white; border-color: var(--ice-blue); }
+
+  /* --- Executive Content Sections --- */
+  .section-wrapper-mist { background-color: #F0F6FC; padding: 5rem 0; border-bottom: 1px solid var(--rule); }
+  .section-wrapper-white { background-color: #FFFFFF; padding: 5rem 0; border-bottom: 1px solid var(--rule); }
+  .section-container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
+  
+  /* Refined Section Titles with solid Ice Blue accent line */
+  .section-title-wrapper {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-family: 'Source Serif 4', serif;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+    display: block;
+    letter-spacing: -0.01em;
+  }
+  .section-divider {
+    height: 4px; /* Simplified thickness */
+    background: var(--ice-blue); /* Solid Ice Blue */
+    width: 100%;
+    display: block;
+    border: none; /* Removed double/multi borders */
+  }
+
+  .card {
+    background: var(--paper); 
+    border: 1px solid var(--rule); 
+    border-top: 3px solid var(--navy-primary);
+    border-radius: var(--radius-lg); 
+    padding: 3rem; 
+    box-shadow: var(--shadow-card);
+    position: relative;
+  }
+  .card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    border: 1px solid rgba(0,0,0,0.03);
+    border-radius: var(--radius-lg);
+  }
+
+  /* Bloomberg-style Data Table */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  .data-table th { text-align: left; padding: 1rem 1rem; color: var(--ink-soft); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.7rem; border-bottom: 2px solid var(--ice-blue); cursor: pointer; } /* Simplified table header border */
+  .data-table td { padding: 1rem 1rem; border-bottom: 1px solid var(--rule); color: var(--ink); font-variant-numeric: tabular-nums; }
+  .data-table tbody tr:hover { background: var(--canvas); }
+  .data-table .num { text-align: right; }
+  .table-progress-bg { width: 60px; height: 4px; background: #E2E8F0; border-radius: 2px; display: inline-block; vertical-align: middle; margin-left: 0.5rem; }
+  .table-progress-fill { height: 100%; background: var(--ice-blue); border-radius: 2px; }
+
+  .chart-container { height: 350px; width: 100%; }
+
+  @media (max-width: 1024px) {
+    .map-wrapper { height: 60vh; min-height: 400px; }
+    .floating-panel { position: relative; top: auto; right: auto; width: 100%; bottom: auto; border-radius: 0; box-shadow: none; border-left: none; border-right: none; }
+    .pulse-item { border-right: none; border-bottom: 1px solid var(--rule); padding: 1.5rem 0; }
+    .pulse-item:last-child { border-bottom: none; }
+  }
+</style>
+</head>
+<body x-data="dashboard()">
+<nav class="topnav" style="background: #002852;">
+<div class="brand">
+<span class="main serif">Mandiri Institute</span>
+<span class="sub">Executive Data Portal</span>
+</div>
+<div class="nav-links hidden md:flex">
+<a href="#">Overview</a>
+<a class="active" href="#">Aktivitas Ekonomi</a>
+<a href="#">Konsumsi</a>
+<a href="#">Metodologi</a>
+</div>
+<div class="flex items-center gap-4 text-white">
+<iconify-icon class="text-xl" icon="mdi:magnify"></iconify-icon>
+<div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700">
+<iconify-icon class="text-lg" icon="mdi:account"></iconify-icon>
+</div>
+</div>
+</nav>
+<div class="global-pulse">
+<div class="pulse-item">
+<span class="pulse-label">Skor Potensi Rata-rata</span>
+<span class="pulse-value">68.4</span>
+<span class="pulse-trend trend-up"><iconify-icon icon="mdi:trending-up"></iconify-icon> +4.2%</span>
+</div>
+<div class="pulse-item">
+<span class="pulse-label">Titik Komersial (POI)</span>
+<span class="pulse-value">16,240</span>
+<span class="pulse-sublabel">Verified</span>
+</div>
+<div class="pulse-item">
+<span class="pulse-label">Intensitas Cahaya Malam</span>
+<span class="pulse-value">84.2</span>
+<span class="pulse-sublabel">Mean Rad.</span>
+</div>
+<div class="pulse-item">
+<span class="pulse-label flex items-center gap-1">Wilayah Berpotensi <div class="w-2 h-2 rounded-full bg-[#00A3E0]"></div></span>
+<span class="pulse-value">21</span>
+<span class="pulse-sublabel">Hotspots</span>
+</div>
+</div>
+<main class="map-wrapper">
+<div class="map-overlay-controls">
+<button class="map-pill active">Intensitas Luminositas</button>
+<button class="map-pill">Kepadatan Komersial</button>
+</div>
+<div id="main-map">
+<!-- Map will be injected here. Simulating immersive dark theme map loading -->
+<div class="flex items-center justify-center h-full bg-[#020c14] text-slate-500">
+<div class="text-center">
+<iconify-icon class="text-5xl mb-3 text-[#00A3E0] opacity-50" icon="mdi:map-search-outline"></iconify-icon>
+<p class="text-sm font-medium tracking-widest uppercase">Initializing Spatial Data...</p>
+</div>
+</div>
+</div>
+<aside class="floating-panel">
+<div class="panel-header">
+<span class="eyebrow">Riset Spasial · DKI Jakarta</span>
+<h1 class="hero-title serif">Aktivitas Ekonomi</h1>
+<p class="hero-lead">Menganalisis sinyal pertumbuhan melalui luminositas malam NASA VIIRS dan jejak aktivitas komersial OpenStreetMap.</p>
+</div>
+<div class="panel-body">
+<div class="filter-group mb-4">
+<label class="filter-label">Wilayah Analisis</label>
+<select class="select-styled">
+<option>Seluruh DKI Jakarta</option>
+<option>Jakarta Selatan</option>
+<option>Jakarta Pusat</option>
+<option>Jakarta Barat</option>
+</select>
+</div>
+<div class="filter-group mb-6">
+<label class="filter-label">Dimensi Analisis</label>
+<div class="space-y-1">
+<label class="custom-checkbox">
+<input checked="" class="form-checkbox accent-[#00A3E0]" type="checkbox"/>
+<span class="text-sm font-medium text-slate-300">Luminositas Malam (24%)</span>
+</label>
+<label class="custom-checkbox">
+<input checked="" class="form-checkbox accent-[#00A3E0]" type="checkbox"/>
+<span class="text-sm font-medium text-slate-300">Tempat Usaha Podes (33%)</span>
+</label>
+<label class="custom-checkbox">
+<input class="form-checkbox accent-[#00A3E0]" type="checkbox"/>
+<span class="text-sm font-medium text-slate-300">Aksesibilitas (20%)</span>
+</label>
+</div>
+</div>
+<div class="rank-list">
+<label class="filter-label">Top 3 Kelurahan: Potensi</label>
+<div class="rank-item">
+<div class="rank-header">
+<div class="rank-name"><span class="rank-num">1</span> Pantai Indah Kapuk</div>
+<div class="rank-score">92.4</div>
+</div>
+<div class="rank-bar-bg"><div class="rank-bar-fill" style="width: 92%;"></div></div>
+</div>
+<div class="rank-item">
+<div class="rank-header">
+<div class="rank-name"><span class="rank-num">2</span> Senayan</div>
+<div class="rank-score">88.7</div>
+</div>
+<div class="rank-bar-bg"><div class="rank-bar-fill" style="width: 88%;"></div></div>
+</div>
+<div class="rank-item">
+<div class="rank-header">
+<div class="rank-name"><span class="rank-num">3</span> Kuningan Timur</div>
+<div class="rank-score">85.2</div>
+</div>
+<div class="rank-bar-bg"><div class="rank-bar-fill" style="width: 85%;"></div></div>
+</div>
+</div>
+<button class="action-btn">
+        Generate Executive Report
+      </button>
+</div>
+</aside>
+</main>
+<section class="section-wrapper-mist">
+<div class="section-container">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+<!-- Scoring & Decomposition -->
+<div class="card">
+<div class="section-title-wrapper">
+<h2 class="section-title">Scoring &amp; Decomposition</h2>
+<span class="section-divider" style="background: #00A3E0; height: 4px;"></span>
+</div>
+<p class="text-[15px] text-slate-600 mb-8 leading-relaxed serif" style="color: #334155;">Component breakdown of the overall economic activity score across primary urban dimensions. Highlighted areas indicate structural overperformance relative to baseline metrics.</p>
+<div class="chart-container" id="radar-chart"></div>
+</div>
+<!-- Strategic Trend Analysis -->
+<div class="card">
+<div class="section-title-wrapper">
+<h2 class="section-title">Strategic Trend Analysis</h2>
+<span class="section-divider" style="background: #00A3E0; height: 4px;"></span>
+</div>
+<p class="text-[15px] text-slate-600 mb-8 leading-relaxed serif" style="color: #334155;">Time-series analysis of aggregated commercial point-of-interest density vs. measured night-time luminosity over the trailing 12-month period.</p>
+<div class="chart-container" id="trend-chart"></div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-16" style="background-color: #002852;">
+<div class="max-w-[1400px] mx-auto px-8">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<div class="col-span-1">
+<span class="text-[12px] font-bold tracking-[0.2em] uppercase mb-4 block" style="color: #00A3E0;">Catatan Analitis</span>
+<h2 class="text-3xl font-semibold text-white serif mb-6">Key Insights</h2>
+<p class="text-slate-300 text-sm leading-relaxed">
+          Ringkasan eksekutif mengenai dinamika spasial dan indikator ekonomi makro untuk wilayah DKI Jakarta periode berjalan.
+        </p>
+</div>
+<div class="col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-8">
+<div class="border-l border-white/10 pl-6">
+<h4 class="text-white font-semibold mb-2">Konsentrasi Pertumbuhan</h4>
+<p class="text-slate-400 text-sm leading-relaxed">Pantai Indah Kapuk menunjukkan anomali pertumbuhan positif sebesar 12.4% YoY, didorong oleh ekspansi area komersial terintegrasi.</p>
+</div>
+<div class="border-l border-white/10 pl-6">
+<h4 class="text-white font-semibold mb-2">Efisiensi Infrastruktur</h4>
+<p class="text-slate-400 text-sm leading-relaxed">Korelasi antara intensitas cahaya malam dan kepadatan POI di Jakarta Selatan mencapai 0.89, mengindikasikan efisiensi penggunaan lahan yang tinggi.</p>
+</div>
+<div class="border-l border-white/10 pl-6">
+<h4 class="text-white font-semibold mb-2">Aksesibilitas Logistik</h4>
+<p class="text-slate-400 text-sm leading-relaxed">Peningkatan skor aksesibilitas di wilayah Jakarta Barat berkontribusi pada kenaikan aktivitas ekonomi malam hari sebesar 5%.</p>
+</div>
+<div class="border-l border-white/10 pl-6">
+<h4 class="text-white font-semibold mb-2">Proyeksi Kuartal</h4>
+<p class="text-slate-400 text-sm leading-relaxed">Tren historis menunjukkan potensi kenaikan aktivitas komersial sebesar 3.2% menjelang akhir kuartal berikutnya.</p>
+</div>
+</div>
+</div>
+</div>
+</section><section class="section-wrapper-white">
+<div class="section-container">
+<!-- High-Density Data Table -->
+<div class="card">
+<div class="flex justify-between items-end mb-8">
+<div class="w-1/2">
+<div class="section-title-wrapper">
+<h2 class="section-title">District Performance Matrix</h2>
+<span class="section-divider" style="background: #00A3E0; height: 4px;"></span>
+</div>
+<p class="text-[15px] text-slate-600 serif" style="color: #334155;">Institutional grade breakdown of key performance indicators across all tracked administrative boundaries.</p>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 bg-white text-xs font-semibold uppercase tracking-[0.1em] text-slate-700 border border-slate-300 rounded-sm hover:bg-slate-50 transition">Export CSV</button>
+<button class="px-4 py-2 bg-[#00A3E0] text-xs font-semibold uppercase tracking-[0.1em] text-white border border-[#00A3E0] rounded-sm hover:bg-[#008CBE] transition" style="background-color: #00A3E0; border-color: #00A3E0;">View Full</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="data-table">
+<thead>
+<tr>
+<th style="border-bottom: 2px solid #00A3E0;">Kecamatan <iconify-icon class="align-middle" icon="mdi:chevron-down"></iconify-icon></th>
+<th style="border-bottom: 2px solid #00A3E0;">Kelurahan</th>
+<th class="num" style="border-bottom: 2px solid #00A3E0;">Luminositas (Rad)</th>
+<th class="num" style="border-bottom: 2px solid #00A3E0;">Kepadatan POI</th>
+<th class="num" style="border-bottom: 2px solid #00A3E0;">Aksesibilitas</th>
+<th class="num" style="border-bottom: 2px solid #00A3E0;">Composite Score</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="font-medium text-slate-800">Penjaringan</td>
+<td>Pantai Indah Kapuk</td>
+<td class="num">124.5 <div class="table-progress-bg"><div class="table-progress-fill" style="width: 95%;"></div></div></td>
+<td class="num">2,840</td>
+<td class="num">0.89</td>
+<td class="num font-bold">92.4</td>
+</tr>
+<tr>
+<td class="font-medium text-slate-800">Kebayoran Baru</td>
+<td>Senayan</td>
+<td class="num">118.2 <div class="table-progress-bg"><div class="table-progress-fill" style="width: 88%;"></div></div></td>
+<td class="num">3,120</td>
+<td class="num">0.94</td>
+<td class="num font-bold">88.7</td>
+</tr>
+<tr>
+<td class="font-medium text-slate-800">Setiabudi</td>
+<td>Kuningan Timur</td>
+<td class="num">112.8 <div class="table-progress-bg"><div class="table-progress-fill" style="width: 82%;"></div></div></td>
+<td class="num">2,950</td>
+<td class="num">0.91</td>
+<td class="num font-bold">85.2</td>
+</tr>
+<tr>
+<td class="font-medium text-slate-800">Menteng</td>
+<td>Menteng</td>
+<td class="num">108.4 <div class="table-progress-bg"><div class="table-progress-fill" style="width: 78%;"></div></div></td>
+<td class="num">1,840</td>
+<td class="num">0.88</td>
+<td class="num font-bold">81.6</td>
+</tr>
+<tr>
+<td class="font-medium text-slate-800">Kelapa Gading</td>
+<td>Kelapa Gading Barat</td>
+<td class="num">105.1 <div class="table-progress-bg"><div class="table-progress-fill" style="width: 75%;"></div></div></td>
+<td class="num">2,100</td>
+<td class="num">0.82</td>
+<td class="num font-bold">79.3</td>
+</tr>
+<tr>
+<td class="font-medium text-slate-800">Tanah Abang</td>
+<td>Gelora</td>
+<td class="num">98.6 <div class="table-progress-bg"><div class="table-progress-fill" style="width: 68%;"></div></div></td>
+<td class="num">1,650</td>
+<td class="num">0.95</td>
+<td class="num font-bold">76.8</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<script>
+  function dashboard() {
+    return {
+      init() {
+        console.log("Executive Dashboard Immersive Refactor initialized");
+        this.renderCharts();
+      },
+      renderCharts() {
+        // Shared Layout Config for Light Theme
+        const layoutConfig = {
+          paper_bgcolor: 'rgba(0,0,0,0)',
+          plot_bgcolor: 'rgba(0,0,0,0)',
+          font: { family: 'Inter, sans-serif', color: '#64748B', size: 11 },
+          margin: { t: 20, r: 20, b: 30, l: 40 },
+        };
+
+        // Radar Chart
+        const radarData = [{
+          type: 'scatterpolar',
+          r: [88, 75, 92, 65, 80],
+          theta: ['Luminositas', 'Infrastruktur', 'Komersial', 'Demografi', 'Aksesibilitas'],
+          fill: 'toself',
+          fillcolor: 'rgba(0, 163, 224, 0.2)',
+          line: { color: '#00A3E0', width: 2 },
+          marker: { color: '#00A3E0', size: 6 }
+        }];
+        const radarLayout = {
+          ...layoutConfig,
+          polar: {
+            radialaxis: { visible: true, range: [0, 100], color: '#94A3B8', gridcolor: '#E2E8F0', tickfont: {size: 9} },
+            angularaxis: { color: '#64748B', gridcolor: '#E2E8F0' },
+            bgcolor: 'rgba(0,0,0,0)'
+          },
+          showlegend: false
+        };
+        Plotly.newPlot('radar-chart', radarData, radarLayout, {displayModeBar: false, responsive: true});
+
+        // Trend Line Chart
+        const trendData = [
+          {
+            x: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            y: [65, 68, 70, 72, 71, 75, 78, 80, 82, 81, 84, 88],
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'Luminosity Index',
+            line: { color: '#00A3E0', width: 2, shape: 'spline' },
+            marker: { size: 6, color: '#00A3E0' }
+          },
+          {
+            x: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            y: [50, 52, 53, 58, 60, 62, 65, 64, 68, 70, 72, 75],
+            type: 'scatter',
+            mode: 'lines',
+            name: 'Commercial POI',
+            line: { color: '#FFB700', width: 2, dash: 'dot', shape: 'spline' }
+          }
+        ];
+        const trendLayout = {
+          ...layoutConfig,
+          xaxis: { showgrid: false, zeroline: false, color: '#64748B' },
+          yaxis: { showgrid: true, gridcolor: '#E2E8F0', zeroline: false, color: '#64748B' },
+          legend: { orientation: 'h', y: 1.1, x: 0 },
+          hovermode: 'x unified'
+        };
+        Plotly.newPlot('trend-chart', trendData, trendLayout, {displayModeBar: false, responsive: true});
+      }
+    }
+  }
+</script>
+</body></html>

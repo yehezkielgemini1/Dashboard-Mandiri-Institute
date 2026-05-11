@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Konsumsi per Kapita per Bulan, 2019-2025</title>
+<script src="../_assets/plotly.min.js"></script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="../_assets/iconify-icon.min.js"></script>
+<script src="../_assets/icons.js"></script>
+<script defer="" src="../_assets/alpine.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy-deep: #051C2C;
+    --navy-primary: #003D79;
+    --ice-blue: #00A3E0;
+    --ice-blue-soft: #E6F6FC;
+    --yellow-sparkle: #FFB700;
+    --ink: #0F172A;
+    --ink-soft: #475569;
+    --paper: #FFFFFF;
+    --canvas: #F9F9F8; /* Subtly warmer for paper feel */
+    --rule: #E5E7EB;
+    --radius-lg: 4px; /* Sharper corners for editorial feel */
+    --shadow-subtle: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    --shadow-card: 0 12px 36px -8px rgba(0, 0, 0, 0.08), 0 4px 12px -4px rgba(0, 0, 0, 0.04); /* Deep, soft shadows */
+  }
+
+  body { 
+    font-family: 'Inter', sans-serif; 
+    background-color: var(--canvas); 
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.015'/%3E%3C/svg%3E"); /* Subtle paper texture */
+    color: var(--ink); 
+    margin: 0; 
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  .serif { font-family: 'Source Serif 4', serif; }
+  .serif-display { font-family: 'Source Serif 4', serif; font-weight: 600; letter-spacing: -0.01em; }
+
+  /* --- Canonical TopNav --- */
+  .topnav-canon {
+    background: linear-gradient(to right, #002852, #001a35);
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    flex-shrink: 0;
+  }
+  .topnav-canon .brand { font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 1.1rem; line-height: 1; color: white; letter-spacing: 0.02em; }
+  .topnav-canon .brand-sub { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ice-blue); margin-top: 2px; }
+  .topnav-canon .menu { display: flex; gap: 1.5rem; margin-left: 2rem; flex-grow: 1; }
+  .topnav-canon .menu a { color: rgba(255,255,255,0.7); font-size: 0.85rem; font-weight: 500; text-decoration: none; transition: color 0.2s; cursor: pointer; }
+  .topnav-canon .menu a:hover, .topnav-canon .menu a.active { color: white; }
+  .topnav-canon .right { display: flex; align-items: center; gap: 1rem; color: white; }
+  .topnav-canon .burger { color: white; font-size: 1.5rem; cursor: pointer; display: none; }
+
+  @media (max-width: 1024px) {
+      .topnav-canon .menu { display: none; }
+      .topnav-canon .burger { display: block; }
+  }
+
+  /* --- Refactored Executive Pulse Strip --- */
+  .global-pulse {
+    background: var(--paper);
+    padding: 2.5rem 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    border-bottom: 4px double var(--rule);
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 4px 20px -10px rgba(0,0,0,0.05);
+  }
+  .pulse-item {
+    background: transparent;
+    padding: 0 1.5rem;
+    border-radius: 0;
+    border: none;
+    border-right: 1px solid var(--rule);
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  .pulse-item:last-child {
+    border-right: none;
+  }
+  .pulse-item:hover {
+    transform: translateY(-2px);
+  }
+  .pulse-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-soft);
+    margin-bottom: 0.75rem;
+  }
+  .pulse-value {
+    font-family: 'Source Serif 4', serif;
+    font-size: 2.75rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .pulse-trend {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    justify-content: center;
+  }
+  .trend-up { color: var(--ice-blue); }
+  .pulse-sublabel {
+     font-size: 0.75rem; 
+     font-weight: 500; 
+     color: var(--ink-soft); 
+     margin-top: 0.75rem; 
+  }
+
+  /* Executive Content Sections */
+  
+  /* Refined Section Titles with thick blue accent line */
+  .section-title-wrapper { margin-bottom: 2.5rem; }
+  .section-divider {
+    height: 4px;
+    background: var(--ice-blue);
+    border: none;
+    width: 100%;
+    display: block;
+    border-radius: 0;
+  }
+
+  /* Map sizing */
+  #chart-map, #chart-komoditi-map { height: 900px !important; }
+
+  /* Filter bar */
+  .filter-canon {
+      background: var(--paper);
+      border-bottom: 1px solid var(--rule);
+      padding: 1rem 2rem;
+  }
+  .filter-canon-inner {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      align-items: flex-end;
+      max-width: 1400px;
+      margin: 0 auto;
+  }
+  .filter-field { display: flex; flex-direction: column; gap: 0.5rem; }
+  .filter-field label { font-size: 0.7rem; font-weight: 700; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.15em; }
+  .btn-submit {
+      background: var(--navy-deep); color: white; padding: 0.5rem 1.5rem; border-radius: var(--radius-lg); font-weight: 600; font-size: 0.85rem; cursor: pointer; height: fit-content; margin-bottom: 1px; transition: background 0.2s;
+  }
+  .btn-submit:hover {
+      background: var(--navy-primary);
+  }
+</style>
+<script src="komoditi_data.js"></script>
+<!-- UNIFORM v2 OVERRIDE 2026-05-05: hide sidebar entirely, keep topnav as the only nav -->
+<style>
+  :root {
+    --navy-deep: #051C2C;
+    --navy-primary: #003D79;
+    --ice-blue: #00A3E0;
+    --ice-blue-soft: #E6F6FC;
+    --yellow-sparkle: #FFB700;
+    --ink: #0F172A;
+    --ink-soft: #475569;
+    --paper: #FFFFFF;
+    --canvas: #F9F9F8; /* Subtly warmer for paper feel */
+    --rule: #E5E7EB;
+    --radius-lg: 4px; /* Sharper corners for editorial feel */
+    --shadow-subtle: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    --shadow-card: 0 12px 36px -8px rgba(0, 0, 0, 0.08), 0 4px 12px -4px rgba(0, 0, 0, 0.04); /* Deep, soft shadows */
+  }
+
+  body { 
+    font-family: 'Inter', sans-serif; 
+    background-color: var(--canvas); 
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.015'/%3E%3C/svg%3E"); /* Subtle paper texture */
+    color: var(--ink); 
+    margin: 0; 
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  .serif { font-family: 'Source Serif 4', serif; }
+  .serif-display { font-family: 'Source Serif 4', serif; font-weight: 600; letter-spacing: -0.01em; }
+
+  /* --- Canonical TopNav --- */
+  .topnav-canon {
+    background: linear-gradient(to right, #002852, #001a35);
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    flex-shrink: 0;
+  }
+  .topnav-canon .brand { font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 1.1rem; line-height: 1; color: white; letter-spacing: 0.02em; }
+  .topnav-canon .brand-sub { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ice-blue); margin-top: 2px; }
+  .topnav-canon .menu { display: flex; gap: 1.5rem; margin-left: 2rem; flex-grow: 1; }
+  .topnav-canon .menu a { color: rgba(255,255,255,0.7); font-size: 0.85rem; font-weight: 500; text-decoration: none; transition: color 0.2s; cursor: pointer; }
+  .topnav-canon .menu a:hover, .topnav-canon .menu a.active { color: white; }
+  .topnav-canon .right { display: flex; align-items: center; gap: 1rem; color: white; }
+  .topnav-canon .burger { color: white; font-size: 1.5rem; cursor: pointer; display: none; }
+
+  @media (max-width: 1024px) {
+      .topnav-canon .menu { display: none; }
+      .topnav-canon .burger { display: block; }
+  }
+
+  /* --- Refactored Executive Pulse Strip --- */
+  .global-pulse {
+    background: var(--paper);
+    padding: 2.5rem 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    border-bottom: 4px double var(--rule);
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 4px 20px -10px rgba(0,0,0,0.05);
+  }
+  .pulse-item {
+    background: transparent;
+    padding: 0 1.5rem;
+    border-radius: 0;
+    border: none;
+    border-right: 1px solid var(--rule);
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  .pulse-item:last-child {
+    border-right: none;
+  }
+  .pulse-item:hover {
+    transform: translateY(-2px);
+  }
+  .pulse-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-soft);
+    margin-bottom: 0.75rem;
+  }
+  .pulse-value {
+    font-family: 'Source Serif 4', serif;
+    font-size: 2.75rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .pulse-trend {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    justify-content: center;
+  }
+  .trend-up { color: var(--ice-blue); }
+  .pulse-sublabel {
+     font-size: 0.75rem; 
+     font-weight: 500; 
+     color: var(--ink-soft); 
+     margin-top: 0.75rem; 
+  }
+
+  /* Executive Content Sections */
+  
+  /* Refined Section Titles with thick blue accent line */
+  .section-title-wrapper { margin-bottom: 2.5rem; }
+  .section-divider {
+    height: 4px;
+    background: var(--ice-blue);
+    border: none;
+    width: 100%;
+    display: block;
+    border-radius: 0;
+  }
+
+  /* Map sizing */
+  #chart-map, #chart-komoditi-map { height: 900px !important; }
+
+  /* Filter bar */
+  .filter-canon {
+      background: var(--paper);
+      border-bottom: 1px solid var(--rule);
+      padding: 1rem 2rem;
+  }
+  .filter-canon-inner {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      align-items: flex-end;
+      max-width: 1400px;
+      margin: 0 auto;
+  }
+  .filter-field { display: flex; flex-direction: column; gap: 0.5rem; }
+  .filter-field label { font-size: 0.7rem; font-weight: 700; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.15em; }
+  .btn-submit {
+      background: var(--navy-deep); color: white; padding: 0.5rem 1.5rem; border-radius: var(--radius-lg); font-weight: 600; font-size: 0.85rem; cursor: pointer; height: fit-content; margin-bottom: 1px; transition: background 0.2s;
+  }
+  .btn-submit:hover {
+      background: var(--navy-primary);
+  }
+</style>
+</head>
+<body>
+<div x-data="dashboard()" x-init="init()">
+<!-- ============ TOP NAV (canon, sticky) ============ -->
+<nav class="topnav-canon" style="background: #002852; background-image: none;" x-data="{ navOpen: false }">
+<iconify-icon @click="navOpen = true" @keydown.enter="navOpen = true" aria-label="Buka menu" class="burger" icon="mdi:menu" role="button" tabindex="0"></iconify-icon>
+<div class="brand-wrapper flex flex-col">
+<div class="brand serif">Mandiri Institute</div>
+<div class="brand-sub">Konsumsi Susenas</div>
+</div>
+<div class="menu">
+<a href="../index.html">Beranda</a>
+<a href="#" onclick="window.gotoPage('trend'); return false;">Trend</a>
+<a href="#" onclick="window.gotoPage('engel'); return false;">Engel</a>
+<a href="#" onclick="window.gotoPage('komposisi'); return false;">Komposisi</a>
+<a href="#" onclick="window.gotoPage('geografi'); return false;">Geografi</a>
+<a href="#" onclick="window.gotoPage('komoditi'); return false;">Komoditi</a>
+<a href="#" onclick="window.gotoPage('compare'); return false;">Compare</a>
+<a href="#" onclick="window.gotoPage('metodologi'); return false;">Metodologi</a>
+</div>
+<div class="right">
+<a class="nav-link" href="../index.html" style="color:white;opacity:0.85;font-weight:500;">Semua Dashboard</a>
+<div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700 ml-2">
+<iconify-icon aria-label="Cari" class="search text-lg" icon="mdi:magnify" role="button" tabindex="0"></iconify-icon>
+</div>
+</div>
+<!-- Mobile drawer -->
+<div :class="{ 'open': navOpen }" @click="navOpen = false" class="nav-drawer-overlay" style="display:none;"></div>
+</nav>
+<!-- A11y skip link -->
+<a class="skip-link" href="#main-content" style="position:absolute;left:-9999px;">Lewati ke konten utama</a>
+<!-- ADAPTIVE FILTER BAR (canon v2 — hide kalau page tidak butuh) -->
+<div class="filter-canon" x-show="filterFields().length &gt; 0">
+<div class="filter-canon-inner">
+<!-- Tahun -->
+<div class="filter-field" x-show="filterFields().includes('tahun')">
+<label>Tahun</label>
+<select class="block w-full rounded-sm border-slate-300 shadow-sm focus:border-[#00A3E0] focus:ring-[#00A3E0] sm:text-sm py-2 px-3 bg-white" x-model="f.tahun">
+<option :value="y" x-text="y"></option>
+</select>
+</div>
+<!-- Wilayah multi-select -->
+<div class="filter-field" x-show="filterFields().includes('wilayah')">
+<label>Wilayah</label>
+<div @click.outside="open=false" class="ms-dd" x-data="{open:false, search:''}">
+<button :class="{open}" @click="open=!open" class="ms-dd-btn block w-full rounded-sm border border-slate-300 shadow-sm sm:text-sm py-2 px-3 bg-white text-left min-w-[160px]" type="button">
+<template x-if="f.wilayah.includes('__all__')"><span class="placeholder">Semua Wilayah</span></template>
+<template x-if="!f.wilayah.includes('__all__')"><template :key="w" x-for="w in f.wilayah"><span class="ms-dd-chip mr-1 bg-slate-100 px-2 py-0.5 rounded text-xs" x-text="w"></span></template></template>
+</button>
+</div>
+</div>
+<!-- Sub-wilayah (provinsi) multi-select -->
+<div class="filter-field" x-show="filterFields().includes('subwilayah') &amp;&amp; !f.wilayah.includes('__all__')">
+<label>Provinsi</label>
+<div @click.outside="open=false" class="ms-dd" x-data="{open:false, search:''}">
+<button :class="{open}" @click="open=!open" class="ms-dd-btn block w-full rounded-sm border border-slate-300 shadow-sm sm:text-sm py-2 px-3 bg-white text-left min-w-[160px]" type="button">
+<template x-if="f.subwilayah.includes('__all__')"><span class="placeholder">Semua Provinsi</span></template>
+<template x-if="!f.subwilayah.includes('__all__')"><template :key="p" x-for="p in f.subwilayah"><span class="ms-dd-chip mr-1 bg-slate-100 px-2 py-0.5 rounded text-xs" x-text="provNameByPcode(p)"></span></template></template>
+</button>
+</div>
+</div>
+<!-- compareBaseline chip (Trend) -->
+<div class="filter-field" x-show="filterFields().includes('compareBaseline')">
+<label>Baseline</label>
+<div class="chip-ms flex gap-2">
+<button :class="f.compareBaseline ? 'bg-[#E6F6FC] border-[#00A3E0] text-[#003D79]' : 'bg-white border-slate-300 text-slate-700'" @click="f.compareBaseline = !f.compareBaseline" class="border rounded-sm shadow-sm sm:text-sm py-2 px-3 transition-colors">vs 2019</button>
+</div>
+</div>
+<!-- metric chip (Geografi) -->
+<div class="filter-field" x-show="filterFields().includes('metric')">
+<label>Metric</label>
+<div class="chip-ms flex gap-2">
+<button :class="f.metric === 'per_kapita' ? 'bg-[#E6F6FC] border-[#00A3E0] text-[#003D79]' : 'bg-white border-slate-300 text-slate-700'" @click="f.metric = 'per_kapita'" class="border rounded-sm shadow-sm sm:text-sm py-2 px-3 transition-colors">Per kapita</button>
+<button :class="f.metric === 'share' ? 'bg-[#E6F6FC] border-[#00A3E0] text-[#003D79]' : 'bg-white border-slate-300 text-slate-700'" @click="f.metric = 'share'" class="border rounded-sm shadow-sm sm:text-sm py-2 px-3 transition-colors">Share</button>
+</div>
+</div>
+<!-- komoditi dropdown (Komoditi page) -->
+<div class="filter-field" x-show="filterFields().includes('komoditi')">
+<label>Kelompok</label>
+<select @change="onKomKelompokFromFilter()" class="block w-full rounded-sm border-slate-300 shadow-sm focus:border-[#00A3E0] focus:ring-[#00A3E0] sm:text-sm py-2 px-3 bg-white min-w-[200px]" x-model="f.komKelompok">
+<option :value="g" x-text="g"></option>
+</select>
+</div>
+<div class="filter-field" x-show="filterFields().includes('komoditi')">
+<label>Komoditi</label>
+<select class="block w-full rounded-sm border-slate-300 shadow-sm focus:border-[#00A3E0] focus:ring-[#00A3E0] sm:text-sm py-2 px-3 bg-white min-w-[240px]" x-model="f.komSelected">
+<option :value="k.key" x-text="k.short"></option>
+</select>
+</div>
+<div class="filter-field" x-show="filterFields().includes('komoditi')">
+<label>Kelas</label>
+<select class="block w-full rounded-sm border-slate-300 shadow-sm focus:border-[#00A3E0] focus:ring-[#00A3E0] sm:text-sm py-2 px-3 bg-white min-w-[140px]" x-model="f.komKelas">
+<option :value="k" x-text="k"></option>
+</select>
+</div>
+<button @click="submitCanon()" class="btn-submit">SUBMIT</button>
+</div>
+</div>
+<main id="main-content" role="main">
+<!-- ==================== PAGE: TREND ==================== -->
+<section class="bg-white py-20 border-b border-slate-200" x-show="submitted &amp;&amp; page === 'trend'">
+<div class="w-full max-w-[1400px] mx-auto px-8">
+<!-- Hero stats with sparkline -->
+<div class="global-pulse">
+<div class="pulse-item">
+<span class="pulse-label">Per kapita 2025</span>
+<span class="pulse-value">Rp 1580<span style="font-size: 1rem; color: var(--ink-soft); margin-left: 4px;">rb/bln</span></span>
+</div>
+<div class="pulse-item">
+<span class="pulse-label">Pertumbuhan 2019-2025</span>
+<span class="pulse-value">+34.7%</span>
+<span class="pulse-trend trend-up">CAGR 5.1%</span>
+</div>
+<div class="pulse-item">
+<span class="pulse-label">Share makanan 2025</span>
+<span class="pulse-value">56.3%</span>
+<span class="pulse-sublabel" style="text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.05em; font-weight: 600;">vs 56.5% pada 2019</span>
+</div>
+<div class="pulse-item">
+<span class="pulse-label">Cakupan</span>
+<span class="pulse-value">38<span style="font-size: 1rem; color: var(--ink-soft); margin-left: 4px;">prov</span></span>
+<span class="pulse-sublabel" style="text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.05em; font-weight: 600;">8 kelas wb4 · 20 kelompok</span>
+</div>
+</div>
+<div class="mt-16">
+<div class="section-title-wrapper flex items-center justify-between">
+<div>
+<span class="eyebrow block mb-2 text-[11px] font-bold uppercase tracking-widest text-slate-500">I. Trend</span>
+<h2 class="serif-display text-[1.75rem] text-[var(--ink)]">Pengeluaran per kapita tumbuh, share makanan turun.</h2>
+</div>
+</div>
+<span class="section-divider mt-4" style="height: 4px; background-color: #00A3E0; border: none; width: 100%; display: block;"></span>
+<p class="mt-6 text-[15px] leading-relaxed text-slate-600 serif max-w-3xl" style="line-height: 1.8; color: #334155;">Total per kapita per bulan dan kontribusi makanan/non-makanan, rata-rata tertimbang nasional, 2019 sampai 2025.</p>
+<div class="insight-grid mt-10">
+<div class="bg-[var(--paper)] border border-[var(--rule)] border-top-3 border-t-[3px] border-t-[var(--navy-primary)] rounded-[var(--radius-lg)] p-[3rem] shadow-[var(--shadow-card)] relative">
+<div id="chart-trend" style="height:480px;"></div>
+</div>
+</div><div class="mt-12 bg-[#002852] p-10 rounded-sm shadow-xl">
+<span class="block mb-4 text-[11px] font-bold uppercase tracking-widest text-white">Catatan Analitis</span>
+<div class="serif text-white text-[16px] leading-[1.8]">
+<p>Pertumbuhan pengeluaran per kapita menunjukkan resiliensi konsumsi domestik, didorong oleh pergeseran struktural pasca-pandemi. Meskipun total pengeluaran meningkat, porsi pengeluaran makanan mengalami moderasi, mencerminkan peningkatan kesejahteraan sesuai dengan kaidah ekonomi makro.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ==================== PAGE: ENGEL ==================== -->
+<section class="bg-slate-50 py-20 border-b border-slate-200" x-show="submitted &amp;&amp; page === 'engel'">
+<div class="w-full max-w-[1400px] mx-auto px-8">
+<div>
+<div class="section-title-wrapper flex items-center justify-between">
+<div>
+<span class="eyebrow block mb-2 text-[11px] font-bold uppercase tracking-widest text-slate-500">II. Engel</span>
+<h2 class="serif-display text-[1.75rem] text-[var(--ink)]">Hukum Engel: share makanan turun seiring naiknya kelas.</h2>
+</div>
+</div>
+<span class="section-divider mt-4" style="height: 4px; background-color: #00A3E0; border: none; width: 100%; display: block;"></span>
+<p class="mt-6 text-[15px] leading-relaxed text-slate-600 serif max-w-3xl" style="line-height: 1.8; color: #334155;" x-text="'Komposisi pengeluaran makanan vs non-makanan per kelas masyarakat, ' + year + '.'"></p>
+<div class="insight-grid mt-10">
+<div class="bg-[var(--paper)] border border-[var(--rule)] border-top-3 border-t-[3px] border-t-[var(--navy-primary)] rounded-[var(--radius-lg)] p-[3rem] shadow-[var(--shadow-card)] relative">
+<div id="chart-engel" style="height:520px;"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ==================== PAGE: KOMPOSISI ==================== -->
+<section class="bg-white py-20 border-b border-slate-200" x-show="submitted &amp;&amp; page === 'komposisi'">
+<div class="w-full max-w-[1400px] mx-auto px-8">
+<div>
+<div class="section-title-wrapper flex items-center justify-between">
+<div>
+<span class="eyebrow block mb-2 text-[11px] font-bold uppercase tracking-widest text-slate-500">III. Komposisi</span>
+<h2 class="serif-display text-[1.75rem] text-[var(--ink)]">Distribusi share pengeluaran: 20 kelompok × 8 kelas.</h2>
+</div>
+</div>
+<span class="section-divider mt-4" style="height: 4px; background-color: #00A3E0; border: none; width: 100%; display: block;"></span>
+<p class="mt-6 text-[15px] leading-relaxed text-slate-600 serif max-w-3xl" style="line-height: 1.8; color: #334155;" x-text="'Heatmap share pengeluaran (%) per kelompok per kelas, ' + year + '. Warna lebih pekat = share lebih tinggi di kelas itu.'"></p>
+<div class="insight-grid mt-10">
+<div class="bg-[var(--paper)] border border-[var(--rule)] border-top-3 border-t-[3px] border-t-[var(--navy-primary)] rounded-[var(--radius-lg)] p-[3rem] shadow-[var(--shadow-card)] relative">
+<div class="mb-5 flex gap-2 flex-wrap">
+<button :class="kompMode==='heatmap' ? 'bg-[#E6F6FC] border-[#00A3E0] text-[#003D79]' : 'bg-white border-slate-300 text-slate-700'" @click="kompMode='heatmap'; renderHeatmap()" class="px-4 py-2 text-xs font-bold uppercase tracking-[0.15em] border rounded-sm hover:bg-slate-50 transition shadow-sm">Heatmap</button>
+<button :class="kompMode==='treemap' ? 'bg-[#E6F6FC] border-[#00A3E0] text-[#003D79]' : 'bg-white border-slate-300 text-slate-700'" @click="kompMode='treemap'; renderHeatmap()" class="px-4 py-2 text-xs font-bold uppercase tracking-[0.15em] border rounded-sm hover:bg-slate-50 transition shadow-sm">Treemap</button>
+</div>
+<div id="chart-heatmap" style="height:760px;"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ==================== PAGE: GEOGRAFI ==================== -->
+<section class="bg-slate-50 py-20 border-b border-slate-200" x-show="submitted &amp;&amp; page === 'geografi'">
+<div class="w-full max-w-[1400px] mx-auto px-8">
+<div>
+<div class="section-title-wrapper flex items-center justify-between">
+<div>
+<span class="eyebrow block mb-2 text-[11px] font-bold uppercase tracking-widest text-slate-500">IV. Geografi</span>
+<h2 class="serif-display text-[1.75rem] text-[var(--ink)]">Disparitas geografis pengeluaran per kapita.</h2>
+</div>
+</div>
+<span class="section-divider mt-4" style="height: 4px; background-color: #00A3E0; border: none; width: 100%; display: block;"></span>
+<p class="mt-6 text-[15px] leading-relaxed text-slate-600 serif max-w-3xl" style="line-height: 1.8; color: #334155;">Peta 34 provinsi (BPS 2020). Pemekaran Papua pasca-2022 diagregasi ke induk.</p>
+<div class="mt-10 relative map-wrapper border border-slate-300 shadow-md rounded-sm overflow-hidden bg-[#020c14]">
+<div id="chart-map"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- ==================== PAGE: KOMODITI ==================== -->
+<section class="bg-white py-20" x-show="submitted &amp;&amp; page === 'komoditi'">
+<div class="w-full max-w-[1400px] mx-auto px-8">
+<div>
+<div class="section-title-wrapper flex items-center justify-between">
+<div>
+<span class="eyebrow block mb-2 text-[11px] font-bold uppercase tracking-widest text-slate-500">V. Komoditi</span>
+<h2 class="serif-display text-[1.75rem] text-[var(--ink)] flex items-center">
+<span class="title-icon mr-2 text-[#00A3E0]"><iconify-icon :icon="komIcon"></iconify-icon></span>
+<span x-text="'Konsumsi ' + komShort + '.'"></span>
+</h2>
+</div>
+</div>
+<span class="section-divider mt-4" style="height: 4px; background-color: #00A3E0; border: none; width: 100%; display: block;"></span>
+<p class="mt-6 text-[15px] leading-relaxed text-slate-600 serif max-w-3xl" style="line-height: 1.8; color: #334155;">Pengeluaran per kapita per bulan untuk komoditi terpilih, dipecah per provinsi pada kelas yang dipilih.</p>
+<div class="mt-10 relative map-wrapper border border-slate-300 shadow-md rounded-sm overflow-hidden bg-[#020c14]">
+<div id="chart-komoditi-map"></div>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<script>
+/* DATA INLINE REMOVED */
+</script>
+</body></html>

@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ketahanan Pangan | Mandiri Institute</title>
+<script src="../_assets/plotly.min.js"></script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="../_assets/iconify-icon.min.js"></script>
+<script src="../_assets/icons.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
+/* CSS EXTRACTED TO css/<slug>-styles.css, ~281 lines */
+
+/* CSS EXTRACTED TO css/<slug>-styles.css, ~10 lines */
+  :root {
+    --navy-deep: #051C2C;
+    --navy-primary: #003D79;
+    --ice-blue: #00A3E0;
+    --ice-blue-soft: #E6F6FC;
+    --yellow-sparkle: #FFB700;
+    --ink: #0F172A;
+    --ink-soft: #475569;
+    --paper: #FFFFFF;
+    --canvas: #F9F9F8;
+    --rule: #E5E7EB;
+    --radius-lg: 4px;
+    --shadow-subtle: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    --shadow-card: 0 12px 36px -8px rgba(0, 0, 0, 0.08), 0 4px 12px -4px rgba(0, 0, 0, 0.04);
+  }
+
+  body { 
+    font-family: 'Inter', sans-serif; 
+    background-color: var(--canvas); 
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.015'/%3E%3C/svg%3E");
+    color: var(--ink); 
+    margin: 0; 
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  .serif { font-family: 'Source Serif 4', serif; }
+
+  /* --- Canonical TopNav --- */
+  .topnav {
+    background: linear-gradient(to right, #002852, #001a35);
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    flex-shrink: 0;
+  }
+  .topnav .brand { color: white; display: flex; flex-direction: column; }
+  .topnav .brand .main { font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 1.1rem; line-height: 1; letter-spacing: 0.02em; }
+  .topnav .brand .sub { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ice-blue); margin-top: 2px; }
+  .topnav .nav-links { display: flex; gap: 1.5rem; }
+  .topnav .nav-links a { color: rgba(255,255,255,0.7); font-size: 0.85rem; font-weight: 500; text-decoration: none; transition: color 0.2s; cursor: pointer; }
+  .topnav .nav-links a:hover, .topnav .nav-links a.active { color: white; }
+
+  /* --- Refactored Executive Pulse Strip --- */
+  .global-pulse {
+    background: var(--paper);
+    padding: 2.5rem 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 4px 20px -10px rgba(0,0,0,0.05);
+  }
+  .pulse-item {
+    background: transparent;
+    padding: 0 1.5rem;
+    border-radius: 0;
+    border: none;
+    border-right: 1px solid var(--rule);
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  .pulse-item:last-child { border-right: none; }
+  .pulse-item:hover { transform: translateY(-2px); }
+  .pulse-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-soft);
+    margin-bottom: 0.75rem;
+  }
+  .pulse-value {
+    font-family: 'Source Serif 4', serif;
+    font-size: 2.75rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .pulse-trend {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .trend-up { color: var(--ice-blue); }
+  .pulse-sublabel {
+     font-size: 0.75rem; 
+     font-weight: 500; 
+     color: var(--ink-soft); 
+     margin-top: 0.75rem; 
+  }
+
+  /* --- Map Container --- */
+  .map-wrapper {
+    position: relative;
+    height: 900px;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+  }
+
+  /* --- Executive Content Sections --- */
+  .section-container { max-width: 1400px; margin: 0 auto; width: 100%; }
+  
+  /* Refined Section Titles with thick blue accent line */
+  .section-title-wrapper { margin-bottom: 2.5rem; }
+  .section-title {
+    font-family: 'Source Serif 4', serif;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+    display: block;
+    letter-spacing: -0.01em;
+  }
+  .section-divider {
+    height: 4px;
+    background: var(--ice-blue);
+    width: 100%;
+    display: block;
+    border-radius: 0;
+    border: none;
+  }
+
+  .card {
+    background: var(--paper); 
+    border: 1px solid var(--rule); 
+    border-top: 3px solid var(--navy-primary);
+    border-radius: var(--radius-lg); 
+    padding: 3rem; 
+    box-shadow: var(--shadow-card);
+    position: relative;
+  }
+  .card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    border: 1px solid rgba(0,0,0,0.03);
+    border-radius: var(--radius-lg);
+  }
+
+  /* Bloomberg-style Data Table */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  .data-table th { text-align: left; padding: 1rem 1rem; color: var(--ink-soft); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.7rem; border-bottom: 1px solid var(--rule); cursor: pointer; }
+  .data-table td { padding: 1rem 1rem; border-bottom: 1px solid var(--rule); color: var(--ink); font-variant-numeric: tabular-nums; }
+  .data-table tbody tr:hover { background: var(--canvas); }
+  .data-table .num { text-align: right; }
+  .table-progress-bg { width: 60px; height: 4px; background: #E2E8F0; border-radius: 2px; display: inline-block; vertical-align: middle; margin-left: 0.5rem; }
+  .table-progress-fill { height: 100%; background: var(--ice-blue); border-radius: 2px; }
+
+  .chart-container { height: 350px; width: 100%; }
+
+  @media (max-width: 1024px) {
+    .map-wrapper { height: 60vh; min-height: 400px; }
+    .pulse-item { border-right: none; border-bottom: 1px solid var(--rule); padding: 1.5rem 0; }
+    .pulse-item:last-child { border-bottom: none; }
+  }
+  
+  .tab-page { display: none; }
+  .tab-page.active { display: block; }
+</style>
+</head>
+<body class="min-h-screen">
+<nav class="topnav" style="background: #002852; height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;">
+<div class="brand"><span class="main" style="font-family: 'Source Serif 4', serif; color: white; font-weight: 600; font-size: 1.1rem;">Mandiri Institute</span><span class="sub" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; color: #00A3E0; margin-top: 2px;">Ketahanan Pangan</span></div>
+<div class="nav-links hidden md:flex">
+<a href="../index.html">Beranda</a>
+<a class="active" href="#" onclick="switchTab('overview'); return false;">Gambaran Umum</a>
+<a href="#" onclick="switchTab('map'); return false;">Peta Sebaran</a>
+<a href="#" onclick="switchTab('trend'); return false;">Tren Kab/Kota</a>
+<a href="#" onclick="switchTab('province'); return false;">Provinsi</a>
+<a href="#" onclick="switchTab('methodology'); return false;">Metodologi</a>
+</div>
+<div class="flex items-center gap-4 text-white">
+<iconify-icon class="text-xl" icon="mdi:magnify"></iconify-icon>
+<div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700">
+<iconify-icon class="text-lg" icon="mdi:account"></iconify-icon>
+</div>
+</div>
+</nav>
+<div class="global-pulse">
+<div class="pulse-item">
+<span class="pulse-label">Tahan Pangan</span>
+<span class="pulse-value" id="kpi-tahan">-</span>
+<span class="pulse-sublabel font-semibold"><span style="color: #00A3E0; font-weight: 600; font-size: 0.7rem; letter-spacing: 0.05em;">% PENDUDUK, 2025</span></span>
+</div>
+<div class="pulse-item">
+<span class="pulse-label">Rawan Pangan (Total)</span>
+<span class="pulse-value" id="kpi-rawan-total">-</span>
+<span class="pulse-sublabel"><span style="color: var(--ink-soft); font-weight: 600; font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase;">% PENDUDUK, 2025</span></span>
+</div>
+<div class="pulse-item">
+<span class="pulse-label">Rawan Sedang-Parah (FAO)</span>
+<span class="pulse-value" id="kpi-rawan-fao">-</span>
+<span class="pulse-sublabel"><span style="color: var(--ink-soft); font-weight: 600; font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase;">% PENDUDUK, 2025</span></span>
+</div>
+<div class="pulse-item">
+<span class="pulse-label flex items-center gap-1">Penduduk Rawan Total</span>
+<span class="pulse-value" id="kpi-jiwa-rawan">-</span>
+<span class="pulse-sublabel"><span style="color: var(--ink-soft); font-weight: 600; font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase;">juta jiwa, 2025</span></span>
+</div>
+</div>
+<!-- Main content -->
+<main class="w-full">
+<!-- ──────────────────── PAGE 1: GAMBARAN UMUM ──────────────────────────── -->
+<div class="tab-page active" id="page-overview">
+<section class="bg-[#F9F9F8] py-12 px-4 md:px-8">
+<div class="section-container">
+<div class="section-title-wrapper flex items-center justify-between">
+<h2 class="section-title mb-0">Gambaran Umum</h2>
+<div class="flex items-center gap-2 text-[11px] font-bold text-slate-500 uppercase tracking-[0.1em] bg-white px-3 py-1.5 rounded-sm border border-slate-200 shadow-sm">
+<span class="w-2 h-2 rounded-full bg-[#00A3E0]" style="background-color: #00A3E0; box-shadow: 0 0 8px rgba(0, 163, 224, 0.4);"></span>
+Research Initiative
+</div>
+</div>
+<span class="section-divider mb-10"></span>
+<!-- Story box -->
+<div class="card">
+<div class="font-bold text-xs mb-3 text-slate-500 uppercase tracking-widest border-b border-slate-100 pb-2 border-l-2 border-[#00A3E0] pl-3 py-0.5 text-[10px] tracking-[0.2em] mb-4">Catatan Analitis</div>
+<p class="text-[15px] leading-relaxed text-slate-600 serif" style="line-height: 1.8; color: #334155;">
+        Setelah lima tahun perbaikan berturut-turut (2019-2024), Indonesia mencatat peningkatan penduduk rawan pangan pada 2025,
+        terutama pada kategori rawan ringan (+1,9 juta jiwa). Rawan pangan parah relatif stabil sepanjang 2019-2025 (~3 juta jiwa).
+        Peningkatan rawan ringan 2025 perlu dicermati sebagai sinyal dini ketahanan pangan rumah tangga, meski
+        angka rawan sedang-parah (standar FAO) masih di bawah puncak 2019.
+      </p>
+</div>
+</div>
+</section>
+<section class="bg-white py-12 px-4 md:px-8 border-y border-slate-200">
+<div class="section-container">
+<!-- National trend line -->
+<div class="card" style="background-color: #002852; border-top: 3px solid #00A3E0; border-radius: 4px; padding: 3rem; box-shadow: 0 12px 36px -8px rgba(0, 0, 0, 0.3);">
+<div class="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2 border-l-2 border-[#00A3E0] pl-3 py-0.5">Tren Nasional 2019-2025</div>
+<div class="serif text-xl font-semibold mb-6 text-slate-800" style="letter-spacing: -0.02em; font-weight: 600; color: #FFFFFF;">Komposisi Status Ketahanan Pangan Penduduk (%)</div>
+<div class="chart-container" id="chart-nat-trend"></div>
+</div>
+</div>
+</section>
+<section class="bg-[#F9F9F8] py-12 px-4 md:px-8">
+<div class="section-container">
+<!-- Top/Bottom 10 -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+<div class="card" style="background-color: #002852; border-top: 3px solid #00A3E0; border-radius: 4px; padding: 3rem; box-shadow: 0 12px 36px -8px rgba(0, 0, 0, 0.3);">
+<div class="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2 border-l-2 border-[#00A3E0] pl-3 py-0.5">Top 10 Tertinggi — 2025</div>
+<div class="serif text-lg font-semibold mb-6 text-slate-800" style="letter-spacing: -0.02em; font-weight: 600;">Rawan Pangan Sedang-Parah Terbesar</div>
+<div class="chart-container" id="chart-top10"></div>
+</div>
+<div class="card">
+<div class="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2 border-l-2 border-[#00A3E0] pl-3 py-0.5">Top 10 Terendah — 2025</div>
+<div class="serif text-lg font-semibold mb-6 text-slate-800" style="letter-spacing: -0.02em; font-weight: 600;">Rawan Pangan Sedang-Parah Terendah</div>
+<div class="chart-container" id="chart-bot10"></div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- ──────────────────── PAGE 2: PETA SEBARAN ───────────────────────────── -->
+<div class="tab-page" id="page-map">
+<section class="bg-[#F9F9F8] py-12 px-4 md:px-8">
+<div class="section-container">
+<div class="section-title-wrapper flex items-center justify-between">
+<h2 class="section-title mb-0">Peta Sebaran</h2>
+<div class="flex items-center gap-2 text-[11px] font-bold text-slate-500 uppercase tracking-[0.1em] bg-white px-3 py-1.5 rounded-sm border border-slate-200 shadow-sm">
+<span class="w-2 h-2 rounded-full bg-[#00A3E0]" style="background-color: #00A3E0; box-shadow: 0 0 8px rgba(0, 163, 224, 0.4);"></span>
+Research Initiative
+</div>
+</div>
+<span class="section-divider mb-10"></span>
+<div class="flex flex-wrap gap-6 items-center bg-white p-5 border-y-2 border-slate-200 shadow-sm mb-6">
+<div class="flex items-center gap-4 w-full md:w-auto">
+<label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap">Tahun</label>
+<div class="flex items-center gap-3 flex-grow">
+<input class="w-full md:w-40 accent-[#00A3E0]" id="map-year-slider" max="2025" min="2019" oninput="onMapYearSlide(this.value)" step="1" type="range" value="2025"/>
+<div class="font-bold serif text-slate-800 text-lg w-12 text-center" id="map-year-label">2025</div>
+</div>
+</div>
+<div class="h-8 w-px bg-slate-200 hidden md:block"></div>
+<div class="flex items-center gap-4 w-full md:w-auto">
+<label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap">Metrik</label>
+<select class="px-4 py-2 border border-slate-300 rounded-sm text-sm bg-white text-slate-800 focus:outline-none focus:ring-1 focus:ring-[#00A3E0] min-w-[220px] shadow-sm" id="map-metric" onchange="renderMap()">
+<option selected="" value="share_rawan_moderate_severe">Rawan Sedang-Parah (FAO)</option>
+<option value="share_rawan_total">Rawan Pangan Total</option>
+<option value="share_rawan_severe">Rawan Pangan Parah</option>
+<option value="share_tahan">Tahan Pangan</option>
+</select>
+</div>
+<div class="h-8 w-px bg-slate-200 hidden md:block"></div>
+<div class="flex items-center gap-4 w-full md:w-auto">
+<label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap">Unit</label>
+<select class="px-4 py-2 border border-slate-300 rounded-sm text-sm bg-white text-slate-800 focus:outline-none focus:ring-1 focus:ring-[#00A3E0] min-w-[160px] shadow-sm" id="map-unit" onchange="renderMap()">
+<option selected="" value="pct">% Penduduk</option>
+<option value="jiwa">Jumlah Jiwa</option>
+</select>
+</div>
+</div>
+<div class="map-wrapper mb-8 overflow-hidden border border-slate-300 shadow-md relative rounded-sm">
+<div class="absolute inset-0 bg-[#020c14]" id="chart-map"></div>
+</div>
+<div class="text-[11px] uppercase tracking-widest leading-relaxed text-slate-400 mt-4 text-center">
+  Peta menampilkan 514 kab/kota berdasarkan shapefile BPS 2020. Kab/kota baru hasil pemekaran 2022 (Papua) ditampilkan menggunakan batas administratif sebelum pemekaran.
+</div>
+</div>
+</section>
+</div>
+<!-- ──────────────────── PAGE 3: TREN KAB/KOTA ─────────────────────────── -->
+<div class="tab-page" id="page-trend">
+<section class="bg-[#F9F9F8] py-12 px-4 md:px-8">
+<div class="section-container">
+<div class="section-title-wrapper flex items-center justify-between">
+<h2 class="section-title mb-0">Tren Kab/Kota</h2>
+<div class="flex items-center gap-2 text-[11px] font-bold text-slate-500 uppercase tracking-[0.1em] bg-white px-3 py-1.5 rounded-sm border border-slate-200 shadow-sm">
+<span class="w-2 h-2 rounded-full bg-[#00A3E0]" style="background-color: #00A3E0; box-shadow: 0 0 8px rgba(0, 163, 224, 0.4);"></span>
+Research Initiative
+</div>
+</div>
+<span class="section-divider mb-10"></span>
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-10">
+<!-- Sidebar -->
+<div class="card lg:col-span-1">
+<div class="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-4 border-b border-slate-100 pb-2 border-l-2 border-[#00A3E0] pl-3 py-0.5">Pilih Kab/Kota (maks 10)</div>
+<div class="mb-5">
+<input autocomplete="off" class="w-full px-4 py-2 border border-slate-300 rounded-sm text-sm focus:outline-none focus:ring-1 focus:ring-[#00A3E0] shadow-sm" id="kab-search" oninput="filterKabDropdown()" placeholder="Cari kab/kota..." type="text"/>
+</div>
+<div class="mb-5 max-h-48 overflow-y-auto border border-slate-300 rounded-sm p-2 shadow-inner bg-slate-50" id="kab-dropdown-list">
+</div>
+<div class="text-[10px] font-bold text-slate-400 mb-3 uppercase tracking-widest">Dipilih:</div>
+<div class="mb-5 flex flex-wrap gap-2" id="kab-selected-tags"></div>
+<hr class="border-slate-200 my-5"/>
+<div class="mb-5">
+<label class="block text-[11px] font-bold text-slate-500 mb-2 uppercase tracking-widest">Metrik Tren</label>
+<select class="w-full px-4 py-2 border border-slate-300 rounded-sm text-sm bg-white shadow-sm" id="trend-metric" onchange="renderTrend()">
+<option selected="" value="share_rawan_moderate_severe">Rawan Sedang-Parah (FAO)</option>
+<option value="share_rawan_total">Rawan Pangan Total</option>
+<option value="share_rawan_severe">Rawan Pangan Parah</option>
+<option value="share_tahan">Tahan Pangan</option>
+</select>
+</div>
+<div class="mb-5">
+<label class="block text-[11px] font-bold text-slate-500 mb-2 uppercase tracking-widest">Unit</label>
+<select class="w-full px-4 py-2 border border-slate-300 rounded-sm text-sm bg-white shadow-sm" id="trend-unit" onchange="renderTrend()">
+<option selected="" value="pct">% Penduduk</option>
+<option value="jiwa">Jumlah Jiwa</option>
+</select>
+</div>
+<div class="mt-5">
+<label class="block text-[11px] font-bold text-slate-500 mb-2 uppercase tracking-widest">Stacked Area: Pilih 1 Kab/Kota</label>
+<select class="w-full px-4 py-2 border border-slate-300 rounded-sm text-sm bg-white shadow-sm" id="trend-stacked-kab" onchange="renderStackedArea()">
+<option value="">-- Pilih --</option>
+</select>
+</div>
+</div>
+<!-- Charts -->
+<div class="lg:col-span-3 flex flex-col gap-10">
+<div class="card">
+<div class="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2 border-l-2 border-[#00A3E0] pl-3 py-0.5">Tren Komparasi</div>
+<div class="serif text-xl font-semibold mb-6 text-slate-800" style="letter-spacing: -0.02em; font-weight: 600;">Tren 2019-2025 per Kab/Kota Terpilih</div>
+<div class="chart-container" id="chart-trend-line">
+<div class="flex items-center justify-center h-full text-slate-400 text-sm serif italic">Pilih kab/kota dari sidebar untuk menampilkan tren</div>
+</div>
+</div>
+<div class="card">
+<div class="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2 border-l-2 border-[#00A3E0] pl-3 py-0.5">Komposisi Detail</div>
+<div class="serif text-xl font-semibold mb-6 text-slate-800" id="stacked-title" style="letter-spacing: -0.02em; font-weight: 600;">Stacked Area — 4 Kategori per Kab/Kota</div>
+<div class="chart-container" id="chart-stacked">
+<div class="flex items-center justify-center h-full text-slate-400 text-sm serif italic">Pilih 1 kab/kota di sidebar (Stacked Area)</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- ──────────────────── PAGE 4: ANALISIS PROVINSI ──────────────────────── -->
+<div class="tab-page" id="page-province">
+<section class="bg-[#F9F9F8] py-12 px-4 md:px-8">
+<div class="section-container">
+<div class="section-title-wrapper flex items-center justify-between">
+<h2 class="section-title mb-0">Analisis Provinsi</h2>
+<div class="flex items-center gap-2 text-[11px] font-bold text-slate-500 uppercase tracking-[0.1em] bg-white px-3 py-1.5 rounded-sm border border-slate-200 shadow-sm">
+<span class="w-2 h-2 rounded-full bg-[#00A3E0]" style="background-color: #00A3E0; box-shadow: 0 0 8px rgba(0, 163, 224, 0.4);"></span>
+Research Initiative
+</div>
+</div>
+<span class="section-divider mb-10"></span>
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-10">
+<!-- Sidebar -->
+<div class="card lg:col-span-1">
+<div class="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-4 border-b border-slate-100 pb-2 border-l-2 border-[#00A3E0] pl-3 py-0.5">Pilih Provinsi</div>
+<select class="w-full px-4 py-2 border border-slate-300 rounded-sm text-sm bg-white mb-5 shadow-sm" id="prov-select" onchange="renderProvince()">
+<option value="">-- Pilih Provinsi --</option>
+</select>
+<hr class="border-slate-200 my-5"/>
+<div class="mb-5">
+<label class="block text-[11px] font-bold text-slate-500 mb-2 uppercase tracking-widest">Metrik</label>
+<select class="w-full px-4 py-2 border border-slate-300 rounded-sm text-sm bg-white shadow-sm" id="prov-metric" onchange="renderProvince()">
+<option selected="" value="share_rawan_moderate_severe">Rawan Sedang-Parah (FAO)</option>
+<option value="share_rawan_total">Rawan Pangan Total</option>
+<option value="share_rawan_severe">Rawan Pangan Parah</option>
+<option value="share_tahan">Tahan Pangan</option>
+</select>
+</div>
+<div class="text-[13px] leading-relaxed mt-6 text-slate-500 serif italic">
+          Menampilkan semua kab/kota dalam provinsi terpilih untuk tahun 2025, diranking berdasarkan metrik terpilih. Tabel juga menampilkan perubahan dari 2024 ke 2025.
+        </div>
+</div>
+<!-- Content -->
+<div class="lg:col-span-3 flex flex-col gap-10">
+<div class="card">
+<div class="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2 border-l-2 border-[#00A3E0] pl-3 py-0.5">Ranking Kab/Kota dalam Provinsi</div>
+<div class="serif text-xl font-semibold mb-6 text-slate-800" id="prov-chart-title" style="letter-spacing: -0.02em; font-weight: 600;">Pilih provinsi untuk menampilkan data</div>
+<div class="chart-container" id="chart-prov-bar">
+<div class="flex items-center justify-center h-full text-slate-400 text-sm serif italic">Pilih provinsi dari sidebar</div>
+</div>
+</div>
+<div class="card overflow-hidden">
+<div class="flex justify-between items-end mb-8 border-l-2 border-[#00A3E0] pl-3 py-0.5">
+<div>
+<div class="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2">Tabel Indikator Lengkap</div>
+<div class="serif text-lg font-semibold text-slate-800" style="letter-spacing: -0.02em; font-weight: 600;">Semua Kab/Kota — 2025 vs 2024</div>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="data-table" id="prov-table">
+<thead>
+<tr>
+<th>Kab/Kota</th>
+<th class="num">Tahan Pangan</th>
+<th class="num">Rawan Ringan</th>
+<th class="num">Rawan Sedang</th>
+<th class="num">Rawan Parah</th>
+<th class="num">Sedang-Parah (FAO)</th>
+<th class="num">Delta 2024→25</th>
+</tr>
+</thead>
+<tbody id="prov-table-body">
+<tr><td class="text-center text-slate-400 py-10 serif italic" colspan="7">Pilih provinsi untuk menampilkan data</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- ──────────────────── PAGE 5: METODOLOGI ─────────────────────────────── -->
+<div class="tab-page" id="page-methodology">
+<section class="bg-[#F9F9F8] py-12 px-4 md:px-8">
+<div class="section-container">
+<div class="section-title-wrapper flex items-center justify-between">
+<h2 class="section-title mb-0">Metodologi</h2>
+<div class="flex items-center gap-2 text-[11px] font-bold text-slate-500 uppercase tracking-[0.1em] bg-white px-3 py-1.5 rounded-sm border border-slate-200 shadow-sm">
+<span class="w-2 h-2 rounded-full bg-[#00A3E0]" style="background-color: #00A3E0; box-shadow: 0 0 8px rgba(0, 163, 224, 0.4);"></span>
+Research Initiative
+</div>
+</div>
+<span class="section-divider mb-10"></span>
+<div class="max-w-4xl mx-auto">
+<div class="card p-10">
+<h2 class="serif text-3xl font-bold mb-8 text-slate-800 border-b-2 border-slate-100 pb-4">
+          Food Insecurity Experience Scale (FIES)
+        </h2>
+<h3 class="serif text-xl font-semibold mt-8 mb-4 text-slate-800" style="letter-spacing: -0.02em; font-weight: 600;">Apa itu FIES?</h3>
+<p class="text-[15px] leading-relaxed mb-6 text-slate-600 serif" style="line-height: 1.8; color: #334155;">
+          FIES adalah instrumen pengukuran ketahanan pangan berbasis pengalaman (experience-based) yang dikembangkan oleh FAO.
+          FIES terdiri dari 8 pertanyaan yang mengukur pengalaman ketidakcukupan pangan di tingkat rumah tangga dalam 12 bulan terakhir,
+          mulai dari kekhawatiran tentang pangan, kualitas makanan, hingga kelaparan dan melewatkan makan.
+        </p>
+<div class="mb-8 bg-slate-50 p-6 border border-slate-200 shadow-inner">
+<div class="font-bold text-[11px] uppercase tracking-widest mb-4 text-slate-500">8 Pertanyaan FIES (singkat)</div>
+<ol class="text-sm leading-loose text-slate-700 list-decimal pl-6 space-y-2 serif">
+<li>Khawatir kehabisan makanan</li>
+<li>Tidak bisa makan makanan bergizi</li>
+<li>Hanya makan sedikit jenis makanan</li>
+<li>Melewatkan makan</li>
+<li>Makan lebih sedikit dari yang seharusnya</li>
+<li>Kehabisan makanan di rumah</li>
+<li>Merasa lapar tapi tidak makan</li>
+<li>Tidak makan seharian penuh</li>
+</ol>
+</div>
+<h3 class="serif text-xl font-semibold mt-8 mb-4 text-slate-800" style="letter-spacing: -0.02em; font-weight: 600;">Klasifikasi 4 Kategori</h3>
+<table class="data-table w-full mb-8">
+<thead>
+<tr>
+<th>Kategori</th>
+<th>Raw Score (item "Ya")</th>
+<th>Interpretasi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="font-semibold text-[#00A3E0]">Tahan Pangan</span></td>
+<td>0-2 item</td>
+<td>Tidak mengalami ketidakcukupan pangan yang signifikan</td>
+</tr>
+<tr>
+<td><span class="font-semibold text-yellow-700">Rawan Pangan Ringan</span></td>
+<td>3-4 item</td>
+<td>Khawatir kekurangan pangan, kualitas &amp; variasi menurun</td>
+</tr>
+<tr>
+<td><span class="font-semibold text-orange-700">Rawan Pangan Sedang</span></td>
+<td>5-6 item</td>
+<td>Mengurangi kuantitas makan; orang dewasa terpengaruh</td>
+</tr>
+<tr>
+<td><span class="font-semibold text-red-700">Rawan Pangan Parah</span></td>
+<td>7-8 item</td>
+<td>Kehabisan makanan, lapar, tidak makan seharian penuh</td>
+</tr>
+</tbody>
+</table>
+<h3 class="serif text-xl font-semibold mt-8 mb-4 text-slate-800" style="letter-spacing: -0.02em; font-weight: 600;">Definisi Rawan Pangan</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+<div class="text-[15px] bg-white border border-slate-300 p-5 shadow-sm">
+<div class="font-bold text-[11px] uppercase tracking-widest mb-3 text-slate-800">Rawan Pangan Total</div>
+<p class="text-sm text-slate-600 serif leading-relaxed" style="line-height: 1.8; color: #334155;">Gabungan Ringan + Sedang + Parah. Mencerminkan cakupan seluas mungkin. Dipakai untuk estimasi beban ketahanan pangan secara umum.</p>
+</div>
+<div class="text-[15px] bg-[#FEF0F0] border border-red-200 p-5 shadow-sm">
+<div class="font-bold text-[11px] uppercase tracking-widest mb-3 text-red-800">Rawan Sedang-Parah (FAO)</div>
+<p class="text-sm text-slate-600 serif leading-relaxed" style="line-height: 1.8; color: #334155;">Standar internasional FAO (SDG 2.1.2). Hanya mencakup pengurangan kuantitas makan hingga kelaparan. Indikator utama dashboard ini.</p>
+</div>
+<div class="text-[15px] bg-[#FFF3E0] border border-orange-200 p-5 shadow-sm">
+<div class="font-bold text-[11px] uppercase tracking-widest mb-3 text-orange-800">Rawan Pangan Parah</div>
+<p class="text-sm text-slate-600 serif leading-relaxed" style="line-height: 1.8; color: #334155;">Hanya kategori terparah: kehabisan makanan, lapar, tidak makan seharian. Indikator kedaruratan pangan.</p>
+</div>
+</div>
+<h3 class="serif text-xl font-semibold mt-8 mb-4 text-slate-800" style="letter-spacing: -0.02em; font-weight: 600;">Populasi yang Dimaksud</h3>
+<p class="text-[15px] leading-relaxed mb-6 text-slate-600 serif" style="line-height: 1.8; color: #334155;">
+          Angka jumlah jiwa (n_xxx) mencerminkan estimasi <strong>jumlah individu</strong> yang tinggal dalam rumah tangga dengan status FIES tersebut
+          (bukan jumlah rumah tangga). Perhitungan menggunakan bobot individu Susenas (<code>weind</code>).
+        </p>
+<h3 class="serif text-xl font-semibold mt-8 mb-4 text-slate-800" style="letter-spacing: -0.02em; font-weight: 600;">Model dan Pipeline</h3>
+<ul class="text-[15px] leading-relaxed text-slate-600 list-disc pl-6 space-y-2 mb-6 serif">
+<li>Model: <strong>IRT 1PL (Rasch)</strong> — mengkalibrasi kesulitan setiap item FIES agar dapat dibandingkan antar tahun</li>
+<li>Imputasi: missing values diimputasi per provinsi sebelum estimasi Rasch</li>
+<li>Raw score FIES setelah IRT dikonversi ke 4 kategori (cutoff berbasis probabilitas Rasch)</li>
+<li>Agregasi kab/kota menggunakan bobot individu Susenas (<code>weind</code>)</li>
+</ul>
+<h3 class="serif text-xl font-semibold mt-8 mb-4 text-slate-800" style="letter-spacing: -0.02em; font-weight: 600;">Sumber Data</h3>
+<ul class="text-[15px] leading-relaxed text-slate-600 list-disc pl-6 space-y-2 mb-6 serif">
+<li>Survei Sosial Ekonomi Nasional (Susenas) Maret 2019-2025, Badan Pusat Statistik</li>
+<li>Modul Konsumsi dan Pengeluaran (KP) — blok pertanyaan FIES 8 item</li>
+<li>Data mencerminkan kondisi 12 bulan sebelum bulan Maret tahun survei</li>
+</ul>
+<h3 class="serif text-xl font-semibold mt-8 mb-4 text-slate-800" style="letter-spacing: -0.02em; font-weight: 600;">Catatan Interpretasi</h3>
+<ul class="text-[15px] leading-relaxed text-slate-600 list-disc pl-6 space-y-2 mb-10 serif">
+<li>Kode wilayah mengikuti BPS 2025 (514 kab/kota). Kab/kota hasil pemekaran Papua 2022 dimunculkan dengan kode baru.</li>
+<li>Perbandingan antar tahun valid karena model IRT menjaga konsistensi skala.</li>
+<li>Angka 2025 perlu dicermati: terjadi uptick rawan ringan yang mendorong kenaikan rawan total.</li>
+<li>Peta menggunakan shapefile BPS 2020 — batas administratif Papua baru belum tersedia di shapefile.</li>
+</ul>
+<div class="border-t-4 border-slate-200 pt-6" style="border-top-style: solid; border-top-color: #00A3E0;">
+<div class="text-[11px] uppercase tracking-widest text-slate-400 text-center">
+          Dashboard dibuat oleh Mandiri Institute menggunakan Python (pandas, geopandas, Plotly.js) dari data Susenas BPS.
+          Diperbarui: Mei 2026.
+        </div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- ── Data ──────────────────────────────────────────────────────────────── -->
+<script>
+/* DATA INLINE REMOVED, ~11 lines, ~4073 KB */
+</script>
+<!-- ── App JS ─────────────────────────────────────────────────────────────── -->
+<script>
+/* DATA INLINE REMOVED, ~724 lines, ~27 KB */
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-page').forEach(page => {
+      page.classList.remove('active');
+    });
+    document.getElementById('page-' + tabId).classList.add('active');
+    
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.classList.remove('active');
+    });
+    event.currentTarget.classList.add('active');
+  }
+</script>
+</body></html>
