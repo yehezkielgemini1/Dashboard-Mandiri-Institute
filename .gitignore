@@ -60,6 +60,10 @@ secrets.json
 # Claude local config (jangan publish)
 .claude/
 
+# Internal review packages (Gemini evaluator briefs, NOT for production)
+_review_package/
+_review_package_full/
+
 # Node (kalau di masa depan ada build tool)
 node_modules/
 dist/
