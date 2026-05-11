@@ -19,6 +19,17 @@
     .text-ice-blue { color: #00A3E0; }
     .bg-ice-blue { background-color: #00A3E0; }
     .border-ice-blue { border-color: #00A3E0; }
+    /* Carousel surround slots: navy-tinted image filter + readable label text */
+    .carousel-tinted img {
+      filter: brightness(0.65) saturate(0.7) contrast(0.95);
+      transition: filter 0.4s;
+    }
+    .carousel-tinted:hover img { filter: brightness(0.85) saturate(1) contrast(1); }
+    .carousel-tinted .text-white { text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6); }
+    /* Spotlight center: subtle tone-down so overlay card stands out */
+    .carousel-spotlight img {
+      filter: brightness(0.92) saturate(0.95);
+    }
   </style>
 <script>
   tailwind.config = {
@@ -128,25 +139,61 @@
 <!-- BEGIN: Featured Carousel Section -->
 <section class="pb-24 max-w-7xl mx-auto px-8 lg:px-16 overflow-hidden relative">
 <div class="relative flex justify-center items-center h-[500px] w-full mx-auto space-x-4 md:space-x-8" id="carousel-container">
-<div class="carousel-item hidden lg:block w-48 h-[300px] relative opacity-40 transform scale-90 transition-all duration-700 ease-in-out shrink-0" data-pos="1">
-<img alt="Monthly Gazette" class="w-full h-full object-cover rounded-sm" src="_assets/foto/kelas-masyarakat-clean.jpg"/>
+<!-- Slot 1: Monthly Gazette (far left) -->
+<div class="carousel-item carousel-tinted hidden lg:block w-48 h-[300px] relative opacity-70 transform scale-90 transition-all duration-700 ease-in-out shrink-0" data-pos="1">
+<img alt="Monthly Gazette" class="w-full h-full object-cover rounded-sm" src="_assets/foto/kelas-masyarakat-clean.jpg" style="object-position: center 30%;"/>
+<div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/95 via-mandiri-deep/70 to-mandiri-deep/55 rounded-sm"></div>
+<div class="absolute top-3 left-3 right-3 text-center">
+<div class="text-[9px] text-ice-blue font-bold uppercase tracking-[0.15em] mb-1">Monthly Gazette</div>
 </div>
-<div class="carousel-item hidden md:block w-56 h-[380px] relative opacity-60 transform scale-95 transition-all duration-700 ease-in-out shrink-0" data-pos="2">
-<img alt="Policy Brief" class="w-full h-full object-cover rounded-sm" src="_assets/foto/kendaraan-clean.jpg"/>
+<div class="absolute bottom-3 left-3 right-3 text-center">
+<div class="text-xs text-white font-serif font-medium leading-tight">Edisi Maret 2026</div>
 </div>
-<div class="carousel-item w-80 h-[420px] md:w-96 md:h-[480px] relative z-10 shadow-2xl transition-all duration-700 ease-in-out shrink-0" data-pos="3">
-<img alt="Demographic & Consumption 2025" class="w-full h-full object-cover rounded-sm" src="_assets/foto/Demographic & Consumption 2025.png"/>
+</div>
+<!-- Slot 2: Policy Brief (mid left) -->
+<div class="carousel-item carousel-tinted hidden md:block w-56 h-[380px] relative opacity-85 transform scale-95 transition-all duration-700 ease-in-out shrink-0" data-pos="2">
+<img alt="Policy Brief" class="w-full h-full object-cover rounded-sm" src="_assets/foto/kendaraan-clean.jpg" style="object-position: center 40%;"/>
+<div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/92 via-mandiri-deep/60 to-mandiri-deep/45 rounded-sm"></div>
+<div class="absolute top-3 left-3 right-3 text-center">
+<div class="text-[9.5px] text-ice-blue font-bold uppercase tracking-[0.15em]">Policy Brief</div>
+</div>
+<div class="absolute bottom-4 left-3 right-3 text-center">
+<div class="text-sm text-white font-serif font-medium leading-tight">Subsidi BBM Tertarget</div>
+<div class="text-[10px] text-white/70 mt-1 uppercase tracking-wider">No. 2 · Februari 2026</div>
+</div>
+</div>
+<!-- Slot 3 CENTER: Demographic & Consumption 2025 spotlight -->
+<div class="carousel-item carousel-spotlight w-80 h-[420px] md:w-96 md:h-[480px] relative z-10 shadow-2xl transition-all duration-700 ease-in-out shrink-0" data-pos="3">
+<img alt="Demographic &amp; Consumption 2025" class="w-full h-full object-cover rounded-sm" src="_assets/foto/Demographic & Consumption 2025.png" style="object-position: center 65%;"/>
+<div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/75 via-mandiri-deep/20 to-mandiri-deep/40 rounded-sm pointer-events-none"></div>
 <div class="absolute top-4 left-4 border border-ice-blue text-ice-blue text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest bg-white/90 backdrop-blur-sm">Executive Brief</div>
 <div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-6 rounded-sm shadow-lg transition-opacity duration-700 ease-in-out content-overlay border-l-4 border-ice-blue">
-<p class="text-[10px] text-ice-blue uppercase tracking-[0.15em] mb-2 font-bold">Article | November 18, 2025</p>
-<h2 class="text-2xl font-serif text-mandiri-deep leading-tight font-medium">Membaca Indonesia melalui data</h2>
+<p class="text-[10px] text-ice-blue uppercase tracking-[0.15em] mb-2 font-bold">Riset Tahunan · 2025</p>
+<h2 class="text-2xl font-serif text-mandiri-deep leading-tight font-medium">Demographic &amp; Consumption 2025</h2>
 </div>
 </div>
-<div class="carousel-item hidden md:block w-56 h-[380px] relative opacity-60 transform scale-95 transition-all duration-700 ease-in-out shrink-0" data-pos="4">
-<img alt="Infografis" class="w-full h-full object-cover rounded-sm" src="_assets/foto/bbm-clean.jpg"/>
+<!-- Slot 4: Infografis (mid right) -->
+<div class="carousel-item carousel-tinted hidden md:block w-56 h-[380px] relative opacity-85 transform scale-95 transition-all duration-700 ease-in-out shrink-0" data-pos="4">
+<img alt="Infografis" class="w-full h-full object-cover rounded-sm" src="_assets/foto/bbm-clean.jpg" style="object-position: center 50%;"/>
+<div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/92 via-mandiri-deep/60 to-mandiri-deep/45 rounded-sm"></div>
+<div class="absolute top-3 left-3 right-3 text-center">
+<div class="text-[9.5px] text-ice-blue font-bold uppercase tracking-[0.15em]">Infografis</div>
 </div>
-<div class="carousel-item hidden lg:block w-48 h-[300px] relative opacity-40 transform scale-90 transition-all duration-700 ease-in-out shrink-0" data-pos="5">
-<img alt="Publikasi" class="w-full h-full object-cover rounded-sm" src="_assets/foto/demographic-consumption-clean.jpg"/>
+<div class="absolute bottom-4 left-3 right-3 text-center">
+<div class="text-sm text-white font-serif font-medium leading-tight">Kerentanan Middle Class</div>
+<div class="text-[10px] text-white/70 mt-1 uppercase tracking-wider">Carousel IG · 2026</div>
+</div>
+</div>
+<!-- Slot 5: Publikasi (far right) -->
+<div class="carousel-item carousel-tinted hidden lg:block w-48 h-[300px] relative opacity-70 transform scale-90 transition-all duration-700 ease-in-out shrink-0" data-pos="5">
+<img alt="Publikasi" class="w-full h-full object-cover rounded-sm" src="_assets/foto/demographic-consumption-clean.jpg" style="object-position: center 30%;"/>
+<div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/95 via-mandiri-deep/70 to-mandiri-deep/55 rounded-sm"></div>
+<div class="absolute top-3 left-3 right-3 text-center">
+<div class="text-[9px] text-ice-blue font-bold uppercase tracking-[0.15em] mb-1">Econmark</div>
+</div>
+<div class="absolute bottom-3 left-3 right-3 text-center">
+<div class="text-xs text-white font-serif font-medium leading-tight">Q1 2026</div>
+</div>
 </div>
 </div>
 <div class="flex justify-center space-x-4 mt-12">
