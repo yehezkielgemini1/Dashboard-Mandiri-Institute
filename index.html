@@ -1,567 +1,397 @@
 <!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mandiri Institute · Dashboard Suite</title>
-<meta name="theme-color" content="#002852">
-<meta name="description" content="Portal riset Mandiri Institute — indikator tahunan, riset tematik, dan inisiatif strategis. Dashboard interaktif konsumsi, kelas masyarakat, ketahanan pangan, dan kawasan komersial Indonesia.">
-<script src="_assets/iconify-icon.min.js"></script>
-<script defer src="_assets/alpine.min.js"></script>
-<link href="_assets/fonts/fonts.css" rel="stylesheet">
-<!-- v2 Tactile Editorial · refactored 2026-05-11 · v1 backup di _archive/v1-pre-tactile-editorial-2026-05-11/ -->
-<style>
-:root {
-  --navy: #003D79; --navy-deep: #002852; --navy-soft: #1A5394;
-  --sky: #67B2E8; --sky-soft: #A9C4DF;
-  --yellow: #FFB700; --yellow-soft: #FFE08A;
-  --ink: #051C2C; --ink-soft: #2A3F52;
-  --rule: #E5E8EC; --rule-strong: #D0D5DD;
-  --muted: #667085; --paper: #FFFFFF; --mist: #F0F6FC;
-  --positive: #00875A; --negative: #C8102E; --warning: #EA7200;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { background: var(--ink); color: white; }
-body { font-family: 'Inter', system-ui, sans-serif; font-weight: 400; letter-spacing: -0.003em; line-height: 1.45; }
-.serif { font-family: 'Source Serif 4', Georgia, serif; font-weight: 500; letter-spacing: -0.018em; line-height: 1.05; }
-a { color: inherit; text-decoration: none; }
-img { max-width: 100%; display: block; }
-
-/* ============ NAV ============ */
-.nav { background: var(--navy-deep); padding: 18px 32px; display: flex; align-items: center; gap: 32px; border-bottom: 1px solid rgba(255,255,255,0.08); position: sticky; top: 0; z-index: 50; backdrop-filter: blur(8px); }
-.nav .burger { font-size: 22px; cursor: pointer; opacity: 0.9; }
-.nav .brand { font-family: 'Source Serif 4', Georgia, serif; font-size: 19px; font-weight: 600; letter-spacing: -0.01em; }
-.nav .brand-sub { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--sky); margin-top: 2px; font-weight: 600; }
-.nav .menu { display: flex; gap: 26px; margin-left: 30px; }
-.nav .menu a { font-size: 13px; font-weight: 500; opacity: 0.85; padding: 6px 0; transition: opacity 0.2s; cursor: pointer; }
-.nav .menu a:hover { opacity: 1; color: var(--sky); }
-.nav .right { margin-left: auto; display: flex; gap: 16px; align-items: center; font-size: 12px; opacity: 0.75; }
-.nav .right .pipe { opacity: 0.4; }
-.nav .search { font-size: 22px; cursor: pointer; opacity: 0.85; }
-
-/* ============ HERO ============ */
-.hero { padding: 72px 32px 96px; max-width: 1480px; margin: 0 auto; }
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.15fr;
-  gap: 32px;
-  min-height: 580px;
-}
-.h-text { padding: 24px 0; display: flex; flex-direction: column; justify-content: space-between; }
-.h-text .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sky); }
-.h-text h1 { font-size: clamp(44px, 5.6vw, 86px); font-weight: 600; margin-top: 20px; }
-.h-text h1 em { font-style: italic; color: var(--sky); font-weight: 500; }
-.h-text .lead { margin-top: 28px; color: rgba(255,255,255,0.78); font-size: 17px; max-width: 540px; line-height: 1.55; }
-.h-text .actions { margin-top: 36px; display: flex; gap: 16px; align-items: center; }
-.h-text .cta { width: 60px; height: 60px; border: 1px solid rgba(255,255,255,0.4); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; transition: all 0.25s; }
-.h-text .cta:hover { background: var(--sky); border-color: var(--sky); color: var(--navy-deep); transform: translateX(4px); }
-.h-text .cta-label { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.85; }
-
-.h-feature {
-  position: relative; overflow: hidden; cursor: pointer;
-  background: var(--navy-deep);
-}
-.h-feature .bg {
-  position: absolute; inset: 0;
-  background-image: url('_assets/foto/demographic-consumption-clean.jpg');
-  background-size: cover; background-position: center;
-  transition: transform 0.8s ease;
-}
-.h-feature:hover .bg { transform: scale(1.04); }
-.h-feature::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,40,82,0.15) 0%, rgba(0,40,82,0.55) 50%, rgba(0,40,82,0.95) 100%); z-index: 1; }
-.h-feature-content { position: relative; z-index: 2; height: 100%; padding: 40px; display: flex; flex-direction: column; justify-content: space-between; }
-.h-feature .label { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--yellow); }
-.h-feature h2 { font-size: clamp(28px, 2.6vw, 44px); font-weight: 600; margin-top: 12px; max-width: 95%; line-height: 1.12; color: white; }
-.h-feature .desc { margin-top: 14px; color: rgba(255,255,255,0.82); font-size: 15px; max-width: 90%; line-height: 1.5; }
-.h-feature .more { display: inline-flex; align-items: center; gap: 10px; padding: 12px 22px; background: white; color: var(--ink); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; align-self: flex-start; transition: all 0.2s; }
-.h-feature .more:hover { background: var(--yellow); }
-
-/* ============ SECTIONS ============ */
-.section { background: var(--paper); color: var(--ink); padding: 96px 32px; }
-.section-mist { background: var(--mist); }
-.section-inner { max-width: 1480px; margin: 0 auto; }
-.section-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--navy); }
-.section-title { font-family: 'Source Serif 4', Georgia, serif; font-size: clamp(36px, 4.2vw, 60px); font-weight: 600; letter-spacing: -0.02em; line-height: 1.05; margin-top: 14px; max-width: 900px; }
-.section-sub { font-size: 16px; color: var(--muted); margin-top: 18px; max-width: 720px; line-height: 1.6; }
-
-.products {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-top: 56px;
-}
-
-.product-card {
-  position: relative;
-  cursor: pointer;
-  overflow: hidden;
-  min-height: 460px;
-  display: flex;
-  flex-direction: column;
-  transition: all 0.3s;
-}
-.product-card:hover { box-shadow: 0 16px 40px rgba(5,28,44,0.18); transform: translateY(-4px); }
-.product-card .img-wrap {
-  position: relative;
-  height: 280px;
-  overflow: hidden;
-}
-.product-card .img-bg {
-  position: absolute; inset: 0;
-  background-size: cover; background-position: center;
-  transition: transform 0.7s ease;
-}
-.product-card:hover .img-bg { transform: scale(1.06); }
-.product-card .img-tint { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 0%, rgba(0,40,82,0.15) 100%); }
-.product-card .body {
-  background: white;
-  border: 1px solid var(--rule);
-  border-top: none;
-  padding: 28px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.product-card .label { font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--navy); }
-.product-card .title { font-family: 'Source Serif 4', Georgia, serif; font-size: 22px; font-weight: 600; line-height: 1.2; margin-top: 10px; color: var(--ink); }
-.product-card .desc { font-size: 13px; color: var(--muted); margin-top: 12px; line-height: 1.55; }
-.product-card .meta-row { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; }
-.product-card .meta { font-size: 11px; color: var(--muted); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
-.product-card .arrow { color: var(--navy); font-size: 22px; transition: transform 0.25s; }
-.product-card:hover .arrow { transform: translateX(6px); }
-
-/* CTA dark variant */
-.product-card.cta-card { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%); color: white; }
-.product-card.cta-card .img-wrap { height: 280px; background: linear-gradient(135deg, var(--navy-soft) 0%, var(--navy-deep) 100%); display: flex; align-items: center; justify-content: center; }
-.product-card.cta-card .body { background: transparent; border: none; }
-.product-card.cta-card .label { color: var(--yellow); }
-.product-card.cta-card .title { color: white; }
-.product-card.cta-card .desc { color: rgba(255,255,255,0.75); }
-.product-card.cta-card .meta { color: var(--sky); }
-.product-card.cta-card .arrow { color: var(--yellow); }
-
-/* ============ BENTO DASHBOARD GRID (asymmetric) ============ */
-.bento-dash {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-auto-rows: 260px;
-  gap: 16px;
-  margin-top: 56px;
-}
-.dash-tile {
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  background: var(--navy-deep);
-  transition: all 0.3s;
-}
-.dash-tile:hover { box-shadow: 0 18px 44px rgba(5,28,44,0.28); transform: translateY(-3px); }
-.dash-tile .bg {
-  position: absolute; inset: 0;
-  background-size: cover; background-position: center;
-  transition: transform 0.7s ease;
-}
-.dash-tile:hover .bg { transform: scale(1.06); }
-.dash-tile::before {
-  content: ''; position: absolute; inset: 0; z-index: 1;
-  background: linear-gradient(180deg, rgba(0,40,82,0.10) 0%, rgba(0,40,82,0.55) 55%, rgba(0,40,82,0.95) 100%);
-}
-.dash-tile .content {
-  position: relative; z-index: 2;
-  height: 100%;
-  padding: 26px 28px;
-  display: flex; flex-direction: column; justify-content: flex-end;
-  color: white;
-}
-.dash-tile .label { font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--yellow); }
-.dash-tile .title { font-family: 'Source Serif 4', serif; font-size: 24px; font-weight: 600; margin-top: 8px; line-height: 1.15; color: white; }
-.dash-tile .desc { font-size: 13px; color: rgba(255,255,255,0.82); margin-top: 10px; line-height: 1.5; max-width: 94%; }
-.dash-tile .meta-row { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.18); }
-.dash-tile .meta { font-size: 11px; color: rgba(255,255,255,0.65); letter-spacing: 0.04em; text-transform: uppercase; font-weight: 500; }
-.dash-tile .arrow { color: var(--yellow); font-size: 22px; transition: transform 0.25s; }
-.dash-tile:hover .arrow { transform: translateX(6px); }
-
-/* Big featured tile — large title */
-.dash-tile.big .title { font-size: 38px; line-height: 1.08; max-width: 90%; }
-.dash-tile.big .desc { font-size: 15px; max-width: 80%; }
-
-/* Wide tile — medium title */
-.dash-tile.wide .title { font-size: 28px; }
-
-/* CTA tile (no image, navy gradient) */
-.dash-tile.cta-tile { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%); }
-.dash-tile.cta-tile::before { display: none; }
-.dash-tile.cta-tile .content { justify-content: space-between; padding-top: 28px; }
-.dash-tile.cta-tile .icon-bg { font-size: 96px; color: var(--yellow); opacity: 0.85; align-self: flex-end; }
-
-/* Bento positions — 12-col asymmetric */
-.t-konsumsi  { grid-column: 1 / span 6;  grid-row: 1 / span 2; }   /* BIG FEATURED */
-.t-kelas     { grid-column: 7 / span 3;  grid-row: 1; }
-.t-bbm       { grid-column: 10 / span 3; grid-row: 1; }
-.t-ketahanan { grid-column: 7 / span 6;  grid-row: 2; }            /* WIDE */
-.t-dki       { grid-column: 1 / span 7;  grid-row: 3; }            /* WIDE */
-.t-kendaraan { grid-column: 8 / span 5;  grid-row: 3; }            /* CTA */
-.t-umkm      { grid-column: 1 / span 7;  grid-row: 4; }            /* WIDE */
-.t-demografi { grid-column: 8 / span 5;  grid-row: 4; }            /* MEDIUM */
-
-/* ============ PUBLISHING STATS ============ */
-.section-dark { background: var(--navy-deep); color: white; padding: 96px 32px; }
-.section-dark .section-eyebrow { color: var(--sky); }
-.section-dark .section-title { color: white; }
-.section-dark .section-sub { color: rgba(255,255,255,0.75); }
-.numbers {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 1px;
-  background: rgba(255,255,255,0.12);
-  margin-top: 56px;
-}
-.num-card { background: var(--navy-deep); padding: 40px 32px; }
-.num-card .num { font-family: 'Source Serif 4', serif; font-size: 64px; font-weight: 600; color: var(--yellow); line-height: 1; letter-spacing: -0.03em; }
-.num-card .num-label { font-size: 14px; color: white; margin-top: 12px; font-weight: 600; }
-.num-card .num-sub { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 8px; line-height: 1.55; }
-
-/* ============ FOOTER ============ */
-.foot { background: var(--ink); color: rgba(255,255,255,0.55); padding: 32px; font-size: 12px; text-align: center; border-top: 1px solid rgba(255,255,255,0.08); }
-.foot a { color: var(--sky); text-decoration: underline; }
-
-/* ============ MOBILE DRAWER ============ */
-.nav-drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(5,28,44,0.55); z-index: 99; opacity: 0; transition: opacity 0.3s; }
-.nav-drawer-overlay.open { display: block; opacity: 1; }
-.nav-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(320px, 80vw); background: var(--navy-deep); z-index: 100; padding: 80px 32px 32px; box-shadow: -8px 0 32px rgba(0,0,0,0.3); transform: translateX(100%); transition: transform 0.3s ease; color: white; }
-.nav-drawer.open { transform: translateX(0); }
-.nav-drawer .close-btn { position: absolute; top: 22px; right: 22px; background: none; border: none; cursor: pointer; color: white; padding: 6px; font-size: 26px; }
-.nav-drawer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
-.nav-drawer a { display: block; padding: 18px 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 22px; color: white; border-bottom: 1px solid rgba(255,255,255,0.12); text-decoration: none; transition: color 0.15s; }
-.nav-drawer a:hover { color: var(--sky); }
-
-/* ============ RESPONSIVE ============ */
-@media (max-width: 1100px) {
-  .hero-grid { grid-template-columns: 1fr; }
-  .h-feature { min-height: 520px; }
-  .products { grid-template-columns: 1fr; }
-  .numbers { grid-template-columns: repeat(2, 1fr); }
-  .bento-dash { grid-auto-rows: 240px; }
-  .bento-dash > * { grid-column: 1 / span 12 !important; grid-row: auto !important; }
-  .nav .menu { display: none; }
-  .nav .right a { display: none; }
-}
-@media (max-width: 768px) {
-  .nav { padding: 14px 20px; gap: 16px; }
-  .hero { padding: 48px 20px 64px; }
-  .hero-grid { gap: 20px; min-height: auto; }
-  .section { padding: 64px 20px; }
-  .section-dark { padding: 64px 20px; }
-  .numbers { grid-template-columns: 1fr; }
-  .num-card .num { font-size: 48px; }
-  .nav .right { display: none; }
-  .foot { padding: 24px 20px; }
-}
-</style>
-<link rel="stylesheet" href="_shared/tactile-editorial.css">
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mandiri Institute</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Source+Serif+4:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<style data-purpose="custom-fonts">
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    h1, h2, h3, h4, h5, h6, .font-serif {
+      font-family: 'Source Serif 4', serif;
+    }
+    .text-mandiri-navy { color: #003D79; }
+    .bg-mandiri-navy { background-color: #003D79; }
+    .text-mandiri-deep { color: #002852; }
+    .bg-mandiri-deep { background-color: #002852; }
+    .text-ice-blue { color: #00A3E0; }
+    .bg-ice-blue { background-color: #00A3E0; }
+    .border-ice-blue { border-color: #00A3E0; }
+  </style>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "secondary-fixed-dim": "#81cfff",
+                "tertiary-fixed-dim": "#ffba26",
+                "background": "#f8f9ff",
+                "on-primary": "#ffffff",
+                "inverse-surface": "#233144",
+                "secondary-fixed": "#c6e7ff",
+                "on-secondary-container": "#004b69",
+                "error": "#ba1a1a",
+                "primary-container": "#003d79",
+                "on-primary-fixed": "#001b3c",
+                "surface": "#f8f9ff",
+                "primary-fixed": "#d5e3ff",
+                "on-secondary-fixed-variant": "#004c6b",
+                "on-surface-variant": "#434750",
+                "secondary-container": "#41befd",
+                "on-primary-fixed-variant": "#134783",
+                "surface-container-lowest": "#ffffff",
+                "surface-container-high": "#dde9ff",
+                "on-tertiary-fixed": "#271900",
+                "surface-bright": "#f8f9ff",
+                "error-container": "#ffdad6",
+                "inverse-on-surface": "#ebf1ff",
+                "on-surface": "#0d1c2f",
+                "tertiary-container": "#523900",
+                "inverse-primary": "#a8c8ff",
+                "surface-tint": "#335f9c",
+                "surface-variant": "#d5e3fd",
+                "primary": "#002752",
+                "outline": "#737781",
+                "on-primary-container": "#80aaec",
+                "primary-fixed-dim": "#a8c8ff",
+                "on-secondary": "#ffffff",
+                "on-error-container": "#93000a",
+                "surface-container": "#e6eeff",
+                "on-tertiary-fixed-variant": "#5e4100",
+                "secondary": "#00658d",
+                "outline-variant": "#c3c6d1",
+                "tertiary-fixed": "#ffdea9",
+                "on-error": "#ffffff",
+                "on-background": "#0d1c2f",
+                "tertiary": "#372400",
+                "on-tertiary-container": "#dc9d00",
+                "surface-container-low": "#eff4ff",
+                "on-tertiary": "#ffffff",
+                "on-secondary-fixed": "#001e2d",
+                "surface-dim": "#ccdbf4",
+                "surface-container-highest": "#d5e3fd"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+        },
+        "spacing": {
+                "gutter": "32px",
+                "unit": "8px",
+                "section-padding": "80px",
+                "container-max": "1280px",
+                "card-gap": "24px"
+        }
+      },
+    },
+  }
+</script>
 </head>
-<body x-data="{ navOpen: false }">
-
-<!-- ============ NAV ============ -->
-<nav class="nav">
-  <iconify-icon class="burger" icon="mdi:menu" @click="navOpen = true" role="button" aria-label="Buka menu" tabindex="0" @keydown.enter="navOpen = true"></iconify-icon>
-  <div>
-    <div class="brand">Mandiri Institute</div>
-    <div class="brand-sub">Dashboard Suite</div>
-  </div>
-  <div class="menu">
-    <a href="#dashboard-grid">Annual Indicators</a>
-    <a href="#dashboard-grid">Thematic Research</a>
-    <a href="#dashboard-grid">Initiatives</a>
-    <a href="#publikasi">Publikasi</a>
-  </div>
-  <div class="right">
-    <iconify-icon class="search" icon="mdi:magnify" role="button" aria-label="Cari" tabindex="0"></iconify-icon>
-  </div>
-</nav>
-
-<!-- Mobile drawer -->
-<div class="nav-drawer-overlay" :class="{ 'open': navOpen }" @click="navOpen = false"></div>
-<div class="nav-drawer" :class="{ 'open': navOpen }">
-  <button class="close-btn" @click="navOpen = false" aria-label="Tutup menu">
-    <iconify-icon icon="mdi:close"></iconify-icon>
-  </button>
-  <ul>
-    <li><a href="#dashboard-grid" @click="navOpen = false">Annual Indicators</a></li>
-    <li><a href="#dashboard-grid" @click="navOpen = false">Thematic Research</a></li>
-    <li><a href="#dashboard-grid" @click="navOpen = false">Initiatives</a></li>
-    <li><a href="#publikasi" @click="navOpen = false">Publikasi</a></li>
-  </ul>
+<body class="bg-white text-gray-800">
+<!-- BEGIN: MainHeader -->
+<header class="border-b border-gray-200">
+<div class="max-w-7xl mx-auto px-8 sm:px-12 lg:px-16">
+<div class="flex justify-between items-center h-16">
+<div class="flex-shrink-0 flex items-center">
+<a class="text-2xl font-bold text-mandiri-navy font-serif tracking-tight" href="index.html">Mandiri Institute</a>
 </div>
-
-<!-- ============ HERO ============ -->
-<section class="hero">
-  <div class="hero-grid">
-
-    <div class="h-text">
-      <div>
-        <div class="eyebrow">Mandiri Institute &middot; Membaca Indonesia melalui data</div>
-        <h1 class="serif">Membaca <em>Indonesia</em><br>melalui <em>data</em>.</h1>
-        <p class="lead">Dashboard interaktif dan publikasi rutin Mandiri Institute mengupas konsumsi, kelas masyarakat, dan dinamika ekonomi Indonesia berbasis data BPS, satelit, dan survei nasional.</p>
-      </div>
-      <a href="#dashboard-grid" class="actions" style="text-decoration: none; color: inherit;">
-        <div class="cta"><iconify-icon icon="mdi:arrow-right"></iconify-icon></div>
-        <span class="cta-label">Telusuri dashboard</span>
-      </a>
-    </div>
-
-    <a class="h-feature" href="https://www.bankmandiri.co.id/-/mandiri-institute" target="_blank">
-      <div class="bg"></div>
-      <div class="h-feature-content">
-        <div>
-          <div class="label">Riset Tahunan &middot; Maret 2026</div>
-          <h2 class="serif">MI Demographic &amp; Consumption 2025</h2>
-          <p class="desc">Mengupas struktur konsumsi rumah tangga Indonesia lintas kelas dan wilayah dalam laporan unggulan tahunan Mandiri Institute.</p>
-        </div>
-        <div class="more">Baca laporan lengkap <iconify-icon icon="mdi:arrow-right"></iconify-icon></div>
-      </div>
-    </a>
-
-  </div>
+<nav class="hidden md:flex space-x-8">
+<a class="text-gray-600 hover:text-ice-blue px-3 py-2 text-sm font-medium border-b-2 border-transparent hover:border-ice-blue transition-colors" href="index.html">Beranda</a>
+<a class="text-gray-600 hover:text-ice-blue px-3 py-2 text-sm font-medium border-b-2 border-transparent hover:border-ice-blue transition-colors" href="#annual-dashboards">Annual Indicators</a>
+<a class="text-gray-600 hover:text-ice-blue px-3 py-2 text-sm font-medium border-b-2 border-transparent hover:border-ice-blue transition-colors" href="#thematic-research">Thematic Research</a>
+<a class="text-gray-600 hover:text-ice-blue px-3 py-2 text-sm font-medium border-b-2 border-transparent hover:border-ice-blue transition-colors" href="#key-insights">Initiatives</a>
+<a class="text-gray-600 hover:text-ice-blue px-3 py-2 text-sm font-medium border-b-2 border-transparent hover:border-ice-blue transition-colors" href="#">Publikasi</a>
+</nav>
+<div class="flex items-center space-x-4">
+<button class="text-gray-500 hover:text-ice-blue transition-colors" aria-label="Cari">
+<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+<a class="text-sm font-semibold text-gray-600 hover:text-ice-blue uppercase tracking-wider transition-colors" href="#">Log In</a>
+</div>
+</div>
+</div>
+</header>
+<!-- END: MainHeader -->
+<main>
+<!-- BEGIN: Hero Section -->
+<section class="py-20 text-center max-w-5xl mx-auto px-8">
+<div class="w-12 h-1 bg-ice-blue mx-auto mb-6"></div>
+<p class="text-xs font-bold tracking-[0.2em] text-ice-blue uppercase mb-6">Selamat Datang di Mandiri Institute</p>
+<h1 class="text-4xl sm:text-5xl lg:text-6xl font-serif text-mandiri-navy leading-tight font-light">Membaca Indonesia melalui data</h1>
 </section>
+<!-- END: Hero Section -->
+<!-- BEGIN: Featured Carousel Section -->
+<section class="pb-24 max-w-7xl mx-auto px-8 lg:px-16 overflow-hidden relative">
+<div class="relative flex justify-center items-center h-[500px] w-full mx-auto space-x-4 md:space-x-8" id="carousel-container">
+<div class="carousel-item hidden lg:block w-48 h-[300px] relative opacity-40 transform scale-90 transition-all duration-700 ease-in-out shrink-0" data-pos="1">
+<img alt="Data latar" class="w-full h-full object-cover rounded-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8ekli1OaM_4GzlbQ47cLuX7fIEUSATDyxHGtql0egqaip3lS7lbOA7fqbt1q4Ppfmcmxx4LeY3XOfJCzHQJi3ccb_morUbnTi0NeDIvDIsH7mEap60mRgaUs1-PQGVH90toaSHF06B9xEwwPZnyw2eni4Klu0yQPRBHMk9kFsG4M_hGtspHE7lSteYlqGYfEXO5DE-N9gxM2i62gh85ewUb7maUO5YTe_Rp1aMc8pyICCXVeB37NmcaLCr55dALrgv7oXHT8s8pg"/>
+</div>
+<div class="carousel-item hidden md:block w-56 h-[380px] relative opacity-60 transform scale-95 transition-all duration-700 ease-in-out shrink-0" data-pos="2">
+<img alt="Artikel sebelumnya" class="w-full h-full object-cover rounded-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1j4OQYWzjytiKn2BR6-0Fr2pUlIq5NhX-WIErn-A7NeQLVppHUN2OsdbNwW9XYNhpOx_ms0gijucacEiS-7HcuuesedCMyDvV7sSvnq9Tmoh5MNR-ckIeJO_gRIn1ToQNXxGC-GC8W43BzqQe2yvvjErjwooVTqm9vCE6Bk6lg5-UGZ295m8-_fGykiWZR36-H1sIWYPwWwocSBZwTDETb75ydVstPPsENLIb0mX6i6OXsRdHU1EQzfqa7H-Kl8doITkrfDHhwj4"/>
+</div>
+<div class="carousel-item w-80 h-[420px] md:w-96 md:h-[480px] relative z-10 shadow-2xl transition-all duration-700 ease-in-out shrink-0" data-pos="3">
+<img alt="Membaca Indonesia melalui data" class="w-full h-full object-cover rounded-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEvK6eM2KhbFrnVxWVtWcIqYh054OEmJUkwhmhfOd-jDNrP-FsUrKJQwfOSwL6Laz0PU228cc0pgyNXmqHVdlKl9ojvm9XGBUWtj1mpZIwfS8wwZj1-WwqHkt0J6cSBkxLMuCbPp3uDN7K_j22Sx1bkSCzL6glbORlK5jkhulNbn7T3V5Ur3mJ4mBw7b3s1n1H9j8fM0jBPrZaCbRTTe0EEsiX_tkUtgxTNbv0xPUYrZOxsoBDhL_6p1L3pDtNaXXtSwTcyaoeTfA"/>
+<div class="absolute top-4 left-4 border border-ice-blue text-ice-blue text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest bg-white/90 backdrop-blur-sm">Executive Brief</div>
+<div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-6 rounded-sm shadow-lg transition-opacity duration-700 ease-in-out content-overlay border-l-4 border-ice-blue">
+<p class="text-[10px] text-ice-blue uppercase tracking-[0.15em] mb-2 font-bold">Article | November 18, 2025</p>
+<h2 class="text-2xl font-serif text-mandiri-deep leading-tight font-medium">Membaca Indonesia melalui data</h2>
+</div>
+</div>
+<div class="carousel-item hidden md:block w-56 h-[380px] relative opacity-60 transform scale-95 transition-all duration-700 ease-in-out shrink-0" data-pos="4">
+<img alt="Artikel berikutnya" class="w-full h-full object-cover rounded-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfI24dniAVqT5dlaIsRUICFZzZYxV_CuGTWNN4XUE9GF0H_2IOB_wodsuRGByil7HjqVARea29Ciw7Lu1Fb2zzGw4uIDANjkOeqt9G-v0EW7eVmrNbc8RzhQWKoCItphwNbOeCaCViyzv_bhHlOYtsqCW1RCHPbSE5gnyvn-JNpzKb5xH-NqCj2cQpF7ahfodCSqYX0DO02Bp2ffBtjAjhz5HM9Pgr0WjkdV8PDypqyk47-_hcCSpVYyUbw5MpG9mAVx-iYKUrtZM"/>
+</div>
+<div class="carousel-item hidden lg:block w-48 h-[300px] relative opacity-40 transform scale-90 transition-all duration-700 ease-in-out shrink-0" data-pos="5">
+<img alt="Data pasar" class="w-full h-full object-cover rounded-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB31XsFL8NTX2jQeFUVp53mZs33ThUhnMcOz3lvm6Z2JOClvucYxWXAdxwlBRTW0iveTF3cSjEpG6FfgSmne0fccQ57wdCsifEjz7IKULwoTiYlopmC5QwX2RMX0inzyiy-vU4CkbitJUoKzP6X7KbxoLjrT7bMcF52xr3wT854OttqkBMD9EOs8modQ_Yn1M7HVy9zMchqnn5ujlhEqj8_nw7rbJA90yP6Qr95mz-bBZPkeyEVw2-AA-dwXxd1QeOuhFsFlhfjRfk"/>
+</div>
+</div>
+<div class="flex justify-center space-x-4 mt-12">
+<button class="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:border-ice-blue hover:text-ice-blue transition-colors bg-white shadow-sm" id="btn-prev" aria-label="Sebelumnya">
+<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+<button class="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:border-ice-blue hover:text-ice-blue transition-colors bg-white shadow-sm" id="btn-pause" aria-label="Jeda">
+<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z"></path></svg>
+</button>
+<button class="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:border-ice-blue hover:text-ice-blue transition-colors bg-white shadow-sm" id="btn-next" aria-label="Berikutnya">
+<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('carousel-container');
+    const prevBtn = document.getElementById('btn-prev');
+    const nextBtn = document.getElementById('btn-next');
+    const pauseBtn = document.getElementById('btn-pause');
 
-<!-- ============ DASHBOARD INTERAKTIF — BENTO ASYMMETRIC ============ -->
-<section id="dashboard-grid" class="section section-mist">
-  <div class="section-inner">
-    <div class="section-eyebrow">Dashboard Interaktif</div>
-    <h2 class="section-title">Telusuri data Indonesia<br>secara interaktif</h2>
-    <p class="section-sub">Sembilan dashboard mengupas konsumsi, kelas masyarakat, energi, ketahanan pangan, kawasan komersial, potensi pasar kendaraan, UMKM nasional, profil demografi-kesehatan, dan pemetaan prioritas MBG dengan visualisasi yang dapat dijelajahi.</p>
+    const positionClasses = [
+      ['hidden', 'lg:block', 'w-48', 'h-[300px]', 'opacity-40', 'scale-90', 'z-0'],
+      ['hidden', 'md:block', 'w-56', 'h-[380px]', 'opacity-60', 'scale-95', 'z-0'],
+      ['w-80', 'h-[420px]', 'md:w-96', 'md:h-[480px]', 'z-10', 'shadow-2xl', 'scale-100', 'opacity-100'],
+      ['hidden', 'md:block', 'w-56', 'h-[380px]', 'opacity-60', 'scale-95', 'z-0'],
+      ['hidden', 'lg:block', 'w-48', 'h-[300px]', 'opacity-40', 'scale-90', 'z-0']
+    ];
 
-    <div class="bento-dash">
+    let items = Array.from(container.querySelectorAll('.carousel-item'));
+    let autoSlideInterval;
+    let isPaused = false;
 
-      <a href="konsumsi-susenas/dashboard.html" class="dash-tile big t-konsumsi">
-        <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1542838132-92c53300491e?w=1400&q=80');"></div>
-        <div class="content">
-          <div class="label">Dashboard Unggulan</div>
-          <div class="title">Konsumsi Masyarakat</div>
-          <p class="desc">Memetakan pola dan pertumbuhan pengeluaran rumah tangga Indonesia per kapita per bulan.</p>
-          <div class="meta-row">
-            <span class="meta">Susenas BPS &middot; 2019-2025</span>
-            <span class="arrow"><iconify-icon icon="mdi:arrow-right"></iconify-icon></span>
-          </div>
-        </div>
-      </a>
+    function updateCarousel() {
+      items.forEach((item, index) => {
+        positionClasses.forEach(clsArray => item.classList.remove(...clsArray));
+        item.classList.add(...positionClasses[index]);
 
-      <a href="kelas-kabkota/dashboard.html" class="dash-tile t-kelas">
-        <div class="bg" style="background-image: url('_assets/foto/kelas-masyarakat-clean.jpg');"></div>
-        <div class="content">
-          <div class="label">Dashboard</div>
-          <div class="title">Kelas Masyarakat</div>
-          <div class="meta-row">
-            <span class="meta">514 Kab/Kota</span>
-            <span class="arrow"><iconify-icon icon="mdi:arrow-right"></iconify-icon></span>
-          </div>
-        </div>
-      </a>
+        const overlay = item.querySelector('.content-overlay');
+        const badge = item.querySelector('.border-ice-blue');
+        if (overlay) overlay.style.opacity = index === 2 ? '1' : '0';
+        if (badge) badge.style.opacity = index === 2 ? '1' : '0';
+      });
+    }
 
-      <a href="thematic/bbm/dashboard.html" class="dash-tile t-bbm">
-        <div class="bg" style="background-image: url('_assets/foto/bbm-clean.jpg');"></div>
-        <div class="content">
-          <div class="label">Tematik</div>
-          <div class="title">Konsumsi BBM</div>
-          <div class="meta-row">
-            <span class="meta">Susenas</span>
-            <span class="arrow"><iconify-icon icon="mdi:arrow-right"></iconify-icon></span>
-          </div>
-        </div>
-      </a>
+    function slideNext() {
+      const firstItem = items.shift();
+      items.push(firstItem);
+      container.appendChild(firstItem);
+      updateCarousel();
+    }
 
-      <a href="ketahanan-pangan/ketahanan-pangan-dashboard.html" class="dash-tile wide t-ketahanan">
-        <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=1400&q=80');"></div>
-        <div class="content">
-          <div class="label">Dashboard</div>
-          <div class="title">Ketahanan Pangan</div>
-          <p class="desc">Mengukur ketahanan pangan rumah tangga lintas wilayah Indonesia berbasis Skala FIES.</p>
-          <div class="meta-row">
-            <span class="meta">FAO FIES &middot; 514 Kab/Kota</span>
-            <span class="arrow"><iconify-icon icon="mdi:arrow-right"></iconify-icon></span>
-          </div>
-        </div>
-      </a>
+    function slidePrev() {
+      const lastItem = items.pop();
+      items.unshift(lastItem);
+      container.insertBefore(lastItem, container.firstChild);
+      updateCarousel();
+    }
 
-      <a href="aktivitas-ekonomi/index.html" class="dash-tile wide t-dki">
-        <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1555899434-94d1368aa7af?w=1400&q=80');"></div>
-        <div class="content">
-          <div class="label">Dashboard Spasial</div>
-          <div class="title">Aktivitas Ekonomi</div>
-          <p class="desc">Luminositas malam dan jejak komersial Indonesia: tampilan nasional 514 kabupaten/kota dan regional kelurahan DKI Jakarta.</p>
-          <div class="meta-row">
-            <span class="meta">NASA VIIRS &middot; OSM &middot; 16k titik POI</span>
-            <span class="arrow"><iconify-icon icon="mdi:arrow-right"></iconify-icon></span>
-          </div>
-        </div>
-      </a>
+    function startAutoSlide() {
+      autoSlideInterval = setInterval(slideNext, 4000);
+    }
 
-      <a href="peta-potensi-kendaraan/dashboard.html" class="dash-tile t-kendaraan">
-        <div class="bg" style="background-image: url('_assets/foto/kendaraan-clean.jpg');"></div>
-        <div class="content">
-          <div class="label">Initiative</div>
-          <div class="title">Riset Kendaraan</div>
-          <p class="desc">Peta potensi pasar kendaraan per kabupaten/kota, kolaborasi dengan Mandiri Utama Finance, 2026.</p>
-          <div class="meta-row">
-            <span class="meta">Partnership MUF</span>
-            <span class="arrow"><iconify-icon icon="mdi:arrow-right"></iconify-icon></span>
-          </div>
-        </div>
-      </a>
+    function stopAutoSlide() {
+      clearInterval(autoSlideInterval);
+    }
 
-      <a href="demografi-kesehatan/dashboard.html" class="dash-tile t-demografi">
-        <div class="bg" style="background-image: linear-gradient(135deg, #C8102E 0%, #003D79 100%);"></div>
-        <div class="content">
-          <div class="label">Isu Tematik</div>
-          <div class="title">Profil Demografi &amp; Kesehatan</div>
-          <p class="desc">514 kab/kota Indonesia 2025 &middot; aging, JKN coverage, OOP burden.</p>
-          <div class="meta-row">
-            <span class="meta">Susenas KOR + KP 2025</span>
-            <span class="arrow"><iconify-icon icon="mdi:arrow-right"></iconify-icon></span>
-          </div>
-        </div>
-      </a>
+    nextBtn.addEventListener('click', () => {
+      slideNext();
+      if (!isPaused) { stopAutoSlide(); startAutoSlide(); }
+    });
 
-      <a href="mbg-gap-analysis/dashboard.html" class="dash-tile t-mbg">
-        <div class="bg" style="background-image: linear-gradient(135deg, #003D79 0%, #C8102E 100%);"></div>
-        <div class="content">
-          <div class="label">Isu Tematik</div>
-          <div class="title">Pemetaan Prioritas MBG</div>
-          <p class="desc">Gap Analysis SPPG &times; Kerawanan Pangan &times; Stunting per 514 kabkota.</p>
-          <div class="meta-row">
-            <span class="meta">BGN + FIES 2025 + SSGI 2021</span>
-            <span class="arrow"><iconify-icon icon="mdi:arrow-right"></iconify-icon></span>
-          </div>
-        </div>
-      </a>
+    prevBtn.addEventListener('click', () => {
+      slidePrev();
+      if (!isPaused) { stopAutoSlide(); startAutoSlide(); }
+    });
 
-      <a href="umkm-nasional/dashboard.html" class="dash-tile wide t-umkm">
-        <div class="bg" style="background-image: linear-gradient(135deg, #003D79 0%, #1A5394 100%);"></div>
-        <div class="content">
-          <div class="label">Dashboard Baru</div>
-          <div class="title">UMKM Nasional</div>
-          <p class="desc">57 juta UMKM Indonesia menurut sektor, ukuran, dan wilayah; 540 kabupaten/kota, Sakernas BPS 2021-2025.</p>
-          <div class="meta-row">
-            <span class="meta">17 Sektor &middot; 540 Kab/Kota</span>
-            <span class="arrow"><iconify-icon icon="mdi:arrow-right"></iconify-icon></span>
-          </div>
-        </div>
-      </a>
+    pauseBtn.addEventListener('click', () => {
+      isPaused = !isPaused;
+      if (isPaused) {
+        stopAutoSlide();
+        pauseBtn.innerHTML = '<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M8 5v10l7-5-7-5z"/></svg>';
+      } else {
+        startAutoSlide();
+        pauseBtn.innerHTML = '<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>';
+      }
+    });
 
-    </div>
-  </div>
+    updateCarousel();
+    startAutoSlide();
+  });
+</script>
 </section>
-
-<!-- ============ PUBLIKASI TERBARU ============ -->
-<section id="publikasi" class="section">
-  <div class="section-inner">
-    <div class="section-eyebrow">Publikasi Terbaru</div>
-    <h2 class="section-title">Edisi terbaru<br>dari setiap seri</h2>
-    <p class="section-sub">Tiga publikasi rutin Mandiri Institute, edisi terbaru per April 2026.</p>
-
-    <div class="products">
-
-      <a class="product-card">
-        <div class="img-wrap">
-          <div class="img-bg" style="background-image: url('https://images.unsplash.com/photo-1573164574572-cb89e39749b4?w=1200&q=80');"></div>
-          <div class="img-tint"></div>
-        </div>
-        <div class="body">
-          <div>
-            <div class="label">Policy Brief</div>
-            <div class="title">MI Policy Brief No. 4</div>
-            <p class="desc">Kajian kebijakan singkat untuk mendukung pengambilan keputusan ekonomi.</p>
-          </div>
-          <div class="meta-row">
-            <span class="meta">April 2026</span>
-            <span class="arrow"><iconify-icon icon="mdi:arrow-right"></iconify-icon></span>
-          </div>
-        </div>
-      </a>
-
-      <a class="product-card">
-        <div class="img-wrap">
-          <div class="img-bg" style="background-image: url('https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200&q=80');"></div>
-          <div class="img-tint"></div>
-        </div>
-        <div class="body">
-          <div>
-            <div class="label">Monthly Gazette</div>
-            <div class="title">Monthly Gazette April 2026</div>
-            <p class="desc">Update bulanan dinamika ekonomi Indonesia dari Mandiri Institute.</p>
-          </div>
-          <div class="meta-row">
-            <span class="meta">April 2026</span>
-            <span class="arrow"><iconify-icon icon="mdi:arrow-right"></iconify-icon></span>
-          </div>
-        </div>
-      </a>
-
-      <a class="product-card">
-        <div class="img-wrap">
-          <div class="img-bg" style="background-image: url('https://images.unsplash.com/photo-1583425423320-7c4928c52527?w=1200&q=80');"></div>
-          <div class="img-tint"></div>
-        </div>
-        <div class="body">
-          <div>
-            <div class="label">Infografis Tematik</div>
-            <div class="title">Belanja Ramadan-Lebaran 2026</div>
-            <p class="desc">Snapshot pola belanja kelas menengah selama momentum Lebaran 2026.</p>
-          </div>
-          <div class="meta-row">
-            <span class="meta">2026</span>
-            <span class="arrow"><iconify-icon icon="mdi:arrow-right"></iconify-icon></span>
-          </div>
-        </div>
-      </a>
-
-    </div>
-  </div>
+<!-- END: Featured Carousel Section -->
+<!-- Section 1: Annual Dashboards -->
+<section id="annual-dashboards" class="py-24 bg-gray-50 border-t border-gray-200">
+<div class="max-w-7xl mx-auto px-8 lg:px-16">
+<div class="mb-12 flex items-center">
+<h2 class="text-3xl font-serif text-mandiri-navy font-medium tracking-tight">Annual Dashboards</h2>
+<div class="ml-6 flex-grow h-px bg-gray-300"></div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<article class="relative h-[480px] group overflow-hidden rounded-sm shadow-sm hover:shadow-xl transition-shadow flex flex-col justify-end bg-gray-200">
+<div class="absolute inset-0 bg-gray-200"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
+<div class="absolute top-6 left-6 bg-white/90 text-ice-blue text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest backdrop-blur-sm">Sektor Ritel</div>
+<div class="relative z-10 p-6 bg-white m-4 rounded-sm shadow-lg border-t-4 border-ice-blue">
+<p class="text-[10px] text-ice-blue uppercase tracking-[0.15em] mb-2 font-bold">Dashboard | 2025</p>
+<h3 class="text-2xl font-serif text-mandiri-navy mb-3 font-medium">Konsumsi Masyarakat</h3>
+<p class="text-sm text-gray-600 mb-6 line-clamp-3 leading-relaxed">Analisis pola pengeluaran rumah tangga dan momentum ritel di seluruh segmen demografi Indonesia berbasis Susenas.</p>
+<a class="inline-flex items-center text-sm font-bold text-mandiri-navy hover:text-ice-blue transition-colors uppercase tracking-wider" href="konsumsi-susenas/dashboard.html">Jelajahi Data <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>
+</div>
+</article>
+<article class="relative h-[480px] group overflow-hidden rounded-sm shadow-sm hover:shadow-xl transition-shadow flex flex-col justify-end bg-gray-200">
+<div class="absolute inset-0 bg-gray-200"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
+<div class="absolute top-6 left-6 bg-white/90 text-ice-blue text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest backdrop-blur-sm">Demografi</div>
+<div class="relative z-10 p-6 bg-white m-4 rounded-sm shadow-lg border-t-4 border-ice-blue">
+<p class="text-[10px] text-ice-blue uppercase tracking-[0.15em] mb-2 font-bold">Dashboard | 2025</p>
+<h3 class="text-2xl font-serif text-mandiri-navy mb-3 font-medium">Kelas Masyarakat</h3>
+<p class="text-sm text-gray-600 mb-6 line-clamp-3 leading-relaxed">Studi distribusi kesejahteraan dan ekspansi kelas menengah di tingkat kabupaten/kota sebagai pendorong stabilitas ekonomi.</p>
+<a class="inline-flex items-center text-sm font-bold text-mandiri-navy hover:text-ice-blue transition-colors uppercase tracking-wider" href="kelas-kabkota/dashboard.html">Jelajahi Data <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>
+</div>
+</article>
+<article class="relative h-[480px] group overflow-hidden rounded-sm shadow-sm hover:shadow-xl transition-shadow flex flex-col justify-end bg-gray-200">
+<div class="absolute inset-0 bg-gray-200"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
+<div class="absolute top-6 left-6 bg-white/90 text-ice-blue text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest backdrop-blur-sm">Ekonomi Digital</div>
+<div class="relative z-10 p-6 bg-white m-4 rounded-sm shadow-lg border-t-4 border-ice-blue">
+<p class="text-[10px] text-ice-blue uppercase tracking-[0.15em] mb-2 font-bold">Dashboard | 2025</p>
+<h3 class="text-2xl font-serif text-mandiri-navy mb-3 font-medium">UMKM Nasional</h3>
+<p class="text-sm text-gray-600 mb-6 line-clamp-3 leading-relaxed">Pemetaan komprehensif 57 juta UMKM Indonesia berdasarkan sektor, skala usaha, dan kontribusi ekonomi regional.</p>
+<a class="inline-flex items-center text-sm font-bold text-mandiri-navy hover:text-ice-blue transition-colors uppercase tracking-wider" href="umkm-nasional/dashboard.html">Jelajahi Data <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>
+</div>
+</article>
+</div>
+</div>
 </section>
-
-<!-- ============ STATS ============ -->
-<section class="section-dark">
-  <div class="section-inner">
-    <div class="section-eyebrow">Output 2025-2026</div>
-    <h2 class="section-title">Publikasi dan dashboard<br>Mandiri Institute</h2>
-    <p class="section-sub">Empat seri publikasi rutin dan tujuh dashboard interaktif, mengupas dimensi berbeda dari ekonomi Indonesia.</p>
-
-    <div class="numbers">
-      <div class="num-card">
-        <div class="num">1</div>
-        <div class="num-label">Riset Tahunan</div>
-        <div class="num-sub">MI Demographic &amp; Consumption sebagai laporan unggulan tahunan</div>
-      </div>
-      <div class="num-card">
-        <div class="num">4</div>
-        <div class="num-label">Policy Brief</div>
-        <div class="num-sub">Kajian kebijakan singkat sepanjang Januari-April 2026</div>
-      </div>
-      <div class="num-card">
-        <div class="num">4</div>
-        <div class="num-label">Monthly Gazette</div>
-        <div class="num-sub">Update bulanan riset, edisi Januari-April 2026</div>
-      </div>
-      <div class="num-card">
-        <div class="num">4</div>
-        <div class="num-label">Infografis</div>
-        <div class="num-sub">Visualisasi tematik untuk momentum dan isu khusus</div>
-      </div>
-      <div class="num-card">
-        <div class="num">8</div>
-        <div class="num-label">Dashboard Interaktif</div>
-        <div class="num-sub">Konsumsi, kelas, BBM, ketahanan pangan, kawasan komersial, kendaraan, UMKM, demografi-kesehatan</div>
-      </div>
-    </div>
-  </div>
+<!-- Section 2: Thematic Research -->
+<section id="thematic-research" class="py-24 bg-white border-t border-gray-200">
+<div class="max-w-7xl mx-auto px-8 lg:px-16">
+<div class="mb-12 flex items-center">
+<h2 class="text-3xl font-serif text-mandiri-navy font-medium tracking-tight">Thematic Research</h2>
+<div class="ml-6 flex-grow h-px bg-gray-300"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<article class="relative h-[400px] group overflow-hidden rounded-sm shadow-sm flex flex-col justify-end bg-gray-200">
+<div class="absolute inset-0 bg-gray-200"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
+<div class="absolute top-6 left-6 bg-white/90 text-ice-blue text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest backdrop-blur-sm">Sektor Energi</div>
+<div class="relative z-10 p-6 bg-white m-4 rounded-sm shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 border-l-4 border-ice-blue">
+<p class="text-[10px] text-ice-blue uppercase tracking-[0.15em] mb-2 font-bold">Riset | 2025</p>
+<h3 class="text-xl font-serif text-mandiri-navy mb-3 font-medium">Konsumsi BBM</h3>
+<p class="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">Asesmen tematik dinamika konsumsi BBM bersubsidi dan dampak kebijakan energi terhadap kesejahteraan rumah tangga.</p>
+<a class="inline-flex items-center text-sm font-bold text-mandiri-navy hover:text-ice-blue transition-colors uppercase tracking-wider" href="thematic/bbm/dashboard.html">Jelajahi Data <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>
+</div>
+</article>
+<article class="relative h-[400px] group overflow-hidden rounded-sm shadow-sm flex flex-col justify-end bg-gray-200">
+<div class="absolute inset-0 bg-gray-200"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
+<div class="absolute top-6 left-6 bg-white/90 text-ice-blue text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest backdrop-blur-sm">Komoditas</div>
+<div class="relative z-10 p-6 bg-white m-4 rounded-sm shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 border-l-4 border-ice-blue">
+<p class="text-[10px] text-ice-blue uppercase tracking-[0.15em] mb-2 font-bold">Riset | 2025</p>
+<h3 class="text-xl font-serif text-mandiri-navy mb-3 font-medium">Ketahanan Pangan</h3>
+<p class="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">Pemantauan strategis ketersediaan pangan dan akses rumah tangga menggunakan kerangka FIES standar FAO.</p>
+<a class="inline-flex items-center text-sm font-bold text-mandiri-navy hover:text-ice-blue transition-colors uppercase tracking-wider" href="ketahanan-pangan/ketahanan-pangan-dashboard.html">Jelajahi Data <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>
+</div>
+</article>
+<article class="relative h-[400px] group overflow-hidden rounded-sm shadow-sm flex flex-col justify-end bg-gray-200">
+<div class="absolute inset-0 bg-gray-200"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
+<div class="absolute top-6 left-6 bg-white/90 text-ice-blue text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest backdrop-blur-sm">Kesehatan</div>
+<div class="relative z-10 p-6 bg-white m-4 rounded-sm shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 border-l-4 border-ice-blue">
+<p class="text-[10px] text-ice-blue uppercase tracking-[0.15em] mb-2 font-bold">Riset | 2026</p>
+<h3 class="text-xl font-serif text-mandiri-navy mb-3 font-medium">Demografi-Kesehatan</h3>
+<p class="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">Tinjauan analitis penuaan demografi, efektivitas cakupan JKN, dan beban belanja kesehatan rumah tangga.</p>
+<a class="inline-flex items-center text-sm font-bold text-mandiri-navy hover:text-ice-blue transition-colors uppercase tracking-wider" href="demografi-kesehatan/dashboard.html">Jelajahi Data <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>
+</div>
+</article>
+<article class="relative h-[400px] group overflow-hidden rounded-sm shadow-sm flex flex-col justify-end bg-gray-200">
+<div class="absolute inset-0 bg-gray-200"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
+<div class="absolute top-6 left-6 bg-white/90 text-ice-blue text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest backdrop-blur-sm">Kebijakan Publik</div>
+<div class="relative z-10 p-6 bg-white m-4 rounded-sm shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 border-l-4 border-ice-blue">
+<p class="text-[10px] text-ice-blue uppercase tracking-[0.15em] mb-2 font-bold">Riset | 2026</p>
+<h3 class="text-xl font-serif text-mandiri-navy mb-3 font-medium">Pemetaan Prioritas MBG</h3>
+<p class="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">Analisis kesenjangan kesiapan program gizi nasional terhadap data stunting dan kerawanan pangan regional.</p>
+<a class="inline-flex items-center text-sm font-bold text-mandiri-navy hover:text-ice-blue transition-colors uppercase tracking-wider" href="mbg-gap-analysis/dashboard.html">Jelajahi Data <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>
+</div>
+</article>
+</div>
+</div>
 </section>
-
-<!-- ============ FOOTER ============ -->
-<footer class="foot">
-  &copy; 2026 Mandiri Institute &middot; Bank Mandiri (Persero) Tbk &middot; Dashboard Suite &middot; Gambar via Unsplash
+<!-- Section 3: Key Insights -->
+<section id="key-insights" class="py-24 bg-mandiri-deep border-t border-gray-200">
+<div class="max-w-7xl mx-auto px-8 lg:px-16">
+<div class="mb-12 flex items-center">
+<h2 class="text-3xl font-serif text-white font-medium tracking-tight">Key Insights</h2>
+<div class="ml-6 flex-grow h-px bg-mandiri-navy"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<article class="flex flex-col md:flex-row border border-gray-200/20 rounded-sm overflow-hidden hover:shadow-2xl transition-shadow bg-white">
+<div class="md:w-2/5 h-64 md:h-auto relative bg-gray-200">
+<div class="absolute inset-0 bg-gray-200"></div>
+</div>
+<div class="p-8 md:w-3/5 flex flex-col justify-center border-t-4 md:border-t-0 md:border-l-4 border-ice-blue">
+<div class="inline-block px-3 py-1 bg-gray-100 text-ice-blue text-[10px] font-bold rounded-sm uppercase tracking-[0.15em] mb-4 self-start">Otomotif</div>
+<h3 class="text-2xl font-serif text-mandiri-navy mb-3 font-medium">Peta Potensi Kendaraan</h3>
+<p class="text-sm text-gray-600 mb-8 leading-relaxed">Asesmen strategis potensi kredit otomotif dan logistik rantai pasok di 540 kabupaten/kota.</p>
+<a class="inline-flex items-center text-sm font-bold text-mandiri-navy hover:text-ice-blue transition-colors mt-auto uppercase tracking-wider" href="peta-potensi-kendaraan/dashboard.html">Jelajahi Data <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>
+</div>
+</article>
+<article class="flex flex-col md:flex-row border border-gray-200/20 rounded-sm overflow-hidden hover:shadow-2xl transition-shadow bg-white">
+<div class="md:w-2/5 h-64 md:h-auto relative bg-gray-200">
+<div class="absolute inset-0 bg-gray-200"></div>
+</div>
+<div class="p-8 md:w-3/5 flex flex-col justify-center border-t-4 md:border-t-0 md:border-l-4 border-ice-blue">
+<div class="inline-block px-3 py-1 bg-gray-100 text-ice-blue text-[10px] font-bold rounded-sm uppercase tracking-[0.15em] mb-4 self-start">Spasial</div>
+<h3 class="text-2xl font-serif text-mandiri-navy mb-3 font-medium">Aktivitas Ekonomi</h3>
+<p class="text-sm text-gray-600 mb-8 leading-relaxed">Analisis spasial vitalitas ekonomi nasional menggunakan data night-light NASA VIIRS dan kepadatan POI komersial.</p>
+<a class="inline-flex items-center text-sm font-bold text-mandiri-navy hover:text-ice-blue transition-colors mt-auto uppercase tracking-wider" href="aktivitas-ekonomi/index.html">Jelajahi Data <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>
+</div>
+</article>
+</div>
+</div>
+</section>
+</main>
+<!-- BEGIN: MainFooter -->
+<footer class="bg-gray-50 border-t border-gray-200 py-16">
+<div class="max-w-7xl mx-auto px-8 lg:px-16 flex flex-col md:flex-row justify-between items-center md:items-start">
+<div class="mb-8 md:mb-0 text-center md:text-left">
+<a class="text-2xl font-bold text-mandiri-navy font-serif mb-3 block tracking-tight" href="index.html">Mandiri Institute</a>
+<p class="text-sm text-gray-500 max-w-xs mx-auto md:mx-0 leading-relaxed">© 2026 Mandiri Institute. Riset ekonomi untuk wawasan eksekutif.</p>
+</div>
+<div class="flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-12 text-sm font-medium text-gray-500 items-center md:items-start">
+<div class="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-8 text-center md:text-left">
+<a class="hover:text-ice-blue transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-ice-blue transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-ice-blue transition-colors" href="#">Contact Us</a>
+</div>
+<div class="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-8 pt-6 md:pt-0 border-t md:border-none border-gray-300 w-full md:w-auto text-center md:text-left">
+<a class="hover:text-ice-blue transition-colors" href="#">Global Network</a>
+<a class="hover:text-ice-blue transition-colors" href="#">Research Archive</a>
+</div>
+</div>
+</div>
 </footer>
-
-</body>
-</html>
+<!-- END: MainFooter -->
+</body></html>
