@@ -139,7 +139,7 @@
 <section class="pb-24 max-w-7xl mx-auto px-8 lg:px-16 overflow-hidden relative">
 <div class="relative flex justify-center items-center h-[500px] w-full mx-auto space-x-4 md:space-x-8" id="carousel-container">
 <!-- Slot 1: Monthly Gazette (far left) -->
-<div class="carousel-item carousel-tinted hidden lg:block w-56 h-[400px] relative opacity-80 transform scale-90 transition-all duration-700 ease-in-out shrink-0" data-pos="1">
+<div class="carousel-item carousel-tinted hidden lg:block w-52 h-[360px] relative opacity-70 transform scale-90 transition-all duration-700 ease-in-out shrink-0" data-pos="1">
 <img alt="Monthly Gazette" class="w-full h-full object-cover rounded-sm" src="_assets/foto/kelas-masyarakat-clean.jpg" style="object-position: center 30%;"/>
 <div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/60 via-mandiri-deep/25 to-mandiri-deep/10 rounded-sm"></div>
 <div class="carousel-top-badge absolute top-3 left-3 border border-ice-blue text-ice-blue text-[9px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-widest bg-white/90 backdrop-blur-sm">Monthly Gazette</div>
@@ -149,7 +149,7 @@
 </div>
 </div>
 <!-- Slot 2: Policy Brief (mid left) -->
-<div class="carousel-item carousel-tinted hidden md:block w-56 h-[400px] relative opacity-90 transform scale-95 transition-all duration-700 ease-in-out shrink-0" data-pos="2">
+<div class="carousel-item carousel-tinted hidden md:block w-60 h-[420px] relative opacity-85 transform scale-95 transition-all duration-700 ease-in-out shrink-0" data-pos="2">
 <img alt="Policy Brief" class="w-full h-full object-cover rounded-sm" src="_assets/foto/kendaraan-clean.jpg" style="object-position: center 40%;"/>
 <div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/55 via-mandiri-deep/20 to-mandiri-deep/10 rounded-sm"></div>
 <div class="carousel-top-badge absolute top-3 left-3 border border-ice-blue text-ice-blue text-[9px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-widest bg-white/90 backdrop-blur-sm">Policy Brief</div>
@@ -159,7 +159,7 @@
 </div>
 </div>
 <!-- Slot 3 CENTER: Demographic & Consumption 2025 spotlight -->
-<div class="carousel-item carousel-spotlight w-56 h-[400px] md:w-96 md:h-[480px] relative z-10 shadow-2xl transition-all duration-700 ease-in-out shrink-0" data-pos="3">
+<div class="carousel-item carousel-spotlight w-72 h-[460px] md:w-96 md:h-[500px] relative z-10 shadow-2xl transition-all duration-700 ease-in-out shrink-0" data-pos="3">
 <img alt="Demographic &amp; Consumption 2025" class="w-full h-full object-cover rounded-sm" src="_assets/foto/demographic-consumption-crowd.jpg" style="object-position: center 30%;"/>
 <div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/60 via-mandiri-deep/20 to-mandiri-deep/10 rounded-sm pointer-events-none"></div>
 <div class="carousel-top-badge absolute top-3 left-3 border border-ice-blue text-ice-blue text-[9px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-widest bg-white/90 backdrop-blur-sm">Executive Brief</div>
@@ -169,7 +169,7 @@
 </div>
 </div>
 <!-- Slot 4: Infografis (mid right) -->
-<div class="carousel-item carousel-tinted hidden md:block w-56 h-[400px] relative opacity-90 transform scale-95 transition-all duration-700 ease-in-out shrink-0" data-pos="4">
+<div class="carousel-item carousel-tinted hidden md:block w-60 h-[420px] relative opacity-85 transform scale-95 transition-all duration-700 ease-in-out shrink-0" data-pos="4">
 <img alt="Infografis" class="w-full h-full object-cover rounded-sm" src="_assets/foto/bbm-clean.jpg" style="object-position: center 50%;"/>
 <div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/55 via-mandiri-deep/20 to-mandiri-deep/10 rounded-sm"></div>
 <div class="carousel-top-badge absolute top-3 left-3 border border-ice-blue text-ice-blue text-[9px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-widest bg-white/90 backdrop-blur-sm">Infografis</div>
@@ -179,7 +179,7 @@
 </div>
 </div>
 <!-- Slot 5: Econmark (far right) -->
-<div class="carousel-item carousel-tinted hidden lg:block w-56 h-[400px] relative opacity-80 transform scale-90 transition-all duration-700 ease-in-out shrink-0" data-pos="5">
+<div class="carousel-item carousel-tinted hidden lg:block w-52 h-[360px] relative opacity-70 transform scale-90 transition-all duration-700 ease-in-out shrink-0" data-pos="5">
 <img alt="Econmark" class="w-full h-full object-cover rounded-sm" src="_assets/foto/demographic-consumption-crowd.jpg" style="object-position: center 30%;"/>
 <div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/60 via-mandiri-deep/25 to-mandiri-deep/10 rounded-sm"></div>
 <div class="carousel-top-badge absolute top-3 left-3 border border-ice-blue text-ice-blue text-[9px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-widest bg-white/90 backdrop-blur-sm">Econmark</div>
@@ -208,11 +208,11 @@
     const pauseBtn = document.getElementById('btn-pause');
 
     const positionClasses = [
-      ['hidden', 'lg:block', 'w-56', 'h-[400px]', 'opacity-50', 'scale-90', 'z-0'],
-      ['hidden', 'md:block', 'w-56', 'h-[400px]', 'opacity-75', 'scale-95', 'z-0'],
-      ['w-56', 'h-[400px]', 'md:w-96', 'md:h-[480px]', 'z-10', 'shadow-2xl', 'scale-100', 'opacity-100'],
-      ['hidden', 'md:block', 'w-56', 'h-[400px]', 'opacity-75', 'scale-95', 'z-0'],
-      ['hidden', 'lg:block', 'w-56', 'h-[400px]', 'opacity-50', 'scale-90', 'z-0']
+      ['hidden', 'lg:block', 'w-52', 'h-[360px]', 'opacity-70', 'scale-90', 'z-0'],
+      ['hidden', 'md:block', 'w-60', 'h-[420px]', 'opacity-85', 'scale-95', 'z-0'],
+      ['w-72', 'h-[460px]', 'md:w-96', 'md:h-[500px]', 'z-10', 'shadow-2xl', 'scale-100', 'opacity-100'],
+      ['hidden', 'md:block', 'w-60', 'h-[420px]', 'opacity-85', 'scale-95', 'z-0'],
+      ['hidden', 'lg:block', 'w-52', 'h-[360px]', 'opacity-70', 'scale-90', 'z-0']
     ];
 
     let items = Array.from(container.querySelectorAll('.carousel-item'));
