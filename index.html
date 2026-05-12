@@ -139,7 +139,7 @@
 <section class="pb-24 max-w-7xl mx-auto px-8 lg:px-16 overflow-hidden relative">
 <div class="relative flex justify-center items-center h-[500px] w-full mx-auto space-x-4 md:space-x-8" id="carousel-container">
 <!-- Slot 1: Monthly Gazette (far left) -->
-<div class="carousel-item carousel-tinted hidden lg:block w-52 h-[380px] relative opacity-70 transform scale-90 transition-all duration-700 ease-in-out shrink-0" data-pos="1">
+<div class="carousel-item relative shrink-0 overflow-hidden rounded-sm" data-pos="1">
 <img alt="Monthly Gazette" class="w-full h-full object-cover rounded-sm" src="_assets/foto/kelas-masyarakat-clean.jpg" style="object-position: center 30%;"/>
 <div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/60 via-mandiri-deep/25 to-mandiri-deep/10 rounded-sm"></div>
 <div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-6 rounded-sm shadow-lg border-l-4 border-ice-blue">
@@ -149,7 +149,7 @@
 </div>
 </div>
 <!-- Slot 2: Policy Brief (mid left) -->
-<div class="carousel-item carousel-tinted hidden md:block w-60 h-[440px] relative opacity-85 transform scale-95 transition-all duration-700 ease-in-out shrink-0" data-pos="2">
+<div class="carousel-item relative shrink-0 overflow-hidden rounded-sm" data-pos="2">
 <img alt="Policy Brief" class="w-full h-full object-cover rounded-sm" src="_assets/foto/kendaraan-clean.jpg" style="object-position: center 40%;"/>
 <div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/55 via-mandiri-deep/20 to-mandiri-deep/10 rounded-sm"></div>
 <div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-6 rounded-sm shadow-lg border-l-4 border-ice-blue">
@@ -159,7 +159,7 @@
 </div>
 </div>
 <!-- Slot 3 CENTER: Demographic & Consumption 2025 spotlight -->
-<div class="carousel-item carousel-spotlight w-72 h-[480px] md:w-96 md:h-[520px] relative z-10 shadow-2xl transition-all duration-700 ease-in-out shrink-0" data-pos="3">
+<div class="carousel-item relative shrink-0 overflow-hidden rounded-sm" data-pos="3">
 <img alt="Demographic &amp; Consumption 2025" class="w-full h-full object-cover rounded-sm" src="_assets/foto/demographic-consumption-crowd.jpg" style="object-position: center 30%;"/>
 <div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/60 via-mandiri-deep/20 to-mandiri-deep/10 rounded-sm pointer-events-none"></div>
 <div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-6 rounded-sm shadow-lg transition-opacity duration-700 ease-in-out content-overlay border-l-4 border-ice-blue">
@@ -169,7 +169,7 @@
 </div>
 </div>
 <!-- Slot 4: Infografis (mid right) -->
-<div class="carousel-item carousel-tinted hidden md:block w-60 h-[440px] relative opacity-85 transform scale-95 transition-all duration-700 ease-in-out shrink-0" data-pos="4">
+<div class="carousel-item relative shrink-0 overflow-hidden rounded-sm" data-pos="4">
 <img alt="Infografis" class="w-full h-full object-cover rounded-sm" src="_assets/foto/bbm-clean.jpg" style="object-position: center 50%;"/>
 <div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/55 via-mandiri-deep/20 to-mandiri-deep/10 rounded-sm"></div>
 <div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-6 rounded-sm shadow-lg border-l-4 border-ice-blue">
@@ -179,7 +179,7 @@
 </div>
 </div>
 <!-- Slot 5: Econmark (far right) -->
-<div class="carousel-item carousel-tinted hidden lg:block w-52 h-[380px] relative opacity-70 transform scale-90 transition-all duration-700 ease-in-out shrink-0" data-pos="5">
+<div class="carousel-item relative shrink-0 overflow-hidden rounded-sm" data-pos="5">
 <img alt="Econmark" class="w-full h-full object-cover rounded-sm" src="_assets/foto/demographic-consumption-crowd.jpg" style="object-position: center 30%;"/>
 <div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/60 via-mandiri-deep/25 to-mandiri-deep/10 rounded-sm"></div>
 <div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-6 rounded-sm shadow-lg border-l-4 border-ice-blue">
@@ -202,65 +202,55 @@
 </div>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const container = document.getElementById('carousel-container');
     const prevBtn = document.getElementById('btn-prev');
     const nextBtn = document.getElementById('btn-next');
     const pauseBtn = document.getElementById('btn-pause');
-
-    const positionClasses = [
-      ['hidden', 'lg:block', 'w-52', 'h-[380px]', 'opacity-70', 'scale-90', 'z-0'],
-      ['hidden', 'md:block', 'w-60', 'h-[440px]', 'opacity-85', 'scale-95', 'z-0'],
-      ['w-72', 'h-[480px]', 'md:w-96', 'md:h-[520px]', 'z-10', 'shadow-2xl', 'scale-100', 'opacity-100'],
-      ['hidden', 'md:block', 'w-60', 'h-[440px]', 'opacity-85', 'scale-95', 'z-0'],
-      ['hidden', 'lg:block', 'w-52', 'h-[380px]', 'opacity-70', 'scale-90', 'z-0']
-    ];
-
-    let items = Array.from(container.querySelectorAll('.carousel-item'));
+    const items = Array.from(document.querySelectorAll('.carousel-item'));
+    const N = items.length; // 5
+    let centerIdx = 2; // item index currently in center
     let autoSlideInterval;
     let isPaused = false;
 
-    function updateCarousel() {
-      items.forEach((item, index) => {
-        positionClasses.forEach(clsArray => item.classList.remove(...clsArray));
-        item.classList.add(...positionClasses[index]);
+    // Each item gets inline styles for its visual position — CSS transition handles the rest
+    function getStyle(pos) {
+      // pos: 0=far-left, 1=mid-left, 2=center, 3=mid-right, 4=far-right
+      const styles = [
+        { width:'208px', height:'380px', opacity:'0.65', transform:'scale(0.88)', zIndex:'0', filter:'brightness(0.88) saturate(0.88)' },
+        { width:'240px', height:'440px', opacity:'0.82', transform:'scale(0.94)', zIndex:'1', filter:'brightness(0.88) saturate(0.88)' },
+        { width:'384px', height:'520px', opacity:'1',    transform:'scale(1)',    zIndex:'10', filter:'brightness(0.92) saturate(0.95)', boxShadow:'0 25px 50px -12px rgba(0,0,0,0.25)' },
+        { width:'240px', height:'440px', opacity:'0.82', transform:'scale(0.94)', zIndex:'1', filter:'brightness(0.88) saturate(0.88)' },
+        { width:'208px', height:'380px', opacity:'0.65', transform:'scale(0.88)', zIndex:'0', filter:'brightness(0.88) saturate(0.88)' },
+      ];
+      return styles[pos];
+    }
 
-        // Only toggle center spotlight bottom card; all top badges always visible
+    function updateCarousel() {
+      items.forEach((item, i) => {
+        // pos 2 = center; formula: centerIdx item → pos 2
+        const pos = (i - centerIdx + N + 2) % N;
+        const s = getStyle(pos);
+        item.style.width   = s.width;
+        item.style.height  = s.height;
+        item.style.opacity = s.opacity;
+        item.style.transform = s.transform;
+        item.style.zIndex  = s.zIndex;
+        item.style.filter  = s.filter;
+        item.style.boxShadow = s.boxShadow || '';
+
+        // Show content-overlay only on center
         const overlay = item.querySelector('.content-overlay');
-        if (overlay) overlay.style.opacity = index === 2 ? '1' : '0';
+        if (overlay) overlay.style.opacity = pos === 2 ? '1' : '0';
       });
     }
 
-    function slideNext() {
-      const firstItem = items.shift();
-      items.push(firstItem);
-      container.appendChild(firstItem);
-      updateCarousel();
-    }
+    function slideNext() { centerIdx = (centerIdx + 1) % N; updateCarousel(); }
+    function slidePrev() { centerIdx = (centerIdx - 1 + N) % N; updateCarousel(); }
 
-    function slidePrev() {
-      const lastItem = items.pop();
-      items.unshift(lastItem);
-      container.insertBefore(lastItem, container.firstChild);
-      updateCarousel();
-    }
+    function startAutoSlide() { autoSlideInterval = setInterval(slideNext, 3500); }
+    function stopAutoSlide()  { clearInterval(autoSlideInterval); }
 
-    function startAutoSlide() {
-      autoSlideInterval = setInterval(slideNext, 4000);
-    }
-
-    function stopAutoSlide() {
-      clearInterval(autoSlideInterval);
-    }
-
-    nextBtn.addEventListener('click', () => {
-      slideNext();
-      if (!isPaused) { stopAutoSlide(); startAutoSlide(); }
-    });
-
-    prevBtn.addEventListener('click', () => {
-      slidePrev();
-      if (!isPaused) { stopAutoSlide(); startAutoSlide(); }
-    });
+    nextBtn.addEventListener('click', () => { slideNext(); stopAutoSlide(); if (!isPaused) startAutoSlide(); });
+    prevBtn.addEventListener('click', () => { slidePrev(); stopAutoSlide(); if (!isPaused) startAutoSlide(); });
 
     pauseBtn.addEventListener('click', () => {
       isPaused = !isPaused;
@@ -273,11 +263,16 @@
       }
     });
 
+    // Init: apply styles immediately (no transition on first render)
+    items.forEach(item => { item.style.transition = 'none'; });
     updateCarousel();
-    // Auto-slide disabled: center spotlight stays di Demographic & Consumption 2025
-    // User can navigate manual via prev/next buttons
-    isPaused = true;
-    pauseBtn.innerHTML = '<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M8 5v10l7-5-7-5z"/></svg>';
+    // Enable transitions after first render
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      items.forEach(item => {
+        item.style.transition = 'width 0.7s ease, height 0.7s ease, opacity 0.7s ease, transform 0.7s ease, filter 0.7s ease, box-shadow 0.7s ease';
+      });
+      startAutoSlide(); // auto-start langsung
+    }));
   });
 </script>
 </section>
