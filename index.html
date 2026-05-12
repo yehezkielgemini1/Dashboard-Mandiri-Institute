@@ -19,13 +19,12 @@
     .text-ice-blue { color: #00A3E0; }
     .bg-ice-blue { background-color: #00A3E0; }
     .border-ice-blue { border-color: #00A3E0; }
-    /* Carousel surround slots: navy-tinted image filter + readable label text */
+    /* Carousel surround slots: match center brightness, light navy tone */
     .carousel-tinted img {
-      filter: brightness(0.65) saturate(0.7) contrast(0.95);
+      filter: brightness(0.88) saturate(0.88) contrast(1.0);
       transition: filter 0.4s;
     }
-    .carousel-tinted:hover img { filter: brightness(0.85) saturate(1) contrast(1); }
-    .carousel-tinted .text-white { text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6); }
+    .carousel-tinted:hover img { filter: brightness(0.96) saturate(1) contrast(1); }
     /* Spotlight center: subtle tone-down so overlay card stands out */
     .carousel-spotlight img {
       filter: brightness(0.92) saturate(0.95);
@@ -142,8 +141,8 @@
 <!-- Slot 1: Monthly Gazette (far left) -->
 <div class="carousel-item carousel-tinted hidden lg:block w-48 h-[300px] relative opacity-80 transform scale-90 transition-all duration-700 ease-in-out shrink-0" data-pos="1">
 <img alt="Monthly Gazette" class="w-full h-full object-cover rounded-sm" src="_assets/foto/kelas-masyarakat-clean.jpg" style="object-position: center 30%;"/>
-<div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/85 via-mandiri-deep/50 to-mandiri-deep/30 rounded-sm"></div>
-<div class="absolute top-3 left-3 border border-ice-blue text-ice-blue text-[8.5px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-widest bg-white/90 backdrop-blur-sm">Monthly Gazette</div>
+<div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/60 via-mandiri-deep/25 to-mandiri-deep/10 rounded-sm"></div>
+<div class="carousel-top-badge absolute top-3 left-3 border border-ice-blue text-ice-blue text-[8.5px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-widest bg-white/90 backdrop-blur-sm">Monthly Gazette</div>
 <div class="absolute bottom-3 left-3 right-3 bg-white/95 backdrop-blur-sm p-3 rounded-sm shadow-md border-l-2 border-ice-blue">
 <p class="text-[8.5px] text-ice-blue uppercase tracking-[0.15em] mb-1 font-bold">Edisi Maret · 2026</p>
 <h3 class="text-xs font-serif text-mandiri-deep leading-tight font-medium">Mandiri Outlook</h3>
@@ -152,8 +151,8 @@
 <!-- Slot 2: Policy Brief (mid left) -->
 <div class="carousel-item carousel-tinted hidden md:block w-56 h-[380px] relative opacity-90 transform scale-95 transition-all duration-700 ease-in-out shrink-0" data-pos="2">
 <img alt="Policy Brief" class="w-full h-full object-cover rounded-sm" src="_assets/foto/kendaraan-clean.jpg" style="object-position: center 40%;"/>
-<div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/75 via-mandiri-deep/35 to-mandiri-deep/20 rounded-sm"></div>
-<div class="absolute top-3 left-3 border border-ice-blue text-ice-blue text-[9px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-widest bg-white/90 backdrop-blur-sm">Policy Brief</div>
+<div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/55 via-mandiri-deep/20 to-mandiri-deep/10 rounded-sm"></div>
+<div class="carousel-top-badge absolute top-3 left-3 border border-ice-blue text-ice-blue text-[9px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-widest bg-white/90 backdrop-blur-sm">Policy Brief</div>
 <div class="absolute bottom-3 left-3 right-3 bg-white/95 backdrop-blur-sm p-4 rounded-sm shadow-md border-l-2 border-ice-blue">
 <p class="text-[9px] text-ice-blue uppercase tracking-[0.15em] mb-1 font-bold">No. 2 · Februari 2026</p>
 <h3 class="text-sm font-serif text-mandiri-deep leading-tight font-medium">Subsidi BBM Tertarget</h3>
@@ -163,7 +162,7 @@
 <div class="carousel-item carousel-spotlight w-80 h-[420px] md:w-96 md:h-[480px] relative z-10 shadow-2xl transition-all duration-700 ease-in-out shrink-0" data-pos="3">
 <img alt="Demographic &amp; Consumption 2025" class="w-full h-full object-cover rounded-sm" src="_assets/foto/demographic-consumption-crowd.jpg" style="object-position: center 30%;"/>
 <div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/75 via-mandiri-deep/20 to-mandiri-deep/40 rounded-sm pointer-events-none"></div>
-<div class="absolute top-4 left-4 border border-ice-blue text-ice-blue text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest bg-white/90 backdrop-blur-sm">Executive Brief</div>
+<div class="carousel-top-badge absolute top-4 left-4 border border-ice-blue text-ice-blue text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest bg-white/90 backdrop-blur-sm">Executive Brief</div>
 <div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-6 rounded-sm shadow-lg transition-opacity duration-700 ease-in-out content-overlay border-l-4 border-ice-blue">
 <p class="text-[10px] text-ice-blue uppercase tracking-[0.15em] mb-2 font-bold">Riset Tahunan · 2025</p>
 <h2 class="text-2xl font-serif text-mandiri-deep leading-tight font-medium">Demographic &amp; Consumption 2025</h2>
@@ -172,8 +171,8 @@
 <!-- Slot 4: Infografis (mid right) -->
 <div class="carousel-item carousel-tinted hidden md:block w-56 h-[380px] relative opacity-90 transform scale-95 transition-all duration-700 ease-in-out shrink-0" data-pos="4">
 <img alt="Infografis" class="w-full h-full object-cover rounded-sm" src="_assets/foto/bbm-clean.jpg" style="object-position: center 50%;"/>
-<div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/75 via-mandiri-deep/35 to-mandiri-deep/20 rounded-sm"></div>
-<div class="absolute top-3 left-3 border border-ice-blue text-ice-blue text-[9px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-widest bg-white/90 backdrop-blur-sm">Infografis</div>
+<div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/55 via-mandiri-deep/20 to-mandiri-deep/10 rounded-sm"></div>
+<div class="carousel-top-badge absolute top-3 left-3 border border-ice-blue text-ice-blue text-[9px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-widest bg-white/90 backdrop-blur-sm">Infografis</div>
 <div class="absolute bottom-3 left-3 right-3 bg-white/95 backdrop-blur-sm p-4 rounded-sm shadow-md border-l-2 border-ice-blue">
 <p class="text-[9px] text-ice-blue uppercase tracking-[0.15em] mb-1 font-bold">Carousel IG · 2026</p>
 <h3 class="text-sm font-serif text-mandiri-deep leading-tight font-medium">Kerentanan Middle Class</h3>
@@ -182,8 +181,8 @@
 <!-- Slot 5: Econmark (far right) -->
 <div class="carousel-item carousel-tinted hidden lg:block w-48 h-[300px] relative opacity-80 transform scale-90 transition-all duration-700 ease-in-out shrink-0" data-pos="5">
 <img alt="Econmark" class="w-full h-full object-cover rounded-sm" src="_assets/foto/demographic-consumption-crowd.jpg" style="object-position: center 30%;"/>
-<div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/85 via-mandiri-deep/50 to-mandiri-deep/30 rounded-sm"></div>
-<div class="absolute top-3 left-3 border border-ice-blue text-ice-blue text-[8.5px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-widest bg-white/90 backdrop-blur-sm">Econmark</div>
+<div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/60 via-mandiri-deep/25 to-mandiri-deep/10 rounded-sm"></div>
+<div class="carousel-top-badge absolute top-3 left-3 border border-ice-blue text-ice-blue text-[8.5px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-widest bg-white/90 backdrop-blur-sm">Econmark</div>
 <div class="absolute bottom-3 left-3 right-3 bg-white/95 backdrop-blur-sm p-3 rounded-sm shadow-md border-l-2 border-ice-blue">
 <p class="text-[8.5px] text-ice-blue uppercase tracking-[0.15em] mb-1 font-bold">Q1 · 2026</p>
 <h3 class="text-xs font-serif text-mandiri-deep leading-tight font-medium">Outlook Triwulanan</h3>
@@ -225,10 +224,9 @@
         positionClasses.forEach(clsArray => item.classList.remove(...clsArray));
         item.classList.add(...positionClasses[index]);
 
+        // Only toggle center spotlight bottom card; all top badges always visible
         const overlay = item.querySelector('.content-overlay');
-        const badge = item.querySelector('.border-ice-blue');
         if (overlay) overlay.style.opacity = index === 2 ? '1' : '0';
-        if (badge) badge.style.opacity = index === 2 ? '1' : '0';
       });
     }
 
