@@ -135,57 +135,69 @@
 <h1 class="text-4xl sm:text-5xl lg:text-6xl font-serif text-mandiri-navy leading-tight font-light">Membaca Indonesia melalui data</h1>
 </section>
 <!-- END: Hero Section -->
-<!-- BEGIN: Featured Carousel Section -->
+<!-- BEGIN: Featured Carousel Section (wheel rotation) -->
+<style>
+  #carousel-container { position: relative; height: 540px; width: 100%; overflow: visible; }
+  .carousel-item {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 280px; height: 460px;
+    transform-origin: center center;
+    will-change: transform, opacity, filter;
+  }
+  @media (min-width: 768px) { .carousel-item { width: 320px; height: 480px; } }
+  @media (min-width: 1024px) { .carousel-item { width: 360px; height: 500px; } }
+</style>
 <section class="pb-24 max-w-7xl mx-auto px-8 lg:px-16 overflow-hidden relative">
-<div class="relative flex justify-center items-center h-[500px] w-full mx-auto space-x-4 md:space-x-8" id="carousel-container">
-<!-- Slot 1: Monthly Gazette (far left) -->
-<div class="carousel-item relative shrink-0 overflow-hidden rounded-sm" data-pos="1">
+<div id="carousel-container">
+<!-- Slot 1: Monthly Gazette -->
+<div class="carousel-item overflow-hidden rounded-sm shadow-xl" data-pos="1">
 <img alt="Monthly Gazette" class="w-full h-full object-cover rounded-sm" src="_assets/foto/kelas-masyarakat-clean.jpg" style="object-position: center 30%;"/>
 <div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/60 via-mandiri-deep/25 to-mandiri-deep/10 rounded-sm"></div>
-<div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-6 rounded-sm shadow-lg border-l-4 border-ice-blue">
+<div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-5 rounded-sm shadow-lg border-l-4 border-ice-blue">
 <p class="text-[10px] text-ice-blue uppercase tracking-[0.2em] font-bold">Monthly Gazette</p>
 <p class="text-[10px] text-gray-400 uppercase tracking-[0.15em] mb-2">Maret · 2026</p>
-<h3 class="text-2xl font-serif text-mandiri-deep leading-tight font-medium">Mandiri Economic Outlook</h3>
+<h3 class="text-xl font-serif text-mandiri-deep leading-tight font-medium">Mandiri Economic Outlook</h3>
 </div>
 </div>
-<!-- Slot 2: Policy Brief (mid left) -->
-<div class="carousel-item relative shrink-0 overflow-hidden rounded-sm" data-pos="2">
+<!-- Slot 2: Policy Brief -->
+<div class="carousel-item overflow-hidden rounded-sm shadow-xl" data-pos="2">
 <img alt="Policy Brief" class="w-full h-full object-cover rounded-sm" src="_assets/foto/kendaraan-clean.jpg" style="object-position: center 40%;"/>
 <div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/55 via-mandiri-deep/20 to-mandiri-deep/10 rounded-sm"></div>
-<div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-6 rounded-sm shadow-lg border-l-4 border-ice-blue">
+<div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-5 rounded-sm shadow-lg border-l-4 border-ice-blue">
 <p class="text-[10px] text-ice-blue uppercase tracking-[0.2em] font-bold">Policy Brief</p>
 <p class="text-[10px] text-gray-400 uppercase tracking-[0.15em] mb-2">Februari · 2026</p>
-<h3 class="text-2xl font-serif text-mandiri-deep leading-tight font-medium">Subsidi BBM Tertarget</h3>
+<h3 class="text-xl font-serif text-mandiri-deep leading-tight font-medium">Subsidi BBM Tertarget</h3>
 </div>
 </div>
-<!-- Slot 3 CENTER: Demographic & Consumption 2025 spotlight -->
-<div class="carousel-item relative shrink-0 overflow-hidden rounded-sm" data-pos="3">
+<!-- Slot 3: Demographic & Consumption 2025 -->
+<div class="carousel-item overflow-hidden rounded-sm shadow-xl" data-pos="3">
 <img alt="Demographic &amp; Consumption 2025" class="w-full h-full object-cover rounded-sm" src="_assets/foto/demographic-consumption-crowd.jpg" style="object-position: center 30%;"/>
 <div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/60 via-mandiri-deep/20 to-mandiri-deep/10 rounded-sm pointer-events-none"></div>
-<div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-6 rounded-sm shadow-lg transition-opacity duration-700 ease-in-out content-overlay border-l-4 border-ice-blue">
+<div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-5 rounded-sm shadow-lg border-l-4 border-ice-blue">
 <p class="text-[10px] text-ice-blue uppercase tracking-[0.2em] font-bold">Executive Brief</p>
 <p class="text-[10px] text-gray-400 uppercase tracking-[0.15em] mb-2">Tahunan · 2025</p>
-<h2 class="text-2xl font-serif text-mandiri-deep leading-tight font-medium">Demographic &amp; Consumption 2025</h2>
+<h3 class="text-xl font-serif text-mandiri-deep leading-tight font-medium">Demographic &amp; Consumption 2025</h3>
 </div>
 </div>
-<!-- Slot 4: Infografis (mid right) -->
-<div class="carousel-item relative shrink-0 overflow-hidden rounded-sm" data-pos="4">
-<img alt="Infografis" class="w-full h-full object-cover rounded-sm" src="_assets/foto/bbm-clean.jpg" style="object-position: center 50%;"/>
+<!-- Slot 4: Infographic -->
+<div class="carousel-item overflow-hidden rounded-sm shadow-xl" data-pos="4">
+<img alt="Infographic" class="w-full h-full object-cover rounded-sm" src="_assets/foto/bbm-clean.jpg" style="object-position: center 50%;"/>
 <div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/55 via-mandiri-deep/20 to-mandiri-deep/10 rounded-sm"></div>
-<div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-6 rounded-sm shadow-lg border-l-4 border-ice-blue">
+<div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-5 rounded-sm shadow-lg border-l-4 border-ice-blue">
 <p class="text-[10px] text-ice-blue uppercase tracking-[0.2em] font-bold">Infographic</p>
 <p class="text-[10px] text-gray-400 uppercase tracking-[0.15em] mb-2">Maret · 2026</p>
-<h3 class="text-2xl font-serif text-mandiri-deep leading-tight font-medium">Kerentanan Middle Class</h3>
+<h3 class="text-xl font-serif text-mandiri-deep leading-tight font-medium">Kerentanan Middle Class</h3>
 </div>
 </div>
-<!-- Slot 5: Econmark (far right) -->
-<div class="carousel-item relative shrink-0 overflow-hidden rounded-sm" data-pos="5">
+<!-- Slot 5: Econmark -->
+<div class="carousel-item overflow-hidden rounded-sm shadow-xl" data-pos="5">
 <img alt="Econmark" class="w-full h-full object-cover rounded-sm" src="_assets/foto/demographic-consumption-crowd.jpg" style="object-position: center 30%;"/>
 <div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/60 via-mandiri-deep/25 to-mandiri-deep/10 rounded-sm"></div>
-<div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-6 rounded-sm shadow-lg border-l-4 border-ice-blue">
+<div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-5 rounded-sm shadow-lg border-l-4 border-ice-blue">
 <p class="text-[10px] text-ice-blue uppercase tracking-[0.2em] font-bold">Econmark</p>
 <p class="text-[10px] text-gray-400 uppercase tracking-[0.15em] mb-2">Q1 · 2026</p>
-<h3 class="text-2xl font-serif text-mandiri-deep leading-tight font-medium">Indonesia Economic Quarterly</h3>
+<h3 class="text-xl font-serif text-mandiri-deep leading-tight font-medium">Indonesia Economic Quarterly</h3>
 </div>
 </div>
 </div>
@@ -211,15 +223,24 @@
     let autoSlideInterval;
     let isPaused = false;
 
-    // Each item gets inline styles for its visual position — CSS transition handles the rest
+    // Wheel rotation: items physically translateX (geser horizontal) + scale.
+    // Offset disesuaikan dengan viewport width — responsive (smaller offsets on mobile).
+    function getOffsets() {
+      const w = window.innerWidth;
+      if (w < 768) return { mid: 0, far: 0 };           // mobile: only center visible
+      if (w < 1024) return { mid: 240, far: 420 };       // tablet
+      return { mid: 300, far: 560 };                     // desktop
+    }
+
     function getStyle(pos) {
+      const o = getOffsets();
       // pos: 0=far-left, 1=mid-left, 2=center, 3=mid-right, 4=far-right
       const styles = [
-        { width:'208px', height:'380px', opacity:'0.65', transform:'scale(0.88)', zIndex:'0', filter:'brightness(0.88) saturate(0.88)' },
-        { width:'240px', height:'440px', opacity:'0.82', transform:'scale(0.94)', zIndex:'1', filter:'brightness(0.88) saturate(0.88)' },
-        { width:'384px', height:'520px', opacity:'1',    transform:'scale(1)',    zIndex:'10', filter:'brightness(0.92) saturate(0.95)', boxShadow:'0 25px 50px -12px rgba(0,0,0,0.25)' },
-        { width:'240px', height:'440px', opacity:'0.82', transform:'scale(0.94)', zIndex:'1', filter:'brightness(0.88) saturate(0.88)' },
-        { width:'208px', height:'380px', opacity:'0.65', transform:'scale(0.88)', zIndex:'0', filter:'brightness(0.88) saturate(0.88)' },
+        { x: -o.far, scale: 0.62, opacity: 0.35, z: 0, brightness: 0.7 },
+        { x: -o.mid, scale: 0.82, opacity: 0.75, z: 1, brightness: 0.85 },
+        { x:    0,   scale: 1.00, opacity: 1.00, z: 10, brightness: 1.0 },
+        { x:  o.mid, scale: 0.82, opacity: 0.75, z: 1, brightness: 0.85 },
+        { x:  o.far, scale: 0.62, opacity: 0.35, z: 0, brightness: 0.7 },
       ];
       return styles[pos];
     }
@@ -229,17 +250,12 @@
         // pos 2 = center; formula: centerIdx item → pos 2
         const pos = (i - centerIdx + N + 2) % N;
         const s = getStyle(pos);
-        item.style.width   = s.width;
-        item.style.height  = s.height;
+        // translate(-50%, -50%) centers via absolute, then translateX moves horizontally
+        item.style.transform = `translate(-50%, -50%) translateX(${s.x}px) scale(${s.scale})`;
         item.style.opacity = s.opacity;
-        item.style.transform = s.transform;
-        item.style.zIndex  = s.zIndex;
-        item.style.filter  = s.filter;
-        item.style.boxShadow = s.boxShadow || '';
-
-        // Show content-overlay only on center
-        const overlay = item.querySelector('.content-overlay');
-        if (overlay) overlay.style.opacity = pos === 2 ? '1' : '0';
+        item.style.zIndex  = s.z;
+        item.style.filter  = `brightness(${s.brightness}) saturate(${0.85 + s.brightness * 0.15})`;
+        item.style.pointerEvents = pos === 2 ? 'auto' : 'none';
       });
     }
 
@@ -263,15 +279,21 @@
       }
     });
 
-    // Init: apply styles immediately (no transition on first render)
+    // Re-render on window resize (recompute offsets for new viewport)
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(updateCarousel, 120);
+    });
+
+    // Init: apply styles immediately (no transition on first render to avoid flash)
     items.forEach(item => { item.style.transition = 'none'; });
     updateCarousel();
-    // Enable transitions after first render
     requestAnimationFrame(() => requestAnimationFrame(() => {
       items.forEach(item => {
-        item.style.transition = 'width 0.7s ease, height 0.7s ease, opacity 0.7s ease, transform 0.7s ease, filter 0.7s ease, box-shadow 0.7s ease';
+        item.style.transition = 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s ease, filter 0.8s ease';
       });
-      startAutoSlide(); // auto-start langsung
+      startAutoSlide();
     }));
   });
 </script>
