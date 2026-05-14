@@ -224,12 +224,14 @@
     let isPaused = false;
 
     // Wheel rotation: items physically translateX (geser horizontal) + scale.
-    // Offset disesuaikan dengan viewport width — responsive (smaller offsets on mobile).
+    // Offsets calculated supaya tidak overlap dengan center, plus gap antara kartu.
+    // Logic: center=360w → setengah=180. Mid scale 0.82 = ~295w → setengah=147.
+    //        Mid offset ≥ 180+147 = 327. Plus gap 40 → 367.
     function getOffsets() {
       const w = window.innerWidth;
       if (w < 768) return { mid: 0, far: 0 };           // mobile: only center visible
-      if (w < 1024) return { mid: 240, far: 420 };       // tablet
-      return { mid: 300, far: 560 };                     // desktop
+      if (w < 1024) return { mid: 290, far: 530 };       // tablet
+      return { mid: 380, far: 700 };                     // desktop — clear gap antar kotak
     }
 
     function getStyle(pos) {
