@@ -2216,7 +2216,8 @@ function dashboard() {
     },
     renderCompare() {
       // Radar chart: multi-dim profile per prov
-      const dims = ['Rp/kapita', 'Rank inv', 'Share makanan inv', 'Trend growth', 'Outlier flag'];
+      /* Radar dimensions — bahasa user-friendly Indonesia */
+      const dims = ['Per Kapita', 'Peringkat', 'Share Non-Makanan', 'Pertumbuhan', 'Outlier'];
       const traces = this.comparePicked.map((pcode, i) => {
         const slice = (PAYLOAD.rank38[this.year] || {})['All'] || {};
         const v = slice[pcode] || 0;
@@ -2609,18 +2610,18 @@ function dashboard() {
           hoverinfo: 'skip', showlegend: false,
         } : null,
         showCities ? {
-          type: 'scattergeo', mode: 'markers+text',
+          /* City: cuma dot kecil sebagai orientasi, no text label (drop biar tidak overlap dengan top-3 province label) */
+          type: 'scattergeo', mode: 'markers',
           lon: CITIES.map(c => c.lon), lat: CITIES.map(c => c.lat),
-          text: CITIES.map(c => c.name), textposition: 'top right',
-          textfont: { family: FONT, size: 10, color: '#051C2C', weight: 600 },
-          marker: { size: 5, color: '#00A3E0', line: { color: '#051C2C', width: 1 } },  /* City marker: ice blue */
-          hoverinfo: 'skip', showlegend: false,
+          marker: { size: 4, color: '#00A3E0', line: { color: '#FFFFFF', width: 1 } },
+          hoverinfo: 'text', hovertext: CITIES.map(c => c.name), showlegend: false,
         } : null,
-        // Top-3 label (nama + nilai)
+        // Top-3 label (nama + nilai) — textposition middle center untuk centroid alignment
         {
           type: 'scattergeo', mode: 'text',
           lon: labelLons, lat: labelLats, text: labelText,
-          textfont: { family: 'Source Serif 4, serif', size: 12, color: '#051C2C' },
+          textposition: 'middle center',
+          textfont: { family: 'Source Serif 4, serif', size: 12, color: '#001F4D', weight: 600 },
           hoverinfo: 'skip', showlegend: false,
         },
         // Semua prov lain: label nilai kecil
@@ -2780,17 +2781,18 @@ function dashboard() {
           hoverlabel: { bgcolor: 'white', bordercolor: '#003D79', font: { family: FONT, size: 13, color: INK }, align: 'left', namelength: -1 },
         },
         showCitiesK ? {
-          type: 'scattergeo', mode: 'markers+text',
+          /* City: cuma dot kecil, no text label (drop biar tidak overlap top-3) */
+          type: 'scattergeo', mode: 'markers',
           lon: CITIES.map(c => c.lon), lat: CITIES.map(c => c.lat),
-          text: CITIES.map(c => c.name), textposition: 'top right',
-          textfont: { family: FONT, size: 10, color: '#051C2C', weight: 600 },
-          marker: { size: 5, color: '#003D79', line: { color: '#051C2C', width: 1 } },
-          hoverinfo: 'skip', showlegend: false,
+          marker: { size: 4, color: '#00A3E0', line: { color: '#FFFFFF', width: 1 } },
+          hoverinfo: 'text', hovertext: CITIES.map(c => c.name), showlegend: false,
         } : null,
         {
+          /* Top-3 label (nama) — centroid alignment */
           type: 'scattergeo', mode: 'text',
           lon: labelLons, lat: labelLats, text: labelText,
-          textfont: { family: 'Source Serif 4, serif', size: 12, color: '#051C2C' },
+          textposition: 'middle center',
+          textfont: { family: 'Source Serif 4, serif', size: 12, color: '#001F4D', weight: 600 },
           hoverinfo: 'skip', showlegend: false,
         },
       ].filter(t => t);
