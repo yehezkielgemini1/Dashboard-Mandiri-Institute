@@ -625,6 +625,24 @@
   .chart-filter .filter-actions .action-btn { background: transparent; border: 1px solid var(--rule); padding: 7px 12px; font-size: 11px; font-weight: 600; color: var(--ink-soft); cursor: pointer; border-radius: 3px; display: inline-flex; align-items: center; gap: 4px; height: 34px; }
   .chart-filter .filter-actions .action-btn:hover { border-color: var(--ice-blue); color: var(--ice-blue); }
 
+  /* Export action row (di bawah grafik) */
+  .chart-export-row {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    justify-content: flex-end;
+    padding: 14px 0 8px;
+    border-top: 1px dashed var(--rule);
+    margin-top: 14px;
+  }
+  .chart-export-row .action-btn {
+    background: transparent; border: 1px solid var(--rule); padding: 8px 14px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+    color: var(--ink-soft); cursor: pointer; border-radius: 3px;
+    display: inline-flex; align-items: center; gap: 6px; height: 34px;
+    transition: all 0.15s ease; font-family: inherit;
+  }
+  .chart-export-row .action-btn:hover { border-color: var(--ice-blue); color: var(--ice-blue); background: var(--ice-blue-soft); }
+  .chart-export-row .action-btn iconify-icon { font-size: 14px; }
+
   /* Skeleton loading state */
   .skeleton-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin: 32px 0; }
   .skel-card { padding: 16px 0; }
@@ -1013,13 +1031,13 @@
         <div class="eyebrow">I · Trend Nasional</div>
         <h3>Pengeluaran Per Kapita, 2019&ndash;2025</h3>
       </div>
-      <div class="chart-filter" style="justify-content:flex-end;">
-        <div class="filter-actions">
-          <button class="action-btn" @click="exportPPT('chart-trend', 'Pengeluaran per kapita Indonesia, 2019-2025', 'Trend nasional · Susenas Maret BPS')"><iconify-icon icon="mdi:presentation"></iconify-icon>PPT</button>
-          <button class="action-btn" @click="downloadCSV('trend')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
-        </div>
-      </div>
       <div id="chart-trend" style="height:520px;"></div>
+      <div class="chart-export-row">
+        <button class="action-btn" @click="exportPPT('chart-trend', 'Pengeluaran per kapita Indonesia, 2019-2025', 'Trend nasional · Susenas Maret BPS')"><iconify-icon icon="mdi:presentation"></iconify-icon>PPT</button>
+        <button class="action-btn" @click="downloadCSV('trend')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
+        <button class="action-btn" @click="downloadImage('chart-trend', 'png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
+        <button class="action-btn" @click="downloadImage('chart-trend', 'svg')"><iconify-icon icon="mdi:vector-square"></iconify-icon>SVG</button>
+      </div>
       <div class="chart-footer">
         <span><span class="label">Sumber</span>Susenas Maret BPS, Blok 41 & 42</span>
         <span><span class="label">Bobot</span>weind × r301 (per kapita tertimbang)</span>
@@ -1042,13 +1060,14 @@
             <template x-for="y in years" :key="'fce'+y"><option :value="y" x-text="y"></option></template>
           </select>
         </div>
-        <div class="filter-spacer"></div>
-        <div class="filter-actions">
-          <button class="action-btn" @click="exportPPT('chart-engel', 'Hukum Engel: share makanan vs non-makanan per kelas', 'Tahun ' + fc.engel.tahun + ' · Susenas Maret BPS')"><iconify-icon icon="mdi:presentation"></iconify-icon>PPT</button>
-          <button class="action-btn" @click="downloadCSV('engel')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
-        </div>
       </div>
       <div id="chart-engel" style="height:480px;"></div>
+      <div class="chart-export-row">
+        <button class="action-btn" @click="exportPPT('chart-engel', 'Hukum Engel: share makanan vs non-makanan per kelas', 'Tahun ' + fc.engel.tahun + ' · Susenas Maret BPS')"><iconify-icon icon="mdi:presentation"></iconify-icon>PPT</button>
+        <button class="action-btn" @click="downloadCSV('engel')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
+        <button class="action-btn" @click="downloadImage('chart-engel', 'png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
+        <button class="action-btn" @click="downloadImage('chart-engel', 'svg')"><iconify-icon icon="mdi:vector-square"></iconify-icon>SVG</button>
+      </div>
       <div class="chart-footer">
         <span><span class="label">Sumber</span>Susenas Maret BPS, Blok 41 & 42</span>
         <span><span class="label">Klasifikasi</span>kelas wb4 Mandiri Institute</span>
@@ -1078,14 +1097,14 @@
             <button class="chart-chip" :class="{ active: fc.heatmap.kompMode === 'treemap' }" @click="fc.heatmap.kompMode='treemap'; renderHeatmap()">Treemap</button>
           </div>
         </div>
-        <div class="filter-spacer"></div>
-        <div class="filter-actions">
-          <button class="action-btn" @click="exportPPT('chart-heatmap', 'Komposisi share pengeluaran per kelompok dan kelas', 'Tahun ' + fc.heatmap.tahun + ' · Susenas Maret BPS')"><iconify-icon icon="mdi:presentation"></iconify-icon>PPT</button>
-          <button class="action-btn" @click="downloadCSV('komposisi')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
-          <button class="action-btn" @click="downloadImage('chart-heatmap', 'png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
-        </div>
       </div>
       <div id="chart-heatmap" style="height:680px;"></div>
+      <div class="chart-export-row">
+        <button class="action-btn" @click="exportPPT('chart-heatmap', 'Komposisi share pengeluaran per kelompok dan kelas', 'Tahun ' + fc.heatmap.tahun + ' · Susenas Maret BPS')"><iconify-icon icon="mdi:presentation"></iconify-icon>PPT</button>
+        <button class="action-btn" @click="downloadCSV('komposisi')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
+        <button class="action-btn" @click="downloadImage('chart-heatmap', 'png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
+        <button class="action-btn" @click="downloadImage('chart-heatmap', 'svg')"><iconify-icon icon="mdi:vector-square"></iconify-icon>SVG</button>
+      </div>
       <div class="chart-footer">
         <span><span class="label">Sumber</span>Susenas Maret BPS, Blok 41 & 42</span>
         <span><span class="label">Total</span>tiap kolom = 100%</span>
