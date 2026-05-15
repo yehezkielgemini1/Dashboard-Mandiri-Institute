@@ -736,9 +736,9 @@
     <div class="brand-sub">Konsumsi Masyarakat</div>
   </a>
   <div class="menu">
-    <a href="#" onclick="window.gotoPage('trend'); return false;">Trend &amp; Engel</a>
-    <a href="#" onclick="window.gotoPage('komposisi'); return false;">Komposisi &amp; Komoditi</a>
-    <a href="#" onclick="window.gotoPage('geografi'); return false;">Geografi &amp; Compare</a>
+    <a href="#" onclick="window.gotoPage('trend'); return false;">Konsumsi Nasional</a>
+    <a href="#" onclick="window.gotoPage('komposisi'); return false;">Proporsi Konsumsi</a>
+    <a href="#" onclick="window.gotoPage('geografi'); return false;">Komparasi Wilayah</a>
     <a href="#" onclick="window.gotoPage('metodologi'); return false;">Metodologi</a>
   </div>
   <div class="right">
@@ -1115,51 +1115,56 @@
 
   <!-- ==================== PAGE: GEOGRAFI ==================== -->
   <section x-show="submitted && page === 'geografi'">
-    <!-- Action buttons + Kelas selector (Kelas tetap inline karena banyak opsi & cocok per-page) + play animation -->
-    <div class="rule-top pt-8 flex flex-wrap items-end gap-6">
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Kelas</div>
-        <select x-model="mapKelas" @change="renderMap()" class="select-flat mt-2" style="min-width:140px;">
-          <option value="All">Semua kelas</option>
-          <template x-for="k in classes" :key="'mk'+k"><option :value="k" x-text="k"></option></template>
-        </select>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="eyebrow">IV · Peta Provinsi</div>
+        <h3>Pengeluaran per Kapita per Provinsi</h3>
       </div>
-      <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
-        <button class="play-btn" @click="togglePlay('renderMap')" title="Play tahun">
-          <iconify-icon :icon="playing ? 'mdi:pause' : 'mdi:play'"></iconify-icon>
-        </button>
-        <button class="chip-action" @click="exportPPT('chart-map', 'Disparitas geografis pengeluaran per kapita', 'Tahun ' + year + ' · Kelas ' + mapKelas + ' · Susenas BPS')" style="background:var(--yellow);color:var(--ink);border-color:var(--yellow);font-weight:700;">
-          <iconify-icon icon="mdi:presentation"></iconify-icon>PPT
-        </button>
-        <button class="chip-action" @click="downloadCSV('geografi')">
-          <iconify-icon icon="mdi:download"></iconify-icon>CSV
-        </button>
-        <button class="chip-action" @click="copyShareLink()">
-          <iconify-icon icon="mdi:link-variant"></iconify-icon>Tautan
-        </button>
+      <div class="chart-filter">
+        <div class="filter-field">
+          <label>Tahun</label>
+          <select x-model="year" @change="renderMap()">
+            <template x-for="y in years" :key="'mty'+y"><option :value="y" x-text="y"></option></template>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label>Kelas</label>
+          <select x-model="mapKelas" @change="renderMap()">
+            <option value="All">Semua kelas</option>
+            <template x-for="k in classes" :key="'mk'+k"><option :value="k" x-text="k"></option></template>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label>Animasi</label>
+          <button class="chart-chip" @click="togglePlay('renderMap')" :title="playing ? 'Pause animasi tahun' : 'Play animasi tahun'">
+            <iconify-icon :icon="playing ? 'mdi:pause' : 'mdi:play'" style="margin-right:4px;"></iconify-icon><span x-text="playing ? 'Pause' : 'Play'"></span>
+          </button>
+        </div>
       </div>
-    </div>
-    <div class="mt-12">
-      <span class="badge"><span class="badge-dot"></span>Per Kapita / Bulan · 34 Provinsi</span>
-      <div class="eyebrow-roman mt-3">IV. Geografi</div>
-      <h2 class="serif-display text-3xl mt-2 max-w-3xl">Disparitas geografis pengeluaran per kapita.</h2>
-      <p class="mt-3 muted text-base max-w-3xl">Peta 34 provinsi (BPS 2020). Pemekaran Papua pasca-2022 diagregasi ke induk.</p>
-      <div class="hair-accent mt-8 pt-2"></div>
-      <div id="chart-map" style="height:780px;"></div>
-      <!-- Custom HTML legend (FT/Bloomberg style) -->
+      <div id="chart-map" style="height:680px;"></div>
       <div class="map-legend">
         <div class="map-legend-label">Pengeluaran per kapita / bulan</div>
         <div class="map-legend-bins" id="legend-geografi"></div>
+      </div>
+      <div class="chart-export-row">
+        <button class="action-btn" @click="exportPPT('chart-map', 'Disparitas geografis pengeluaran per kapita', 'Tahun ' + year + ' · Kelas ' + mapKelas + ' · Susenas BPS')"><iconify-icon icon="mdi:presentation"></iconify-icon>PPT</button>
+        <button class="action-btn" @click="downloadCSV('geografi')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
+        <button class="action-btn" @click="downloadImage('chart-map', 'png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
+        <button class="action-btn" @click="copyShareLink()"><iconify-icon icon="mdi:link-variant"></iconify-icon>Tautan</button>
       </div>
       <div class="chart-footer">
         <span><span class="label">Sumber</span>Susenas BPS · Shapefile BPS 2020</span>
         <span><span class="label">Catatan</span>Papua Selatan/Tengah/Pegunungan/Barat Daya merge ke induk</span>
       </div>
-      <!-- Ranking 38 prov di bawah peta, 2 kolom -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-16 mt-12 rule-top pt-10">
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="eyebrow">V · Ranking 38 Provinsi</div>
+        <h3>Top &amp; Bottom 10 Provinsi</h3>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 pt-2">
         <div class="rank-card">
-          <div class="sub">Top 10 Provinsi</div>
-          <h4>Pengeluaran tertinggi per kapita per bulan</h4>
+          <div class="sub">Top 10 Tertinggi</div>
           <div class="rank-list">
             <template x-for="(r, i) in rankTop" :key="'t'+r.pcode">
               <div class="rank-row has-spark" :class="hoveredPcode && pcodeProvMatch(hoveredPcode, r.pcode) ? 'is-hovered' : ''">
@@ -1177,8 +1182,7 @@
           </div>
         </div>
         <div class="rank-card">
-          <div class="sub">Bottom 10 Provinsi</div>
-          <h4>Pengeluaran terendah per kapita per bulan</h4>
+          <div class="sub">Bottom 10 Terendah</div>
           <div class="rank-list">
             <template x-for="(r, i) in rankBottom" :key="'b'+r.pcode">
               <div class="rank-row has-spark is-bottom" :class="hoveredPcode && pcodeProvMatch(hoveredPcode, r.pcode) ? 'is-hovered' : ''">
@@ -1196,53 +1200,61 @@
           </div>
         </div>
       </div>
-      <p class="text-xs muted mt-4">Ranking menampilkan 38 provinsi (termasuk pemekaran Papua 2022+: Papua Selatan, Papua Tengah, Papua Pegunungan, Papua Barat Daya). Peta di atas tetap 34 provinsi karena keterbatasan shapefile BPS 2020.</p>
+      <div class="chart-footer">
+        <span><span class="label">Coverage</span>38 provinsi (termasuk pemekaran Papua 2022+)</span>
+        <span><span class="label">Catatan</span>Peta atas: 34 prov · 4 pemekaran Papua agregat ke induk</span>
+      </div>
     </div>
   </section>
 
-  <!-- ==================== PAGE: KOMODITI ==================== -->
-  <section x-show="submitted && page === 'komposisi'"><!-- Komoditi merged into Komposisi tab -->
-    <!-- Action row only — semua filter sudah di filter bar canon v2 -->
-    <div class="rule-top pt-8 flex flex-wrap items-end gap-6">
-      <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
-        <button class="play-btn" @click="togglePlay('renderKomoditi')" title="Play tahun">
-          <iconify-icon :icon="playing ? 'mdi:pause' : 'mdi:play'"></iconify-icon>
-        </button>
-        <button class="chip-action" @click="exportPPT('chart-komoditi-map', 'Konsumsi ' + komShort + ' per provinsi', 'Tahun ' + year + ' · Kelas ' + komKelas + ' · Susenas BPS')" style="background:var(--yellow);color:var(--ink);border-color:var(--yellow);font-weight:700;">
-          <iconify-icon icon="mdi:presentation"></iconify-icon>PPT
-        </button>
-        <button class="chip-action" @click="downloadCSV('komoditi')">
-          <iconify-icon icon="mdi:download"></iconify-icon>CSV
-        </button>
-        <button class="chip-action" @click="copyShareLink()">
-          <iconify-icon icon="mdi:link-variant"></iconify-icon>Tautan
-        </button>
+  <!-- ==================== PAGE: KOMODITI (merged into Proporsi Konsumsi) ==================== -->
+  <section x-show="submitted && page === 'komposisi'">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="eyebrow">IV · Drill-down Komoditi</div>
+        <h3 class="flex items-center gap-2">
+          <span class="title-icon"><iconify-icon :icon="komIcon"></iconify-icon></span>
+          <span x-text="'Konsumsi ' + komShort"></span>
+        </h3>
       </div>
-    </div>
-    <div class="mt-12">
-      <span class="badge"><span class="badge-dot"></span>Drill-down Komoditi · 316 Item</span>
-      <div class="eyebrow-roman mt-3">V. Komoditi</div>
-      <h2 class="serif-display text-3xl mt-2 max-w-3xl flex items-center">
-        <span class="title-icon"><iconify-icon :icon="komIcon"></iconify-icon></span>
-        <span x-text="'Konsumsi ' + komShort + '.'"></span>
-      </h2>
-      <!-- Definisi komoditi (kalau ada deskripsi dari kurung) -->
-      <div class="mt-4 max-w-3xl" x-show="komDesc">
-        <div class="callout">
-          <div class="label">Definisi</div>
-          <div class="text"><span x-text="komShort"></span><span class="muted text-base font-normal" style="font-family:Inter,sans-serif"> mencakup: </span><span x-text="komDesc"></span>.</div>
+      <div class="chart-filter">
+        <div class="filter-field">
+          <label>Tahun</label>
+          <select x-model="year" @change="renderKomoditi()">
+            <template x-for="y in years" :key="'kty'+y"><option :value="y" x-text="y"></option></template>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label>Kelompok</label>
+          <select x-model="komKelompok" @change="onKomKelompokChange()" style="min-width:200px;">
+            <template x-for="g in kelompokList" :key="'kkg'+g"><option :value="g" x-text="g"></option></template>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label>Komoditi</label>
+          <select x-model="komSelected" @change="renderKomoditi()" style="min-width:240px;">
+            <template x-for="k in komoditiInKelompok" :key="'kkk'+k.key"><option :value="k.key" x-text="k.short"></option></template>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label>Kelas</label>
+          <select x-model="komKelas" @change="renderKomoditi()">
+            <template x-for="k in classes" :key="'kkc'+k"><option :value="k" x-text="k"></option></template>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label>Animasi</label>
+          <button class="chart-chip" @click="togglePlay('renderKomoditi')">
+            <iconify-icon :icon="playing ? 'mdi:pause' : 'mdi:play'" style="margin-right:4px;"></iconify-icon><span x-text="playing ? 'Pause' : 'Play'"></span>
+          </button>
         </div>
       </div>
-      <p class="mt-4 muted text-base max-w-3xl">Pengeluaran per kapita per bulan untuk komoditi terpilih, dipecah per provinsi pada kelas yang dipilih.</p>
-      <div class="hair-accent mt-8 pt-2"></div>
       <div class="relative">
-        <div id="chart-komoditi-map" style="height:780px;"></div>
-        <!-- Custom HTML legend -->
+        <div id="chart-komoditi-map" style="height:680px;"></div>
         <div class="map-legend">
           <div class="map-legend-label">Pengeluaran per kapita / bulan</div>
           <div class="map-legend-bins" id="legend-komoditi"></div>
         </div>
-        <!-- Floating hover card -->
         <div class="hover-card" :class="hover.visible ? 'is-visible' : ''" :style="'left:'+hover.x+'px; top:'+hover.y+'px'">
           <div class="icon-box"><iconify-icon :icon="komIcon"></iconify-icon></div>
           <div class="body">
@@ -1254,16 +1266,26 @@
           </div>
         </div>
       </div>
+      <div class="chart-export-row">
+        <button class="action-btn" @click="exportPPT('chart-komoditi-map', 'Konsumsi ' + komShort + ' per provinsi', 'Tahun ' + year + ' · Kelas ' + komKelas + ' · Susenas BPS')"><iconify-icon icon="mdi:presentation"></iconify-icon>PPT</button>
+        <button class="action-btn" @click="downloadCSV('komoditi')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
+        <button class="action-btn" @click="downloadImage('chart-komoditi-map', 'png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
+        <button class="action-btn" @click="copyShareLink()"><iconify-icon icon="mdi:link-variant"></iconify-icon>Tautan</button>
+      </div>
       <div class="chart-footer">
         <span><span class="label">Sumber</span>Susenas BPS, item-level (b41k4 / b42k4)</span>
         <span><span class="label">Metric</span>rp_per_kapita per bulan, mean per (tahun, kelas, prov)</span>
         <span><span class="label">Catatan</span>termasuk non-buyer (zero spending)</span>
       </div>
-      <!-- Ranking 38 prov, 2 kolom -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-16 mt-12 rule-top pt-10">
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="eyebrow">V · Ranking Komoditi 38 Provinsi</div>
+        <h3 x-text="'Top &amp; Bottom 10 Provinsi · ' + komShort"></h3>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 pt-2">
         <div class="rank-card">
-          <div class="sub">Top 10 Provinsi</div>
-          <h4 x-text="'Konsumsi tertinggi: ' + komShort"></h4>
+          <div class="sub">Top 10 Tertinggi</div>
           <div class="rank-list">
             <template x-for="(r, i) in komRankTop" :key="'kt'+r.pcode">
               <div class="rank-row">
@@ -1280,8 +1302,7 @@
           </div>
         </div>
         <div class="rank-card">
-          <div class="sub">Bottom 10 Provinsi</div>
-          <h4 x-text="'Konsumsi terendah: ' + komShort"></h4>
+          <div class="sub">Bottom 10 Terendah</div>
           <div class="rank-list">
             <template x-for="(r, i) in komRankBottom" :key="'kb'+r.pcode">
               <div class="rank-row is-bottom">
@@ -1298,44 +1319,44 @@
           </div>
         </div>
       </div>
-      <p class="text-xs muted mt-4">Ranking 38 provinsi (termasuk pemekaran Papua 2022+). Peta di atas: 34 provinsi (4 pemekaran Papua diagregasi ke induk).</p>
+      <div class="chart-footer">
+        <span><span class="label">Coverage</span>38 provinsi (termasuk pemekaran Papua 2022+)</span>
+        <span><span class="label">Catatan</span>Peta atas: 34 prov · 4 pemekaran Papua agregat ke induk</span>
+      </div>
     </div>
   </section>
 
-  <!-- COMPARE PROVINSI -->
-  <section x-show="submitted && page === 'geografi'"><!-- Compare merged into Geografi tab -->
-    <div class="rule-top pt-8 flex flex-wrap items-end gap-6">
-      <div class="flex-1 min-w-[280px]">
-        <div class="eyebrow" style="color: var(--muted);">Tambah provinsi (max 4)</div>
-        <select @change="addCompareProv($event)" class="select-flat mt-2 w-full">
-          <option value="">+ Pilih provinsi...</option>
-          <template x-for="p in compareAvailable" :key="'cap'+p.pcode"><option :value="p.pcode" x-text="p.nama"></option></template>
-        </select>
+  <!-- COMPARE PROVINSI (merged into Komparasi Wilayah tab) -->
+  <section x-show="submitted && page === 'geografi'">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="eyebrow">VI · Komparasi Side-by-Side</div>
+        <h3>Profil Provinsi (Pilih 2-4 untuk dibandingkan)</h3>
       </div>
-      <div class="flex flex-wrap gap-2">
-        <template x-for="(p, i) in comparePicked" :key="'cpx'+p">
-          <span class="pick-chip active">
-            <span x-text="comparePcodeName(p)"></span>
-            <button @click="removeCompare(i)" style="background:transparent;border:none;color:white;cursor:pointer;padding:0 2px;" aria-label="Remove">×</button>
-          </span>
-        </template>
+      <div class="chart-filter">
+        <div class="filter-field" style="min-width:280px;flex:1;">
+          <label>Tambah Provinsi</label>
+          <select @change="addCompareProv($event)">
+            <option value="">+ Pilih provinsi...</option>
+            <template x-for="p in compareAvailable" :key="'cap'+p.pcode"><option :value="p.pcode" x-text="p.nama"></option></template>
+          </select>
+        </div>
+        <div class="filter-field" style="flex:2;">
+          <label>Provinsi Terpilih</label>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;min-height:36px;align-items:center;">
+            <template x-for="(p, i) in comparePicked" :key="'cpx'+p">
+              <span class="pick-chip active">
+                <span x-text="comparePcodeName(p)"></span>
+                <button @click="removeCompare(i)" style="background:transparent;border:none;color:white;cursor:pointer;padding:0 2px;margin-left:4px;" aria-label="Remove">×</button>
+              </span>
+            </template>
+            <span x-show="comparePicked.length === 0" style="font-size:12px;color:var(--muted);font-style:italic;">Belum ada provinsi dipilih</span>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="mt-12">
-      <span class="badge"><span class="badge-dot"></span>Comparison Picker · 2-4 Provinsi</span>
-      <div class="eyebrow-roman mt-3">VI. Compare</div>
-      <h2 class="serif-display text-3xl mt-2 max-w-3xl">Side-by-side metric, radar profile.</h2>
-      <p class="mt-3 muted text-base max-w-3xl">Pilih 2-4 provinsi untuk dibandingkan, atau klik provinsi di peta Geografi.</p>
-      <div class="hair-accent mt-8 pt-2"></div>
-
-      <!-- Radar chart -->
-      <div class="mt-6">
-        <div class="eyebrow" style="color: var(--muted);">Profile multi-dimensi (radar)</div>
-        <div id="chart-radar" style="height:480px;"></div>
-      </div>
-
+      <div id="chart-radar" style="height:440px;"></div>
       <!-- Side-by-side metric strip -->
-      <div class="grid mt-8" :style="'grid-template-columns: repeat(' + Math.max(comparePicked.length, 1) + ', 1fr); gap: 16px;'">
+      <div class="grid mt-6" :style="'grid-template-columns: repeat(' + Math.max(comparePicked.length, 1) + ', 1fr); gap: 12px;'" x-show="comparePicked.length > 0">
         <template x-for="(pcode, idx) in comparePicked" :key="'cc'+pcode">
           <div class="compare-card">
             <div class="head">
@@ -1352,8 +1373,12 @@
           </div>
         </template>
       </div>
-
-      <div class="chart-footer mt-12">
+      <div class="chart-export-row">
+        <button class="action-btn" @click="exportPPT('chart-radar', 'Komparasi profil provinsi', 'Susenas BPS')"><iconify-icon icon="mdi:presentation"></iconify-icon>PPT</button>
+        <button class="action-btn" @click="downloadImage('chart-radar', 'png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
+        <button class="action-btn" @click="copyShareLink()"><iconify-icon icon="mdi:link-variant"></iconify-icon>Tautan</button>
+      </div>
+      <div class="chart-footer">
         <span><span class="label">Sumber</span>Susenas BPS · weighted</span>
         <span><span class="label">Catatan</span>Pemekaran Papua: pilih induk (ID91 / ID94) untuk include sub-prov</span>
       </div>
@@ -1563,15 +1588,15 @@ const INK = '#051C2C';
 const MUTED = '#667085';
 
 const TABS = [
-  { id: 'trend',     label: 'Trend & Engel',  icon: 'mdi:trending-up' },
-  { id: 'komposisi', label: 'Komposisi & Komoditi', icon: 'mdi:view-grid-outline' },
-  { id: 'geografi',  label: 'Geografi & Compare', icon: 'mdi:map-outline' },
-  { id: 'metodologi', label: 'Metodologi', icon: 'mdi:book-open-variant' },
+  { id: 'trend',     label: 'Konsumsi Nasional',  icon: 'mdi:trending-up' },
+  { id: 'komposisi', label: 'Proporsi Konsumsi',  icon: 'mdi:view-grid-outline' },
+  { id: 'geografi',  label: 'Komparasi Wilayah',  icon: 'mdi:map-outline' },
+  { id: 'metodologi', label: 'Metodologi',         icon: 'mdi:book-open-variant' },
 ];
 const PAGE_META = {
-  trend:      { title: 'Trend & Engel' },
-  komposisi:  { title: 'Komposisi & Komoditi' },
-  geografi:   { title: 'Geografi & Compare' },
+  trend:      { title: 'Konsumsi Nasional' },
+  komposisi:  { title: 'Proporsi Konsumsi' },
+  geografi:   { title: 'Komparasi Wilayah' },
   metodologi: { title: 'Metodologi' },
 };
 
