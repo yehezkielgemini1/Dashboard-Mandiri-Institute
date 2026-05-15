@@ -538,3 +538,75 @@ button, a, .interactive { transition: all 0.2s ease-in-out; }
 .tab-page { display: none; }
 .tab-page.active { display: block; }
 .hidden-print { @media print { display: none; } }
+
+/* ============ 18. DARK MODE (toggle via [data-theme="dark"]) ============ */
+/* Pattern dari MBS 2026 Tracker (2026-05-14) — reusable untuk semua dashboard MI.
+   Toggle via <html data-theme="dark">. Persist via localStorage 'mi-theme'.
+   Light tokens di :root section 1 di atas tetap default. */
+:root[data-theme="dark"] {
+  --canvas: #061429;             /* near black-navy */
+  --paper: #142A4A;              /* card bg */
+  --ink: #F4F8FC;                /* near white */
+  --ink-soft: #B6C8DE;
+  --rule: #2C4868;
+  --rule-strong: #6A88AA;
+  --navy-deep: #00153A;          /* darkest */
+  /* Ice blue pops on dark — keep same */
+  --ice-blue-soft: #142A4A;
+}
+
+/* Smooth theme transition */
+html, body, .pulse-item, .stat-card, .nav-drawer, .topnav-canon, .table th, .table td {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+
+/* Theme toggle button (di topnav) */
+.theme-toggle {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.25);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+.theme-toggle:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.5); }
+.theme-toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(103,178,232,0.6);
+}
+.theme-toggle .theme-label {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+
+/* Skip link (accessibility) */
+.skip-link {
+  position: absolute; top: -60px; left: 8px;
+  background: var(--ice-blue);
+  color: white;
+  padding: 10px 18px;
+  font-size: 13px; font-weight: 600;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 100;
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 12px;
+  outline: 3px solid rgba(255,255,255,0.6);
+  outline-offset: 2px;
+}
+
+/* Global focus-visible for keyboard a11y */
+button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible, select:focus-visible {
+  outline: 2px solid var(--ice-blue);
+  outline-offset: 2px;
+}
+
+/* Dark mode adjustments untuk Plotly chart containers (defensive — Plotly uses inline style) */
+:root[data-theme="dark"] .plotly text { fill: var(--ink) !important; }

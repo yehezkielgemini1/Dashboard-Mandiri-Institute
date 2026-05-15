@@ -553,8 +553,21 @@
 </style>
 <link rel="stylesheet" href="../_shared/tactile-editorial.css">
 
+<!-- Set theme BEFORE styles load to avoid FOUC -->
+<script>
+  (function() {
+    try {
+      var t = localStorage.getItem('mi-theme');
+      if (!t && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) t = 'dark';
+      if (t === 'dark') document.documentElement.dataset.theme = 'dark';
+    } catch(e) {}
+  })();
+</script>
 </head>
 <body>
+
+<!-- Skip to content link (accessibility) -->
+<a href="#main-content" class="skip-link">Skip ke konten utama</a>
 
 <div x-data="dashboard()" x-init="init()">
 
@@ -577,6 +590,11 @@
   </div>
   <div class="right">
     <a class="nav-link" href="../index.html" style="color:white;opacity:0.85;font-weight:500;">Semua Dashboard</a>
+    <button class="theme-toggle" @click="toggleTheme()" :aria-label="theme === 'light' ? 'Aktifkan dark mode' : 'Aktifkan light mode'">
+      <span x-show="theme === 'light'" aria-hidden="true">🌙</span>
+      <span x-show="theme === 'dark'" aria-hidden="true">☀️</span>
+      <span class="theme-label" x-text="theme === 'light' ? 'Dark' : 'Light'"></span>
+    </button>
     <iconify-icon class="search" icon="mdi:magnify" role="button" aria-label="Cari" tabindex="0"></iconify-icon>
   </div>
   <!-- Mobile drawer -->
@@ -1494,6 +1512,7 @@ function dashboard() {
     years: YEARS, classes: CLASSES,
     year: '2025',
     submitted: false,
+    theme: 'light',  // 'light' | 'dark' — synced via initTheme()
     // ===== Canonical filter state v2 (multi-select + adaptive) =====
     f: {
       tahun: '2025',
@@ -1661,7 +1680,36 @@ function dashboard() {
       }
       this.renderKomoditi();
     },
+    initTheme() {
+      const stored = localStorage.getItem('mi-theme');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      this.theme = stored || (prefersDark ? 'dark' : 'light');
+      document.documentElement.dataset.theme = this.theme === 'dark' ? 'dark' : '';
+    },
+    toggleTheme() {
+      this.theme = this.theme === 'light' ? 'dark' : 'light';
+      localStorage.setItem('mi-theme', this.theme);
+      document.documentElement.dataset.theme = this.theme === 'dark' ? 'dark' : '';
+      // Re-theme all Plotly charts in place (no full re-render)
+      this.applyPlotlyTheme();
+    },
+    applyPlotlyTheme() {
+      const isDark = this.theme === 'dark';
+      const layout = {
+        paper_bgcolor: isDark ? '#142A4A' : '#FFFFFF',
+        plot_bgcolor:  isDark ? '#142A4A' : '#FFFFFF',
+        'font.color':  isDark ? '#F4F8FC' : '#0F172A',
+        'xaxis.gridcolor': isDark ? '#2C4868' : '#E5E7EB',
+        'yaxis.gridcolor': isDark ? '#2C4868' : '#E5E7EB',
+        'xaxis.tickfont.color': isDark ? '#B6C8DE' : '#475569',
+        'yaxis.tickfont.color': isDark ? '#B6C8DE' : '#475569',
+      };
+      document.querySelectorAll('.js-plotly-plot').forEach(el => {
+        try { Plotly.relayout(el, layout); } catch(e) { /* chart not yet rendered */ }
+      });
+    },
     init() {
+      this.initTheme();
       const hadURL = (window.location.hash && window.location.hash.length > 1);
       this.applyURLState();
       // Sync canon filter v2 (multi arrays) dari legacy state aktif
@@ -1680,8 +1728,14 @@ function dashboard() {
         this.$nextTick(() => {
           this.renderForPage(this.page);
           this.renderSparklines();
+          // Apply theme to freshly rendered charts (if dark mode active on load)
+          if (this.theme === 'dark') setTimeout(() => this.applyPlotlyTheme(), 100);
         });
       }
+      // Always re-apply theme after any subsequent renderForPage triggered via submit
+      this.$watch('submitted', (v) => {
+        if (v && this.theme === 'dark') setTimeout(() => this.applyPlotlyTheme(), 200);
+      });
       this._bindKeyboard();
       // Tour onboarding first visit
       if (!localStorage.getItem('tour_done')) {
