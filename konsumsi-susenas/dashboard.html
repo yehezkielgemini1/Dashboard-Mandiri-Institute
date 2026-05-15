@@ -521,7 +521,8 @@
   .ms-dd-btn::after { content: ''; position: absolute; right: 12px; top: 50%; width: 6px; height: 6px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: translateY(-65%) rotate(45deg); }
   .ms-dd-btn .placeholder { color: var(--muted); }
   .ms-dd-chip { display: inline-flex; align-items: center; background: rgba(103,178,232,0.18); color: #003D79; padding: 2px 6px; font-size: 11px; font-weight: 600; border-radius: 3px; }
-  .ms-dd-panel { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: white; border: 1px solid var(--rule-strong); border-radius: 4px; box-shadow: 0 8px 24px rgba(5,28,44,0.10); z-index: 50; max-height: 320px; display: flex; flex-direction: column; min-width: 240px; }
+  .ms-dd-panel { position: absolute; top: calc(100% + 4px); left: 0; right: auto; background: white; border: 1px solid var(--rule-strong); border-radius: 4px; box-shadow: 0 8px 24px rgba(5,28,44,0.10); z-index: 50; max-height: 320px; display: flex; flex-direction: column; min-width: 280px; white-space: nowrap; }
+  .ms-dd-list label span { white-space: normal; }
   .ms-dd-search { padding: 8px; border-bottom: 1px solid var(--rule); }
   .ms-dd-search input { width: 100%; padding: 6px 10px; font-size: 12px; border: 1px solid var(--rule-strong); border-radius: 3px; }
   .ms-dd-list { overflow-y: auto; padding: 4px 0; flex: 1; }
@@ -1533,7 +1534,8 @@ function dashboard() {
       komKelas: 'Poor',
     },
     PAGE_FILTERS: {
-      trend:      ['tahun', 'wilayah', 'subwilayah', 'compareBaseline'],
+      // Trend = pure nasional view 2019-2025, no breakdown. Hide filter entirely.
+      trend:      [],
       engel:      ['tahun', 'wilayah', 'subwilayah'],
       komposisi:  ['tahun', 'wilayah', 'subwilayah'],
       geografi:   ['tahun', 'wilayah', 'metric'],
