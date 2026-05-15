@@ -1011,31 +1011,11 @@
           <button class="action-btn" @click="downloadCSV('trend')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
         </div>
       </div>
-      <div class="insight-grid mt-2">
-        <aside class="insight-panel">
-          <div class="callout">
-            <div class="label">Key Insight</div>
-            <div class="text">Pengeluaran nominal naik 35%, namun bobot makanan turun dari 56% ke 56%, ciri klasik kelas yang lebih sejahtera.</div>
-          </div>
-          <div class="takeaways">
-            <ul>
-              <li>CAGR nominal 5.1% per tahun (belum disesuaikan inflasi).</li>
-              <li>Pertumbuhan paling cepat pada non-makanan, bukan makanan.</li>
-              <li>Pola konsisten dengan Hukum Engel (lihat Exhibit 2).</li>
-            </ul>
-          </div>
-        </aside>
-        <div>
-          <div id="chart-trend" style="height:480px;"></div>
-          <div class="chart-footer">
-            <span><span class="label">Sumber</span>Susenas Maret BPS, Blok 41 & 42</span>
-            <span><span class="label">Bobot</span>weind × r301 (per kapita tertimbang)</span>
-            <span><span class="label">Catatan</span>nilai nominal, belum disesuaikan inflasi</span>
-          </div>
-          <p class="fig-caption">
-            <span class="figno">Figure I.</span>Pengeluaran per kapita Indonesia tumbuh dari Rp 1,17 juta (2019) menjadi Rp 1,58 juta (2025), CAGR 5,1% nominal. Komposisi tetap didominasi makanan, tapi share-nya turun ringan dari 56,5% ke 56,3%.
-          </p>
-        </div>
+      <div id="chart-trend" style="height:520px;"></div>
+      <div class="chart-footer">
+        <span><span class="label">Sumber</span>Susenas Maret BPS, Blok 41 & 42</span>
+        <span><span class="label">Bobot</span>weind × r301 (per kapita tertimbang)</span>
+        <span><span class="label">Catatan</span>nilai nominal, belum disesuaikan inflasi</span>
       </div>
     </div>
   </section>
@@ -1060,28 +1040,11 @@
           <button class="action-btn" @click="downloadCSV('engel')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
         </div>
       </div>
-      <div class="insight-grid mt-2">
-        <aside class="insight-panel">
-          <div class="callout">
-            <div class="label">Key Insight</div>
-            <div class="text">Rumah tangga kelas Poor mengalokasikan mayoritas pengeluaran ke makanan; semakin tinggi kelas, semakin besar share non-makanan (perumahan, pendidikan, jasa).</div>
-          </div>
-          <div class="takeaways">
-            <ul>
-              <li>Rasio Engel = ukuran tidak langsung kesejahteraan rumah tangga.</li>
-              <li>Indonesia konsisten dengan pola lintas negara: kelas atas alokasikan &lt;40% ke makanan.</li>
-              <li>Implikasi: kelompok pengeluaran non-makanan jadi growth driver belanja konsumen.</li>
-            </ul>
-          </div>
-        </aside>
-        <div>
-          <div id="chart-engel" style="height:480px;"></div>
-          <div class="chart-footer">
-            <span><span class="label">Sumber</span>Susenas Maret BPS, Blok 41 & 42</span>
-            <span><span class="label">Klasifikasi</span>kelas wb4 Mandiri Institute</span>
-            <span><span class="label">Total</span>= 100% per kelas</span>
-          </div>
-        </div>
+      <div id="chart-engel" style="height:480px;"></div>
+      <div class="chart-footer">
+        <span><span class="label">Sumber</span>Susenas Maret BPS, Blok 41 & 42</span>
+        <span><span class="label">Klasifikasi</span>kelas wb4 Mandiri Institute</span>
+        <span><span class="label">Total</span>= 100% per kelas</span>
       </div>
     </div>
   </section>
@@ -1114,28 +1077,11 @@
           <button class="action-btn" @click="downloadImage('chart-heatmap', 'png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
         </div>
       </div>
-      <div class="insight-grid mt-2">
-        <aside class="insight-panel">
-          <div class="callout">
-            <div class="label">Cara Membaca</div>
-            <div class="text">Setiap baris adalah satu kelompok pengeluaran; setiap kolom adalah satu kelas. Warna pekat menandakan share tinggi di kelas tersebut.</div>
-          </div>
-          <div class="takeaways">
-            <ul>
-              <li>"Padi-padian" dan "Rokok dan Tembakau" pekat di kelas bawah.</li>
-              <li>"Perumahan dan Fasilitas RT" dan "Aneka Barang & Jasa" pekat di kelas atas.</li>
-              <li>Heatmap ini gambaran portofolio belanja per segmen.</li>
-            </ul>
-          </div>
-        </aside>
-        <div>
-          <div id="chart-heatmap" style="height:680px;"></div>
-          <div class="chart-footer">
-            <span><span class="label">Sumber</span>Susenas Maret BPS, Blok 41 & 42</span>
-            <span><span class="label">Total</span>tiap kolom = 100%</span>
-            <span><span class="label">Bobot</span>weind × r301</span>
-          </div>
-        </div>
+      <div id="chart-heatmap" style="height:680px;"></div>
+      <div class="chart-footer">
+        <span><span class="label">Sumber</span>Susenas Maret BPS, Blok 41 & 42</span>
+        <span><span class="label">Total</span>tiap kolom = 100%</span>
+        <span><span class="label">Bobot</span>weind × r301</span>
       </div>
     </div>
   </section>
