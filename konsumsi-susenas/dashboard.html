@@ -485,8 +485,26 @@
   .topnav-canon .brand { font-family: 'Source Serif 4', Georgia, serif; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; color: white; }
   .topnav-canon .brand-sub { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--sky); margin-top: 2px; font-weight: 600; }
   .topnav-canon .menu { display: flex; gap: 22px; margin-left: 24px; }
-  .topnav-canon .menu a, .topnav-canon .menu button { background: none; border: 0; font-family: inherit; font-size: 13px; font-weight: 500; color: white; opacity: 0.85; padding: 6px 0; cursor: pointer; transition: opacity 0.2s; letter-spacing: -0.003em; }
-  .topnav-canon .menu a:hover, .topnav-canon .menu button:hover { opacity: 1; color: var(--sky); }
+  /* Topnav menu links — active state shows pill background */
+  .topnav-canon .menu a, .topnav-canon .menu button {
+    background: none; border: 0; font-family: inherit; font-size: 13px; font-weight: 500;
+    color: rgba(255,255,255,0.78); padding: 7px 14px; cursor: pointer;
+    transition: all 0.18s ease; letter-spacing: -0.003em;
+    border-radius: 999px; text-decoration: none;
+    display: inline-flex; align-items: center;
+  }
+  .topnav-canon .menu a:hover, .topnav-canon .menu button:hover {
+    color: white; background: rgba(255,255,255,0.08);
+  }
+  .topnav-canon .menu a.active, .topnav-canon .menu button.active {
+    color: var(--navy-deep, #002852);
+    background: var(--sky, #67B2E8);
+    font-weight: 600;
+  }
+  .topnav-canon .menu a.active:hover, .topnav-canon .menu button.active:hover {
+    background: var(--ice-blue, #00A3E0);
+    color: white;
+  }
   .topnav-canon .right { margin-left: auto; display: flex; gap: 14px; align-items: center; font-size: 12px; opacity: 0.8; }
   .topnav-canon .search { font-size: 22px; cursor: pointer; opacity: 0.85; color: white; }
   /* Drawer */
@@ -739,10 +757,10 @@
     <div class="brand-sub">Konsumsi Masyarakat</div>
   </a>
   <div class="menu">
-    <a href="#" onclick="window.gotoPage('trend'); return false;">Konsumsi Nasional</a>
-    <a href="#" onclick="window.gotoPage('komposisi'); return false;">Proporsi Konsumsi</a>
-    <a href="#" onclick="window.gotoPage('geografi'); return false;">Komparasi Wilayah</a>
-    <a href="#" onclick="window.gotoPage('metodologi'); return false;">Metodologi</a>
+    <a href="#" :class="page==='trend' ? 'active' : ''" onclick="window.gotoPage('trend'); return false;">Konsumsi Nasional</a>
+    <a href="#" :class="page==='geografi' ? 'active' : ''" onclick="window.gotoPage('geografi'); return false;">Komparasi Wilayah</a>
+    <a href="#" :class="page==='komposisi' ? 'active' : ''" onclick="window.gotoPage('komposisi'); return false;">Proporsi Konsumsi</a>
+    <a href="#" :class="page==='metodologi' ? 'active' : ''" onclick="window.gotoPage('metodologi'); return false;">Metodologi</a>
   </div>
   <div class="right">
     <a class="nav-link" href="../index.html" style="color:white;opacity:0.85;font-weight:500;">Semua Dashboard</a>
@@ -1592,8 +1610,8 @@ const MUTED = '#667085';
 
 const TABS = [
   { id: 'trend',     label: 'Konsumsi Nasional',  icon: 'mdi:trending-up' },
-  { id: 'komposisi', label: 'Proporsi Konsumsi',  icon: 'mdi:view-grid-outline' },
   { id: 'geografi',  label: 'Komparasi Wilayah',  icon: 'mdi:map-outline' },
+  { id: 'komposisi', label: 'Proporsi Konsumsi',  icon: 'mdi:view-grid-outline' },
   { id: 'metodologi', label: 'Metodologi',         icon: 'mdi:book-open-variant' },
 ];
 const PAGE_META = {
