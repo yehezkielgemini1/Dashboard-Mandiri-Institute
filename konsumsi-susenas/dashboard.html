@@ -589,8 +589,7 @@
   </div>
   <div class="menu">
     <a href="../index.html">Beranda</a>
-    <a href="#" onclick="window.gotoPage('trend'); return false;">Trend</a>
-    <a href="#" onclick="window.gotoPage('engel'); return false;">Engel</a>
+    <a href="#" onclick="window.gotoPage('trend'); return false;">Trend &amp; Engel</a>
     <a href="#" onclick="window.gotoPage('komposisi'); return false;">Komposisi</a>
     <a href="#" onclick="window.gotoPage('geografi'); return false;">Geografi</a>
     <a href="#" onclick="window.gotoPage('komoditi'); return false;">Komoditi</a>
@@ -928,8 +927,8 @@
     </div>
   </section>
 
-  <!-- ==================== PAGE: ENGEL ==================== -->
-  <section x-show="submitted && page === 'engel'">
+  <!-- ==================== ENGEL SECTION (merged into Trend page) ==================== -->
+  <section x-show="submitted && page === 'trend'">
     <div class="mt-12 rule-top pt-8">
       <span class="badge"><span class="badge-dot"></span>Buyers + Non-buyers · 8 Kelas wb4</span>
       <div class="eyebrow-roman mt-3">II. Engel</div>
@@ -1466,12 +1465,11 @@ const INK = '#051C2C';
 const MUTED = '#667085';
 
 const TABS = [
-  { id: 'trend',     label: 'Trend',     icon: 'mdi:trending-up' },
-  { id: 'engel',     label: 'Engel',     icon: 'mdi:chart-bar-stacked' },
+  { id: 'trend',     label: 'Trend & Engel',  icon: 'mdi:trending-up' },
   { id: 'komposisi', label: 'Komposisi', icon: 'mdi:view-grid-outline' },
   { id: 'geografi',  label: 'Geografi',  icon: 'mdi:map-outline' },
   { id: 'komoditi',  label: 'Komoditi',  icon: 'mdi:basket-outline' },
-  { id: 'compare', label: 'Compare', icon: 'mdi:compare-horizontal' },
+  { id: 'compare',   label: 'Compare',   icon: 'mdi:compare-horizontal' },
   { id: 'metodologi', label: 'Metodologi', icon: 'mdi:book-open-variant' },
 ];
 const PAGE_META = {
@@ -1534,9 +1532,8 @@ function dashboard() {
       komKelas: 'Poor',
     },
     PAGE_FILTERS: {
-      // Trend = pure nasional view 2019-2025, no breakdown. Hide filter entirely.
+      // Trend & Engel = pure nasional view 2019-2025 + hukum Engel. No breakdown.
       trend:      [],
-      engel:      ['tahun', 'wilayah', 'subwilayah'],
       komposisi:  ['tahun', 'wilayah', 'subwilayah'],
       geografi:   ['tahun', 'wilayah', 'metric'],
       komoditi:   ['tahun', 'wilayah', 'subwilayah', 'komoditi'],
@@ -2028,8 +2025,7 @@ function dashboard() {
     renderForPage(id) {
       const self = this;
       requestAnimationFrame(() => requestAnimationFrame(() => {
-        if (id === 'trend') { self.renderTrend(); }
-        else if (id === 'engel') { self.renderEngel(); }
+        if (id === 'trend') { self.renderTrend(); self.renderEngel(); }   // Trend page mencakup Engel section
         else if (id === 'komposisi') { self.renderHeatmap(); }
         else if (id === 'geografi') { self.renderMap(); }
         else if (id === 'komoditi') { self.renderKomoditi(); }
