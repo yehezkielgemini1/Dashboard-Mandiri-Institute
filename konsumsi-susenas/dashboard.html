@@ -503,8 +503,16 @@
   }
 
   /* ============ STANDARDIZED FILTER BAR (canon untuk semua dashboard) ============ */
-  .filter-canon { background: var(--paper); border-bottom: 1px solid var(--rule-strong); padding: 16px 24px; }
-  .filter-canon-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+  .filter-canon { background: var(--paper); border-bottom: 1px solid var(--rule); padding: 20px 24px; box-shadow: 0 1px 0 var(--rule); }
+  .filter-canon-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: flex-end; gap: 28px; flex-wrap: wrap; }
+  .filter-canon .filter-field { display: flex; flex-direction: column; gap: 6px; min-width: 140px; }
+  .filter-canon .filter-field label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+  .filter-canon .filter-field label::before { content: ''; width: 5px; height: 5px; background: var(--ice-blue); border-radius: 50%; display: inline-block; }
+  .filter-canon .filter-field select { padding: 9px 32px 9px 12px; font-size: 13px; font-weight: 500; color: var(--ink); border: 1px solid var(--rule-strong); border-radius: 4px; background-color: var(--paper); cursor: pointer; min-width: 140px; height: 40px; appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23475569'%3e%3cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.39a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z' clip-rule='evenodd'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+  .filter-canon .filter-field select:hover { border-color: var(--ice-blue); }
+  .filter-canon .filter-field select:focus-visible { outline: none; border-color: var(--ice-blue); box-shadow: 0 0 0 3px rgba(0,163,224,0.15); }
+  .filter-canon .ms-dd-btn { min-width: 200px; height: 40px; }
+  .filter-canon .btn-submit { height: 40px; padding: 0 24px; align-self: flex-end; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; }
 
   /* ============ MULTI-SELECT DROPDOWN (canon v2) ============ */
   .ms-dd { position: relative; min-width: 200px; }
@@ -751,7 +759,7 @@
     <!-- Tahun -->
     <div class="filter-field" x-show="filterFields().includes('tahun')">
       <label>Tahun</label>
-      <select x-model="f.tahun" style="padding:8px 12px;font-size:13px;border:1px solid var(--rule-strong);border-radius:4px;background:white;cursor:pointer;min-width:100px;">
+      <select x-model="f.tahun">
         <template x-for="y in years" :key="'fy'+y"><option :value="y" x-text="y"></option></template>
       </select>
     </div>
@@ -818,19 +826,19 @@
     <!-- komoditi dropdown (Komoditi page) -->
     <div class="filter-field" x-show="filterFields().includes('komoditi')">
       <label>Kelompok</label>
-      <select x-model="f.komKelompok" @change="onKomKelompokFromFilter()" style="padding:8px 12px;font-size:13px;border:1px solid var(--rule-strong);border-radius:4px;background:white;cursor:pointer;min-width:200px;">
+      <select x-model="f.komKelompok" @change="onKomKelompokFromFilter()" style="min-width:200px;">
         <template x-for="g in kelompokList" :key="'fkg'+g"><option :value="g" x-text="g"></option></template>
       </select>
     </div>
     <div class="filter-field" x-show="filterFields().includes('komoditi')">
       <label>Komoditi</label>
-      <select x-model="f.komSelected" style="padding:8px 12px;font-size:13px;border:1px solid var(--rule-strong);border-radius:4px;background:white;cursor:pointer;min-width:240px;">
+      <select x-model="f.komSelected" style="min-width:240px;">
         <template x-for="k in komoditiInKelompokFilter" :key="'fkk'+k.key"><option :value="k.key" x-text="k.short"></option></template>
       </select>
     </div>
     <div class="filter-field" x-show="filterFields().includes('komoditi')">
       <label>Kelas</label>
-      <select x-model="f.komKelas" style="padding:8px 12px;font-size:13px;border:1px solid var(--rule-strong);border-radius:4px;background:white;cursor:pointer;min-width:140px;">
+      <select x-model="f.komKelas">
         <template x-for="k in classes" :key="'fkc'+k"><option :value="k" x-text="k"></option></template>
       </select>
     </div>
@@ -1722,16 +1730,15 @@ function dashboard() {
       this.f.compareBaseline = !!this.compareBaseline;
       // Re-render kalau page berubah (filter bar adapts)
       this.$watch('page', () => { if (this.submitted) this.$nextTick(() => this.renderForPage(this.page)); });
-      // Auto-submit kalau ada URL state (share link), agar charts langsung tampil
-      if (hadURL) {
-        this.submitted = true;
-        this.$nextTick(() => {
-          this.renderForPage(this.page);
-          this.renderSparklines();
-          // Apply theme to freshly rendered charts (if dark mode active on load)
-          if (this.theme === 'dark') setTimeout(() => this.applyPlotlyTheme(), 100);
-        });
-      }
+      // Auto-submit on load — default Tahun 2025 / Semua Wilayah / Indonesia
+      // Drop empty 'Pilih filter dan klik SUBMIT' state agar data langsung tampil
+      this.submitted = true;
+      this.$nextTick(() => {
+        this.renderForPage(this.page);
+        this.renderSparklines();
+        // Apply theme to freshly rendered charts (if dark mode active on load)
+        if (this.theme === 'dark') setTimeout(() => this.applyPlotlyTheme(), 100);
+      });
       // Always re-apply theme after any subsequent renderForPage triggered via submit
       this.$watch('submitted', (v) => {
         if (v && this.theme === 'dark') setTimeout(() => this.applyPlotlyTheme(), 200);
