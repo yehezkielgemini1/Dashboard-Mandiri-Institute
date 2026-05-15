@@ -503,7 +503,17 @@
   }
 
   /* ============ STANDARDIZED FILTER BAR (canon untuk semua dashboard) ============ */
-  .filter-canon { background: var(--paper); border-bottom: 1px solid var(--rule); padding: 20px 24px; box-shadow: 0 1px 0 var(--rule); }
+  .filter-canon { background: var(--paper); border-bottom: 1px solid var(--rule); padding: 16px 24px; box-shadow: 0 1px 0 var(--rule); position: sticky; top: 64px; z-index: 40; backdrop-filter: blur(8px); background: rgba(255,255,255,0.94); }
+  :root[data-theme="dark"] .filter-canon { background: rgba(20,42,74,0.94); border-bottom-color: var(--rule); }
+  /* Skeleton loading state */
+  .skeleton-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin: 32px 0; }
+  .skel-card { padding: 16px 0; }
+  .skel { background: linear-gradient(90deg, var(--rule) 0%, var(--rule-strong) 50%, var(--rule) 100%); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; border-radius: 4px; }
+  .skel-eyebrow { height: 11px; width: 50%; margin-bottom: 12px; }
+  .skel-num { height: 36px; width: 70%; margin-bottom: 14px; }
+  .skel-spark { height: 24px; width: 100%; }
+  @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+  @media (max-width: 768px) { .skeleton-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
   .filter-canon-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: flex-end; gap: 28px; flex-wrap: wrap; }
   .filter-canon .filter-field { display: flex; flex-direction: column; gap: 6px; min-width: 140px; }
   .filter-canon .filter-field label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 6px; }
@@ -590,10 +600,8 @@
   <div class="menu">
     <a href="../index.html">Beranda</a>
     <a href="#" onclick="window.gotoPage('trend'); return false;">Trend &amp; Engel</a>
-    <a href="#" onclick="window.gotoPage('komposisi'); return false;">Komposisi</a>
-    <a href="#" onclick="window.gotoPage('geografi'); return false;">Geografi</a>
-    <a href="#" onclick="window.gotoPage('komoditi'); return false;">Komoditi</a>
-    <a href="#" onclick="window.gotoPage('compare'); return false;">Compare</a>
+    <a href="#" onclick="window.gotoPage('komposisi'); return false;">Komposisi &amp; Komoditi</a>
+    <a href="#" onclick="window.gotoPage('geografi'); return false;">Geografi &amp; Compare</a>
     <a href="#" onclick="window.gotoPage('metodologi'); return false;">Metodologi</a>
   </div>
   <div class="right">
@@ -849,12 +857,14 @@
 
 <main id="main-content" class="max-w-[1280px] mx-auto px-8 pb-16" role="main">
 
-<!-- ====== EMPTY STATE (before submit) ====== -->
-<template x-if="!submitted">
-  <div class="canon-empty-state">
-    <iconify-icon icon="mdi:filter-variant-plus" class="icon"></iconify-icon>
-    <div class="title">Pilih filter dan klik <strong>SUBMIT</strong></div>
-    <div class="desc">Default: Tahun 2025 &middot; Indonesia &middot; Semua provinsi. Anda dapat memilih wilayah atau provinsi tertentu sebelum submit.</div>
+<!-- Empty state dropped 2026-05-15 — auto-submit on load means content always renders. -->
+<!-- Skeleton loading state -->
+<template x-if="!_rendered[page]">
+  <div class="skeleton-grid" aria-label="Memuat data" role="status">
+    <div class="skel-card"><div class="skel skel-eyebrow"></div><div class="skel skel-num"></div><div class="skel skel-spark"></div></div>
+    <div class="skel-card"><div class="skel skel-eyebrow"></div><div class="skel skel-num"></div><div class="skel skel-spark"></div></div>
+    <div class="skel-card"><div class="skel skel-eyebrow"></div><div class="skel skel-num"></div><div class="skel skel-spark"></div></div>
+    <div class="skel-card"><div class="skel skel-eyebrow"></div><div class="skel skel-num"></div><div class="skel skel-spark"></div></div>
   </div>
 </template>
 
@@ -1103,7 +1113,7 @@
   </section>
 
   <!-- ==================== PAGE: KOMODITI ==================== -->
-  <section x-show="submitted && page === 'komoditi'">
+  <section x-show="submitted && page === 'komposisi'"><!-- Komoditi merged into Komposisi tab -->
     <!-- Action row only — semua filter sudah di filter bar canon v2 -->
     <div class="rule-top pt-8 flex flex-wrap items-end gap-6">
       <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
@@ -1205,7 +1215,7 @@
   </section>
 
   <!-- COMPARE PROVINSI -->
-  <section x-show="submitted && page === 'compare'">
+  <section x-show="submitted && page === 'geografi'"><!-- Compare merged into Geografi tab -->
     <div class="rule-top pt-8 flex flex-wrap items-end gap-6">
       <div class="flex-1 min-w-[280px]">
         <div class="eyebrow" style="color: var(--muted);">Tambah provinsi (max 4)</div>
@@ -1466,10 +1476,8 @@ const MUTED = '#667085';
 
 const TABS = [
   { id: 'trend',     label: 'Trend & Engel',  icon: 'mdi:trending-up' },
-  { id: 'komposisi', label: 'Komposisi', icon: 'mdi:view-grid-outline' },
-  { id: 'geografi',  label: 'Geografi',  icon: 'mdi:map-outline' },
-  { id: 'komoditi',  label: 'Komoditi',  icon: 'mdi:basket-outline' },
-  { id: 'compare',   label: 'Compare',   icon: 'mdi:compare-horizontal' },
+  { id: 'komposisi', label: 'Komposisi & Komoditi', icon: 'mdi:view-grid-outline' },
+  { id: 'geografi',  label: 'Geografi & Compare', icon: 'mdi:map-outline' },
   { id: 'metodologi', label: 'Metodologi', icon: 'mdi:book-open-variant' },
 ];
 const PAGE_META = {
@@ -1534,10 +1542,10 @@ function dashboard() {
     PAGE_FILTERS: {
       // Trend & Engel = pure nasional view 2019-2025 + hukum Engel. No breakdown.
       trend:      [],
-      komposisi:  ['tahun', 'wilayah', 'subwilayah'],
-      geografi:   ['tahun', 'wilayah', 'metric'],
-      komoditi:   ['tahun', 'wilayah', 'subwilayah', 'komoditi'],
-      compare:    ['tahun', 'wilayah', 'subwilayah'],
+      // Komposisi & Komoditi merged — filter union dari kedua section
+      komposisi:  ['tahun', 'wilayah', 'subwilayah', 'komoditi'],
+      // Geografi & Compare merged — filter union (metric khusus peta, subwilayah utk compare)
+      geografi:   ['tahun', 'wilayah', 'subwilayah', 'metric'],
       metodologi: [],
     },
     filterFields() { return this.PAGE_FILTERS[this.page] || []; },
@@ -2025,11 +2033,10 @@ function dashboard() {
     renderForPage(id) {
       const self = this;
       requestAnimationFrame(() => requestAnimationFrame(() => {
-        if (id === 'trend') { self.renderTrend(); self.renderEngel(); }   // Trend page mencakup Engel section
-        else if (id === 'komposisi') { self.renderHeatmap(); }
-        else if (id === 'geografi') { self.renderMap(); }
-        else if (id === 'komoditi') { self.renderKomoditi(); }
-        else if (id === 'compare') { self.renderCompare(); }
+        // Merged tabs render multiple sections
+        if (id === 'trend') { self.renderTrend(); self.renderEngel(); }                           // Trend & Engel
+        else if (id === 'komposisi') { self.renderHeatmap(); self.renderKomoditi(); }              // Komposisi & Komoditi
+        else if (id === 'geografi') { self.renderMap(); self.renderCompare(); }                    // Geografi & Compare
         self._rendered[id] = true;
       }));
     },
