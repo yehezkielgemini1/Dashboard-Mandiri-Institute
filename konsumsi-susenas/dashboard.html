@@ -132,16 +132,18 @@
   .rank-card h4 { font-family: 'Source Serif 4', Georgia, serif; font-size: 17px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
   .rank-card .sub { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
   .rank-list { margin-top: 14px; }
-  .rank-row { display: grid; grid-template-columns: 28px 1fr 110px; align-items: center; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--rule); transition: background 0.12s; }
-  .rank-row:hover { background: var(--mist); padding-left: 8px; padding-right: 8px; margin-left: -8px; margin-right: -8px; }
-  .rank-row .rank-num { font-family: 'Source Serif 4', Georgia, serif; font-size: 16px; font-weight: 600; color: var(--sky); text-align: right; }
-  .rank-row.is-bottom .rank-num { color: #C8102E; }
-  .rank-row .rank-name { font-size: 14px; color: var(--ink); font-weight: 500; }
-  .rank-row .rank-bar-wrap { position: relative; height: 6px; background: var(--mist); border-radius: 0; overflow: hidden; }
-  .rank-row .rank-bar { position: absolute; left: 0; top: 0; height: 100%; max-width: 100%; background: var(--navy); }
-  .rank-row.is-bottom .rank-bar { background: #C8102E; opacity: 0.7; }
-  .rank-row .rank-val { font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 600; color: var(--ink); margin-top: 4px; }
-  .rank-cell-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+  /* Rank row — balanced layout: num | name (fixed) | bar (flex fill) | value */
+  .rank-row { display: grid; grid-template-columns: 32px minmax(140px, 1.6fr) minmax(80px, 1fr) 90px; align-items: center; gap: 14px; padding: 9px 4px; border-bottom: 1px solid var(--rule); transition: background 0.12s; }
+  .rank-row:hover { background: var(--mist); }
+  .rank-row .rank-num { font-family: 'Source Serif 4', Georgia, serif; font-size: 15px; font-weight: 600; color: var(--sky); text-align: center; }
+  .rank-row.is-bottom .rank-num { color: var(--ice-blue-deep, #0078A8); }
+  .rank-row .rank-name { font-size: 13px; color: var(--ink); font-weight: 500; }
+  .rank-row .rank-bar-wrap { position: relative; height: 5px; background: var(--mist); border-radius: 2px; overflow: hidden; min-width: 60px; width: 100%; }
+  .rank-row .rank-bar { position: absolute; left: 0; top: 0; height: 100%; max-width: 100%; background: var(--navy); border-radius: 2px; transition: width 0.3s ease; }
+  .rank-row.is-bottom .rank-bar { background: var(--sky-soft, #A9C4DF); }
+  .rank-row .rank-val { font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 600; color: var(--ink); text-align: right; }
+  /* Compatibility: legacy .rank-cell-right yang masih bungkus bar+val (gunakan direct grid sekarang) */
+  .rank-cell-right { display: contents; }
 
   /* Floating hover info card (untuk peta) */
   .hover-card { position: absolute; pointer-events: none; z-index: 50; background: white; border: 1px solid var(--rule); box-shadow: 0 8px 24px rgba(5,28,44,0.12); padding: 0; min-width: 260px; max-width: 300px; opacity: 0; transition: opacity 0.12s; transform: translate(-50%, -100%); margin-top: -16px; }
@@ -291,7 +293,7 @@
   .outlier-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #C8102E; background: rgba(200,16,46,0.1); border: 1px solid #C8102E; }
 
   /* Sparkline kolom — opt-in via .has-spark */
-  .rank-row.has-spark { grid-template-columns: 28px 1fr 60px 130px !important; gap: 10px !important; }
+  .rank-row.has-spark { grid-template-columns: 32px minmax(120px, 1.4fr) 48px minmax(60px, 0.8fr) 90px !important; gap: 10px !important; }
   .rank-spark { width: 60px; height: 22px; }
   /* Default rank-row: tetap 3-col, lebar value cell cukup untuk "Rp X.XXX.XXX" inline */
   .rank-row .rank-cell-right { min-width: 130px; }
@@ -1172,7 +1174,7 @@
                 <div class="rank-name" x-text="r.nama"></div>
                 <svg class="rank-spark" :data-pcode="r.pcode" viewBox="0 0 60 22"></svg>
                 <div class="rank-cell-right">
-                  <div class="rank-bar-wrap" style="width: 100px;">
+                  <div class="rank-bar-wrap">
                     <div class="rank-bar" :style="'width: '+(r.value/rankMax*100)+'%'"></div>
                   </div>
                   <div class="rank-val" x-text="'Rp '+r.value.toLocaleString('id-ID')"></div>
@@ -1190,8 +1192,8 @@
                 <div class="rank-name" x-text="r.nama"></div>
                 <svg class="rank-spark" :data-pcode="r.pcode" viewBox="0 0 60 22"></svg>
                 <div class="rank-cell-right">
-                  <div class="rank-bar-wrap" style="width: 100px;">
-                    <div class="rank-bar" :style="'width: '+(r.value/rankMax*100)+'%'"></div>
+                  <div class="rank-bar-wrap">
+                    <div class="rank-bar" :style="'width: '+(r.value/rankBottomMax*100)+'%'"></div>
                   </div>
                   <div class="rank-val" x-text="'Rp '+r.value.toLocaleString('id-ID')"></div>
                 </div>
@@ -1292,7 +1294,7 @@
                 <div class="rank-num" x-text="i+1"></div>
                 <div class="rank-name" x-text="r.nama"></div>
                 <div class="rank-cell-right">
-                  <div class="rank-bar-wrap" style="width: 100px;">
+                  <div class="rank-bar-wrap">
                     <div class="rank-bar" :style="'width: '+(r.value/komRankMax*100)+'%'"></div>
                   </div>
                   <div class="rank-val" x-text="'Rp '+r.value.toLocaleString('id-ID')"></div>
@@ -1309,8 +1311,8 @@
                 <div class="rank-num" x-text="i+1"></div>
                 <div class="rank-name" x-text="r.nama"></div>
                 <div class="rank-cell-right">
-                  <div class="rank-bar-wrap" style="width: 100px;">
-                    <div class="rank-bar" :style="'width: '+(r.value/komRankMax*100)+'%'"></div>
+                  <div class="rank-bar-wrap">
+                    <div class="rank-bar" :style="'width: '+(r.value/komRankBottomMax*100)+'%'"></div>
                   </div>
                   <div class="rank-val" x-text="'Rp '+r.value.toLocaleString('id-ID')"></div>
                 </div>
@@ -1702,6 +1704,8 @@ function dashboard() {
       return k ? k.desc : null;
     },
     get rankMax() { return this.rankTop.length ? this.rankTop[0].value : 1; },
+    /* Separate scale untuk bottom 10 — biar bar tidak terlalu mepet 0 saat bottom values << top values */
+    get rankBottomMax() { return this.rankBottom.length ? this.rankBottom[this.rankBottom.length-1].value : 1; },
     get provOptions() {
       // Daftar prov dalam wilayah aktif (sumber: prov_meta_38)
       const codes = REGION_PROVS[this.wilayah];
@@ -1786,6 +1790,7 @@ function dashboard() {
       });
     },
     get komRankMax() { return this.komRankTop.length ? this.komRankTop[0].value : 1; },
+    get komRankBottomMax() { return this.komRankBottom.length ? this.komRankBottom[this.komRankBottom.length-1].value : 1; },
     get kelompokList() {
       const list = window.KOMODITI_LIST || [];
       const seen = new Set();
