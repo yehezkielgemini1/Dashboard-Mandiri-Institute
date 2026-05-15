@@ -209,10 +209,11 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    overflow: hidden;  /* clip sparkline overflow */
   }
   .hero-stat:hover { box-shadow: var(--shadow-card); border-color: var(--rule-strong); }
   .hero-stat::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--ice-blue); }
-  .hero-stat .sparkline { height: 28px; margin-top: 8px; opacity: 0.85; }
+  .hero-stat .sparkline { height: 28px; margin-top: 8px; opacity: 0.85; overflow: hidden; width: 100%; }
 
   /* Freshness badge */
   .freshness { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sky); background: rgba(103,178,232,0.08); border: 1px solid rgba(103,178,232,0.3); border-radius: 0; }
@@ -2323,9 +2324,9 @@ function dashboard() {
         margin: { l: 80, r: 30, t: 30, b: 80 },
         font: { family: FONT, size: 13, color: INK },
         plot_bgcolor: 'white', paper_bgcolor: 'white',
-        xaxis: { tickfont: { size: 14, color: INK }, showline: true, linecolor: INK, ticks: 'outside', tickcolor: INK, ticklen: 4 },
+        xaxis: { tickfont: { size: 14, color: INK }, showline: true, linecolor: INK, ticks: 'outside', tickcolor: INK, ticklen: 4, showgrid: false },
         yaxis: { title: { text: 'Rp juta / kapita / bulan', font: { size: 12, color: MUTED } },
-                 tickfont: { size: 12, color: MUTED }, gridcolor: '#EAECF0',
+                 tickfont: { size: 12, color: MUTED }, showgrid: false, zeroline: true, zerolinecolor: INK, zerolinewidth: 1,
                  tickformat: '.1f' },
         legend: { orientation: 'h', y: -0.18, x: 0, xanchor: 'left', font: { size: 12 } },
         annotations, shapes,
@@ -2349,9 +2350,9 @@ function dashboard() {
         margin: { l: 60, r: 30, t: 20, b: 80 },
         font: { family: FONT, size: 13, color: INK },
         plot_bgcolor: 'white', paper_bgcolor: 'white',
-        xaxis: { tickfont: { size: 14, color: INK }, showline: true, linecolor: INK, ticks: 'outside', tickcolor: INK, ticklen: 4, automargin: true },
+        xaxis: { tickfont: { size: 14, color: INK }, showline: true, linecolor: INK, ticks: 'outside', tickcolor: INK, ticklen: 4, automargin: true, showgrid: false },
         yaxis: { title: { text: 'Share (%)', font: { size: 12, color: MUTED } },
-                 tickfont: { size: 12, color: MUTED }, gridcolor: '#EAECF0' },
+                 tickfont: { size: 12, color: MUTED }, showgrid: false, zeroline: true, zerolinecolor: INK, zerolinewidth: 1 },
         legend: { orientation: 'h', y: -0.20, x: 0, xanchor: 'left', font: { size: 12 } },
       }, { displaylogo: false, responsive: true });
     },
