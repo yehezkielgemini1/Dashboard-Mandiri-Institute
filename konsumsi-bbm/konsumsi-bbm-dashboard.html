@@ -290,6 +290,365 @@
 
   button, a, select, input { transition: all var(--tr-base); }
   *:focus-visible { outline: 2px solid var(--sky); outline-offset: 3px; border-radius: 1px; }
+
+  /* ============ MAP HERO + SIDE PANEL (v4.2 NASA-style, light theme adapted) ============ */
+  /* Hero scope: light brand-consistent. Map sendiri tetap dark (cinematic). */
+  .map-hero-scope {
+    background: var(--bg-elevated, #ffffff);
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 28px 28px 24px;
+    box-shadow: var(--shadow-subtle, 0 1px 3px rgba(0,0,0,0.08));
+    overflow: hidden;
+  }
+  .map-hero-header { max-width: 1100px; margin: 0 0 18px; }
+  .map-hero-header .eyebrow-roman {
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ice-blue);
+    margin-bottom: 8px; display: block;
+  }
+  .map-hero-header .map-hero-title {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: clamp(24px, 3vw, 34px);
+    font-weight: 600; line-height: 1.15; letter-spacing: -0.012em;
+    color: var(--ink); margin: 0;
+  }
+  .map-hero-header .map-hero-intro {
+    margin-top: 10px; max-width: 820px;
+    font-size: 13.5px; line-height: 1.55;
+    color: var(--muted, #555);
+  }
+  .map-hero-header .map-hero-intro strong { color: var(--navy); font-weight: 600; }
+
+  /* Map hero grid: position-relative wrapper, map full width, side panel floating absolute right */
+  .map-hero-grid {
+    position: relative;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  /* Map area — full width within wrapper, FIX height accommodate side panel max content */
+  .map-area {
+    position: relative;
+    background: #ffffff;
+    overflow: hidden;
+    height: 820px;  /* fits: cari (70) + top10 (310) + detail histori (340) + padding/gap (60) + 28 margin */
+  }
+  .map-area #chart-map { width: 100%; height: 100%; }
+
+  /* Filter floating overlay top-left (kayak DKI emerging-zone toggle layer) */
+  .map-filter-overlay {
+    position: absolute; top: 14px; left: 14px;
+    display: flex; gap: 8px; z-index: 10;
+    background: rgba(255,255,255,0.97);
+    border: 1px solid var(--rule);
+    padding: 8px 10px; border-radius: 6px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    flex-wrap: wrap; align-items: flex-end;
+    max-width: calc(100% - 380px);  /* leave room for side panel */
+  }
+  .map-filter-overlay .filter-pill { display: flex; flex-direction: column; gap: 3px; }
+  .map-filter-overlay .filter-pill-label {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--muted, #667085);
+    padding-left: 2px;
+  }
+  .map-filter-overlay .filter-pill select {
+    appearance: none; -webkit-appearance: none;
+    background: #ffffff; border: 1px solid var(--rule);
+    color: var(--ink); font-size: 11.5px; font-weight: 500;
+    padding: 6px 24px 6px 10px; border-radius: 3px;
+    cursor: pointer; outline: none; font-family: inherit;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path d='M2 4 L5 7 L8 4' stroke='%23667085' fill='none' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 7px center;
+    transition: border-color 0.15s;
+  }
+  .map-filter-overlay .filter-pill select:hover { border-color: var(--ice-blue); }
+  .map-filter-overlay .filter-pill select:focus { border-color: var(--ice-blue); box-shadow: 0 0 0 2px rgba(0,163,224,0.15); }
+  .map-filter-overlay .reset-filter-btn {
+    background: transparent; border: 1px solid var(--rule);
+    color: var(--muted, #667085);
+    font-size: 9px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 6px 10px;
+    cursor: pointer; transition: all 0.15s; font-family: inherit;
+    border-radius: 3px;
+  }
+  .map-filter-overlay .reset-filter-btn:hover { color: var(--navy); border-color: var(--ice-blue); background: rgba(0,163,224,0.08); }
+
+  .map-export-overlay {
+    position: absolute; top: 14px; right: 14px;
+    display: flex; gap: 4px; z-index: 10;
+    background: rgba(255,255,255,0.92);
+    border: 1px solid var(--rule);
+    padding: 3px; border-radius: 4px;
+    backdrop-filter: blur(6px);
+  }
+  .map-export-overlay .action-btn-ghost {
+    background: transparent; border: 0;
+    color: var(--muted, #667085);
+    width: 30px; height: 30px;
+    cursor: pointer; border-radius: 3px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 16px; transition: all 0.15s ease;
+  }
+  .map-export-overlay .action-btn-ghost:hover {
+    background: rgba(0,163,224,0.10); color: var(--ice-blue);
+  }
+  .map-export-overlay .action-btn-ghost iconify-icon { font-size: 16px; }
+
+  /* Side panel — FLOATING overlay di sisi kanan map (kayak DKI emerging-zone) */
+  .map-side-panel {
+    position: absolute; top: 14px; right: 14px; z-index: 10;
+    width: 340px; max-height: calc(100% - 28px);
+    background: rgba(255,255,255,0.97);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 14px 14px 16px;
+    display: flex; flex-direction: column; gap: 14px;
+    font-size: 12.5px;
+    color: var(--ink);
+    overflow-y: auto;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.10);
+  }
+  .map-side-panel::-webkit-scrollbar { width: 5px; }
+  .map-side-panel::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.18); border-radius: 3px; }
+  /* Tighten section spacing inside side panel for content fit */
+  .map-side-panel .sp-section h4 { margin: 0 0 8px; padding-bottom: 5px; }
+  .map-side-panel .sp-search h4 { display: none; }
+  .map-side-panel .ranking-row { padding: 6px 4px; font-size: 11px; }
+  .map-side-panel .detail-card.filled { padding: 10px 12px; }
+  .map-side-panel .detail-card .stat-row { padding: 3px 0; }
+
+  .map-side-panel .sp-section h4 {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--navy); margin: 0 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--rule);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  /* Filter group inside side panel */
+  .map-side-panel .filter-group { margin-bottom: 11px; }
+  .map-side-panel .filter-group:last-child { margin-bottom: 0; }
+  .map-side-panel .filter-label {
+    font-size: 9.5px; font-weight: 600;
+    color: var(--muted, #667085); text-transform: uppercase;
+    letter-spacing: 0.06em; margin-bottom: 5px;
+    display: block;
+  }
+  .map-side-panel .filter-select {
+    width: 100%; padding: 8px 30px 8px 11px;
+    background: #ffffff; border: 1px solid var(--rule);
+    color: var(--ink); font-size: 12px; outline: none;
+    font-family: inherit; border-radius: 3px; cursor: pointer;
+    appearance: none; -webkit-appearance: none; -moz-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path d='M2 4 L5 7 L8 4' stroke='%23667085' fill='none' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    transition: border-color 0.15s, background-color 0.15s;
+  }
+  .map-side-panel .filter-select:hover { border-color: var(--ice-blue); }
+  .map-side-panel .filter-select:focus { border-color: var(--ice-blue); box-shadow: 0 0 0 2px rgba(0,163,224,0.18); }
+  .map-side-panel .filter-select option { background: #ffffff; color: var(--ink); }
+
+  .map-side-panel .reset-filter-btn {
+    background: transparent; border: 1px solid var(--rule);
+    color: var(--muted, #667085);
+    font-size: 9px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 3px 8px;
+    cursor: pointer; transition: all 0.15s; font-family: inherit;
+    border-radius: 2px;
+  }
+  .map-side-panel .reset-filter-btn:hover { color: var(--navy); border-color: var(--ice-blue); background: rgba(0,163,224,0.08); }
+
+  /* Search */
+  .map-side-panel .sp-search .search-wrap { position: relative; }
+  .map-side-panel .search-input {
+    width: 100%; padding: 9px 11px;
+    background: #ffffff; border: 1px solid var(--rule);
+    color: var(--ink); font-size: 12px; outline: none;
+    border-radius: 3px; font-family: inherit;
+  }
+  .map-side-panel .search-input::placeholder { color: var(--muted, #98A2B3); }
+  .map-side-panel .search-input:focus { border-color: var(--ice-blue); box-shadow: 0 0 0 2px rgba(0,163,224,0.18); }
+
+  /* Ranking list */
+  .map-side-panel .ranking-list {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: 0;
+  }
+  .map-side-panel .ranking-row {
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1.3fr) 36px 56px;
+    gap: 8px; align-items: center;
+    padding: 7px 4px;
+    border-bottom: 1px solid var(--rule);
+    cursor: pointer; font-size: 11.5px;
+    transition: background 0.12s;
+  }
+  .map-side-panel .ranking-row:last-child { border-bottom: 0; }
+  .map-side-panel .ranking-row:hover { background: rgba(103,178,232,0.10); }
+  .map-side-panel .ranking-row.active { background: rgba(0,163,224,0.14); }
+  .map-side-panel .ranking-row .rank {
+    font-weight: 700; color: var(--navy);
+    text-align: right;
+    font-variant-numeric: tabular-nums; font-size: 11px;
+  }
+  .map-side-panel .ranking-row .name {
+    color: var(--ink);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .map-side-panel .ranking-row .spark {
+    display: inline-flex; align-items: center; justify-content: center;
+    overflow: visible;
+  }
+  .map-side-panel .ranking-row .val {
+    font-weight: 700; color: var(--navy);
+    text-align: right;
+    font-variant-numeric: tabular-nums; font-size: 11.5px;
+  }
+
+  /* Detail */
+  .map-side-panel .tab-pills {
+    display: flex; gap: 0; margin: -2px 0 10px;
+    border-bottom: 1px solid var(--rule);
+    flex-wrap: wrap;
+  }
+  .map-side-panel .tab-pill {
+    padding: 6px 10px; font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    background: none; border: 0; border-bottom: 2px solid transparent;
+    cursor: pointer; color: var(--muted, #667085); margin-bottom: -1px;
+    font-family: inherit; transition: color 0.15s, border-color 0.15s;
+  }
+  .map-side-panel .tab-pill.active { color: var(--ice-blue); border-bottom-color: var(--ice-blue); }
+  .map-side-panel .tab-pill:hover:not(.active) { color: var(--ink); }
+
+  .map-side-panel .detail-card.empty {
+    color: var(--muted, #98A2B3); font-style: italic;
+    padding: 14px 14px; background: #f6f8fa;
+    border-left: 3px solid var(--rule);
+    font-size: 12px; line-height: 1.45; border-radius: 2px;
+  }
+  .map-side-panel .detail-card.filled {
+    padding: 12px 14px; background: rgba(0,163,224,0.05);
+    border-left: 3px solid var(--ice-blue); border-radius: 2px;
+  }
+  .map-side-panel .detail-card .prov-name {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-weight: 600; color: var(--navy); font-size: 14px; margin-bottom: 6px;
+  }
+  .map-side-panel .detail-card .prov-pcode {
+    font-size: 10px; color: var(--muted, #98A2B3);
+    font-family: 'Courier New', monospace;
+    margin-bottom: 8px; letter-spacing: 0.04em;
+  }
+  .map-side-panel .detail-card .stat-row {
+    display: flex; justify-content: space-between;
+    padding: 4px 0; font-size: 11.5px;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .map-side-panel .detail-card .stat-row:last-child { border-bottom: 0; }
+  .map-side-panel .detail-card .stat-row .label { color: var(--muted, #667085); }
+  .map-side-panel .detail-card .stat-row .val {
+    font-weight: 600; color: var(--navy);
+    font-variant-numeric: tabular-nums;
+  }
+  .map-side-panel .detail-card .caveat {
+    font-size: 9.5px; color: var(--muted, #98A2B3);
+    font-style: italic; margin-top: 8px; line-height: 1.45;
+  }
+
+  /* Sparkline (large, in detail panel) */
+  .map-side-panel .detail-spark {
+    margin-top: 10px; padding: 8px 4px 4px;
+    background: #f6f8fa; border-radius: 2px;
+  }
+  .map-side-panel .detail-spark svg { display: block; }
+
+  /* Mini composition bar (Komposisi tab) */
+  .map-side-panel .comp-row {
+    display: grid; grid-template-columns: 80px 1fr 50px;
+    gap: 8px; align-items: center;
+    padding: 6px 0; font-size: 11px;
+  }
+  .map-side-panel .comp-row .comp-name { color: var(--ink); }
+  .map-side-panel .comp-row .comp-bar {
+    height: 8px; background: rgba(0,0,0,0.05); border-radius: 2px;
+    position: relative; overflow: hidden;
+  }
+  .map-side-panel .comp-row .comp-bar > span {
+    position: absolute; top: 0; bottom: 0; left: 0;
+    border-radius: 2px;
+  }
+  .map-side-panel .comp-row .comp-val {
+    font-weight: 700; color: var(--navy); text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Color legend HTML (Share %) di luar peta */
+  .map-color-legend {
+    margin-top: 14px; padding: 8px 14px;
+    background: var(--bg-base, #fafbfc);
+    border: 1px solid var(--rule); border-radius: 4px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 14px; align-items: center;
+    font-size: 11px; color: var(--muted, #667085);
+  }
+  .map-color-legend .legend-label {
+    font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--navy);
+    font-size: 10px;
+  }
+  .map-color-legend .legend-bar-wrap {
+    display: flex; flex-direction: column; gap: 4px; min-width: 0;
+  }
+  .map-color-legend .legend-bar {
+    height: 10px; border-radius: 2px;
+    background: linear-gradient(to right, #EAF1F8 0%, #A9C4DF 25%, #67B2E8 50%, #2C6FB5 75%, #001F4D 100%);
+    border: 1px solid var(--rule);
+  }
+  .map-color-legend .legend-ticks {
+    display: flex; justify-content: space-between;
+    font-variant-numeric: tabular-nums; font-size: 10.5px;
+  }
+
+  /* Hero footer (light) */
+  .map-hero-footer {
+    margin-top: 18px; padding-top: 14px;
+    border-top: 1px solid var(--rule);
+    display: flex; flex-wrap: wrap; gap: 22px;
+    font-size: 11px; color: var(--muted, #667085);
+  }
+  .map-hero-footer .label {
+    font-weight: 700; color: var(--navy);
+    text-transform: uppercase; letter-spacing: 0.06em; margin-right: 4px;
+  }
+
+  /* Responsive: side panel jadi inline below map <=1024px */
+  @media (max-width: 1024px) {
+    .map-side-panel {
+      position: static; width: auto; max-height: none;
+      margin-top: 0; box-shadow: none; backdrop-filter: none;
+      border-top: 0; border-radius: 0; background: var(--bg-base, #fafbfc);
+    }
+    .map-hero-grid { display: flex; flex-direction: column; }
+    .map-area { min-height: 460px; }
+    .map-area #chart-map { height: 460px !important; }
+  }
+  @media (max-width: 768px) {
+    .map-hero-scope { padding: 24px 18px 22px; border-radius: 4px; }
+    .map-hero-header .map-hero-title { font-size: 24px; }
+    .map-hero-header .map-hero-intro { font-size: 12.5px; }
+  }
 </style>
 </head>
 <body class="min-h-screen" style="background:var(--paper)">
@@ -452,62 +811,111 @@
   <!-- ==================== PAGE 2: KOMPARASI WILAYAH ==================== -->
   <div class="tab-page" id="page-map">
 
-    <!-- Peta choropleth -->
-    <div class="chart-card mb-8">
-      <div class="chart-header">
-        <div class="eyebrow">I &middot; Peta Sebaran</div>
-        <h3 id="map-title">Sebaran Konsumsi BBM</h3>
+    <!-- Peta sebaran (NASA-style hero + side panel, v4.2) -->
+    <section class="map-hero-scope mb-8">
+      <div class="map-hero-header">
+        <div class="eyebrow-roman">I &middot; Peta Sebaran</div>
+        <h2 class="map-hero-title">Sebaran Konsumsi BBM</h2>
+        <p class="map-hero-intro">Peta interaktif share pembeli BBM per provinsi. Pilih <strong>Tahun</strong>, <strong>Kelas Masyarakat</strong>, dan <strong>Jenis BBM</strong> untuk melihat lanskap konsumsi. Klik provinsi di peta atau pada peringkat untuk melihat profil, histori 7 tahun, dan komposisi 4 BBM.</p>
       </div>
-      <div class="chart-filter">
-        <div class="filter-field">
-          <label>Tahun</label>
-          <select id="map-year" onchange="renderMap()">
-            <option value="2025" selected>2025</option>
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
-            <option value="2022">2022</option>
-            <option value="2021">2021</option>
-            <option value="2020">2020</option>
-            <option value="2019">2019</option>
-          </select>
+
+      <div class="map-hero-grid">
+        <div class="map-area">
+          <!-- Filter floating overlay top-left (kayak DKI emerging-zone toggle layer) -->
+          <div class="map-filter-overlay">
+            <div class="filter-pill">
+              <span class="filter-pill-label">Tahun</span>
+              <select id="map-year" onchange="onMapFilterChange()">
+                <option value="2025" selected>2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+                <option value="2021">2021</option>
+                <option value="2020">2020</option>
+                <option value="2019">2019</option>
+              </select>
+            </div>
+            <div class="filter-pill">
+              <span class="filter-pill-label">Kelas</span>
+              <select id="map-kelas" onchange="onMapFilterChange()">
+                <option value="All" selected>Semua</option>
+                <option value="Poor">Poor</option>
+                <option value="Vulnerable">Vulnerable</option>
+                <option value="Lower AMC">Lower AMC</option>
+                <option value="Upper AMC">Upper AMC</option>
+                <option value="Lower MC">Lower MC</option>
+                <option value="Middle MC">Middle MC</option>
+                <option value="Upper MC">Upper MC</option>
+                <option value="Upper Class">Upper Class</option>
+              </select>
+            </div>
+            <div class="filter-pill">
+              <span class="filter-pill-label">Jenis BBM</span>
+              <select id="map-fuel" onchange="onMapFilterChange()">
+                <option value="Pertalite" selected>Pertalite</option>
+                <option value="Pertamax">Pertamax</option>
+                <option value="Pertamax Turbo">Pertamax Turbo</option>
+              </select>
+            </div>
+            <button class="reset-filter-btn" onclick="resetMapFilters()">Reset</button>
+          </div>
+          <div id="chart-map" style="height:820px;"></div>
+          <div class="map-export-overlay">
+            <button class="action-btn-ghost" onclick="exportPPT('chart-map','Peta sebaran konsumsi BBM per provinsi','Susenas Maret BPS &middot; shapefile BPS 2020')" title="Export ke PowerPoint"><iconify-icon icon="mdi:presentation"></iconify-icon></button>
+            <button class="action-btn-ghost" onclick="downloadCSV('map')" title="Unduh CSV"><iconify-icon icon="mdi:download"></iconify-icon></button>
+            <button class="action-btn-ghost" onclick="downloadImage('chart-map','png')" title="Unduh PNG"><iconify-icon icon="mdi:image-outline"></iconify-icon></button>
+            <button class="action-btn-ghost" onclick="copyShareLink()" title="Salin tautan"><iconify-icon icon="mdi:link-variant"></iconify-icon></button>
+          </div>
         </div>
-        <div class="filter-field">
-          <label>Kelas Masyarakat</label>
-          <select id="map-kelas" onchange="renderMap()">
-            <option value="All" selected>Semua Kelas</option>
-            <option value="Poor">Poor</option>
-            <option value="Vulnerable">Vulnerable</option>
-            <option value="Lower AMC">Lower AMC</option>
-            <option value="Upper AMC">Upper AMC</option>
-            <option value="Lower MC">Lower MC</option>
-            <option value="Middle MC">Middle MC</option>
-            <option value="Upper MC">Upper MC</option>
-            <option value="Upper Class">Upper Class</option>
-          </select>
-        </div>
-        <div class="filter-field">
-          <label>Jenis BBM</label>
-          <select id="map-fuel" onchange="renderMap()">
-            <option value="Pertalite" selected>Pertalite</option>
-            <option value="Pertamax">Pertamax</option>
-            <option value="Pertamax Turbo">Pertamax Turbo</option>
-            <option value="Premium">Premium</option>
-          </select>
+
+        <aside class="map-side-panel" id="map-side">
+          <div class="sp-section sp-search">
+            <h4>Cari Provinsi</h4>
+            <div class="search-wrap">
+              <input type="text" class="search-input" id="map-search" placeholder="Ketik nama provinsi..." oninput="onMapSearchInput()" onkeydown="onMapSearchKey(event)" autocomplete="off">
+            </div>
+          </div>
+
+          <div class="sp-section sp-ranking">
+            <h4 id="map-ranking-header">Top 10 Provinsi</h4>
+            <ol class="ranking-list" id="map-ranking"></ol>
+          </div>
+
+          <div class="sp-section sp-detail">
+            <h4 id="map-detail-header">Detail Provinsi</h4>
+            <div class="tab-pills" id="map-detail-tabs">
+              <button class="tab-pill active" data-tab="komposisi" onclick="setDetailTab('komposisi')">Komposisi BBM</button>
+              <button class="tab-pill" data-tab="histori" onclick="setDetailTab('histori')">Histori 2019&ndash;2025</button>
+            </div>
+            <div class="detail-content" id="map-detail">
+              <div class="detail-card empty">Pilih provinsi di peta, daftar peringkat, atau pencarian untuk melihat detail.</div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Color legend di luar peta (Share %) -->
+      <div class="map-color-legend">
+        <span class="legend-label">Share %</span>
+        <div class="legend-bar-wrap">
+          <div class="legend-bar"></div>
+          <div class="legend-ticks">
+            <span id="legend-min">0</span>
+            <span id="legend-q1">25</span>
+            <span id="legend-mid">50</span>
+            <span id="legend-q3">75</span>
+            <span id="legend-max">100</span>
+          </div>
         </div>
       </div>
-      <div id="chart-map" style="height:560px"></div>
-      <div class="chart-export-row">
-        <button class="action-btn" onclick="exportPPT('chart-map','Peta sebaran konsumsi BBM per provinsi','Susenas Maret BPS &middot; shapefile BPS 2020')"><iconify-icon icon="mdi:presentation"></iconify-icon>PPT</button>
-        <button class="action-btn" onclick="downloadCSV('map')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
-        <button class="action-btn" onclick="downloadImage('chart-map','png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
-        <button class="action-btn" onclick="copyShareLink()"><iconify-icon icon="mdi:link-variant"></iconify-icon>Tautan</button>
-      </div>
-      <div class="chart-footer">
+
+      <div class="map-hero-footer">
         <span><span class="label">Sumber</span>Susenas Maret BPS &middot; shapefile BPS 2020</span>
+        <span><span class="label">Bobot</span>weind (per individu tertimbang)</span>
         <span><span class="label">Cakupan</span>34 provinsi (Papua re-aggregated ke induk)</span>
         <span><span class="label">Definisi</span>Share % dari pembeli BBM dalam segmen terpilih</span>
       </div>
-    </div>
+    </section>
 
     <!-- Top 10 Provinsi -->
     <div class="chart-card mb-8">
@@ -994,6 +1402,32 @@ function renderInsightsTable() {
 }
 
 // â”€â”€ Map choropleth (per provinsi)
+// v4.2 NASA-style hero + side panel state
+let selectedProvForMap = null;   // ID kode prov terpilih (e.g. 'ID31')
+let mapDetailTab = 'komposisi';  // 'komposisi' | 'histori' (Profil merged into Komposisi)
+let _provCentroidCache = null;   // {pcode: [lon, lat]} computed lazily
+
+function getProvCentroids() {
+  if (_provCentroidCache) return _provCentroidCache;
+  _provCentroidCache = {};
+  if (typeof GEOJSON === 'undefined' || !GEOJSON.features) return _provCentroidCache;
+  GEOJSON.features.forEach(f => {
+    const pc = (f.properties && f.properties.ADM1_PCODE) || f.id;
+    if (!pc) return;
+    let sumLon = 0, sumLat = 0, n = 0;
+    const collectRing = ring => {
+      ring.forEach(pt => { sumLon += pt[0]; sumLat += pt[1]; n++; });
+    };
+    if (f.geometry.type === 'Polygon') {
+      f.geometry.coordinates.forEach(collectRing);
+    } else if (f.geometry.type === 'MultiPolygon') {
+      f.geometry.coordinates.forEach(poly => poly.forEach(collectRing));
+    }
+    if (n > 0) _provCentroidCache[pc] = [sumLon / n, sumLat / n];
+  });
+  return _provCentroidCache;
+}
+
 function renderMap() {
   const year  = document.getElementById('map-year').value;
   const kelas = document.getElementById('map-kelas').value;
@@ -1003,32 +1437,313 @@ function renderMap() {
   const values = locations.map(p => slice[p]);
   const text = locations.map(p => PROV_META[p] || p);
 
+  // Update HTML legend ticks (di luar peta) berdasarkan range data
+  updateMapLegend(values);
+
   const trace = {
-    type: 'choropleth',
+    type: 'choroplethmapbox',
     geojson: GEOJSON,
     locations, z: values, text,
     featureidkey: 'properties.ADM1_PCODE',
+    // Brand-standard blue 5-stop
     colorscale: [[0,'#EAF1F8'],[0.25,'#A9C4DF'],[0.5,'#67B2E8'],[0.75,'#2C6FB5'],[1,'#001F4D']],
     marker: { line: { color: 'white', width: 0.6 } },
-    colorbar: {
-      title: { text: 'Share %', font: { size: 11, color: '#667085' } },
-      thickness: 10, len: 0.7, x: 1.0,
-      tickfont: { size: 11, color: '#667085' },
-    },
+    showscale: false,
     hovertemplate: '<b>%{text}</b><br>' + fuel + ': %{z:.2f}%<extra></extra>',
   };
   const layout = {
     margin: { l: 0, r: 0, t: 0, b: 0 },
     font: { family: 'Inter, sans-serif', color: '#051C2C' },
-    geo: {
-      fitbounds: 'locations', visible: false,
-      projection: { type: 'mercator', scale: 1.05 },
-      bgcolor: 'transparent',
-      domain: { x: [0, 1], y: [0, 1] },
+    mapbox: {
+      style: 'carto-positron',
+      center: { lat: -2.5, lon: 118 },
+      zoom: 3.8,
     },
     paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
   };
-  Plotly.react('chart-map', [trace], layout, { displaylogo: false, responsive: true });
+  const attachMapClick = () => {
+    const gd = document.getElementById('chart-map');
+    if (!gd) return;
+    try { gd.removeAllListeners && gd.removeAllListeners('plotly_click'); } catch (e) {}
+    gd.on && gd.on('plotly_click', ev => {
+      if (!ev || !ev.points || !ev.points.length) return;
+      const pcode = ev.points[0].location;
+      if (pcode) selectProvForMap(pcode, true);
+    });
+  };
+  Plotly.react('chart-map', [trace], layout, { displaylogo: false, responsive: true })
+    .then(attachMapClick)
+    .catch(attachMapClick);
+
+  renderRanking();
+  renderDetailPanel();
+}
+
+// Update HTML color legend ticks (Share %) based on data range
+function updateMapLegend(values) {
+  const valid = values.filter(v => v != null && !isNaN(v));
+  if (!valid.length) return;
+  const min = Math.floor(Math.min.apply(null, valid));
+  const max = Math.ceil(Math.max.apply(null, valid));
+  const range = max - min;
+  const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = nfId(val, 0); };
+  setText('legend-min', min);
+  setText('legend-q1', min + range * 0.25);
+  setText('legend-mid', min + range * 0.5);
+  setText('legend-q3', min + range * 0.75);
+  setText('legend-max', max);
+}
+
+// ── Side panel: filter / search / ranking / detail
+function onMapFilterChange() {
+  // Keep selected prov across filter changes (user may want to track it)
+  renderMap();
+}
+
+function resetMapFilters() {
+  document.getElementById('map-year').value = '2025';
+  document.getElementById('map-kelas').value = 'All';
+  document.getElementById('map-fuel').value = 'Pertalite';
+  const s = document.getElementById('map-search');
+  if (s) s.value = '';
+  selectedProvForMap = null;
+  renderMap();
+}
+
+function getCurrentMapSlice() {
+  const year  = document.getElementById('map-year').value;
+  const kelas = document.getElementById('map-kelas').value;
+  const fuel  = document.getElementById('map-fuel').value;
+  return {
+    year, kelas, fuel,
+    slice: (PROV_DATA[year] && PROV_DATA[year][kelas] && PROV_DATA[year][kelas][fuel]) || {},
+  };
+}
+
+function getRankingEntries(filterQ) {
+  const { slice } = getCurrentMapSlice();
+  let entries = Object.keys(slice).map(p => ({
+    pcode: p,
+    name: PROV_META[p] || p,
+    value: slice[p],
+  }));
+  if (filterQ) {
+    const q = filterQ.toLowerCase().trim();
+    entries = entries.filter(e => e.name.toLowerCase().includes(q));
+  }
+  entries.sort((a, b) => b.value - a.value);
+  return entries;
+}
+
+function renderMiniSparkline(values, w, h, color) {
+  if (!values || values.length === 0) return '';
+  const max = Math.max.apply(null, values);
+  const min = Math.min.apply(null, values);
+  const range = (max - min) || 1;
+  const stepX = w / Math.max(1, values.length - 1);
+  let pts = '';
+  for (let i = 0; i < values.length; i++) {
+    const x = i * stepX;
+    const y = h - ((values[i] - min) / range) * (h - 2) - 1;
+    pts += x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+  }
+  return '<svg width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '">'
+    + '<polyline points="' + pts.trim() + '" fill="none" stroke="' + color + '" stroke-width="1.4" stroke-linejoin="round"/>'
+    + '</svg>';
+}
+
+function getProvHistory(pcode, kelas, fuel) {
+  const years = ['2019','2020','2021','2022','2023','2024','2025'];
+  return years.map(y => {
+    const sl = (PROV_DATA[y] && PROV_DATA[y][kelas] && PROV_DATA[y][kelas][fuel]) || {};
+    return sl[pcode] || 0;
+  });
+}
+
+function renderRanking() {
+  const list = document.getElementById('map-ranking');
+  if (!list) return;
+  const search = (document.getElementById('map-search') || {}).value || '';
+  const { kelas, fuel } = getCurrentMapSlice();
+  const entries = getRankingEntries(search);
+  const top = entries.slice(0, 10);
+
+  const header = document.getElementById('map-ranking-header');
+  if (header) {
+    if (search.trim()) {
+      header.innerHTML = 'Hasil Pencarian <span style="color:rgba(255,255,255,0.45);font-weight:500;">(' + entries.length + ')</span>';
+    } else {
+      header.innerHTML = 'Top 10 &middot; ' + fuel + (kelas === 'All' ? '' : ' &middot; ' + kelas);
+    }
+  }
+
+  if (top.length === 0) {
+    list.innerHTML = '<li style="color:rgba(255,255,255,0.45);font-style:italic;font-size:11.5px;padding:8px 4px;list-style:none;">Tidak ada provinsi yang cocok.</li>';
+    return;
+  }
+
+  list.innerHTML = top.map((e, i) => {
+    const isActive = selectedProvForMap === e.pcode;
+    const hist = getProvHistory(e.pcode, kelas, fuel);
+    const spark = renderMiniSparkline(hist, 44, 16, '#003D79');
+    return '<li class="ranking-row' + (isActive ? ' active' : '') + '" '
+      + 'onclick="selectProvForMap(\'' + e.pcode + '\', true)">'
+      + '<span class="rank">' + (i + 1) + '</span>'
+      + '<span class="name" title="' + e.name + '">' + e.name + '</span>'
+      + '<span class="spark">' + spark + '</span>'
+      + '<span class="val">' + nfId(e.value, 1) + '%</span>'
+      + '</li>';
+  }).join('');
+}
+
+// ── Detail panel
+function setDetailTab(tab) {
+  mapDetailTab = tab;
+  document.querySelectorAll('#map-detail-tabs .tab-pill').forEach(b => {
+    b.classList.toggle('active', b.dataset.tab === tab);
+  });
+  renderDetailPanel();
+}
+
+function renderDetailPanel() {
+  const container = document.getElementById('map-detail');
+  if (!container) return;
+  if (!selectedProvForMap) {
+    container.innerHTML = '<div class="detail-card empty">Pilih provinsi di peta, daftar peringkat, atau pencarian untuk melihat detail.</div>';
+    return;
+  }
+  const { year, kelas, fuel, slice } = getCurrentMapSlice();
+  const pcode = selectedProvForMap;
+  const provName = PROV_META[pcode] || pcode;
+  const value = slice[pcode];
+
+  if (mapDetailTab === 'histori') {
+    container.innerHTML = renderDetailHistori(pcode, provName, kelas, fuel);
+  } else {
+    container.innerHTML = renderDetailKomposisi(pcode, provName, year, kelas);
+  }
+}
+
+function renderDetailProfil(pcode, provName, value, year, kelas, fuel) {
+  const fuelRows = FUEL_DISPLAY.map(f => {
+    const sl = (PROV_DATA[year] && PROV_DATA[year][kelas] && PROV_DATA[year][kelas][f]) || {};
+    const v = sl[pcode];
+    return '<div class="stat-row"><span class="label">' + f + '</span>'
+      + '<span class="val">' + (v != null ? nfId(v, 1) + '%' : '-') + '</span></div>';
+  }).join('');
+
+  return '<div class="detail-card filled">'
+    + '<div class="prov-name">' + provName + '</div>'
+    + '<div class="prov-pcode">' + pcode + ' &middot; ' + year + ' &middot; ' + (kelas === 'All' ? 'Semua Kelas' : kelas) + '</div>'
+    + '<div class="stat-row" style="border-bottom:1px solid var(--rule);padding-bottom:6px;margin-bottom:4px;">'
+    +   '<span class="label" style="color:var(--ice-blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;font-size:9.5px;">Filter Aktif (' + fuel + ')</span>'
+    +   '<span class="val">' + (value != null ? nfId(value, 1) + '%' : '-') + '</span>'
+    + '</div>'
+    + fuelRows
+    + '<div class="caveat">Share = % pembeli BBM di segmen terpilih. Total 4 BBM kira-kira 100% (eksklusif Tidak beli).</div>'
+    + '</div>';
+}
+
+function renderDetailHistori(pcode, provName, kelas, fuel) {
+  const values = getProvHistory(pcode, kelas, fuel);
+  const last = values[values.length - 1];
+  const first = values[0];
+  const delta = last - first;
+  const deltaCol = delta >= 0 ? '#003D79' : '#67B2E8';
+
+  const w = 280, h = 80;
+  const max = Math.max.apply(null, values);
+  const min = Math.min.apply(null, values);
+  const range = (max - min) || 1;
+  const stepX = w / Math.max(1, values.length - 1);
+  let pts = '', ptCircles = '';
+  for (let i = 0; i < values.length; i++) {
+    const x = i * stepX;
+    const y = h - ((values[i] - min) / range) * (h - 8) - 4;
+    pts += x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+    if (i === values.length - 1) {
+      ptCircles += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="3.5" fill="#003D79" stroke="#ffffff" stroke-width="1.5"/>';
+    }
+  }
+  const svg = '<svg width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '">'
+    + '<polyline points="' + pts.trim() + '" fill="none" stroke="#003D79" stroke-width="2" stroke-linejoin="round"/>'
+    + ptCircles
+    + '</svg>';
+
+  return '<div class="detail-card filled">'
+    + '<div class="prov-name">' + provName + '</div>'
+    + '<div class="prov-pcode">Histori ' + fuel + ' &middot; ' + (kelas === 'All' ? 'Semua Kelas' : kelas) + '</div>'
+    + '<div class="detail-spark">' + svg + '</div>'
+    + '<div class="stat-row"><span class="label">2019</span><span class="val">' + nfId(first, 1) + '%</span></div>'
+    + '<div class="stat-row"><span class="label">2025</span><span class="val">' + nfId(last, 1) + '%</span></div>'
+    + '<div class="stat-row"><span class="label">&Delta; 2019&rarr;2025</span>'
+    +   '<span class="val" style="color:' + deltaCol + ';">' + (delta >= 0 ? '+' : '') + nfId(delta, 1) + ' pp</span></div>'
+    + '<div class="caveat">Cross-era cutoff (2019-2022 vs 2023-2025) berbeda. Lihat Metodologi.</div>'
+    + '</div>';
+}
+
+function renderDetailKomposisi(pcode, provName, year, kelas) {
+  const fuelData = FUEL_DISPLAY
+    .map(f => {
+      const sl = (PROV_DATA[year] && PROV_DATA[year][kelas] && PROV_DATA[year][kelas][f]) || {};
+      return { fuel: f, value: sl[pcode] || 0, color: FUEL_COLORS[f] };
+    })
+    .filter(d => d.value > 0);  // skip BBM dgn 0 share (Premium phase-out 2023+, dll)
+  const max = Math.max.apply(null, fuelData.map(d => d.value)) || 1;
+  const rows = fuelData.map(d => {
+    const pct = (d.value / max * 100).toFixed(1);
+    return '<div class="comp-row">'
+      + '<span class="comp-name">' + d.fuel + '</span>'
+      + '<span class="comp-bar"><span style="width:' + pct + '%;background:' + d.color + ';"></span></span>'
+      + '<span class="comp-val">' + nfId(d.value, 1) + '%</span>'
+      + '</div>';
+  }).join('');
+
+  return '<div class="detail-card filled">'
+    + '<div class="prov-name">' + provName + '</div>'
+    + '<div class="prov-pcode">Komposisi BBM &middot; ' + year + ' &middot; ' + (kelas === 'All' ? 'Semua Kelas' : kelas) + '</div>'
+    + rows
+    + '<div class="caveat">Bar relatif terhadap BBM dominan di provinsi ini. Angka adalah share % pembeli per jenis.</div>'
+    + '</div>';
+}
+
+// ── Selection + map pan
+function selectProvForMap(pcode, doPan) {
+  selectedProvForMap = pcode;
+  renderRanking();
+  renderDetailPanel();
+  if (doPan) panMapToProv(pcode);
+}
+
+function panMapToProv(pcode) {
+  const cents = getProvCentroids();
+  const c = cents[pcode];
+  const el = document.getElementById('chart-map');
+  if (!c || !el || !window.Plotly) return;
+  // Use animate for smoother pan + avoid serialize bug on relayout
+  try {
+    if (typeof Plotly.animate === 'function') {
+      Plotly.animate(el, {
+        layout: { mapbox: Object.assign({}, (el.layout && el.layout.mapbox) || {}, {
+          center: { lon: c[0], lat: c[1] }, zoom: 5.4,
+        })},
+      }, { transition: { duration: 600, easing: 'cubic-in-out' }, frame: { duration: 600 } });
+    } else {
+      Plotly.relayout(el, 'mapbox.center', { lon: c[0], lat: c[1] });
+      Plotly.relayout(el, 'mapbox.zoom', 5.4);
+    }
+  } catch (e) { /* swallow plotly mapbox relayout quirk */ }
+}
+
+// ── Search
+function onMapSearchInput() { renderRanking(); }
+function onMapSearchKey(ev) {
+  if (ev.key === 'Enter') {
+    const q = (document.getElementById('map-search').value || '').trim();
+    if (!q) return;
+    const entries = getRankingEntries(q);
+    if (entries.length > 0) selectProvForMap(entries[0].pcode, true);
+  }
 }
 
 // â”€â”€ Top 10 Provinsi (filterable wilayah/year/fuel, descending)
