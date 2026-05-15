@@ -505,6 +505,31 @@
   /* ============ STANDARDIZED FILTER BAR (canon untuk semua dashboard) ============ */
   .filter-canon { background: var(--paper); border-bottom: 1px solid var(--rule); padding: 16px 24px; box-shadow: 0 1px 0 var(--rule); position: sticky; top: 64px; z-index: 40; backdrop-filter: blur(8px); background: rgba(255,255,255,0.94); }
   :root[data-theme="dark"] .filter-canon { background: rgba(20,42,74,0.94); border-bottom-color: var(--rule); }
+  /* ============ SLIM PAGE HEADER ============ */
+  .page-header-slim {
+    background: linear-gradient(180deg, var(--navy-deep) 0%, var(--navy-primary) 100%);
+    color: white;
+    border-bottom: 1px solid var(--rule);
+  }
+  .page-header-slim .eyebrow-small {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ice-blue);
+  }
+  .page-header-slim h1 { color: white; font-weight: 600; letter-spacing: -0.018em; }
+  .page-header-slim .page-marker {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: rgba(255,255,255,0.5);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+  :root[data-theme="dark"] .page-header-slim { background: linear-gradient(180deg, #00153A 0%, #001F4D 100%); }
+
   /* ============ CHART CARD (uniform box design) ============ */
   .chart-card {
     background: var(--paper);
@@ -826,19 +851,15 @@
 </div>
 
 <div class="with-sidebar">
-<!-- Hero band -->
-<div class="folio">
-  <div class="folio-inner">
-    <span class="left">Mandiri Institute · Susenas 2025</span>
-    <span class="right" x-text="page.toUpperCase()"></span>
+<!-- Slim page header: single continuous flow dari topnav, no white sandwich -->
+<div class="page-header-slim">
+  <div class="max-w-[1280px] mx-auto px-8 py-6 flex items-center justify-between">
+    <div>
+      <div class="eyebrow-small">Riset Mandiri Institute · Pengeluaran Rumah Tangga</div>
+      <h1 class="serif-display text-2xl md:text-3xl mt-1" x-text="pageTitle"></h1>
+    </div>
+    <div class="page-marker" x-text="page.toUpperCase()"></div>
   </div>
-</div>
-<div class="hero-band hero-band-craft">
-  <header class="max-w-[1280px] mx-auto px-8 pt-16 pb-16">
-    <div class="eyebrow">Riset Mandiri Institute · Pengeluaran Rumah Tangga</div>
-    <h1 class="serif-display text-4xl md:text-5xl mt-5 max-w-4xl" x-text="pageTitle"></h1>
-    <p class="mt-5 text-base max-w-3xl leading-relaxed" x-text="pageSubtitle"></p>
-  </header>
 </div>
 
 <!-- ADAPTIVE FILTER BAR (canon v2 — hide kalau page tidak butuh) -->
@@ -1575,20 +1596,10 @@ const TABS = [
   { id: 'metodologi', label: 'Metodologi', icon: 'mdi:book-open-variant' },
 ];
 const PAGE_META = {
-  trend: { title: 'Pengeluaran konsumsi per kapita Indonesia, 2019 sampai 2025.',
-           sub: 'Pertumbuhan dan komposisi makanan vs non-makanan, rata-rata tertimbang nasional.' },
-  engel: { title: 'Hukum Engel: makin kaya, makin kecil porsi makanan.',
-           sub: 'Komposisi pengeluaran makanan vs non-makanan per kelas masyarakat (wb4).' },
-  komposisi: { title: 'Distribusi share pengeluaran per kelompok dan kelas.',
-                sub: 'Heatmap 20 kelompok pengeluaran (14 makanan + 6 non-makanan) terhadap 8 kelas masyarakat.' },
-  geografi: { title: 'Disparitas geografis pengeluaran per kapita.',
-               sub: 'Choropleth 34 provinsi (BPS 2020). Pemekaran Papua diagregasi ke induk.' },
-  komoditi: { title: 'Konsumsi per komoditi, per kelas, per provinsi.',
-               sub: 'Drill-down 316 komoditi Susenas. Pilih tahun, kelas, dan komoditi untuk melihat sebaran provinsi.' },
-  compare:  { title: 'Compare provinsi side-by-side.',
-              sub: 'Pilih 2 sampai 4 provinsi untuk lihat metric pengeluaran berdampingan + radar profile.' },
-  metodologi: { title: 'Metodologi & sumber data.',
-                 sub: 'Formula, bobot, definisi variabel, dan caveat dalam dashboard ini.' },
+  trend:      { title: 'Trend & Engel' },
+  komposisi:  { title: 'Komposisi & Komoditi' },
+  geografi:   { title: 'Geografi & Compare' },
+  metodologi: { title: 'Metodologi' },
 };
 
 const TOUR_STEPS = [
