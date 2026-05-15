@@ -207,17 +207,17 @@
   @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
   /* Auto-narrated insight box */
-  .narrative { background: var(--cream); border-left: 3px solid var(--yellow); padding: 16px 20px; margin-top: 16px; }
+  .narrative { background: var(--mist); border-left: 3px solid var(--ice-blue); padding: 16px 20px; margin-top: 16px; }
   .narrative .label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); }
   .narrative .text { font-family: 'Source Serif 4', Georgia, serif; font-size: 15px; line-height: 1.5; color: var(--ink); margin-top: 6px; }
 
   /* Saved views pinned */
   .pin-btn { background: transparent; border: 1px solid var(--rule); padding: 4px 8px; font-size: 10px; color: var(--muted); cursor: pointer; }
   .pin-btn:hover { background: var(--mist); color: var(--navy); border-color: var(--navy); }
-  .pin-btn.is-pinned { background: var(--yellow); color: var(--ink); border-color: var(--yellow); }
+  .pin-btn.is-pinned { background: var(--ice-blue); color: white; border-color: var(--ice-blue); }
 
   /* Tour onboarding */
-  .tour-spot { position: fixed; z-index: 90; background: white; padding: 16px 20px; box-shadow: 0 12px 40px rgba(5,28,44,0.25); max-width: 320px; border-left: 3px solid var(--yellow); }
+  .tour-spot { position: fixed; z-index: 90; background: white; padding: 16px 20px; box-shadow: 0 12px 40px rgba(5,28,44,0.25); max-width: 320px; border-left: 3px solid var(--ice-blue); }
   .tour-spot .step { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--navy); }
   .tour-spot .text { font-family: 'Source Serif 4', Georgia, serif; font-size: 15px; line-height: 1.4; margin-top: 6px; color: var(--ink); }
   .tour-spot .actions { display: flex; gap: 8px; margin-top: 12px; justify-content: space-between; align-items: center; }
@@ -977,8 +977,7 @@
     <div class="chart-card">
       <div class="chart-header">
         <div class="eyebrow">I · Trend Nasional</div>
-        <h3>Pengeluaran per kapita tumbuh, share makanan turun.</h3>
-        <div class="sub">Total per kapita per bulan dan kontribusi makanan/non-makanan, rata-rata tertimbang nasional, 2019 sampai 2025.</div>
+        <h3>Pengeluaran Per Kapita, 2019&ndash;2025</h3>
       </div>
       <div class="chart-filter">
         <div class="filter-field" style="display:flex;align-items:center;color:var(--ink-soft);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;font-weight:600;">
@@ -1025,8 +1024,7 @@
     <div class="chart-card">
       <div class="chart-header">
         <div class="eyebrow">II · Hukum Engel</div>
-        <h3>Hukum Engel: share makanan turun seiring naiknya kelas.</h3>
-        <div class="sub" x-text="'Komposisi pengeluaran makanan vs non-makanan per kelas masyarakat, ' + fc.engel.tahun + '.'"></div>
+        <h3>Share Makanan vs Non-Makanan per Kelas</h3>
       </div>
       <div class="chart-filter">
         <div class="filter-field">
@@ -1072,8 +1070,7 @@
     <div class="chart-card">
       <div class="chart-header">
         <div class="eyebrow">III · Komposisi</div>
-        <h3>Distribusi share pengeluaran: 20 kelompok × 8 kelas.</h3>
-        <div class="sub" x-text="'Share pengeluaran (%) per kelompok per kelas, ' + fc.heatmap.tahun + '. Warna lebih pekat = share lebih tinggi di kelas itu.'"></div>
+        <h3>Share Pengeluaran per Kelompok &amp; Kelas</h3>
       </div>
       <div class="chart-filter">
         <div class="filter-field">
@@ -2348,7 +2345,10 @@ function dashboard() {
           const vals = CLASSES.map(c => (h[c] && h[c][k] !== undefined) ? h[c][k] : 0);
           return vals.reduce((s,v)=>s+v, 0) / vals.length;
         });
-        const palette = ['#003D79','#2A6FB3','#67B2E8','#A9C4DF','#FFB700','#EA7200','#67B2E8','#A9C4DF','#003D79','#2A6FB3','#67B2E8','#A9C4DF','#FFB700','#EA7200','#003D79','#2A6FB3','#67B2E8','#A9C4DF','#FFB700','#EA7200'];
+        // Pure blue gradient — sorted descending sehingga slice paling besar = paling navy
+        const sortedIdx = avg.map((v,i)=>[v,i]).sort((a,b)=>b[0]-a[0]).map(p=>p[1]);
+        const blueGradient = ['#00153A','#001F4D','#002852','#003D79','#1A5394','#2C6FB5','#3F7BC7','#4A8BC4','#5C9DD0','#67B2E8','#7AC0EE','#8DCEF4','#A0DCFA','#B3EAFF','#A9C4DF','#BBD1E5','#CDDEEB','#DFEBF1','#F0F4FA','#E6EEFC'];
+        const palette = klp.map((_, i) => blueGradient[sortedIdx.indexOf(i)] || '#67B2E8');
         Plotly.react('chart-heatmap', [{
           type: 'treemap',
           labels: klp,
@@ -2369,17 +2369,32 @@ function dashboard() {
       const z = klp.map(k => CLASSES.map(c => (h[c] && h[c][k] !== undefined) ? h[c][k] : null));
       Plotly.react('chart-heatmap', [{
         type: 'heatmap', x: CLASSES, y: klp, z,
-        colorscale: [[0, '#F7F5F0'], [0.4, '#67B2E8'], [0.8, '#003D79'], [1, '#051C2C']],
+        // Pure blue gradient — paper light → ice blue → navy → darkest
+        colorscale: [
+          [0,    '#EAF1F8'],
+          [0.25, '#A9C4DF'],
+          [0.5,  '#67B2E8'],
+          [0.7,  '#2C6FB5'],
+          [0.85, '#003D79'],
+          [1,    '#001F4D'],
+        ],
         hovertemplate: '%{y} · %{x}<br>Share: %{z:.1f}%<extra></extra>',
         colorbar: { title: { text: 'Share %', font: { size: 11, color: MUTED } },
                     thickness: 10, len: 0.7, tickfont: { size: 11, color: MUTED } },
         xgap: 1, ygap: 1,
       }], {
-        margin: { l: 200, r: 60, t: 20, b: 80 },
+        // Top margin lebih besar agar label kelas (Poor / Vulnerable / Lower AMC / ...) tidak kepotong
+        margin: { l: 220, r: 60, t: 70, b: 60 },
         font: { family: FONT, size: 12, color: INK },
         plot_bgcolor: 'white', paper_bgcolor: 'white',
-        xaxis: { side: 'top', tickfont: { size: 12, color: INK } },
-        yaxis: { tickfont: { size: 11, color: INK }, autorange: 'reversed' },
+        xaxis: {
+          side: 'top',
+          tickfont: { size: 12, color: INK },
+          tickangle: 0,
+          automargin: true,
+          showgrid: false,
+        },
+        yaxis: { tickfont: { size: 11, color: INK }, autorange: 'reversed', automargin: true },
       }, { displaylogo: false, responsive: true });
     },
     // ----- PPT-ready PNG export with branded composition -----
