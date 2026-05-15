@@ -260,7 +260,7 @@
   body.cb-mode .map-legend-bin .swatch[data-cb] { background-image: none; }
 
   /* Hover sync: row highlighted dari peta hover */
-  .rank-row.is-hovered { background: var(--yellow) !important; transition: background 0.1s; }
+  .rank-row.is-hovered { background: var(--ice-blue-soft) !important; transition: background 0.1s; }
   .rank-row.is-hovered .rank-name { font-weight: 700; }
 
   /* Provinsi profile sticky side panel (click drill-down) */
@@ -416,7 +416,7 @@
   }
 
   /* Songket palette validation tagline */
-  .heritage-tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--yellow); background: rgba(255,183,0,0.08); border: 1px solid rgba(255,183,0,0.3); border-radius: 0; }
+  .heritage-tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ice-blue); background: var(--ice-blue-soft); border: 1px solid var(--ice-blue); border-radius: 0; }
 
   /* Roman numeral eyebrow */
   .eyebrow-roman { font-family: 'Source Serif 4', Georgia, serif; font-style: italic; font-size: var(--fs-md); font-weight: 500; letter-spacing: 0.02em; text-transform: none; color: var(--navy); }
@@ -2214,7 +2214,8 @@ function dashboard() {
         // Outlier flag (binary 0/100)
         const outliers = findOutliers(slice, 1.5);
         const isOutlier = outliers.includes(pcode) ? 100 : 30;
-        const palette = ['#003D79','#EA7200','#67B2E8','#C8102E'];
+        // Pure blue gradient — 4 shades navy → mid → sky → soft
+        const palette = ['#001F4D','#003D79','#2C6FB5','#67B2E8'];
         return {
           type: 'scatterpolar',
           r: [norm, rankInv, shareMakananInv, growth, isOutlier, norm],
@@ -2579,7 +2580,7 @@ function dashboard() {
           featureidkey: 'properties.ADM1_PCODE',
           colorscale: [[0, 'rgba(0,0,0,0)'], [1, 'rgba(0,0,0,0)']],
           showscale: false,
-          marker: { line: { color: '#EA7200', width: 2.5 } },
+          marker: { line: { color: '#001F4D', width: 2.5 } },  /* Outlier border: navy darkest */
           hoverinfo: 'skip', showlegend: false,
         } : null,
         showCities ? {
@@ -2587,7 +2588,7 @@ function dashboard() {
           lon: CITIES.map(c => c.lon), lat: CITIES.map(c => c.lat),
           text: CITIES.map(c => c.name), textposition: 'top right',
           textfont: { family: FONT, size: 10, color: '#051C2C', weight: 600 },
-          marker: { size: 5, color: '#FFB700', line: { color: '#051C2C', width: 1 } },
+          marker: { size: 5, color: '#00A3E0', line: { color: '#051C2C', width: 1 } },  /* City marker: ice blue */
           hoverinfo: 'skip', showlegend: false,
         } : null,
         // Top-3 label (nama + nilai)
@@ -2691,7 +2692,8 @@ function dashboard() {
 
       // Quintile bins
       const bins = computeBins(vals);
-      const palette = ['#FFF8E5', '#FFE08A', '#FFB700', '#D67900', '#003D79'];
+      /* Choropleth palette: 5-stop pure blue gradient (light → ice → mid → navy → darkest) */
+      const palette = ['#EAF1F8', '#A9C4DF', '#67B2E8', '#2C6FB5', '#001F4D'];
       const colorscale = [
         [0.0,   palette[0]], [0.2-1e-9, palette[0]],
         [0.2,   palette[1]], [0.4-1e-9, palette[1]],
