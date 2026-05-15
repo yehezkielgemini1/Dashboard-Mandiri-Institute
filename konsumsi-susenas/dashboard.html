@@ -194,8 +194,23 @@
   body.dark .navy-bg { background: #0A2240; }
 
   /* Sparkline mini chart di hero stat */
-  .hero-stat { position: relative; }
-  .hero-stat .sparkline { height: 32px; margin-top: 8px; opacity: 0.85; }
+  /* KPI cards — uniform box style */
+  .hero-stat {
+    position: relative;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 20px 22px;
+    box-shadow: var(--shadow-subtle);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .hero-stat:hover { box-shadow: var(--shadow-card); border-color: var(--rule-strong); }
+  .hero-stat::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--ice-blue); }
+  .hero-stat .sparkline { height: 28px; margin-top: 8px; opacity: 0.85; }
 
   /* Freshness badge */
   .freshness { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sky); background: rgba(103,178,232,0.08); border: 1px solid rgba(103,178,232,0.3); border-radius: 0; }
@@ -698,12 +713,11 @@
 <!-- ============ TOP NAV (canon, sticky) ============ -->
 <nav class="topnav-canon" x-data="{ navOpen: false }">
   <iconify-icon class="burger" icon="mdi:menu" @click="navOpen = true" role="button" aria-label="Buka menu" tabindex="0" @keydown.enter="navOpen = true"></iconify-icon>
-  <div>
+  <a href="../index.html" style="text-decoration:none;color:inherit;display:block;" title="Kembali ke beranda Mandiri Institute">
     <div class="brand">Mandiri Institute</div>
     <div class="brand-sub">Konsumsi Masyarakat</div>
-  </div>
+  </a>
   <div class="menu">
-    <a href="../index.html">Beranda</a>
     <a href="#" onclick="window.gotoPage('trend'); return false;">Trend &amp; Engel</a>
     <a href="#" onclick="window.gotoPage('komposisi'); return false;">Komposisi &amp; Komoditi</a>
     <a href="#" onclick="window.gotoPage('geografi'); return false;">Geografi &amp; Compare</a>
@@ -971,28 +985,27 @@
 
   <!-- ==================== PAGE: TREND ==================== -->
   <section x-show="submitted && page === 'trend'">
-    <!-- Hero stats with sparkline -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-10 rule-top pt-8">
+    <!-- Hero KPI boxes (uniform 4-col) -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-8">
       <div class="hero-stat">
-        <div class="eyebrow" style="color: var(--muted);">Per kapita 2025</div>
-        <div class="stat-num text-5xl mt-3 ink">Rp 1580<span class="text-2xl muted ml-1">rb/bln</span></div>
+        <div class="eyebrow" style="color: var(--muted);">Per Kapita 2025</div>
+        <div class="stat-num text-4xl mt-2 ink">Rp 1,58<span class="text-xl muted ml-1">jt/bln</span></div>
         <div class="sparkline" id="spark-1"></div>
       </div>
       <div class="hero-stat">
         <div class="eyebrow" style="color: var(--muted);">Pertumbuhan 2019-2025</div>
-        <div class="stat-num text-5xl mt-3 ink">+34.7<span class="text-2xl muted ml-1">%</span></div>
-        <div class="text-sm muted mt-1">CAGR 5.1%</div>
+        <div class="stat-num text-4xl mt-2 ink">+34,7<span class="text-xl muted ml-1">%</span></div>
+        <div class="text-sm muted mt-1">CAGR 5,1% per tahun</div>
       </div>
       <div class="hero-stat">
-        <div class="eyebrow" style="color: var(--muted);">Share makanan 2025</div>
-        <div class="stat-num text-5xl mt-3 ink">56.3<span class="text-2xl muted ml-1">%</span></div>
-        <div class="text-sm muted mt-1">vs 56.5% pada 2019</div>
+        <div class="eyebrow" style="color: var(--muted);">Share Makanan 2025</div>
+        <div class="stat-num text-4xl mt-2 ink">56,3<span class="text-xl muted ml-1">%</span></div>
         <div class="sparkline" id="spark-3"></div>
       </div>
       <div class="hero-stat">
         <div class="eyebrow" style="color: var(--muted);">Cakupan</div>
-        <div class="stat-num text-5xl mt-3 ink">38<span class="text-2xl muted ml-1">prov</span></div>
-        <div class="text-sm muted mt-1">8 kelas wb4 · 20 kelompok</div>
+        <div class="stat-num text-4xl mt-2 ink">38<span class="text-xl muted ml-1">prov</span></div>
+        <div class="text-sm muted mt-1">8 kelas · 20 kelompok</div>
       </div>
     </div>
     <div class="chart-card">
@@ -1000,12 +1013,7 @@
         <div class="eyebrow">I · Trend Nasional</div>
         <h3>Pengeluaran Per Kapita, 2019&ndash;2025</h3>
       </div>
-      <div class="chart-filter">
-        <div class="filter-field" style="display:flex;align-items:center;color:var(--ink-soft);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;font-weight:600;">
-          <iconify-icon icon="mdi:earth" style="font-size:16px;margin-right:6px;color:var(--ice-blue);"></iconify-icon>
-          Tampilan nasional · 2019&ndash;2025 (no filter)
-        </div>
-        <div class="filter-spacer"></div>
+      <div class="chart-filter" style="justify-content:flex-end;">
         <div class="filter-actions">
           <button class="action-btn" @click="exportPPT('chart-trend', 'Pengeluaran per kapita Indonesia, 2019-2025', 'Trend nasional · Susenas Maret BPS')"><iconify-icon icon="mdi:presentation"></iconify-icon>PPT</button>
           <button class="action-btn" @click="downloadCSV('trend')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
@@ -1372,10 +1380,10 @@
         <div>
           <div class="eyebrow">Caveat & Catatan</div>
           <ul class="mt-4 space-y-3 text-sm">
-            <li class="flex gap-2"><iconify-icon icon="mdi:alert-circle-outline" style="color:#EA7200;font-size:18px;flex-shrink:0;"></iconify-icon><span>Pemekaran Papua 2022+ (4 prov baru: ID92, 95, 96, 97) <strong>diagregasi ke induk</strong> (94, 91) untuk kompatibilitas peta. Ranking tetap 38 prov.</span></li>
-            <li class="flex gap-2"><iconify-icon icon="mdi:alert-circle-outline" style="color:#EA7200;font-size:18px;flex-shrink:0;"></iconify-icon><span>Nilai dalam <strong>nominal Rupiah</strong>, belum disesuaikan inflasi. Hati-hati membandingkan antar tahun secara real.</span></li>
-            <li class="flex gap-2"><iconify-icon icon="mdi:alert-circle-outline" style="color:#EA7200;font-size:18px;flex-shrink:0;"></iconify-icon><span>Komoditi level: <code>rp_per_kapita_bulan</code> termasuk non-buyer (zero spending). Untuk buyer-only, lihat <code>rp_per_kapita_buyer_bulan</code> di raw data.</span></li>
-            <li class="flex gap-2"><iconify-icon icon="mdi:alert-circle-outline" style="color:#EA7200;font-size:18px;flex-shrink:0;"></iconify-icon><span>Kelas marginal di kab kecil (mis. Upper Class di Yahukimo) bisa noisy karena sample kecil.</span></li>
+            <li class="flex gap-2"><iconify-icon icon="mdi:alert-circle-outline" style="color:#003D79;font-size:18px;flex-shrink:0;"></iconify-icon><span>Pemekaran Papua 2022+ (4 prov baru: ID92, 95, 96, 97) <strong>diagregasi ke induk</strong> (94, 91) untuk kompatibilitas peta. Ranking tetap 38 prov.</span></li>
+            <li class="flex gap-2"><iconify-icon icon="mdi:alert-circle-outline" style="color:#003D79;font-size:18px;flex-shrink:0;"></iconify-icon><span>Nilai dalam <strong>nominal Rupiah</strong>, belum disesuaikan inflasi. Hati-hati membandingkan antar tahun secara real.</span></li>
+            <li class="flex gap-2"><iconify-icon icon="mdi:alert-circle-outline" style="color:#003D79;font-size:18px;flex-shrink:0;"></iconify-icon><span>Komoditi level: <code>rp_per_kapita_bulan</code> termasuk non-buyer (zero spending). Untuk buyer-only, lihat <code>rp_per_kapita_buyer_bulan</code> di raw data.</span></li>
+            <li class="flex gap-2"><iconify-icon icon="mdi:alert-circle-outline" style="color:#003D79;font-size:18px;flex-shrink:0;"></iconify-icon><span>Kelas marginal di kab kecil (mis. Upper Class di Yahukimo) bisa noisy karena sample kecil.</span></li>
           </ul>
         </div>
       </div>
@@ -1859,7 +1867,7 @@ function dashboard() {
       }, { displayModeBar: false, responsive: true, staticPlot: false });
       Plotly.newPlot('spark-3', [{
         x: t.tahun, y: t.share_makanan, type: 'scatter', mode: 'lines+markers',
-        line: { color: '#EA7200', width: 2 }, marker: { size: 4, color: '#EA7200' },
+        line: { color: '#003D79', width: 2 }, marker: { size: 4, color: '#003D79' },
         hovertemplate: '%{x}: %{y:.1f}%<extra></extra>',
       }], {
         margin: { l: 0, r: 0, t: 0, b: 0 },
@@ -2207,26 +2215,31 @@ function dashboard() {
 
     renderTrend() {
       const t = PAYLOAD.trend;
+      // Compact display: convert raw Rp ke jutaan agar axis Y tidak makan tempat
+      const TO_JT = 1_000_000;
+      const yMak = t.rp_makanan.map(v => v / TO_JT);
+      const yNon = t.rp_nonmakanan.map(v => v / TO_JT);
+      const yTot = t.rp_total.map(v => v / TO_JT);
       const traces = [
-        { x: t.tahun, y: t.rp_makanan, name: 'Makanan', type: 'bar', marker: { color: COLOR_MAKANAN }, hovertemplate: '%{x}<br>Makanan: Rp %{y:,.0f}<extra></extra>' },
-        { x: t.tahun, y: t.rp_nonmakanan, name: 'Non-makanan', type: 'bar', marker: { color: COLOR_NONMAKANAN }, hovertemplate: '%{x}<br>Non-makanan: Rp %{y:,.0f}<extra></extra>' },
-        { x: t.tahun, y: t.rp_total, name: 'Total', type: 'scatter', mode: 'lines+markers',
+        { x: t.tahun, y: yMak, name: 'Makanan', type: 'bar', marker: { color: COLOR_MAKANAN }, hovertemplate: '%{x}<br>Makanan: Rp %{y:.2f} jt<extra></extra>' },
+        { x: t.tahun, y: yNon, name: 'Non-makanan', type: 'bar', marker: { color: COLOR_NONMAKANAN }, hovertemplate: '%{x}<br>Non-makanan: Rp %{y:.2f} jt<extra></extra>' },
+        { x: t.tahun, y: yTot, name: 'Total', type: 'scatter', mode: 'lines+markers',
            line: { color: INK, width: 2.5 }, marker: { size: 8, color: INK },
-           hovertemplate: '%{x}<br>Total: Rp %{y:,.0f}<extra></extra>' },
+           hovertemplate: '%{x}<br>Total: Rp %{y:.2f} jt<extra></extra>' },
       ];
       // Compare baseline: horizontal line di rp_total 2019 + label growth %
       const shapes = [];
       if (this.compareBaseline) {
-        const base = t.rp_total[0];
+        const baseJt = yTot[0];
         shapes.push({
           type: 'line', xref: 'paper', yref: 'y',
-          x0: 0, x1: 1, y0: base, y1: base,
+          x0: 0, x1: 1, y0: baseJt, y1: baseJt,
           line: { color: '#C8102E', width: 1.5, dash: 'dash' },
         });
         traces.push({
-          x: t.tahun, y: t.tahun.map(_ => base),
+          x: t.tahun, y: t.tahun.map(_ => baseJt),
           mode: 'text', type: 'scatter',
-          text: t.rp_total.map(v => `+${((v/base-1)*100).toFixed(0)}%`),
+          text: yTot.map(v => `+${((v/baseJt-1)*100).toFixed(0)}%`),
           textposition: 'top center', textfont: { size: 11, color: '#C8102E' },
           showlegend: false, hoverinfo: 'skip',
         });
@@ -2237,7 +2250,7 @@ function dashboard() {
       const annotations = [];
       if (idx2020 >= 0) {
         annotations.push({
-          x: 2020, y: t.rp_total[idx2020], text: '<b>COVID-19</b><br>pertumbuhan melambat',
+          x: 2020, y: yTot[idx2020], text: '<b>COVID-19</b><br>pertumbuhan melambat',
           xref: 'x', yref: 'y', showarrow: true, arrowhead: 2, arrowsize: 1, arrowwidth: 1,
           arrowcolor: INK, ax: -50, ay: -60,
           font: { size: 11, color: INK, family: FONT },
@@ -2247,7 +2260,7 @@ function dashboard() {
       }
       if (idx2023 >= 0) {
         annotations.push({
-          x: 2023, y: t.rp_total[idx2023], text: '<b>Rebound</b><br>pengeluaran naik tajam',
+          x: 2023, y: yTot[idx2023], text: '<b>Rebound</b><br>pengeluaran naik tajam',
           xref: 'x', yref: 'y', showarrow: true, arrowhead: 2, arrowsize: 1, arrowwidth: 1,
           arrowcolor: '#003D79', ax: 40, ay: -70,
           font: { size: 11, color: '#003D79', family: FONT },
@@ -2261,9 +2274,9 @@ function dashboard() {
         font: { family: FONT, size: 13, color: INK },
         plot_bgcolor: 'white', paper_bgcolor: 'white',
         xaxis: { tickfont: { size: 14, color: INK }, showline: true, linecolor: INK, ticks: 'outside', tickcolor: INK, ticklen: 4 },
-        yaxis: { title: { text: 'Rp per kapita per bulan', font: { size: 12, color: MUTED } },
+        yaxis: { title: { text: 'Rp juta / kapita / bulan', font: { size: 12, color: MUTED } },
                  tickfont: { size: 12, color: MUTED }, gridcolor: '#EAECF0',
-                 tickformat: ',.0f' },
+                 tickformat: '.1f' },
         legend: { orientation: 'h', y: -0.18, x: 0, xanchor: 'left', font: { size: 12 } },
         annotations, shapes,
       }, { displaylogo: false, responsive: true });
