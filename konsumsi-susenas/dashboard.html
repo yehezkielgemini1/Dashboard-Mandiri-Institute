@@ -1626,6 +1626,24 @@ const AXIS_DEFAULTS = {
   zerolinecolor: '#E5E8EC', zerolinewidth: 1,
 };
 
+/* Fix provinsi name capitalization — sumber data title-case 'Dki Jakarta', harusnya 'DKI Jakarta' */
+function formatProvName(name) {
+  if (!name || typeof name !== 'string') return name;
+  return name
+    .replace(/\bDki\b/g, 'DKI')
+    .replace(/\bDi\b/g, 'DI')                      /* DI Yogyakarta */
+    .replace(/\bNtt\b/g, 'NTT').replace(/\bNtb\b/g, 'NTB')
+    .replace(/\bKepulauan/g, 'Kepulauan');         /* normalize */
+}
+/* Monkey-patch PAYLOAD prov_meta_38 saat load — once, agar semua tampilan konsisten */
+(function patchProvNames() {
+  if (typeof PAYLOAD !== 'undefined' && PAYLOAD.prov_meta_38) {
+    for (const k in PAYLOAD.prov_meta_38) {
+      PAYLOAD.prov_meta_38[k] = formatProvName(PAYLOAD.prov_meta_38[k]);
+    }
+  }
+})();
+
 function dashboard() {
   return {
     tabs: TABS,
@@ -1747,7 +1765,8 @@ function dashboard() {
                      .map(([p, n]) => ({ pcode: pcodeProvCode(p), nama: n }));
     },
     provNameByPcode(pcode) {
-      return (PAYLOAD.prov_meta_38 && PAYLOAD.prov_meta_38[pcode]) || pcode;
+      const raw = (PAYLOAD.prov_meta_38 && PAYLOAD.prov_meta_38[pcode]) || pcode;
+      return formatProvName(raw);
     },
     onKomKelompokFromFilter() {
       // Saat user ganti Kelompok di filter bar, auto-pilih komoditi pertama di kelompok itu
