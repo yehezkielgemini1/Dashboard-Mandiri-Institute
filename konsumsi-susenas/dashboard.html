@@ -540,23 +540,40 @@
   .chart-filter .filter-field { display: flex; flex-direction: column; gap: 4px; min-width: 120px; }
   .chart-filter .filter-field label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); display: flex; align-items: center; gap: 5px; }
   .chart-filter .filter-field label::before { content: ''; width: 4px; height: 4px; background: var(--ice-blue); border-radius: 50%; display: inline-block; }
-  .chart-filter select, .chart-filter button.chart-chip {
-    padding: 7px 28px 7px 10px;
+  .chart-filter select {
+    padding: 7px 40px 7px 12px;
     font-size: 12px;
     font-weight: 500;
     color: var(--ink);
     border: 1px solid var(--rule-strong);
-    border-radius: 3px;
+    border-radius: 4px;
     background: var(--paper);
     cursor: pointer;
-    min-width: 110px;
-    height: 34px;
+    min-width: 130px;
+    height: 36px;
     appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23475569'%3e%3cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.39a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z' clip-rule='evenodd'/%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 8px center;
-    background-size: 14px;
-    transition: border-color 0.15s ease;
+    /* Clear chevron indicator + divider line */
+    background-image:
+      linear-gradient(to right, transparent 0, transparent calc(100% - 32px), var(--rule-strong) calc(100% - 32px), var(--rule-strong) calc(100% - 31px), transparent calc(100% - 31px), transparent 100%),
+      url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23003D79' stroke='%23003D79' stroke-width='0.5'%3e%3cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.39a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z' clip-rule='evenodd'/%3e%3c/svg%3e");
+    background-repeat: no-repeat, no-repeat;
+    background-position: 0 0, right 8px center;
+    background-size: 100% 100%, 18px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    font-family: inherit;
+  }
+  .chart-filter button.chart-chip {
+    padding: 7px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    border: 1px solid var(--rule-strong);
+    border-radius: 4px;
+    background: var(--paper);
+    cursor: pointer;
+    min-width: 80px;
+    height: 36px;
+    transition: all 0.15s ease;
     font-family: inherit;
   }
   .chart-filter select:hover, .chart-filter button.chart-chip:hover { border-color: var(--ice-blue); }
@@ -957,12 +974,23 @@
         <div class="text-sm muted mt-1">8 kelas wb4 · 20 kelompok</div>
       </div>
     </div>
-    <div class="mt-16">
-      <span class="badge"><span class="badge-dot"></span>Weighted Mean Nasional</span>
-      <div class="eyebrow-roman mt-3">I. Trend</div>
-      <h2 class="serif-display text-3xl mt-2 max-w-3xl">Pengeluaran per kapita tumbuh, share makanan turun.</h2>
-      <p class="mt-3 muted text-base max-w-3xl">Total per kapita per bulan dan kontribusi makanan/non-makanan, rata-rata tertimbang nasional, 2019 sampai 2025.</p>
-      <div class="hair-accent mt-8 pt-2"></div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="eyebrow">I · Trend Nasional</div>
+        <h3>Pengeluaran per kapita tumbuh, share makanan turun.</h3>
+        <div class="sub">Total per kapita per bulan dan kontribusi makanan/non-makanan, rata-rata tertimbang nasional, 2019 sampai 2025.</div>
+      </div>
+      <div class="chart-filter">
+        <div class="filter-field" style="display:flex;align-items:center;color:var(--ink-soft);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;font-weight:600;">
+          <iconify-icon icon="mdi:earth" style="font-size:16px;margin-right:6px;color:var(--ice-blue);"></iconify-icon>
+          Tampilan nasional · 2019&ndash;2025 (no filter)
+        </div>
+        <div class="filter-spacer"></div>
+        <div class="filter-actions">
+          <button class="action-btn" @click="exportPPT('chart-trend', 'Pengeluaran per kapita Indonesia, 2019-2025', 'Trend nasional · Susenas Maret BPS')"><iconify-icon icon="mdi:presentation"></iconify-icon>PPT</button>
+          <button class="action-btn" @click="downloadCSV('trend')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
+        </div>
+      </div>
       <div class="insight-grid mt-2">
         <aside class="insight-panel">
           <div class="callout">
@@ -978,14 +1006,6 @@
           </div>
         </aside>
         <div>
-          <div class="flex items-center gap-2 mb-3">
-            <button class="chip-action" @click="exportPPT('chart-trend', 'Pengeluaran per kapita Indonesia, 2019-2025', 'Trend nasional · Susenas Maret BPS')" style="background:var(--yellow);color:var(--ink);border-color:var(--yellow);font-weight:700;">
-              <iconify-icon icon="mdi:presentation"></iconify-icon>Export PPT
-            </button>
-            <button class="chip-action" @click="downloadCSV('trend')">
-              <iconify-icon icon="mdi:download"></iconify-icon>CSV
-            </button>
-          </div>
           <div id="chart-trend" style="height:480px;"></div>
           <div class="chart-footer">
             <span><span class="label">Sumber</span>Susenas Maret BPS, Blok 41 & 42</span>
@@ -1049,12 +1069,33 @@
 
   <!-- ==================== PAGE: KOMPOSISI ==================== -->
   <section x-show="submitted && page === 'komposisi'">
-    <div class="mt-12 rule-top pt-8">
-      <span class="badge"><span class="badge-dot"></span>Share % · 20 Kelompok × 8 Kelas</span>
-      <div class="eyebrow-roman mt-3">III. Komposisi</div>
-      <h2 class="serif-display text-3xl mt-2 max-w-3xl">Distribusi share pengeluaran: 20 kelompok × 8 kelas.</h2>
-      <p class="mt-3 muted text-base max-w-3xl" x-text="'Heatmap share pengeluaran (%) per kelompok per kelas, ' + year + '. Warna lebih pekat = share lebih tinggi di kelas itu.'"></p>
-      <div class="hair-accent mt-8 pt-2"></div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="eyebrow">III · Komposisi</div>
+        <h3>Distribusi share pengeluaran: 20 kelompok × 8 kelas.</h3>
+        <div class="sub" x-text="'Share pengeluaran (%) per kelompok per kelas, ' + fc.heatmap.tahun + '. Warna lebih pekat = share lebih tinggi di kelas itu.'"></div>
+      </div>
+      <div class="chart-filter">
+        <div class="filter-field">
+          <label>Tahun</label>
+          <select x-model="fc.heatmap.tahun" @change="renderHeatmap()">
+            <template x-for="y in years" :key="'fch'+y"><option :value="y" x-text="y"></option></template>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label>Tampilan</label>
+          <div style="display:flex;gap:6px;">
+            <button class="chart-chip" :class="{ active: fc.heatmap.kompMode === 'heatmap' }" @click="fc.heatmap.kompMode='heatmap'; renderHeatmap()">Heatmap</button>
+            <button class="chart-chip" :class="{ active: fc.heatmap.kompMode === 'treemap' }" @click="fc.heatmap.kompMode='treemap'; renderHeatmap()">Treemap</button>
+          </div>
+        </div>
+        <div class="filter-spacer"></div>
+        <div class="filter-actions">
+          <button class="action-btn" @click="exportPPT('chart-heatmap', 'Komposisi share pengeluaran per kelompok dan kelas', 'Tahun ' + fc.heatmap.tahun + ' · Susenas Maret BPS')"><iconify-icon icon="mdi:presentation"></iconify-icon>PPT</button>
+          <button class="action-btn" @click="downloadCSV('komposisi')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
+          <button class="action-btn" @click="downloadImage('chart-heatmap', 'png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
+        </div>
+      </div>
       <div class="insight-grid mt-2">
         <aside class="insight-panel">
           <div class="callout">
@@ -1070,19 +1111,7 @@
           </div>
         </aside>
         <div>
-          <div class="mb-3 flex gap-2 flex-wrap">
-            <button class="chip-action" :class="kompMode==='heatmap' ? 'active' : ''" @click="kompMode='heatmap'; renderHeatmap()">Heatmap</button>
-            <button class="chip-action" :class="kompMode==='treemap' ? 'active' : ''" @click="kompMode='treemap'; renderHeatmap()">Treemap</button>
-            <div style="margin-left:auto;display:flex;gap:8px;">
-              <button class="chip-action" @click="downloadCSV('komposisi')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
-              <button class="chip-action" @click="exportPPT('chart-heatmap', 'Komposisi share pengeluaran per kelompok dan kelas', 'Tahun ' + year + ' · Susenas Maret BPS')" style="background:var(--yellow);color:var(--ink);border-color:var(--yellow);font-weight:700;">
-                <iconify-icon icon="mdi:presentation"></iconify-icon>Export PPT
-              </button>
-              <button class="chip-action" @click="downloadImage('chart-heatmap', 'png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG raw</button>
-              <button class="chip-action" @click="downloadImage('chart-heatmap', 'svg')"><iconify-icon icon="mdi:vector-square"></iconify-icon>SVG</button>
-            </div>
-          </div>
-          <div id="chart-heatmap" style="height:760px;"></div>
+          <div id="chart-heatmap" style="height:680px;"></div>
           <div class="chart-footer">
             <span><span class="label">Sumber</span>Susenas Maret BPS, Blok 41 & 42</span>
             <span><span class="label">Total</span>tiap kolom = 100%</span>
@@ -2311,9 +2340,9 @@ function dashboard() {
     },
 
     renderHeatmap() {
-      const h = PAYLOAD.heatmap[this.year];
+      const h = PAYLOAD.heatmap[this.fc.heatmap.tahun];
       const klp = PAYLOAD.kelompok_order;
-      if (this.kompMode === 'treemap') {
+      if (this.fc.heatmap.kompMode === 'treemap') {
         // Treemap: agregat 20 kelompok across 8 kelas (avg share)
         const avg = klp.map(k => {
           const vals = CLASSES.map(c => (h[c] && h[c][k] !== undefined) ? h[c][k] : 0);
