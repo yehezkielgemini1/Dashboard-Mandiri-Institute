@@ -1,134 +1,197 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Profil Demografi & Kesehatan Indonesia 2025 - Mandiri Institute</title>
+<title>Profil Demografi & Kesehatan Indonesia 2025 | Mandiri Institute</title>
 <meta name="description" content="514 Kab/Kota - Aging, JKN Coverage, Out-of-Pocket Health Spending. Susenas KOR + KP 2025.">
 <meta name="theme-color" content="#003D79">
-<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
-<!-- v2 Tactile Editorial · refactored 2026-05-11 · v1 backup di _archive/v1-pre-tactile-editorial-2026-05-11/ -->
+<script src="../_assets/plotly.min.js"></script>
+<script src="../_assets/tailwind.min.js"></script>
+<script src="../_assets/iconify-icon.min.js"></script>
+<script src="../_assets/icons.js"></script>
+<link href="../_assets/fonts/fonts.css" rel="stylesheet">
+<!-- v4.2 Pattern Rollout 2026-05-16 (map hero + floating side panel, full v4 tokens) -->
 <style>
   :root {
-    --navy: #003D79; --navy-deep: #002852; --navy-soft: #1A5394;
+    --navy: #003D79; --navy-primary: #003D79; --navy-deep: #002852;
+    --navy-darkest: #001F4D; --navy-soft: #1A5394;
     --sky: #67B2E8; --sky-soft: #A9C4DF;
-    --yellow: #FFB700; --yellow-soft: #FFE08A;
+    --ice-blue: #00A3E0; --ice-blue-soft: #E6F6FC; --ice-blue-deep: #0078A8;
     --ink: #051C2C; --ink-soft: #2A3F52;
     --rule: #E5E8EC; --rule-strong: #D0D5DD;
     --muted: #667085; --muted-soft: #98A2B3;
-    --paper: #FFFFFF; --cream: #F8F6F0; --mist: #F0F6FC;
-    --positive: #00875A; --negative: #C8102E; --warning: #EA7200;
-    --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
-    --sp-5: 24px; --sp-6: 32px; --sp-8: 48px; --sp-10: 64px; --sp-12: 96px;
-    --elev-1: 0 1px 2px rgba(5,28,44,0.04);
-    --elev-2: 0 2px 8px rgba(5,28,44,0.06);
-    --elev-3: 0 8px 24px rgba(5,28,44,0.10);
-    --elev-4: 0 16px 48px rgba(5,28,44,0.14);
-    --fs-xs: 11px; --fs-sm: 13px; --fs-base: 14px; --fs-md: 16px;
-    --fs-lg: 20px; --fs-xl: 25px; --fs-2xl: 31px; --fs-3xl: 39px;
-    --fs-4xl: 49px; --fs-5xl: 61px;
-    --tr-fast: 0.12s ease; --tr-base: 0.2s ease; --tr-slow: 0.4s ease;
+    --paper: #FFFFFF; --canvas: #F9F9F8; --cream: #F8F6F0; --mist: #F0F6FC;
+    --yellow: #FFB700;
+    --shadow-subtle: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-card: 0 4px 12px 0 rgb(0 0 0 / 0.08), 0 2px 4px -1px rgb(0 0 0 / 0.06);
+    --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px;
+    --sp-5:24px; --sp-6:32px; --sp-8:48px; --sp-10:64px;
+    --fs-xs:11px; --fs-sm:13px; --fs-base:14px; --fs-md:16px; --fs-lg:20px;
+    --tr-fast:0.12s ease; --tr-base:0.2s ease;
   }
-  * { box-sizing: border-box; }
-  html, body { background: var(--paper); color: var(--ink); }
-  body { font-family: 'Inter', system-ui, sans-serif; font-weight: 400; letter-spacing: -0.003em; margin: 0; }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { background: var(--paper); color: var(--ink); margin: 0; padding: 0; }
+  body { font-family: 'Inter', system-ui, sans-serif; font-weight: 400; letter-spacing: -0.003em; min-height: 100vh; }
   .serif-display { font-family: 'Source Serif 4', Georgia, serif; font-weight: 500; letter-spacing: -0.015em; line-height: 1.08; }
-  .stat-num { font-family: 'Source Serif 4', Georgia, serif; font-weight: 500; letter-spacing: -0.02em; line-height: 1; font-feature-settings: 'tnum' 1, 'lnum' 1; }
+  .serif { font-family: 'Source Serif 4', Georgia, serif; }
   .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--navy); }
-  .rule-top { border-top: 1px solid var(--rule); }
-  .rule-bottom { border-bottom: 1px solid var(--rule); }
-  .hair-accent { border-top: 2px solid var(--sky); }
-  .ink { color: var(--ink); }
-  .muted { color: var(--muted); }
+  .ink { color: var(--ink); } .muted { color: var(--muted); }
   .num { font-variant-numeric: tabular-nums; }
-  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--navy); background: var(--mist); border: 1px solid var(--sky); }
-  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--sky); display: inline-block; }
-  .callout { border-left: 3px solid var(--sky); background: var(--mist); padding: 18px 24px; }
-  .callout .label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--navy); }
-  .callout .text { font-family: 'Source Serif 4', Georgia, serif; font-size: 16px; line-height: 1.5; color: var(--ink); margin-top: 6px; font-weight: 500; }
-  .chart-footer { border-top: 1px solid var(--rule); margin-top: var(--sp-5); padding-top: var(--sp-4); display: flex; flex-wrap: wrap; gap: var(--sp-5); font-size: var(--fs-xs); color: var(--muted); }
+
+  /* Tab pages */
+  .tab-page { display: none; } .tab-page.active { display: block; }
+
+  /* KPI cards */
+  .kpi-card {
+    position: relative; background: var(--paper); border: 1px solid var(--rule); border-radius: 4px;
+    padding: 20px 22px; box-shadow: var(--shadow-subtle);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    min-height: 120px; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden;
+  }
+  .kpi-card:hover { box-shadow: var(--shadow-card); border-color: var(--rule-strong); }
+  .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--ice-blue); }
+  .kpi-card.is-warn::before { background: var(--yellow); }
+  .kpi-card.is-bad::before { background: #C8102E; }
+  .kpi-card.is-pos::before { background: #00875A; }
+  .kpi-eyebrow { font-size: var(--fs-xs); font-weight: 700; letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase; }
+  .kpi-num { font-family: 'Source Serif 4', Georgia, serif; font-size: 2.2rem; font-weight: 600; color: var(--navy); line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .kpi-num-sub { font-size: 1rem; font-weight: 500; color: var(--muted); margin-left: 2px; }
+  .kpi-sub { font-size: var(--fs-xs); color: var(--muted); margin-top: 2px; }
+  .kpi-card.is-warn .kpi-num { color: var(--yellow); }
+  .kpi-card.is-bad .kpi-num { color: #C8102E; }
+  .kpi-card.is-pos .kpi-num { color: #00875A; }
+
+  /* Chart card */
+  .chart-card {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 4px;
+    box-shadow: var(--shadow-subtle); padding: 20px 24px;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .chart-card:hover { border-color: var(--rule-strong); box-shadow: var(--shadow-card); }
+  .chart-card .chart-header { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--rule); }
+  .chart-card .chart-header .eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ice-blue); }
+  .chart-card .chart-header h3 { font-family: 'Source Serif 4', Georgia, serif; font-size: 22px; font-weight: 600; color: var(--ink); margin: 6px 0 0; letter-spacing: -0.012em; line-height: 1.25; }
+  .chart-card .chart-header .sub { font-size: 13px; color: var(--ink-soft); margin-top: 6px; }
+
+  /* Filter row */
+  .chart-filter {
+    display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end;
+    padding: 12px 14px; background: var(--canvas); border: 1px solid var(--rule);
+    border-radius: 4px; margin-bottom: 18px;
+  }
+  .chart-filter .filter-field { display: flex; flex-direction: column; gap: 4px; min-width: 120px; }
+  .chart-filter .filter-field label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-soft); display: flex; align-items: center; gap: 5px;
+  }
+  .chart-filter .filter-field label::before { content: ''; width: 4px; height: 4px; background: var(--ice-blue); border-radius: 50%; display: inline-block; }
+  .chart-filter select {
+    padding: 7px 36px 7px 12px; font-size: 12px; font-weight: 500; color: var(--ink);
+    border: 1px solid var(--rule-strong); border-radius: 4px; background: var(--paper);
+    cursor: pointer; min-width: 140px; height: 36px; appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23003D79'%3e%3cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.39a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z' clip-rule='evenodd'/%3e%3c/svg%3e");
+    background-repeat: no-repeat; background-position: right 8px center; background-size: 18px;
+    transition: border-color 0.15s ease; font-family: inherit;
+  }
+  .chart-filter select:hover { border-color: var(--ice-blue); }
+  .filter-reset-btn {
+    padding: 7px 14px; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    border: 1px solid var(--rule); background: transparent; color: var(--muted); border-radius: 3px;
+    cursor: pointer; font-family: inherit; transition: all 0.15s;
+  }
+  .filter-reset-btn:hover { border-color: var(--ice-blue); color: var(--navy); background: var(--ice-blue-soft); }
+
+  /* Export row */
+  .chart-export-row {
+    display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;
+    padding: 14px 0 8px; border-top: 1px dashed var(--rule); margin-top: 14px;
+  }
+  .chart-export-row .action-btn {
+    background: transparent; border: 1px solid var(--rule); padding: 8px 14px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.04em; color: var(--ink-soft);
+    cursor: pointer; border-radius: 3px; display: inline-flex; align-items: center; gap: 6px;
+    height: 34px; transition: all 0.15s ease; font-family: inherit;
+  }
+  .chart-export-row .action-btn:hover { border-color: var(--ice-blue); color: var(--ice-blue); background: var(--ice-blue-soft); }
+  .chart-export-row .action-btn iconify-icon { font-size: 14px; }
+
+  /* Chart footer */
+  .chart-footer {
+    border-top: 1px solid var(--rule); margin-top: var(--sp-5); padding-top: var(--sp-4);
+    display: flex; flex-wrap: wrap; gap: var(--sp-5); font-size: var(--fs-xs); color: var(--muted);
+  }
   .chart-footer .label { font-weight: 600; color: var(--ink); text-transform: uppercase; letter-spacing: 0.06em; margin-right: 4px; }
-  .select-flat { border: 0; border-bottom: 1px solid var(--ink); background: transparent; padding: 6px 24px 6px 0; font-size: 15px; font-weight: 500; color: var(--ink); appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23051C2C'%3e%3cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.39a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z' clip-rule='evenodd'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 0 center; background-size: 18px; }
-  .select-flat:focus { outline: none; border-bottom-color: var(--sky); }
 
-  /* Sidebar */
-  .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 220px; background: var(--navy); color: white; padding: 24px 0; z-index: 40; display: flex; flex-direction: column; overflow-y: auto; }
-  .sidebar .brand { padding: 0 24px 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.12); }
-  .sidebar .brand-title { font-family: 'Source Serif 4', Georgia, serif; font-size: 18px; font-weight: 600; line-height: 1.15; color: white; }
-  .sidebar .brand-sub { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sky); margin-top: 4px; font-weight: 600; }
-  .sidebar .yellow-accent { display: inline-block; width: 10px; height: 10px; background: var(--yellow); margin-bottom: 8px; }
-  .sidebar .nav-section { padding: 16px 0; }
-  .sidebar .nav-label { padding: 0 24px; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 8px; }
-  .sidebar .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 24px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.7); border-left: 3px solid transparent; cursor: pointer; transition: all 0.15s; background: none; border-top: none; border-right: none; border-bottom: none; width: 100%; text-align: left; }
-  .sidebar .nav-item:hover { color: white; background: rgba(255,255,255,0.05); }
-  .sidebar .nav-item.active { color: white; border-left-color: var(--sky); background: rgba(103,178,232,0.1); }
-  .sidebar .nav-item iconify-icon { font-size: 18px; }
-  .sidebar .footer { margin-top: auto; padding: 16px 24px; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.4); border-top: 1px solid rgba(255,255,255,0.12); }
-  .sidebar .crosslink { padding: 12px 24px; border-top: 1px solid rgba(255,255,255,0.12); }
-  .sidebar .crosslink a { display: flex; align-items: center; gap: 8px; font-size: 11px; color: rgba(255,255,255,0.7); text-decoration: none; padding: 6px 0; transition: color 0.15s; }
-  .sidebar .crosslink a:hover { color: var(--sky); }
-  .sidebar .crosslink iconify-icon { font-size: 14px; }
-  .with-sidebar { margin-left: 220px; }
-
-  /* Mobile drawer */
-  .topbar-mobile { display: none; position: sticky; top: 0; z-index: 45; background: var(--navy); color: white; padding: 12px 16px; align-items: center; gap: 12px; }
-  .topbar-mobile button { background: none; border: none; color: white; cursor: pointer; padding: 4px; display: flex; align-items: center; }
-  .topbar-mobile .topbar-title { font-family: 'Source Serif 4', Georgia, serif; font-size: 15px; font-weight: 600; }
-  .topbar-mobile .topbar-sub { font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sky); }
-  .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(5,28,44,0.5); z-index: 39; }
-  @media (max-width: 1100px) {
-    .sidebar { transform: translateX(-100%); transition: transform 0.25s ease; box-shadow: var(--elev-3); }
-    .sidebar.open { transform: translateX(0); }
-    .with-sidebar { margin-left: 0; }
-    .topbar-mobile { display: flex; }
-    .sidebar-overlay.open { display: block; }
-    main.dash-main { padding-left: 16px !important; padding-right: 16px !important; }
+  /* Slim page header */
+  .page-header-slim {
+    background: linear-gradient(180deg, var(--navy-deep) 0%, var(--navy-primary) 100%);
+    color: white; border-bottom: 1px solid var(--rule);
+  }
+  .page-header-slim .eyebrow-small { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ice-blue); }
+  .page-header-slim h1 { color: white; font-weight: 600; letter-spacing: -0.018em; }
+  .page-header-slim .page-marker {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.18em; color: rgba(255,255,255,0.5);
+    border: 1px solid rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 2px;
   }
 
-  .hero-band { background: linear-gradient(180deg, var(--navy) 0%, #002852 100%); position: relative; color: white; }
-  .hero-band::before { content: ''; position: absolute; inset: 0; background-image:
-    radial-gradient(ellipse at 20% 30%, rgba(255,255,255,0.04), transparent 50%),
-    radial-gradient(ellipse at 80% 70%, rgba(103,178,232,0.06), transparent 50%);
-    pointer-events: none; }
-  .hero-band::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 1px; background: var(--yellow); opacity: 0.4; }
-  .hero-band .eyebrow { color: var(--sky); }
-  .hero-band h1, .hero-band h2 { color: white; }
-  .hero-band p { color: rgba(255,255,255,0.78); }
+  /* Top nav canonical */
+  .topnav-canon {
+    background: var(--navy-deep); padding: 14px 28px; display: flex; align-items: center; gap: 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.08); position: sticky; top: 0; z-index: 60; color: white;
+  }
+  .topnav-canon .burger { font-size: 22px; cursor: pointer; opacity: 0.92; display: none; color: white; background: none; border: none; padding: 0; }
+  .topnav-canon .brand { font-family: 'Source Serif 4', Georgia, serif; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; color: white; }
+  .topnav-canon .brand-sub { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--sky); margin-top: 2px; font-weight: 600; }
+  .topnav-canon .menu { display: flex; gap: 4px; margin-left: 24px; }
+  .topnav-canon .menu button {
+    background: none; border: 0; font-family: inherit; font-size: 13px; font-weight: 500;
+    color: rgba(255,255,255,0.78); padding: 7px 14px; cursor: pointer; transition: all 0.18s ease;
+    border-radius: 999px; display: inline-flex; align-items: center;
+  }
+  .topnav-canon .menu button:hover { color: white; background: rgba(255,255,255,0.08); }
+  .topnav-canon .menu button.active { color: var(--navy-deep); background: var(--sky); font-weight: 600; }
+  .topnav-canon .right { margin-left: auto; display: flex; gap: 14px; align-items: center; font-size: 12px; }
+  .nav-drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(5,28,44,0.55); z-index: 99; opacity: 0; transition: opacity 0.3s; }
+  .nav-drawer-overlay.open { display: block; opacity: 1; }
+  .nav-drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; width: min(320px, 82vw);
+    background: var(--navy-deep); z-index: 100; padding: 76px 28px 28px;
+    box-shadow: -8px 0 32px rgba(0,0,0,0.3); transform: translateX(100%);
+    transition: transform 0.3s ease; color: white; overflow-y: auto;
+  }
+  .nav-drawer.open { transform: translateX(0); }
+  .nav-drawer .close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; color: white; padding: 6px; font-size: 26px; }
+  .nav-drawer .drawer-label { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.55); margin: 18px 0 10px; }
+  .nav-drawer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 2px; }
+  .nav-drawer button {
+    display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 14px 0;
+    font-family: 'Source Serif 4', Georgia, serif; font-size: 19px; color: white; border: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.12); background: none; cursor: pointer; transition: color 0.15s;
+  }
+  .nav-drawer button:hover { color: var(--sky); }
+  .nav-drawer iconify-icon { font-size: 18px; opacity: 0.7; }
+  @media (max-width: 1100px) {
+    .topnav-canon .burger { display: inline-flex; }
+    .topnav-canon .menu { display: none; }
+  }
+  @media (max-width: 768px) {
+    .topnav-canon { padding: 12px 18px; gap: 14px; }
+    .topnav-canon .brand { font-size: 15px; }
+  }
 
-  .chip-action { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; font-size: var(--fs-xs); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--navy); background: white; border: 1px solid var(--rule); cursor: pointer; transition: all 0.12s; }
-  .chip-action:hover { background: var(--mist); border-color: var(--navy); }
-  .chip-action.active { background: var(--navy); color: white; border-color: var(--navy); }
-  .chip-action iconify-icon { font-size: 14px; }
+  /* Table */
+  .table-sm { font-size: var(--fs-sm); width: 100%; }
+  .table-sm th { background: var(--mist); font-weight: 700; color: var(--ink); padding: 8px 10px; text-align: left; border-bottom: 2px solid var(--sky); font-size: var(--fs-xs); letter-spacing: 0.06em; text-transform: uppercase; }
+  .table-sm td { padding: 7px 10px; border-bottom: 1px solid var(--rule); }
+  .table-sm tr:hover td { background: var(--mist); }
 
-  .callout-card { border: 1px solid var(--rule); padding: 24px; background: white; border-top: 3px solid var(--sky); height: 100%; }
-  .callout-card .label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
-  .callout-card .num { font-family: 'Source Serif 4', Georgia, serif; font-weight: 500; font-size: 44px; line-height: 1.05; color: var(--navy); margin-top: 12px; letter-spacing: -0.02em; }
-  .callout-card .num-sub { font-size: 18px; font-weight: 500; color: var(--muted); margin-left: 4px; }
-  .callout-card .desc { font-size: 13px; color: var(--muted); margin-top: 10px; line-height: 1.5; }
-  .callout-card.is-warn { border-top-color: var(--warning); }
-  .callout-card.is-warn .num { color: var(--warning); }
-  .callout-card.is-bad { border-top-color: var(--negative); }
-  .callout-card.is-bad .num { color: var(--negative); }
-  .callout-card.is-pos { border-top-color: var(--positive); }
-  .callout-card.is-pos .num { color: var(--positive); }
-
-  .map-legend { display: flex; align-items: center; gap: var(--sp-5); padding-top: var(--sp-4); margin-top: var(--sp-4); border-top: 1px solid var(--rule); flex-wrap: wrap; }
-  .map-legend-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
-  .map-legend-bins { display: flex; align-items: center; gap: 0; flex: 1; min-width: 280px; }
-  .map-legend-bin { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-  .map-legend-bin .swatch { height: 8px; }
-  .map-legend-bin .range { font-size: 10px; color: var(--muted); font-variant-numeric: tabular-nums; padding-top: 2px; }
-
-  .rank-card h4 { font-family: 'Source Serif 4', Georgia, serif; font-size: 17px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+  /* Rank card */
+  .rank-card h4 { font-family: 'Source Serif 4', Georgia, serif; font-size: 17px; font-weight: 600; color: var(--ink); margin-bottom: 4px; margin-top: 0; }
   .rank-card .sub { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
   .rank-list { margin-top: 14px; }
   .rank-row { display: grid; grid-template-columns: 28px 1fr 130px; align-items: center; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--rule); }
   .rank-row:hover { background: var(--mist); }
-  .rank-row:nth-child(even) { background: rgba(245,247,250,0.4); }
   .rank-row .rank-num { font-family: 'Source Serif 4', Georgia, serif; font-size: 16px; font-weight: 600; color: var(--sky); text-align: right; }
   .rank-row.is-bottom .rank-num { color: #C8102E; }
   .rank-row .rank-name { font-size: 14px; color: var(--ink); font-weight: 500; }
@@ -139,434 +202,454 @@
   .rank-row .rank-val { font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 600; color: var(--ink); margin-top: 4px; }
   .rank-cell-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
 
-  /* Folio header */
-  .folio { position: sticky; top: 0; z-index: 30; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--rule); padding: 8px 0; }
-  .folio-inner { max-width: 1280px; margin: 0 auto; padding: 0 32px; display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
-  .folio .left { color: var(--ink); }
-  .folio .right { color: var(--muted); }
-  @media (max-width: 1100px) { .folio { display: none; } }
-
-  /* Eyebrow roman */
-  .eyebrow-roman { font-family: 'Source Serif 4', Georgia, serif; font-style: italic; font-size: var(--fs-md); font-weight: 500; letter-spacing: 0.02em; text-transform: none; color: var(--navy); }
-  .eyebrow-roman::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--navy); vertical-align: middle; margin-right: 12px; }
-
-  /* Profile pill (aging / insurance) */
-  .pill { display: inline-block; padding: 3px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
-
-  /* Definition card (metodologi page) */
-  .def-card { border: 1px solid var(--rule); padding: 20px; background: white; }
+  /* Definition card */
+  .def-card { border: 1px solid var(--rule); padding: 20px; background: white; border-radius: 2px; }
   .def-card .term { font-family: 'Source Serif 4', Georgia, serif; font-size: 18px; font-weight: 600; color: var(--navy); }
   .def-card .formula { font-family: 'Courier New', monospace; font-size: 12px; color: var(--ink-soft); background: var(--mist); padding: 6px 10px; margin-top: 10px; border-left: 2px solid var(--sky); }
   .def-card .desc { font-size: 13px; color: var(--muted); margin-top: 10px; line-height: 1.55; }
 
+  /* Footer */
+  .dash-footer { border-top: 1px solid var(--rule); color: var(--muted); margin-top: var(--sp-10); padding: var(--sp-5) 0; display: flex; align-items: center; justify-content: space-between; font-size: var(--fs-xs); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+
+  button, a, select, input { transition: all var(--tr-base); }
   *:focus-visible { outline: 2px solid var(--sky); outline-offset: 3px; border-radius: 1px; }
-  button { transition: all var(--tr-base); }
+
+  /* ====== MAP HERO + SIDE PANEL (v4.2) ====== */
+  .map-hero-scope {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 6px;
+    padding: 28px 28px 24px; box-shadow: var(--shadow-subtle); overflow: hidden;
+  }
+  .map-hero-header { max-width: 1100px; margin: 0 0 18px; }
+  .map-hero-header .eyebrow-roman {
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ice-blue); margin-bottom: 8px; display: block;
+  }
+  .map-hero-header .map-hero-title {
+    font-family: 'Source Serif 4', Georgia, serif; font-size: clamp(24px, 3vw, 34px);
+    font-weight: 600; line-height: 1.15; letter-spacing: -0.012em; color: var(--ink); margin: 0;
+  }
+  .map-hero-header .map-hero-intro { margin-top: 10px; max-width: 820px; font-size: 13.5px; line-height: 1.55; color: var(--muted); }
+  .map-hero-header .map-hero-intro strong { color: var(--navy); font-weight: 600; }
+  .map-hero-grid { position: relative; border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+  .map-area { position: relative; background: #ffffff; overflow: hidden; height: 820px; }
+  .map-area #chart-map { width: 100%; height: 100%; }
+  .map-filter-overlay {
+    position: absolute; top: 14px; left: 14px; display: flex; gap: 8px; z-index: 10;
+    background: rgba(255,255,255,0.97); border: 1px solid var(--rule);
+    padding: 8px 10px; border-radius: 6px; backdrop-filter: blur(8px);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08); flex-wrap: wrap; align-items: flex-end;
+    max-width: calc(100% - 380px);
+  }
+  .map-filter-overlay .filter-pill { display: flex; flex-direction: column; gap: 3px; }
+  .map-filter-overlay .filter-pill-label { font-size: 9px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding-left: 2px; }
+  .map-filter-overlay .filter-pill select {
+    appearance: none; background: #fff; border: 1px solid var(--rule); color: var(--ink);
+    font-size: 11.5px; font-weight: 500; padding: 6px 24px 6px 10px; border-radius: 3px;
+    cursor: pointer; outline: none; font-family: inherit;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path d='M2 4 L5 7 L8 4' stroke='%23667085' fill='none' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat: no-repeat; background-position: right 7px center; transition: border-color 0.15s;
+  }
+  .map-filter-overlay .filter-pill select:hover { border-color: var(--ice-blue); }
+  .map-filter-overlay .filter-pill select:focus { border-color: var(--ice-blue); box-shadow: 0 0 0 2px rgba(0,163,224,0.15); }
+  .map-filter-overlay .reset-filter-btn {
+    background: transparent; border: 1px solid var(--rule); color: var(--muted);
+    font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 6px 10px; cursor: pointer; transition: all 0.15s; font-family: inherit; border-radius: 3px;
+  }
+  .map-filter-overlay .reset-filter-btn:hover { color: var(--navy); border-color: var(--ice-blue); background: rgba(0,163,224,0.08); }
+  .map-export-overlay {
+    position: absolute; top: 14px; right: 14px; display: flex; gap: 4px; z-index: 10;
+    background: rgba(255,255,255,0.92); border: 1px solid var(--rule); padding: 3px; border-radius: 4px;
+  }
+  .map-export-overlay .action-btn-ghost {
+    background: transparent; border: 0; color: var(--muted); width: 30px; height: 30px;
+    cursor: pointer; border-radius: 3px; display: inline-flex; align-items: center; justify-content: center;
+    font-size: 16px; transition: all 0.15s ease;
+  }
+  .map-export-overlay .action-btn-ghost:hover { background: rgba(0,163,224,0.10); color: var(--ice-blue); }
+  .map-side-panel {
+    position: absolute; top: 14px; right: 14px; z-index: 10; width: 340px;
+    max-height: calc(100% - 28px); background: rgba(255,255,255,0.97); border: 1px solid var(--rule);
+    border-radius: 6px; padding: 14px 14px 16px; display: flex; flex-direction: column; gap: 14px;
+    font-size: 12.5px; color: var(--ink); overflow-y: auto; backdrop-filter: blur(8px);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.10);
+  }
+  .map-side-panel::-webkit-scrollbar { width: 5px; }
+  .map-side-panel::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.18); border-radius: 3px; }
+  .map-side-panel .sp-section h4 {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: var(--navy);
+    margin: 0 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--rule);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .map-side-panel .sp-search h4 { display: none; }
+  .map-side-panel .search-input {
+    width: 100%; padding: 9px 11px; background: #fff; border: 1px solid var(--rule);
+    color: var(--ink); font-size: 12px; outline: none; border-radius: 3px; font-family: inherit;
+  }
+  .map-side-panel .search-input::placeholder { color: var(--muted-soft); }
+  .map-side-panel .search-input:focus { border-color: var(--ice-blue); box-shadow: 0 0 0 2px rgba(0,163,224,0.18); }
+  .map-side-panel .ranking-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; }
+  .map-side-panel .ranking-row {
+    display: grid; grid-template-columns: 22px minmax(0,1.3fr) 36px 60px; gap: 8px;
+    align-items: center; padding: 7px 4px; border-bottom: 1px solid var(--rule);
+    cursor: pointer; font-size: 11.5px; transition: background 0.12s;
+  }
+  .map-side-panel .ranking-row:last-child { border-bottom: 0; }
+  .map-side-panel .ranking-row:hover { background: rgba(103,178,232,0.10); }
+  .map-side-panel .ranking-row.active { background: rgba(0,163,224,0.14); }
+  .map-side-panel .ranking-row .rank { font-weight: 700; color: var(--navy); text-align: right; font-variant-numeric: tabular-nums; font-size: 11px; }
+  .map-side-panel .ranking-row .name { color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .map-side-panel .ranking-row .spark { display: inline-flex; align-items: center; justify-content: center; }
+  .map-side-panel .ranking-row .val { font-weight: 700; color: var(--navy); text-align: right; font-variant-numeric: tabular-nums; font-size: 11.5px; }
+  .map-side-panel .tab-pills { display: flex; gap: 0; margin: -2px 0 10px; border-bottom: 1px solid var(--rule); }
+  .map-side-panel .tab-pill {
+    padding: 6px 10px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    background: none; border: 0; border-bottom: 2px solid transparent; cursor: pointer;
+    color: var(--muted); margin-bottom: -1px; font-family: inherit; transition: color 0.15s, border-color 0.15s;
+  }
+  .map-side-panel .tab-pill.active { color: var(--ice-blue); border-bottom-color: var(--ice-blue); }
+  .map-side-panel .tab-pill:hover:not(.active) { color: var(--ink); }
+  .map-side-panel .detail-card.empty { color: var(--muted-soft); font-style: italic; padding: 14px; background: #f6f8fa; border-left: 3px solid var(--rule); font-size: 12px; line-height: 1.45; border-radius: 2px; }
+  .map-side-panel .detail-card.filled { padding: 12px 14px; background: rgba(0,163,224,0.05); border-left: 3px solid var(--ice-blue); border-radius: 2px; }
+  .map-side-panel .detail-card .prov-name { font-family: 'Source Serif 4', Georgia, serif; font-weight: 600; color: var(--navy); font-size: 14px; margin-bottom: 6px; }
+  .map-side-panel .detail-card .prov-pcode { font-size: 10px; color: var(--muted-soft); font-family: 'Courier New', monospace; margin-bottom: 8px; letter-spacing: 0.04em; }
+  .map-side-panel .detail-card .stat-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 11.5px; border-bottom: 1px dashed var(--rule); }
+  .map-side-panel .detail-card .stat-row:last-child { border-bottom: 0; }
+  .map-side-panel .detail-card .stat-row .label { color: var(--muted); }
+  .map-side-panel .detail-card .stat-row .val { font-weight: 600; color: var(--navy); font-variant-numeric: tabular-nums; }
+  .map-side-panel .detail-card .caveat { font-size: 9.5px; color: var(--muted-soft); font-style: italic; margin-top: 8px; line-height: 1.45; }
+  .map-side-panel .detail-spark { margin-top: 10px; padding: 8px 4px 4px; background: #f6f8fa; border-radius: 2px; }
+  .map-side-panel .detail-spark svg { display: block; }
+  .map-side-panel .comp-row { display: grid; grid-template-columns: 110px 1fr 50px; gap: 8px; align-items: center; padding: 6px 0; font-size: 11px; }
+  .map-side-panel .comp-row .comp-name { color: var(--ink); }
+  .map-side-panel .comp-row .comp-bar { height: 8px; background: rgba(0,0,0,0.05); border-radius: 2px; position: relative; overflow: hidden; }
+  .map-side-panel .comp-row .comp-bar > span { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 2px; }
+  .map-side-panel .comp-row .comp-val { font-weight: 700; color: var(--navy); text-align: right; font-variant-numeric: tabular-nums; }
+  .map-color-legend {
+    margin-top: 14px; padding: 8px 14px; background: var(--canvas);
+    border: 1px solid var(--rule); border-radius: 4px;
+    display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: center; font-size: 11px;
+  }
+  .map-color-legend .legend-label { font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--navy); font-size: 10px; }
+  .map-color-legend .legend-bar-wrap { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .map-color-legend .legend-bar { height: 10px; border-radius: 2px; background: linear-gradient(to right, #EAF1F8 0%, #A9C4DF 25%, #67B2E8 50%, #2C6FB5 75%, #001F4D 100%); border: 1px solid var(--rule); }
+  .map-color-legend .legend-ticks { display: flex; justify-content: space-between; font-variant-numeric: tabular-nums; font-size: 10.5px; color: var(--muted); }
+  .map-hero-footer { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--rule); display: flex; flex-wrap: wrap; gap: 22px; font-size: 11px; color: var(--muted); }
+  .map-hero-footer .label { font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.06em; margin-right: 4px; }
+  @media (max-width: 1024px) {
+    .map-side-panel { position: static; width: auto; max-height: none; margin-top: 0; box-shadow: none; backdrop-filter: none; border-top: 0; border-radius: 0; background: var(--canvas); }
+    .map-hero-grid { display: flex; flex-direction: column; }
+    .map-area { min-height: 460px; }
+    .map-area #chart-map { height: 460px !important; }
+    .map-filter-overlay { max-width: calc(100% - 28px); }
+  }
+  @media (max-width: 768px) {
+    .map-hero-scope { padding: 24px 18px 22px; }
+    .map-hero-header .map-hero-title { font-size: 24px; }
+    #chart-map { height: 460px !important; }
+    #chart-bubble, #chart-prov-stack { height: 400px !important; }
+  }
 </style>
-<link rel="stylesheet" href="../_shared/tactile-editorial.css">
 </head>
-<body>
+<body class="min-h-screen" style="background:var(--paper)">
 
-<div x-data="dashboard()" x-init="init()">
-
-<!-- Mobile topbar -->
-<div class="topbar-mobile">
-  <button @click="navOpen = true" aria-label="Buka menu"><iconify-icon icon="mdi:menu" style="font-size:24px;"></iconify-icon></button>
-  <div>
-    <div class="topbar-title">Demografi & Kesehatan</div>
-    <div class="topbar-sub">Mandiri Institute</div>
-  </div>
-</div>
-
-<div class="sidebar-overlay" :class="navOpen ? 'open' : ''" @click="navOpen = false"></div>
-
-<aside class="sidebar" :class="navOpen ? 'open' : ''">
-  <div class="brand">
-    <a href="../index.html" style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--sky);text-transform:uppercase;letter-spacing:0.1em;font-weight:600;text-decoration:none;margin-bottom:10px;">
-      <iconify-icon icon="mdi:arrow-left"></iconify-icon><span>Beranda</span>
-    </a>
-    <span class="yellow-accent"></span>
-    <div class="brand-title">Mandiri Institute</div>
+<!-- TOP NAV -->
+<nav class="topnav-canon">
+  <button class="burger" onclick="document.getElementById('dk-drawer').classList.add('open');document.getElementById('dk-drawer-overlay').classList.add('open');" aria-label="Buka menu"><iconify-icon icon="mdi:menu" style="font-size:22px;"></iconify-icon></button>
+  <a href="../index.html" style="text-decoration:none;color:inherit;display:block;" title="Kembali ke beranda Mandiri Institute">
+    <div class="brand">Mandiri Institute</div>
     <div class="brand-sub">Demografi &amp; Kesehatan</div>
+  </a>
+  <div class="menu" id="topnav-menu">
+    <button data-tab="ringkasan" class="active" onclick="switchTab('ringkasan')">Ringkasan</button>
+    <button data-tab="peta" onclick="switchTab('peta')">Peta Sebaran</button>
+    <button data-tab="spending" onclick="switchTab('spending')">OOP Spending</button>
+    <button data-tab="metodologi" onclick="switchTab('metodologi')">Metodologi</button>
   </div>
-  <div class="nav-section">
-    <div class="nav-label">Halaman</div>
-    <template x-for="t in tabs" :key="t.id">
-      <button @click="setPage(t.id)" :class="page === t.id ? 'nav-item active' : 'nav-item'">
-        <iconify-icon :icon="t.icon"></iconify-icon>
-        <span x-text="t.label"></span>
-      </button>
-    </template>
+  <div class="right">
+    <a href="../index.html" style="color:white;opacity:0.85;font-weight:500;font-size:12px;text-decoration:none;">Semua Dashboard</a>
   </div>
-  <div class="crosslink">
-    <div class="nav-label" style="padding:0 0 6px 0;">Cross-link</div>
-    <a href="../mbg-gap-analysis/dashboard.html"><iconify-icon icon="mdi:food-apple"></iconify-icon><span>MBG Gap Analysis</span></a>
-    <a href="../kelas-kabkota/dashboard.html"><iconify-icon icon="mdi:account-group"></iconify-icon><span>Kelas Masyarakat</span></a>
-    <a href="../konsumsi-susenas/dashboard.html"><iconify-icon icon="mdi:cart-outline"></iconify-icon><span>Konsumsi Susenas</span></a>
-  </div>
-  <div class="footer">
-    <div>514 kab/kota &middot; Susenas 2025</div>
-  </div>
+</nav>
+<div id="dk-drawer-overlay" class="nav-drawer-overlay" onclick="this.classList.remove('open');document.getElementById('dk-drawer').classList.remove('open');"></div>
+<aside id="dk-drawer" class="nav-drawer" aria-label="Menu navigasi">
+  <button class="close-btn" onclick="document.getElementById('dk-drawer').classList.remove('open');document.getElementById('dk-drawer-overlay').classList.remove('open');" aria-label="Tutup"><iconify-icon icon="mdi:close"></iconify-icon></button>
+  <div class="drawer-label">Demografi &amp; Kesehatan</div>
+  <ul>
+    <li><button onclick="switchTab('ringkasan');document.getElementById('dk-drawer').classList.remove('open');document.getElementById('dk-drawer-overlay').classList.remove('open');"><iconify-icon icon="mdi:view-dashboard-outline"></iconify-icon>Ringkasan</button></li>
+    <li><button onclick="switchTab('peta');document.getElementById('dk-drawer').classList.remove('open');document.getElementById('dk-drawer-overlay').classList.remove('open');"><iconify-icon icon="mdi:map-outline"></iconify-icon>Peta Sebaran</button></li>
+    <li><button onclick="switchTab('spending');document.getElementById('dk-drawer').classList.remove('open');document.getElementById('dk-drawer-overlay').classList.remove('open');"><iconify-icon icon="mdi:cash-multiple"></iconify-icon>OOP Spending</button></li>
+    <li><button onclick="switchTab('metodologi');document.getElementById('dk-drawer').classList.remove('open');document.getElementById('dk-drawer-overlay').classList.remove('open');"><iconify-icon icon="mdi:book-open-variant"></iconify-icon>Metodologi</button></li>
+  </ul>
 </aside>
 
-<div class="with-sidebar">
-
-<div class="folio">
-  <div class="folio-inner">
-    <span class="left">Mandiri Institute &middot; Demografi & Kesehatan</span>
-    <span class="right" x-text="page.toUpperCase()"></span>
+<!-- Slim page header -->
+<div class="page-header-slim">
+  <div class="max-w-screen-xl mx-auto px-6 py-6 flex items-center justify-between">
+    <div>
+      <div class="eyebrow-small">Riset Mandiri Institute &middot; Demografi &amp; Kesehatan</div>
+      <h1 class="serif-display text-2xl md:text-3xl mt-1" id="page-title">Ringkasan</h1>
+    </div>
+    <div class="page-marker" id="page-marker">RINGKASAN</div>
   </div>
 </div>
 
-<div class="hero-band">
-  <header class="max-w-[1280px] mx-auto px-8 pt-12 pb-12 md:pt-16 md:pb-16" style="position:relative;z-index:1;">
-    <div class="eyebrow">Riset Mandiri Institute &middot; Demografi & Kesehatan</div>
-    <h1 class="serif-display text-3xl md:text-5xl mt-5 max-w-4xl" x-text="pageTitle"></h1>
-    <p class="mt-5 text-base max-w-3xl leading-relaxed" x-text="pageSubtitle"></p>
-  </header>
-</div>
+<!-- Main content -->
+<main class="max-w-screen-xl mx-auto px-6 py-8">
 
-<main class="dash-main max-w-[1280px] mx-auto px-8 pb-16">
-
-  <!-- ============ PAGE 1: RINGKASAN ============ -->
-  <section x-show="page === 'ringkasan'">
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 rule-top pt-8">
-      <div class="callout-card">
-        <div class="label">Populasi 2025</div>
-        <div class="num">281.6<span class="num-sub">jt</span></div>
-        <div class="desc">514 kab/kota Indonesia, weighted Susenas KOR.</div>
+  <!-- PAGE 1: RINGKASAN -->
+  <div class="tab-page active" id="page-ringkasan">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2 mb-8">
+      <div class="kpi-card">
+        <div class="kpi-eyebrow">Populasi 2025</div>
+        <div class="kpi-num">281,6<span class="kpi-num-sub">jt</span></div>
+        <div class="kpi-sub">514 kab/kota, weighted Susenas KOR</div>
       </div>
-      <div class="callout-card is-warn">
-        <div class="label">Lansia 60+</div>
-        <div class="num">12.3<span class="num-sub">%</span></div>
-        <div class="desc">34.7 juta jiwa. Indonesia di fase aging-onset.</div>
+      <div class="kpi-card is-warn">
+        <div class="kpi-eyebrow">Lansia 60+</div>
+        <div class="kpi-num">12,3<span class="kpi-num-sub">%</span></div>
+        <div class="kpi-sub">34,7 juta jiwa &mdash; fase aging-onset</div>
       </div>
-      <div class="callout-card is-pos">
-        <div class="label">JKN Coverage</div>
-        <div class="num">74.0<span class="num-sub">%</span></div>
-        <div class="desc">PBI 48.6% + non-PBI 25.4%. 22.9% no insurance.</div>
+      <div class="kpi-card is-pos">
+        <div class="kpi-eyebrow">JKN Coverage</div>
+        <div class="kpi-num">74,0<span class="kpi-num-sub">%</span></div>
+        <div class="kpi-sub">PBI 48,6% + non-PBI 25,4%. Gap 22,9%</div>
       </div>
-      <div class="callout-card is-bad">
-        <div class="label">OOP Kesehatan</div>
-        <div class="num">Rp 275<span class="num-sub">rb</span></div>
-        <div class="desc">Per RT/bulan. 9.5% dari konsumsi non-pangan.</div>
+      <div class="kpi-card is-bad">
+        <div class="kpi-eyebrow">OOP Kesehatan</div>
+        <div class="kpi-num">Rp 275<span class="kpi-num-sub">rb</span></div>
+        <div class="kpi-sub">Per RT/bulan &mdash; 9,5% konsumsi non-pangan</div>
       </div>
     </div>
-
-    <div class="mt-12 md:mt-16">
-      <span class="badge"><span class="badge-dot"></span>Bubble Matrix</span>
-      <div class="eyebrow-roman mt-3">I. Aging x Insurance Gap</div>
-      <h2 class="serif-display text-2xl md:text-3xl mt-2 max-w-3xl">514 kab/kota dipetakan menurut beban demografi & gap proteksi.</h2>
-      <p class="mt-3 muted text-base max-w-3xl">Sumbu X: % lansia 60+. Sumbu Y: % populasi tanpa asuransi. Ukuran bubble: populasi total. Warna: profil aging.</p>
-      <div class="hair-accent mt-8 pt-2"></div>
-      <div id="chart-bubble" style="height:560px;"></div>
+    <div class="chart-card mb-8">
+      <div class="chart-header">
+        <div class="eyebrow">I &middot; Ringkasan</div>
+        <h3>Aging &times; Insurance Gap</h3>
+        <p class="sub">514 kab/kota: sumbu X = % lansia 60+, sumbu Y = % tanpa asuransi, ukuran bubble = populasi total. Kuadran kanan-atas = prioritas policy.</p>
+      </div>
+      <div id="chart-bubble" style="height:520px"></div>
+      <div class="chart-export-row">
+        <button class="action-btn" onclick="exportChartPPT('chart-bubble','Aging x Insurance Gap 514 kab/kota','Susenas KOR 2025 (BPS)')"><iconify-icon icon="mdi:presentation"></iconify-icon>PPT</button>
+        <button class="action-btn" onclick="downloadChartCSV('bubble')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
+        <button class="action-btn" onclick="downloadChartImg('chart-bubble','png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
+        <button class="action-btn" onclick="downloadChartImg('chart-bubble','svg')"><iconify-icon icon="mdi:vector-square"></iconify-icon>SVG</button>
+      </div>
       <div class="chart-footer">
         <span><span class="label">Sumber</span>Susenas KOR Maret 2025 (BPS)</span>
-        <span><span class="label">Catatan</span>Kuadran kanan-atas = aging tinggi + gap proteksi besar (prioritas policy)</span>
+        <span><span class="label">Catatan</span>Garis putus-putus = rata-rata nasional</span>
       </div>
     </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 mt-12 md:mt-16 rule-top pt-10">
-      <div class="rank-card">
-        <div class="sub">Top 5 Aging</div>
-        <h4>% Lansia 60+ tertinggi</h4>
-        <div class="rank-list" id="topRingAging"></div>
-      </div>
-      <div class="rank-card">
-        <div class="sub">Bottom 5 JKN</div>
-        <h4>Coverage terendah</h4>
-        <div class="rank-list" id="topRingJkn"></div>
-      </div>
-      <div class="rank-card">
-        <div class="sub">Top 5 OOP Burden</div>
-        <h4>Rasio OOP / non-pangan</h4>
-        <div class="rank-list" id="topRingOop"></div>
-      </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="chart-card"><div class="rank-card"><div class="sub">Top 5 Aging</div><h4>% Lansia 60+ tertinggi</h4><div class="rank-list" id="topRingAging"></div></div></div>
+      <div class="chart-card"><div class="rank-card"><div class="sub">Bottom 5 JKN</div><h4>Coverage terendah</h4><div class="rank-list" id="topRingJkn"></div></div></div>
+      <div class="chart-card"><div class="rank-card"><div class="sub">Top 5 OOP Burden</div><h4>Rasio OOP / non-pangan</h4><div class="rank-list" id="topRingOop"></div></div></div>
     </div>
-  </section>
+  </div>
 
-  <!-- ============ PAGE 2: DEMOGRAFI ============ -->
-  <section x-show="page === 'demografi'">
-    <div class="rule-top pt-8 flex flex-wrap items-end gap-6">
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Wilayah</div>
-        <select x-model="wilayah" @change="renderDemografiMap()" class="select-flat mt-2" style="min-width:170px;">
-          <template x-for="w in wilayahList" :key="'wd'+w"><option :value="w" x-text="w"></option></template>
-        </select>
+  <!-- PAGE 2: PETA SEBARAN (v4.2 map hero) -->
+  <div class="tab-page" id="page-peta">
+    <section class="map-hero-scope mb-8">
+      <div class="map-hero-header">
+        <span class="eyebrow-roman">II &middot; Peta Sebaran</span>
+        <h2 class="map-hero-title">Sebaran Demografi &amp; Kesehatan per Provinsi</h2>
+        <p class="map-hero-intro">Peta interaktif 38 provinsi. Pilih <strong>Indikator</strong> (% lansia, JKN coverage, atau OOP burden) dan klik provinsi untuk melihat profil detail &amp; histori.</p>
       </div>
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Provinsi</div>
-        <select x-model="provFilter" @change="renderDemografiMap()" class="select-flat mt-2" style="min-width:170px;">
-          <option value="All">Semua provinsi</option>
-          <template x-for="p in provOptions" :key="'pod'+p.pcode"><option :value="p.pcode" x-text="p.nama"></option></template>
-        </select>
+      <div class="map-hero-grid">
+        <div class="map-area">
+          <div class="map-filter-overlay">
+            <div class="filter-pill">
+              <span class="filter-pill-label">Indikator</span>
+              <select id="map-indikator" onchange="onMapFilterChange()">
+                <option value="lansia">% Lansia 60+</option>
+                <option value="jkn">% JKN Coverage</option>
+                <option value="oop">OOP Burden (%)</option>
+              </select>
+            </div>
+            <button class="reset-filter-btn" onclick="resetMapFiltersMain()">Reset</button>
+          </div>
+          <div id="chart-map" style="height:820px;"></div>
+          <div class="map-export-overlay">
+            <button class="action-btn-ghost" onclick="downloadChartImg('chart-map','png')" title="PNG"><iconify-icon icon="mdi:image-outline"></iconify-icon></button>
+            <button class="action-btn-ghost" onclick="downloadChartCSV('map')" title="CSV"><iconify-icon icon="mdi:download"></iconify-icon></button>
+          </div>
+        </div>
+        <aside class="map-side-panel" id="map-side">
+          <div class="sp-section sp-search">
+            <h4>Cari Provinsi</h4>
+            <input type="text" class="search-input" id="map-search" placeholder="Ketik nama provinsi..." oninput="onMapSearchInput()" onkeydown="onMapSearchKey(event)" autocomplete="off">
+          </div>
+          <div class="sp-section sp-ranking">
+            <h4 id="map-ranking-header">Top 10 Provinsi</h4>
+            <ol class="ranking-list" id="map-ranking"></ol>
+          </div>
+          <div class="sp-section sp-detail">
+            <h4 id="map-detail-header">Detail Provinsi</h4>
+            <div class="tab-pills" id="map-detail-tabs">
+              <button class="tab-pill active" data-tab="komposisi" onclick="setDetailTab('komposisi')">Profil</button>
+              <button class="tab-pill" data-tab="histori" onclick="setDetailTab('histori')">Aging Histori</button>
+            </div>
+            <div id="map-detail"><div class="detail-card empty">Pilih provinsi di peta atau daftar peringkat.</div></div>
+          </div>
+        </aside>
       </div>
-    </div>
-
-    <div class="mt-10 md:mt-12">
-      <span class="badge"><span class="badge-dot"></span>514 Kabupaten/Kota</span>
-      <div class="eyebrow-roman mt-3">II. Demografi</div>
-      <h2 class="serif-display text-2xl md:text-3xl mt-2 max-w-3xl">Aging onset menyebar tidak merata: Jateng, Jatim, DIY hotspot.</h2>
-      <p class="mt-3 muted text-base max-w-3xl">Choropleth % lansia 60+ per kabupaten/kota (BPS 2020 boundary). Klik bin di legenda untuk drill-down rangking.</p>
-      <div class="hair-accent mt-8 pt-2"></div>
-      <div id="chart-demografi-map" style="height:680px;"></div>
-      <div class="map-legend">
-        <div class="map-legend-label">Share lansia 60+ (%)</div>
-        <div class="map-legend-bins" id="legend-demografi"></div>
-      </div>
-      <div class="chart-footer">
-        <span><span class="label">Sumber</span>Susenas KOR 2025 &middot; Shapefile BPS adm2 2020</span>
-        <span><span class="label">Threshold</span>Aging-Mature ditetapkan pada >= 15% (UN classification)</span>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mt-12 md:mt-16 rule-top pt-10">
-      <div>
-        <div class="sub" style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;font-weight:600;">Aging Profile Distribution</div>
-        <h4 style="font-family:'Source Serif 4',serif;font-size:17px;font-weight:600;margin-bottom:4px;margin-top:4px;">Klasifikasi 514 kab/kota (UN/WHO threshold)</h4>
-        <div id="chart-aging-bar" style="height:340px;"></div>
-        <div class="chart-footer">
-          <span><span class="label">Klasifikasi</span>Young &lt; 7% &middot; Aging-Early 7-10% &middot; Onset 10-15% &middot; Mature &gt;= 15%</span>
+      <div class="map-color-legend">
+        <span class="legend-label" id="map-legend-label">% Lansia 60+</span>
+        <div class="legend-bar-wrap">
+          <div class="legend-bar" id="map-legend-bar"></div>
+          <div class="legend-ticks">
+            <span id="legend-min">-</span><span id="legend-q1"></span>
+            <span id="legend-mid"></span><span id="legend-q3"></span>
+            <span id="legend-max">-</span>
+          </div>
         </div>
       </div>
-      <div>
-        <div class="sub" style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;font-weight:600;">Komposisi Populasi Nasional</div>
-        <h4 style="font-family:'Source Serif 4',serif;font-size:17px;font-weight:600;margin-bottom:4px;margin-top:4px;">Distribusi 5 cohort umur</h4>
-        <div id="chart-pop-cohort" style="height:340px;"></div>
+      <div class="map-hero-footer">
+        <span><span class="label">Sumber</span>Susenas KOR Maret 2025 (BPS) &middot; 38 Provinsi</span>
+        <span><span class="label">Peta</span>Shapefile BPS Provinsi ADM1 2020</span>
+        <span><span class="label">Catatan</span>Data agregasi provinsi dari KAB-level Susenas</span>
+      </div>
+    </section>
+
+    <div class="chart-card mb-8">
+      <div class="chart-header">
+        <div class="eyebrow">III &middot; Peta Sebaran</div>
+        <h3>Komposisi Asuransi per Provinsi</h3>
+        <p class="sub">PBI vs non-PBI vs Swasta vs No-Insurance. Di-rank dari JKN coverage terendah ke tertinggi.</p>
+      </div>
+      <div id="chart-prov-stack" style="height:780px"></div>
+      <div class="chart-export-row">
+        <button class="action-btn" onclick="exportChartPPT('chart-prov-stack','Komposisi asuransi per provinsi','Susenas KOR 2025')"><iconify-icon icon="mdi:presentation"></iconify-icon>PPT</button>
+        <button class="action-btn" onclick="downloadChartCSV('prov-stack')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
+        <button class="action-btn" onclick="downloadChartImg('chart-prov-stack','png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
+        <button class="action-btn" onclick="downloadChartImg('chart-prov-stack','svg')"><iconify-icon icon="mdi:vector-square"></iconify-icon>SVG</button>
+      </div>
+      <div class="chart-footer">
+        <span><span class="label">Sumber</span>Susenas KOR 2025 (PBI + non-PBI)</span>
+        <span><span class="label">Bobot</span>Populasi 2025 per kab/kota</span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="eyebrow">IV &middot; Peta Sebaran</div>
+          <h3>Distribusi Profil Aging</h3>
+          <p class="sub">514 kab/kota, threshold UN/WHO.</p>
+        </div>
+        <div id="chart-aging-bar" style="height:320px"></div>
+        <div class="chart-export-row">
+          <button class="action-btn" onclick="downloadChartImg('chart-aging-bar','png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
+          <button class="action-btn" onclick="downloadChartImg('chart-aging-bar','svg')"><iconify-icon icon="mdi:vector-square"></iconify-icon>SVG</button>
+        </div>
+        <div class="chart-footer">
+          <span><span class="label">Klasifikasi</span>Young &lt;7% &middot; Early 7-10% &middot; Onset 10-15% &middot; Mature &ge;15%</span>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="eyebrow">V &middot; Peta Sebaran</div>
+          <h3>Komposisi Populasi Nasional</h3>
+          <p class="sub">5 cohort umur, populasi tertimbang.</p>
+        </div>
+        <div id="chart-pop-cohort" style="height:320px"></div>
+        <div class="chart-export-row">
+          <button class="action-btn" onclick="downloadChartImg('chart-pop-cohort','png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
+          <button class="action-btn" onclick="downloadChartImg('chart-pop-cohort','svg')"><iconify-icon icon="mdi:vector-square"></iconify-icon>SVG</button>
+        </div>
         <div class="chart-footer">
           <span><span class="label">Cohort</span>Balita 0-4 &middot; Anak 5-14 &middot; Remaja 15-24 &middot; Dewasa 25-59 &middot; Lansia 60+</span>
         </div>
       </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mt-12 md:mt-16 rule-top pt-10">
-      <div class="rank-card">
-        <div class="sub">Top 10 Lansia</div>
-        <h4>% lansia 60+ tertinggi</h4>
-        <div class="rank-list" id="rank-lansia-top"></div>
-      </div>
-      <div class="rank-card">
-        <div class="sub">Bottom 10 Lansia</div>
-        <h4>Komposisi lansia terendah</h4>
-        <div class="rank-list" id="rank-lansia-bottom"></div>
-      </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div class="chart-card"><div class="rank-card"><div class="sub">Top 10 Kab/Kota</div><h4>% Lansia 60+ tertinggi</h4><div class="rank-list" id="rank-lansia-top"></div></div></div>
+      <div class="chart-card"><div class="rank-card"><div class="sub">Bottom 15 JKN Coverage</div><h4>Gap proteksi terbesar</h4><div class="rank-list" id="rank-jkn-bottom"></div></div></div>
     </div>
-  </section>
+  </div>
 
-  <!-- ============ PAGE 3: ASURANSI ============ -->
-  <section x-show="page === 'asuransi'">
-    <div class="rule-top pt-8 flex flex-wrap items-end gap-6">
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Wilayah</div>
-        <select x-model="wilayah" @change="renderAsuransiMap()" class="select-flat mt-2" style="min-width:170px;">
-          <template x-for="w in wilayahList" :key="'wa'+w"><option :value="w" x-text="w"></option></template>
-        </select>
+  <!-- PAGE 3: OOP SPENDING -->
+  <div class="tab-page" id="page-spending">
+    <div class="chart-card mb-8">
+      <div class="chart-header">
+        <div class="eyebrow">VI &middot; OOP Spending</div>
+        <h3>Komposisi OOP Kesehatan &amp; Scatter JKN vs OOP</h3>
+        <p class="sub">Kiri: rata-rata Rp/RT/bulan per komponen. Kanan: relasi JKN coverage vs OOP nominal per kab/kota.</p>
       </div>
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Provinsi</div>
-        <select x-model="provFilter" @change="renderAsuransiMap()" class="select-flat mt-2" style="min-width:170px;">
-          <option value="All">Semua provinsi</option>
-          <template x-for="p in provOptions" :key="'poa'+p.pcode"><option :value="p.pcode" x-text="p.nama"></option></template>
-        </select>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div id="chart-oop-donut" style="height:380px"></div>
+        <div id="chart-oop-scatter" style="height:380px"></div>
       </div>
-    </div>
-
-    <div class="mt-10 md:mt-12">
-      <span class="badge"><span class="badge-dot"></span>JKN Coverage</span>
-      <div class="eyebrow-roman mt-3">III. Asuransi Kesehatan</div>
-      <h2 class="serif-display text-2xl md:text-3xl mt-2 max-w-3xl">Coverage gap geografis: Indonesia Timur tertinggal jauh.</h2>
-      <p class="mt-3 muted text-base max-w-3xl">Choropleth % JKN total (PBI + non-PBI). Papua Tengah, Pegunungan, dan Maluku Utara di bin terendah; Jawa-Sumatra-Kalimantan didominasi >= 75%.</p>
-      <div class="hair-accent mt-8 pt-2"></div>
-      <div id="chart-asuransi-map" style="height:680px;"></div>
-      <div class="map-legend">
-        <div class="map-legend-label">Share JKN total (%)</div>
-        <div class="map-legend-bins" id="legend-asuransi"></div>
+      <div class="chart-export-row">
+        <button class="action-btn" onclick="exportChartPPT('chart-oop-donut','Komposisi OOP Kesehatan','Susenas KP 2025 Blok 4.2')"><iconify-icon icon="mdi:presentation"></iconify-icon>PPT</button>
+        <button class="action-btn" onclick="downloadChartCSV('oop')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
+        <button class="action-btn" onclick="downloadChartImg('chart-oop-donut','png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
+        <button class="action-btn" onclick="downloadChartImg('chart-oop-donut','svg')"><iconify-icon icon="mdi:vector-square"></iconify-icon>SVG</button>
       </div>
       <div class="chart-footer">
-        <span><span class="label">Sumber</span>Susenas KOR 2025 (PBI + non-PBI)</span>
-        <span><span class="label">Catatan</span>Coverage survey 75.8% lebih rendah dari admin BPJS 85-90% (RT respondent effect)</span>
-      </div>
-    </div>
-
-    <div class="mt-12 md:mt-16 rule-top pt-10">
-      <span class="badge"><span class="badge-dot"></span>38 Provinsi</span>
-      <div class="eyebrow-roman mt-3">III.B. Komposisi Asuransi per Provinsi</div>
-      <h2 class="serif-display text-2xl md:text-3xl mt-2 max-w-3xl">PBI vs non-PBI vs Swasta vs No-Insurance.</h2>
-      <p class="mt-3 muted text-base max-w-3xl">Stacked bar 100% per provinsi, di-rank dari coverage terendah ke tertinggi.</p>
-      <div class="hair-accent mt-8 pt-2"></div>
-      <div id="chart-prov-stack" style="height:780px;"></div>
-      <div class="chart-footer">
-        <span><span class="label">Bobot</span>Populasi 2025 per kab</span>
-      </div>
-    </div>
-
-    <div class="mt-12 md:mt-16 rule-top pt-10">
-      <div class="rank-card">
-        <div class="sub">Bottom 15 Coverage</div>
-        <h4>Kab/kota dengan gap proteksi terbesar (target intervensi)</h4>
-        <div class="rank-list" id="rank-jkn-bottom"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ PAGE 4: SPENDING ============ -->
-  <section x-show="page === 'spending'">
-    <div class="rule-top pt-8 flex flex-wrap items-end gap-6">
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Wilayah</div>
-        <select x-model="wilayah" @change="renderSpendingMap()" class="select-flat mt-2" style="min-width:170px;">
-          <template x-for="w in wilayahList" :key="'ws'+w"><option :value="w" x-text="w"></option></template>
-        </select>
-      </div>
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Provinsi</div>
-        <select x-model="provFilter" @change="renderSpendingMap()" class="select-flat mt-2" style="min-width:170px;">
-          <option value="All">Semua provinsi</option>
-          <template x-for="p in provOptions" :key="'pos'+p.pcode"><option :value="p.pcode" x-text="p.nama"></option></template>
-        </select>
-      </div>
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Tampilan</div>
-        <div class="mt-2 flex gap-2">
-          <button class="chip-action" :class="spendingMode === 'burden' ? 'active' : ''" @click="spendingMode = 'burden'; renderSpendingMap()">Burden (%)</button>
-          <button class="chip-action" :class="spendingMode === 'rp' ? 'active' : ''" @click="spendingMode = 'rp'; renderSpendingMap()">Rupiah/bulan</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="mt-10 md:mt-12">
-      <span class="badge"><span class="badge-dot"></span>OOP Burden</span>
-      <div class="eyebrow-roman mt-3">IV. Spending Kesehatan</div>
-      <h2 class="serif-display text-2xl md:text-3xl mt-2 max-w-3xl">Beban OOP kesehatan per RT, % total konsumsi non-pangan.</h2>
-      <p class="mt-3 muted text-base max-w-3xl">Choropleth burden ratio. Burden tinggi tidak selalu match daerah miskin: Dairi, Majalengka, Kota Batu, Sampang masuk top.</p>
-      <div class="hair-accent mt-8 pt-2"></div>
-      <div id="chart-spending-map" style="height:680px;"></div>
-      <div class="map-legend">
-        <div class="map-legend-label" x-text="spendingMode === 'burden' ? 'OOP / non-pangan (%)' : 'OOP nominal Rp/bulan'"></div>
-        <div class="map-legend-bins" id="legend-spending"></div>
-      </div>
-      <div class="chart-footer">
-        <span><span class="label">Sumber</span>Susenas KP Blok 4.2 2025</span>
+        <span><span class="label">Sumber</span>Susenas KP Blok 4.2 Maret 2025</span>
         <span><span class="label">Komponen OOP</span>Rawat inap + jalan + obat + premi (premi ~60%)</span>
       </div>
     </div>
+    <div class="chart-card mb-8">
+      <div class="chart-header">
+        <div class="eyebrow">VII &middot; OOP Spending</div>
+        <h3>Top 10 Kab/Kota &mdash; OOP Burden Tertinggi</h3>
+        <p class="sub">Rasio OOP terhadap konsumsi non-pangan RT. Burden tinggi tidak selalu di daerah miskin.</p>
+      </div>
+      <div class="rank-list" id="rank-oop-top"></div>
+      <div class="chart-footer">
+        <span><span class="label">Definisi</span>OOP burden = total pengeluaran kesehatan RT / total konsumsi non-pangan RT</span>
+      </div>
+    </div>
+  </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mt-12 md:mt-16 rule-top pt-10">
-      <div>
-        <div class="sub" style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;font-weight:600;">Komposisi OOP Nasional</div>
-        <h4 style="font-family:'Source Serif 4',serif;font-size:17px;font-weight:600;margin-bottom:4px;margin-top:4px;">Rata-rata Rp/RT/bulan</h4>
-        <div id="chart-oop-donut" style="height:380px;"></div>
-        <div class="chart-footer">
-          <span><span class="label">Catatan</span>Premi asuransi dominan; "true" OOP (inap + jalan + obat) hanya 40%</span>
+  <!-- PAGE 4: METODOLOGI -->
+  <div class="tab-page" id="page-metodologi">
+    <div class="chart-card mb-8">
+      <div class="chart-header">
+        <div class="eyebrow">VIII &middot; Metodologi</div>
+        <h3>Sumber Data &amp; Definisi Metric</h3>
+        <p class="sub">Susenas Maret 2025 KOR + KP, weighted estimation per kab/kota.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+        <div class="def-card">
+          <div class="term">Sumber Data</div>
+          <div class="desc"><strong>Susenas KOR Maret 2025 (BPS)</strong> &mdash; Individu &amp; RT, weighted via <code>weind</code> dan <code>wert</code>. 514 kab/kota, 38 provinsi, 281,62 juta jiwa.<br><br><strong>Susenas KP Maret 2025 (BPS)</strong> &mdash; Blok 4.2 komoditi kesehatan: rawat inap, rawat jalan, obat, premi asuransi.</div>
+        </div>
+        <div class="def-card">
+          <div class="term">% Lansia 60+</div>
+          <div class="formula">pct_lansia_60 = pop_lansia_60_plus / pop_total_2025</div>
+          <div class="desc">Threshold UN: Young &lt;7%, Aging-Early 7-10%, Aging-Onset 10-15%, Aging-Mature &ge;15%. Indonesia nasional 12,3% (Aging-Onset).</div>
+        </div>
+        <div class="def-card">
+          <div class="term">Aging Index</div>
+          <div class="formula">aging_index = (lansia_60+ / anak_0-14) * 100</div>
+          <div class="desc">Rasio lansia terhadap anak. Index &gt;100 = lebih banyak lansia dari anak. Median nasional 43,8.</div>
+        </div>
+        <div class="def-card">
+          <div class="term">JKN Coverage</div>
+          <div class="formula">pct_jkn = (peserta_pbi + peserta_npbi) / pop_total</div>
+          <div class="desc">Survey-based; lebih rendah dari data admin BPJS karena RT respondent effect.</div>
+        </div>
+        <div class="def-card">
+          <div class="term">OOP Burden</div>
+          <div class="formula">oop_burden = total_oop_rp / total_konsumsi_nonpangan_rp * 100</div>
+          <div class="desc">Threshold WHO catastrophic: &ge;10% total konsumsi. Nasional 9,47% (borderline).</div>
+        </div>
+        <div class="def-card">
+          <div class="term">Dependency Ratio</div>
+          <div class="formula">dep_ratio = (pop_0-14 + pop_60+) / pop_15-59 * 100</div>
+          <div class="desc">Nasional rata-rata 74,1 &mdash; tiap 100 orang produktif menanggung 74 non-produktif.</div>
         </div>
       </div>
-      <div>
-        <div class="sub" style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;font-weight:600;">Scatter OOP x Coverage</div>
-        <h4 style="font-family:'Source Serif 4',serif;font-size:17px;font-weight:600;margin-bottom:4px;margin-top:4px;">Apakah JKN tinggi mengurangi OOP?</h4>
-        <div id="chart-oop-scatter" style="height:380px;"></div>
-        <div class="chart-footer">
-          <span><span class="label">X axis</span>% JKN coverage &middot; <span class="label">Y axis</span>OOP nominal</span>
-        </div>
-      </div>
     </div>
+  </div>
 
-    <div class="mt-12 md:mt-16 rule-top pt-10">
-      <div class="rank-card">
-        <div class="sub">Top 10 OOP Burden</div>
-        <h4>Rasio OOP terhadap non-pangan tertinggi</h4>
-        <div class="rank-list" id="rank-oop-top"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ PAGE 5: METODOLOGI ============ -->
-  <section x-show="page === 'metodologi'">
-    <div class="rule-top pt-8">
-      <span class="badge"><span class="badge-dot"></span>Methodology</span>
-      <div class="eyebrow-roman mt-3">V. Metodologi & Definisi</div>
-      <h2 class="serif-display text-2xl md:text-3xl mt-2 max-w-3xl">Susenas Maret 2025 KOR + KP, weighted estimation per kab/kota.</h2>
-      <p class="mt-3 muted text-base max-w-3xl">Dokumentasi sumber data, formula derived metric, threshold klasifikasi, dan caveats interpretasi.</p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
-      <div class="def-card">
-        <div class="term">Sumber Data</div>
-        <div class="desc">
-          <strong>Susenas KOR Maret 2025 (BPS)</strong> &mdash; Individu &amp; Rumah Tangga, weighted via <code>weind</code> (individu) dan <code>wert</code> (RT). Cakupan 514 kab/kota di 38 provinsi, populasi tertimbang 281,62 juta jiwa.<br><br>
-          <strong>Susenas KP Maret 2025 (BPS)</strong> &mdash; Modul Konsumsi/Pengeluaran, Blok 4.2 komoditi kesehatan. Output: avg Rp/RT/bulan untuk 4 komponen: rawat inap, rawat jalan, obat, premi asuransi kesehatan.
-        </div>
-      </div>
-
-      <div class="def-card">
-        <div class="term">% Lansia 60+</div>
-        <div class="formula">pct_lansia_60 = pop_lansia_60_plus / pop_total_2025</div>
-        <div class="desc">Rasio populasi 60 tahun ke atas terhadap populasi total. Threshold UN: Young &lt; 7%, Aging-Early 7-10%, Aging-Onset 10-15%, Aging-Mature &gt;= 15%. Indonesia secara nasional di 12.3% (Aging-Onset).</div>
-      </div>
-
-      <div class="def-card">
-        <div class="term">Aging Index</div>
-        <div class="formula">aging_index = (lansia_60+ / anak_0-14) * 100</div>
-        <div class="desc">Rasio lansia terhadap anak. Nilai &gt; 100 = jumlah lansia melampaui anak. Median nasional: 43.8.</div>
-      </div>
-
-      <div class="def-card">
-        <div class="term">Dependency Ratio</div>
-        <div class="formula">dep_ratio = (anak 0-14 + lansia 60+) / dewasa 25-59 * 100</div>
-        <div class="desc">Setiap 100 penduduk usia produktif menanggung X penduduk non-produktif. Rata-rata nasional weighted: 74.1.</div>
-      </div>
-
-      <div class="def-card">
-        <div class="term">JKN Total Coverage</div>
-        <div class="formula">pct_jkn_total = pct_jkn_pbi + pct_jkn_non_pbi</div>
-        <div class="desc">Pengakuan respondent RT bahwa anggota memiliki kartu JKN (PBI dari pemerintah atau non-PBI mandiri). Klasifikasi: Very Low &lt; 50%, Low 50-75%, Medium 75-90%, High &gt;= 90%.</div>
-      </div>
-
-      <div class="def-card">
-        <div class="term">OOP Burden Ratio</div>
-        <div class="formula">oop_pct_total_nonfood = avg_oop_health / avg_total_nonfood</div>
-        <div class="desc">Pangsa pengeluaran kesehatan dalam total pengeluaran non-pangan rumah tangga. Burden &gt;= 10% sering dikategorikan financial hardship (WHO catastrophic health expenditure proxy).</div>
-      </div>
-    </div>
-
-    <div class="mt-12 md:mt-16 rule-top pt-10">
-      <span class="badge"><span class="badge-dot"></span>Caveats</span>
-      <h2 class="serif-display text-xl md:text-2xl mt-3 max-w-3xl">Hal yang perlu hati-hati saat membaca angka.</h2>
-      <ul class="mt-6 space-y-3 text-sm" style="color:var(--ink-soft);line-height:1.6;max-width:780px;">
-        <li><strong style="color:var(--ink);">Survey vs admin gap.</strong> JKN coverage Susenas 75.8% lebih rendah dari admin BPJS 85-90%. Survey effect normal: respondent RT belum tentu tahu detail status JKN setiap anggota.</li>
-        <li><strong style="color:var(--ink);">OOP termasuk premi.</strong> Komponen premi (Rp 152rb) dominan ~60% dari total OOP Rp 275rb. "True" OOP (inap + jalan + obat) hanya ~40%.</li>
-        <li><strong style="color:var(--ink);">Dependency ratio interpretasi.</strong> Indonesia masih demographic dividend window, namun dependency naik karena aging onset. Bukan hanya beban anak (dropping fertility) tapi juga beban lansia (rising longevity).</li>
-        <li><strong style="color:var(--ink);">Sample size kabkota kecil.</strong> Beberapa kabkota pemekaran punya sample sangat kecil (n &lt; 100). Validate dengan kolom <code>n_sample_total</code> sebelum cross-tab.</li>
-        <li><strong style="color:var(--ink);">pct_no_insurance edge cases.</strong> Bisa = 100% di kabkota dengan sample sangat tipis. Jangan generalisasi ke seluruh penduduk kabkota tanpa cek confidence.</li>
-      </ul>
-    </div>
-
-    <div class="mt-12 md:mt-16 rule-top pt-10">
-      <span class="badge"><span class="badge-dot"></span>Cross-link</span>
-      <h2 class="serif-display text-xl md:text-2xl mt-3 max-w-3xl">Dashboard Mandiri Institute terkait.</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-        <a href="../mbg-gap-analysis/dashboard.html" class="def-card" style="text-decoration:none;display:block;">
-          <div class="term" style="display:flex;align-items:center;gap:8px;"><iconify-icon icon="mdi:food-apple"></iconify-icon>MBG Gap Analysis</div>
-          <div class="desc">Sasaran balita 0-4 tahun (program MBG). Cross-overlay dengan demografi balita per kab/kota di dashboard ini.</div>
-        </a>
-        <a href="../kelas-kabkota/dashboard.html" class="def-card" style="text-decoration:none;display:block;">
-          <div class="term" style="display:flex;align-items:center;gap:8px;"><iconify-icon icon="mdi:account-group"></iconify-icon>Kelas Masyarakat</div>
-          <div class="desc">8 kelas wb4 per kab/kota 2019-2025. Overlay kelas dengan profil kesehatan untuk segmentasi target intervensi.</div>
-        </a>
-        <a href="../konsumsi-susenas/dashboard.html" class="def-card" style="text-decoration:none;display:block;">
-          <div class="term" style="display:flex;align-items:center;gap:8px;"><iconify-icon icon="mdi:cart-outline"></iconify-icon>Konsumsi Susenas</div>
-          <div class="desc">Pola konsumsi RT lintas kelas dan wilayah. Kontekstualisasi OOP kesehatan dalam total konsumsi.</div>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <footer class="rule-top mt-16 pt-8 pb-4 flex flex-wrap items-center justify-between gap-4 text-xs muted uppercase tracking-widest">
-    <div>Mandiri Institute &middot; Demografi & Kesehatan</div>
-    <div>Generated 2026-05-08</div>
-    <div>Susenas KOR + KP Maret 2025 (BPS)</div>
+  <footer class="dash-footer">
+    <span>Mandiri Institute &middot; Demografi &amp; Kesehatan 2025</span>
+    <span>Susenas KOR + KP Maret 2025 &middot; 514 Kab/Kota &middot; 38 Provinsi</span>
   </footer>
 </main>
-</div>
-</div>
 
 <script>
 const SUMMARY = {"pop_total": 281622304.0, "pop_balita": 21380477, "pop_anak": 44697200, "pop_remaja": 43932810, "pop_dewasa": 136889606, "pop_lansia": 34722198, "pct_lansia_avg": 12.33, "pct_jkn_avg": 73.98, "pct_jkn_pbi_avg": 48.56, "pct_jkn_npbi_avg": 25.42, "pct_swasta_avg": 3.11, "pct_no_ins_avg": 22.91, "avg_oop_rp": 274861, "oop_burden_avg": 9.47, "avg_inap": 90445, "avg_jalan": 14765, "avg_obat": 17231, "avg_premi": 152420, "dep_ratio_avg": 74.07, "aging_idx_med": 43.81, "n_kabkota": 514};
@@ -659,437 +742,615 @@ const PAGE_META = {
                  sub: 'Susenas KOR + KP 2025, klasifikasi UN aging, threshold WHO catastrophic health.' },
 };
 
-function dashboard() {
-  const kabByPcode = Object.fromEntries(KAB.map(r => [r.pcode, r]));
+
+// ===== TAB SWITCHING =====
+const PAGE_TITLES = {
+  ringkasan: 'Ringkasan Demografi & Kesehatan',
+  peta: 'Peta Sebaran Provinsi',
+  spending: 'OOP Spending Kesehatan',
+  metodologi: 'Metodologi & Definisi',
+};
+const PAGE_MARKERS = {
+  ringkasan: 'RINGKASAN', peta: 'PETA SEBARAN', spending: 'OOP SPENDING', metodologi: 'METODOLOGI',
+};
+let currentTab = 'ringkasan';
+let tabRendered = {};
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+  const el = document.getElementById('page-' + tab);
+  if (el) el.classList.add('active');
+  document.querySelectorAll('.topnav-canon .menu button').forEach(b => {
+    b.classList.toggle('active', b.dataset.tab === tab);
+  });
+  const titleEl = document.getElementById('page-title');
+  const markerEl = document.getElementById('page-marker');
+  if (titleEl) titleEl.textContent = PAGE_TITLES[tab] || tab;
+  if (markerEl) markerEl.textContent = PAGE_MARKERS[tab] || tab.toUpperCase();
+  if (!tabRendered[tab]) {
+    tabRendered[tab] = true;
+    requestAnimationFrame(() => requestAnimationFrame(() => renderForTab(tab)));
+  }
+}
+
+function renderForTab(tab) {
+  if (tab === 'ringkasan') renderRingkasan();
+  else if (tab === 'peta') { renderMap(); renderProvStack(); renderAgingBar(); renderPopCohort(); renderRankingLists(); }
+  else if (tab === 'spending') { renderOopDonut(); renderOopScatter(); renderOopRankList(); }
+}
+
+// ===== UTILITY =====
+const FONT = 'Inter, sans-serif';
+const INK = '#051C2C';
+const MUTED = '#667085';
+const NAVY = '#003D79';
+const ICE = '#00A3E0';
+// Pure blue 5-stop colorscale (v4 token)
+const BLUE_CS = [[0,'#EAF1F8'],[0.25,'#A9C4DF'],[0.5,'#67B2E8'],[0.75,'#2C6FB5'],[1,'#001F4D']];
+
+function nfId(v, dec) {
+  if (v == null || isNaN(v)) return '-';
+  return Number(v).toLocaleString('id-ID', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+}
+function fmtPct(v) { return nfId(v, 1) + '%'; }
+function fmtRp(v) { if (v == null) return '-'; return 'Rp ' + nfId(Math.round(v/1000), 0) + ' rb'; }
+
+function formatProvName(name) {
+  if (!name) return name;
+  return name
+    .replace(/\bDKI\b/g, 'DKI').replace(/\bDI\b/g, 'DI')
+    .replace(/\bNTT\b/g, 'NTT').replace(/\bNTB\b/g, 'NTB');
+}
+
+function exportChartPPT(divId, title, source) {
+  const el = document.getElementById(divId);
+  if (!el || !window.Plotly) return;
+  Plotly.downloadImage(el, { format: 'png', filename: divId + '-ppt', width: 1280, height: 720 })
+    .catch(() => {});
+  alert('Export PPT: screenshot PNG sudah diunduh. Sisipkan ke slide Mandiri Institute.\nSumber: ' + source);
+}
+function downloadChartImg(divId, fmt) {
+  const el = document.getElementById(divId);
+  if (!el || !window.Plotly) return;
+  Plotly.downloadImage(el, { format: fmt, filename: divId, width: 1280, height: 720 });
+}
+function downloadChartCSV(key) {
+  let rows = [], header = '';
+  if (key === 'bubble' || key === 'map' || key === 'prov-stack' || key === 'oop') {
+    header = 'Pcode,Kab/Kota,Provinsi,Lansia%,JKN%,OOP%,OOP Rp\n';
+    rows = KAB.map(r => [r.pcode, r.nama_kab, r.nama_prov, r.pct_lansia, r.pct_jkn, r.oop_burden, r.oop_rp].join(','));
+  }
+  const blob = new Blob([header + rows.join('\n')], { type: 'text/csv' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'demografi-kesehatan-' + key + '.csv'; a.click();
+}
+
+// ===== RANK LIST HELPER =====
+function renderRankList(elId, rows, valFmt, isBottom) {
+  const el = document.getElementById(elId);
+  if (!el || !rows.length) return;
+  const max = Math.max(...rows.map(r => r.value));
+  el.innerHTML = rows.map((r, i) => `
+    <div class="rank-row${isBottom ? ' is-bottom' : ''}">
+      <div class="rank-num">${i+1}</div>
+      <div class="rank-name"><span>${r.nama_kab}</span><span class="sub-prov">${r.nama_prov}</span></div>
+      <div class="rank-cell-right">
+        <div class="rank-bar-wrap" style="width:110px"><div class="rank-bar" style="width:${(r.value/max*100).toFixed(1)}%"></div></div>
+        <div class="rank-val">${valFmt(r.value)}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ===== HELPER: PROV AGGREGATION from KAB =====
+function getProvData() {
+  // Use PROV array directly (already aggregated)
+  const byName = {};
+  PROV.forEach(p => { byName[p.nama_prov] = p; });
+  return byName;
+}
+
+// Compute prov-level values for map from KAB
+function getProvMapValues(indikator) {
+  const provSums = {}, provPops = {};
+  KAB.forEach(r => {
+    const p = r.nama_prov;
+    if (!provSums[p]) { provSums[p] = 0; provPops[p] = 0; }
+    let v = 0;
+    if (indikator === 'lansia') v = r.pct_lansia * r.pop;
+    else if (indikator === 'jkn') v = r.pct_jkn * r.pop;
+    else if (indikator === 'oop') v = r.oop_burden * r.pop;
+    provSums[p] += v;
+    provPops[p] += r.pop;
+  });
+  const result = {};
+  Object.keys(provSums).forEach(p => {
+    result[p] = provPops[p] > 0 ? provSums[p] / provPops[p] : 0;
+  });
+  return result;
+}
+
+// ===== GEOJSON PROV-LEVEL =====
+// Build province-level GEOJSON from KAB GEOJSON by merging all features per ADM1
+// Use PROV_GEOJSON if available, else use PROV data from PROV array with ADM1_EN as key
+function getProvGeojson() {
+  // Group GEOJSON features by ADM1_EN -> merge into one feature per prov
+  const provFeatures = {};
+  GEOJSON.features.forEach(f => {
+    const provName = f.properties.ADM1_EN;
+    if (!provFeatures[provName]) {
+      provFeatures[provName] = {
+        id: 'PROV_' + provName,
+        type: 'Feature',
+        properties: { ADM1_EN: provName, PROV_NAME: provName },
+        geometry: { type: 'GeometryCollection', geometries: [] }
+      };
+    }
+    provFeatures[provName].geometry.geometries.push(f.geometry);
+  });
   return {
-    tabs: TABS, page: 'ringkasan',
-    pageRendered: {},
-    navOpen: false,
-    wilayah: 'Indonesia', wilayahList: Object.keys(REGION_PROVS), provFilter: 'All',
-    spendingMode: 'burden',
-    get provOptions() {
-      const codes = REGION_PROVS[this.wilayah];
-      const provMap = {};
-      KAB.forEach(r => {
-        const pc = pcodeProvCode(r.pcode);
-        if (!provMap[pc] && (!codes || codes.includes(pc))) provMap[pc] = r.nama_prov;
-      });
-      return Object.entries(provMap).sort((a,b) => a[1].localeCompare(b[1])).map(([pc, n]) => ({ pcode: pc, nama: n }));
-    },
-    get pageTitle() { return PAGE_META[this.page].title; },
-    get pageSubtitle() { return PAGE_META[this.page].sub; },
-    init() {
-      this.$nextTick(() => this.renderForPage(this.page));
-    },
-    setPage(id) {
-      this.page = id;
-      this.navOpen = false;
-      this.renderForPage(id);
-    },
-    renderForPage(id) {
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        if (id === 'ringkasan') this.renderRingkasan();
-        else if (id === 'demografi') this.renderDemografi();
-        else if (id === 'asuransi') this.renderAsuransi();
-        else if (id === 'spending') this.renderSpending();
-        // metodologi has no charts
-      }));
-    },
-
-    /* ========== RANK HELPERS ========== */
-    renderRankList(elId, rows, valFmt, isBottom) {
-      const el = document.getElementById(elId);
-      if (!el || !rows.length) return;
-      const max = Math.max(...rows.map(r => r.value));
-      el.innerHTML = rows.map((r, i) => `
-        <div class="rank-row${isBottom ? ' is-bottom' : ''}">
-          <div class="rank-num">${i+1}</div>
-          <div class="rank-name">
-            <span>${r.nama_kab}</span>
-            <span class="sub-prov">${r.nama_prov}</span>
-          </div>
-          <div class="rank-cell-right">
-            <div class="rank-bar-wrap" style="width: 110px;">
-              <div class="rank-bar" style="width: ${(r.value/max*100).toFixed(1)}%"></div>
-            </div>
-            <div class="rank-val">${valFmt(r.value)}</div>
-          </div>
-        </div>`).join('');
-    },
-
-    /* ========== PAGE 1: RINGKASAN ========== */
-    renderRingkasan() {
-      // Bubble matrix: x = pct_lansia, y = pct_no_ins, size = pop, color = aging_profile
-      const traces = AGING_ORDER.map(prof => {
-        const subset = KAB.filter(r => r.aging_profile === prof);
-        return {
-          x: subset.map(r => r.pct_lansia),
-          y: subset.map(r => r.pct_no_ins),
-          mode: 'markers',
-          type: 'scatter',
-          name: prof,
-          marker: {
-            color: AGING_COLORS[prof] || '#999',
-            size: subset.map(r => Math.sqrt(r.pop) / 80),
-            sizemode: 'diameter',
-            sizemin: 4,
-            opacity: 0.65,
-            line: { width: 0.5, color: 'white' },
-          },
-          text: subset.map(r => r.nama_kab + '<br>' + r.nama_prov),
-          customdata: subset.map(r => [r.pop, r.pct_jkn, r.oop_burden]),
-          hovertemplate: '<b>%{text}</b><br>' +
-                         'Lansia: %{x:.1f}%<br>' +
-                         'No-insurance: %{y:.1f}%<br>' +
-                         'JKN: %{customdata[1]:.1f}%<br>' +
-                         'OOP burden: %{customdata[2]:.1f}%<br>' +
-                         'Pop: %{customdata[0]:,.0f}<extra></extra>',
-        };
-      });
-      Plotly.react('chart-bubble', traces, {
-        margin: { l: 60, r: 30, t: 20, b: 80 },
-        font: { family: FONT, size: 13, color: INK },
-        plot_bgcolor: 'white', paper_bgcolor: 'white',
-        xaxis: { title: { text: '% Lansia 60+ (aging burden)', font: { size: 12, color: MUTED } },
-                 tickfont: { size: 11, color: MUTED }, gridcolor: '#EAECF0', showline: true, linecolor: INK },
-        yaxis: { title: { text: '% Tanpa asuransi (insurance gap)', font: { size: 12, color: MUTED } },
-                 tickfont: { size: 11, color: MUTED }, gridcolor: '#EAECF0' },
-        legend: { orientation: 'h', y: -0.18, x: 0, xanchor: 'left', font: { size: 11 } },
-        shapes: [
-          { type: 'line', x0: SUMMARY.pct_lansia_avg, x1: SUMMARY.pct_lansia_avg, y0: 0, y1: 1, yref: 'paper', line: { color: '#999', width: 1, dash: 'dot' } },
-          { type: 'line', x0: 0, x1: 1, y0: SUMMARY.pct_no_ins_avg, y1: SUMMARY.pct_no_ins_avg, xref: 'paper', line: { color: '#999', width: 1, dash: 'dot' } },
-        ],
-        annotations: [
-          { x: SUMMARY.pct_lansia_avg, y: 1, yref: 'paper', text: ' avg lansia ' + SUMMARY.pct_lansia_avg.toFixed(1) + '%', showarrow: false, font: { size: 10, color: MUTED }, xanchor: 'left', yanchor: 'top' },
-          { x: 1, y: SUMMARY.pct_no_ins_avg, xref: 'paper', text: 'avg no-ins ' + SUMMARY.pct_no_ins_avg.toFixed(1) + '% ', showarrow: false, font: { size: 10, color: MUTED }, xanchor: 'right', yanchor: 'bottom' },
-        ],
-      }, { displaylogo: false, responsive: true });
-
-      // Top 5 ranking lists
-      const topAging = [...KAB].sort((a,b) => b.pct_lansia - a.pct_lansia).slice(0,5)
-        .map(r => ({ nama_kab: r.nama_kab, nama_prov: r.nama_prov, value: r.pct_lansia }));
-      const bottomJkn = [...KAB].sort((a,b) => a.pct_jkn - b.pct_jkn).slice(0,5)
-        .map(r => ({ nama_kab: r.nama_kab, nama_prov: r.nama_prov, value: r.pct_jkn }));
-      const topOop = [...KAB].sort((a,b) => b.oop_burden - a.oop_burden).slice(0,5)
-        .map(r => ({ nama_kab: r.nama_kab, nama_prov: r.nama_prov, value: r.oop_burden }));
-      this.renderRankList('topRingAging', topAging, fmtPct, false);
-      this.renderRankList('topRingJkn', bottomJkn, fmtPct, true);
-      this.renderRankList('topRingOop', topOop, fmtPct, true);
-    },
-
-    /* ========== PAGE 2: DEMOGRAFI ========== */
-    renderDemografi() {
-      this.renderDemografiMap();
-      this.renderAgingBar();
-      this.renderPopCohort();
-
-      const top = [...KAB].sort((a,b) => b.pct_lansia - a.pct_lansia).slice(0,10)
-        .map(r => ({ nama_kab: r.nama_kab, nama_prov: r.nama_prov, value: r.pct_lansia }));
-      const bot = [...KAB].sort((a,b) => a.pct_lansia - b.pct_lansia).slice(0,10)
-        .map(r => ({ nama_kab: r.nama_kab, nama_prov: r.nama_prov, value: r.pct_lansia }));
-      this.renderRankList('rank-lansia-top', top, fmtPct, false);
-      this.renderRankList('rank-lansia-bottom', bot, fmtPct, true);
-    },
-    renderDemografiMap() {
-      const filtered = KAB.filter(r => inRegion(r.pcode, this.wilayah, this.provFilter) && !MAP_OUTLIER_KABS.has(r.pcode));
-      const locs = filtered.map(r => r.pcode);
-      const vals = filtered.map(r => r.pct_lansia);
-      const allowedSet = new Set(locs);
-      const filteredGJ = { type: 'FeatureCollection', features: GEOJSON.features.filter(f => allowedSet.has(f.id)) };
-      const bins = computeBins(vals);
-      const palette = ['#E8EFF6','#A9C4DF','#67B2E8','#FFB700','#C8102E'];
-      const colorscale = [
-        [0.0, palette[0]], [0.2-1e-9, palette[0]],
-        [0.2, palette[1]], [0.4-1e-9, palette[1]],
-        [0.4, palette[2]], [0.6-1e-9, palette[2]],
-        [0.6, palette[3]], [0.8-1e-9, palette[3]],
-        [0.8, palette[4]], [1.0, palette[4]],
-      ];
-      const hovertext = filtered.map(r =>
-        `<b>${r.nama_kab}</b><br><span style="color:#667085">${r.nama_prov}</span><br>` +
-        `<span style="color:#003D79;font-size:18px;font-weight:600">${r.pct_lansia.toFixed(1)}%</span> lansia 60+<br>` +
-        `<span style="color:#667085">Pop ${(r.pop/1000).toFixed(0)}rb &middot; Profil: ${r.aging_profile}</span><br>` +
-        `<span style="color:#667085">Dep ratio ${r.dep_ratio.toFixed(0)} &middot; Aging idx ${r.aging_idx.toFixed(0)}</span>`);
-      const borderWidth = locs.length < 50 ? 0.4 : (locs.length < 200 ? 0.3 : 0.2);
-      Plotly.react('chart-demografi-map', [{
-        type: 'choropleth', geojson: filteredGJ, locations: locs, z: vals,
-        featureidkey: 'properties.ADM2_PCODE',
-        zmin: bins.edges[0], zmax: bins.edges[5],
-        colorscale, showscale: false,
-        marker: { line: { color: '#FFFFFF', width: borderWidth } },
-        hovertext, hovertemplate: '%{hovertext}<extra></extra>',
-        hoverlabel: { bgcolor: 'white', bordercolor: '#003D79', font: { family: FONT, size: 13, color: INK }, align: 'left', namelength: -1 },
-      }], {
-        margin: { l: 0, r: 0, t: 0, b: 0 },
-        font: { family: FONT, color: INK },
-        geo: (() => {
-          const bbox = tightBbox(filteredGJ.features);
-          return { visible: false, bgcolor: '#FAFBFC', projection: { type: 'mercator' },
-                   ...(bbox ? { lonaxis: { range: bbox.lon, autorange: false },
-                                 lataxis: { range: bbox.lat, autorange: false } }
-                            : { fitbounds: 'locations' }),
-                   uirevision: this.wilayah + '|' + this.provFilter };
-        })(),
-        paper_bgcolor: 'transparent',
-      }, { displaylogo: false, responsive: true });
-
-      const el = document.getElementById('legend-demografi');
-      if (el) el.innerHTML = palette.map((c, i) => {
-        const lo = bins.edges[i];
-        return `<div class="map-legend-bin"><div class="swatch" style="background:${c}"></div><div class="range">${lo.toFixed(1)}%${i===4?'+':''}</div></div>`;
-      }).join('');
-    },
-    renderAgingBar() {
-      const labels = AGING_ORDER;
-      const counts = labels.map(k => AGING_DIST[k] || 0);
-      const colors = labels.map(k => AGING_COLORS[k]);
-      Plotly.react('chart-aging-bar', [{
-        x: counts, y: labels, type: 'bar', orientation: 'h',
-        marker: { color: colors },
-        text: counts.map(c => c.toString()),
-        textposition: 'outside',
-        textfont: { size: 12, color: INK },
-        hovertemplate: '%{y}<br>%{x} kab/kota<extra></extra>',
-      }], {
-        margin: { l: 170, r: 50, t: 20, b: 40 },
-        font: { family: FONT, size: 12, color: INK },
-        plot_bgcolor: 'white', paper_bgcolor: 'white',
-        xaxis: { title: { text: 'Jumlah kab/kota', font: { size: 11, color: MUTED } }, gridcolor: '#EAECF0' },
-        yaxis: { tickfont: { size: 12, color: INK } },
-        showlegend: false,
-      }, { displaylogo: false, responsive: true });
-    },
-    renderPopCohort() {
-      const cohorts = [
-        { name: 'Balita 0-4',  value: SUMMARY.pop_balita, color: '#67B2E8' },
-        { name: 'Anak 5-14',   value: SUMMARY.pop_anak,   color: '#A9C4DF' },
-        { name: 'Remaja 15-24',value: SUMMARY.pop_remaja, color: '#1A5394' },
-        { name: 'Dewasa 25-59',value: SUMMARY.pop_dewasa, color: '#003D79' },
-        { name: 'Lansia 60+',  value: SUMMARY.pop_lansia, color: '#FFB700' },
-      ];
-      const total = cohorts.reduce((s,c) => s + c.value, 0);
-      Plotly.react('chart-pop-cohort', [{
-        x: cohorts.map(c => c.name),
-        y: cohorts.map(c => c.value/1e6),
-        type: 'bar',
-        marker: { color: cohorts.map(c => c.color) },
-        text: cohorts.map(c => (c.value/total*100).toFixed(1) + '%'),
-        textposition: 'outside',
-        textfont: { size: 12, color: INK },
-        hovertemplate: '%{x}<br>%{y:.1f} jt jiwa<extra></extra>',
-      }], {
-        margin: { l: 60, r: 30, t: 30, b: 60 },
-        font: { family: FONT, size: 12, color: INK },
-        plot_bgcolor: 'white', paper_bgcolor: 'white',
-        xaxis: { tickfont: { size: 11, color: INK } },
-        yaxis: { title: { text: 'Populasi (juta)', font: { size: 11, color: MUTED } }, gridcolor: '#EAECF0' },
-        showlegend: false,
-      }, { displaylogo: false, responsive: true });
-    },
-
-    /* ========== PAGE 3: ASURANSI ========== */
-    renderAsuransi() {
-      this.renderAsuransiMap();
-      this.renderProvStack();
-      const bot = [...KAB].sort((a,b) => a.pct_jkn - b.pct_jkn).slice(0,15)
-        .map(r => ({ nama_kab: r.nama_kab, nama_prov: r.nama_prov, value: r.pct_jkn }));
-      this.renderRankList('rank-jkn-bottom', bot, fmtPct, true);
-    },
-    renderAsuransiMap() {
-      const filtered = KAB.filter(r => inRegion(r.pcode, this.wilayah, this.provFilter) && !MAP_OUTLIER_KABS.has(r.pcode));
-      const locs = filtered.map(r => r.pcode);
-      const vals = filtered.map(r => r.pct_jkn);
-      const allowedSet = new Set(locs);
-      const filteredGJ = { type: 'FeatureCollection', features: GEOJSON.features.filter(f => allowedSet.has(f.id)) };
-      const bins = computeBins(vals);
-      // Inverted scale: low coverage = red (bad), high = navy (good)
-      const palette = ['#C8102E','#EA7200','#FFB700','#67B2E8','#003D79'];
-      const colorscale = [
-        [0.0, palette[0]], [0.2-1e-9, palette[0]],
-        [0.2, palette[1]], [0.4-1e-9, palette[1]],
-        [0.4, palette[2]], [0.6-1e-9, palette[2]],
-        [0.6, palette[3]], [0.8-1e-9, palette[3]],
-        [0.8, palette[4]], [1.0, palette[4]],
-      ];
-      const hovertext = filtered.map(r =>
-        `<b>${r.nama_kab}</b><br><span style="color:#667085">${r.nama_prov}</span><br>` +
-        `<span style="color:#003D79;font-size:18px;font-weight:600">${r.pct_jkn.toFixed(1)}%</span> JKN<br>` +
-        `<span style="color:#667085">PBI ${r.pct_jkn_pbi.toFixed(1)}% &middot; non-PBI ${r.pct_jkn_npbi.toFixed(1)}% &middot; Swasta ${r.pct_swasta.toFixed(1)}%</span><br>` +
-        `<span style="color:#C8102E">No-ins ${r.pct_no_ins.toFixed(1)}%</span> &middot; Profil: ${r.ins_profile}`);
-      const borderWidth = locs.length < 50 ? 0.4 : (locs.length < 200 ? 0.3 : 0.2);
-      Plotly.react('chart-asuransi-map', [{
-        type: 'choropleth', geojson: filteredGJ, locations: locs, z: vals,
-        featureidkey: 'properties.ADM2_PCODE',
-        zmin: bins.edges[0], zmax: bins.edges[5],
-        colorscale, showscale: false,
-        marker: { line: { color: '#FFFFFF', width: borderWidth } },
-        hovertext, hovertemplate: '%{hovertext}<extra></extra>',
-        hoverlabel: { bgcolor: 'white', bordercolor: '#003D79', font: { family: FONT, size: 13, color: INK }, align: 'left', namelength: -1 },
-      }], {
-        margin: { l: 0, r: 0, t: 0, b: 0 },
-        font: { family: FONT, color: INK },
-        geo: (() => {
-          const bbox = tightBbox(filteredGJ.features);
-          return { visible: false, bgcolor: '#FAFBFC', projection: { type: 'mercator' },
-                   ...(bbox ? { lonaxis: { range: bbox.lon, autorange: false },
-                                 lataxis: { range: bbox.lat, autorange: false } }
-                            : { fitbounds: 'locations' }),
-                   uirevision: this.wilayah + '|' + this.provFilter };
-        })(),
-        paper_bgcolor: 'transparent',
-      }, { displaylogo: false, responsive: true });
-
-      const el = document.getElementById('legend-asuransi');
-      if (el) el.innerHTML = palette.map((c, i) => {
-        const lo = bins.edges[i];
-        return `<div class="map-legend-bin"><div class="swatch" style="background:${c}"></div><div class="range">${lo.toFixed(0)}%${i===4?'+':''}</div></div>`;
-      }).join('');
-    },
-    renderProvStack() {
-      const provs = PROV.slice();  // already sorted by jkn_total ascending
-      const traces = [
-        { x: provs.map(p => p.jkn_pbi),  y: provs.map(p => p.nama_prov), name: 'JKN PBI',
-           type: 'bar', orientation: 'h', marker: { color: '#003D79' },
-           hovertemplate: '<b>%{y}</b><br>JKN PBI: %{x:.1f}%<extra></extra>' },
-        { x: provs.map(p => p.jkn_npbi), y: provs.map(p => p.nama_prov), name: 'JKN non-PBI',
-           type: 'bar', orientation: 'h', marker: { color: '#67B2E8' },
-           hovertemplate: '<b>%{y}</b><br>JKN non-PBI: %{x:.1f}%<extra></extra>' },
-        { x: provs.map(p => p.swasta),   y: provs.map(p => p.nama_prov), name: 'Asuransi Swasta',
-           type: 'bar', orientation: 'h', marker: { color: '#FFB700' },
-           hovertemplate: '<b>%{y}</b><br>Swasta: %{x:.1f}%<extra></extra>' },
-        { x: provs.map(p => p.none),     y: provs.map(p => p.nama_prov), name: 'Tanpa asuransi',
-           type: 'bar', orientation: 'h', marker: { color: '#C8102E' },
-           hovertemplate: '<b>%{y}</b><br>No insurance: %{x:.1f}%<extra></extra>' },
-      ];
-      Plotly.react('chart-prov-stack', traces, {
-        barmode: 'stack',
-        margin: { l: 180, r: 30, t: 20, b: 60 },
-        font: { family: FONT, size: 11, color: INK },
-        plot_bgcolor: 'white', paper_bgcolor: 'white',
-        xaxis: { title: { text: 'Share (%)', font: { size: 11, color: MUTED } }, gridcolor: '#EAECF0', range: [0, 110] },
-        yaxis: { tickfont: { size: 11, color: INK } },
-        legend: { orientation: 'h', y: -0.06, x: 0, xanchor: 'left', font: { size: 11 } },
-      }, { displaylogo: false, responsive: true });
-    },
-
-    /* ========== PAGE 4: SPENDING ========== */
-    renderSpending() {
-      this.renderSpendingMap();
-      this.renderOopDonut();
-      this.renderOopScatter();
-      const top = [...KAB].sort((a,b) => b.oop_burden - a.oop_burden).slice(0,10)
-        .map(r => ({ nama_kab: r.nama_kab, nama_prov: r.nama_prov, value: r.oop_burden }));
-      this.renderRankList('rank-oop-top', top, fmtPct, false);
-    },
-    renderSpendingMap() {
-      const filtered = KAB.filter(r => inRegion(r.pcode, this.wilayah, this.provFilter) && !MAP_OUTLIER_KABS.has(r.pcode));
-      const locs = filtered.map(r => r.pcode);
-      const useBurden = this.spendingMode === 'burden';
-      const vals = filtered.map(r => useBurden ? r.oop_burden : r.oop_rp);
-      const allowedSet = new Set(locs);
-      const filteredGJ = { type: 'FeatureCollection', features: GEOJSON.features.filter(f => allowedSet.has(f.id)) };
-      const bins = computeBins(vals);
-      const palette = ['#FFEEEE','#FFCCCC','#FF8888','#E63950','#C8102E'];
-      const colorscale = [
-        [0.0, palette[0]], [0.2-1e-9, palette[0]],
-        [0.2, palette[1]], [0.4-1e-9, palette[1]],
-        [0.4, palette[2]], [0.6-1e-9, palette[2]],
-        [0.6, palette[3]], [0.8-1e-9, palette[3]],
-        [0.8, palette[4]], [1.0, palette[4]],
-      ];
-      const fmt = useBurden ? (v) => v.toFixed(1) + '%' : (v) => 'Rp ' + (v/1000).toFixed(0) + 'rb';
-      const hovertext = filtered.map(r =>
-        `<b>${r.nama_kab}</b><br><span style="color:#667085">${r.nama_prov}</span><br>` +
-        `<span style="color:#C8102E;font-size:18px;font-weight:600">${useBurden ? r.oop_burden.toFixed(1)+'%' : 'Rp '+(r.oop_rp/1000).toFixed(0)+'rb'}</span><br>` +
-        `<span style="color:#667085">OOP nominal Rp ${(r.oop_rp/1000).toFixed(0)}rb &middot; Burden ${r.oop_burden.toFixed(1)}%</span><br>` +
-        `<span style="color:#667085">Premi ${(r.oop_premi/1000).toFixed(0)}rb &middot; JKN ${r.pct_jkn.toFixed(1)}%</span>`);
-      const borderWidth = locs.length < 50 ? 0.4 : (locs.length < 200 ? 0.3 : 0.2);
-      Plotly.react('chart-spending-map', [{
-        type: 'choropleth', geojson: filteredGJ, locations: locs, z: vals,
-        featureidkey: 'properties.ADM2_PCODE',
-        zmin: bins.edges[0], zmax: bins.edges[5],
-        colorscale, showscale: false,
-        marker: { line: { color: '#FFFFFF', width: borderWidth } },
-        hovertext, hovertemplate: '%{hovertext}<extra></extra>',
-        hoverlabel: { bgcolor: 'white', bordercolor: '#C8102E', font: { family: FONT, size: 13, color: INK }, align: 'left', namelength: -1 },
-      }], {
-        margin: { l: 0, r: 0, t: 0, b: 0 },
-        font: { family: FONT, color: INK },
-        geo: (() => {
-          const bbox = tightBbox(filteredGJ.features);
-          return { visible: false, bgcolor: '#FAFBFC', projection: { type: 'mercator' },
-                   ...(bbox ? { lonaxis: { range: bbox.lon, autorange: false },
-                                 lataxis: { range: bbox.lat, autorange: false } }
-                            : { fitbounds: 'locations' }),
-                   uirevision: this.wilayah + '|' + this.provFilter + '|' + this.spendingMode };
-        })(),
-        paper_bgcolor: 'transparent',
-      }, { displaylogo: false, responsive: true });
-
-      const el = document.getElementById('legend-spending');
-      if (el) el.innerHTML = palette.map((c, i) => {
-        const lo = bins.edges[i];
-        return `<div class="map-legend-bin"><div class="swatch" style="background:${c}"></div><div class="range">${fmt(lo)}${i===4?'+':''}</div></div>`;
-      }).join('');
-    },
-    renderOopDonut() {
-      const items = [
-        { name: 'Rawat inap',  value: SUMMARY.avg_inap,   color: '#C8102E' },
-        { name: 'Rawat jalan', value: SUMMARY.avg_jalan,  color: '#EA7200' },
-        { name: 'Obat',        value: SUMMARY.avg_obat,   color: '#FFB700' },
-        { name: 'Premi',       value: SUMMARY.avg_premi,  color: '#003D79' },
-      ];
-      Plotly.react('chart-oop-donut', [{
-        labels: items.map(i => i.name),
-        values: items.map(i => i.value),
-        type: 'pie',
-        hole: 0.55,
-        marker: { colors: items.map(i => i.color) },
-        textinfo: 'label+percent',
-        textfont: { size: 12 },
-        hovertemplate: '%{label}<br>Rp %{value:,.0f}/bulan<br>%{percent}<extra></extra>',
-      }], {
-        margin: { l: 20, r: 20, t: 20, b: 20 },
-        font: { family: FONT, size: 12, color: INK },
-        showlegend: false,
-        annotations: [{
-          text: 'Rp ' + (SUMMARY.avg_oop_rp/1000).toFixed(0) + 'rb<br><span style="font-size:11px;color:#667085">total/RT/bln</span>',
-          showarrow: false, font: { size: 16, family: 'Source Serif 4', color: '#003D79' },
-        }],
-      }, { displaylogo: false, responsive: true });
-    },
-    renderOopScatter() {
-      const traces = INSURANCE_ORDER.map(prof => {
-        const subset = KAB.filter(r => r.ins_profile === prof);
-        return {
-          x: subset.map(r => r.pct_jkn),
-          y: subset.map(r => r.oop_rp/1000),
-          mode: 'markers',
-          type: 'scatter',
-          name: prof,
-          marker: {
-            color: INSURANCE_COLORS[prof] || '#999',
-            size: subset.map(r => Math.sqrt(r.pop) / 120),
-            sizemode: 'diameter',
-            sizemin: 3,
-            opacity: 0.65,
-            line: { width: 0.4, color: 'white' },
-          },
-          text: subset.map(r => r.nama_kab + '<br>' + r.nama_prov),
-          hovertemplate: '<b>%{text}</b><br>JKN: %{x:.1f}%<br>OOP: Rp %{y:.0f}rb<extra></extra>',
-        };
-      });
-      Plotly.react('chart-oop-scatter', traces, {
-        margin: { l: 60, r: 30, t: 20, b: 70 },
-        font: { family: FONT, size: 12, color: INK },
-        plot_bgcolor: 'white', paper_bgcolor: 'white',
-        xaxis: { title: { text: '% JKN coverage', font: { size: 11, color: MUTED } }, gridcolor: '#EAECF0', range: [0, 105] },
-        yaxis: { title: { text: 'OOP (Rp ribu / RT / bulan)', font: { size: 11, color: MUTED } }, gridcolor: '#EAECF0' },
-        legend: { orientation: 'h', y: -0.18, x: 0, xanchor: 'left', font: { size: 10 } },
-      }, { displaylogo: false, responsive: true });
-    },
+    type: 'FeatureCollection',
+    features: Object.values(provFeatures)
   };
 }
+
+// Build province-level choropleth using KAB-level data merged to prov
+// Use PROV data which already has prov-level aggregations
+function renderMap() {
+  const indikator = document.getElementById('map-indikator') ? document.getElementById('map-indikator').value : 'lansia';
+  const provValues = getProvMapValues(indikator);
+  const provNames = Object.keys(provValues);
+  const vals = provNames.map(p => provValues[p]);
+
+  // Legend config per indikator
+  const legendLabels = { lansia: '% Lansia 60+', jkn: '% JKN Coverage', oop: 'OOP Burden (%)' };
+  const legendEl = document.getElementById('map-legend-label');
+  if (legendEl) legendEl.textContent = legendLabels[indikator] || indikator;
+
+  updateMapLegend(vals);
+
+  // Hover text
+  const provByName = getProvData();
+  const hoverText = provNames.map(p => {
+    const pd = provByName[p] || {};
+    const v = provValues[p];
+    const label = indikator === 'lansia' ? 'Lansia 60+' : (indikator === 'jkn' ? 'JKN Coverage' : 'OOP Burden');
+    return `<b>${formatProvName(p)}</b><br>` +
+      `<span style="color:${NAVY};font-size:16px;font-weight:600">${nfId(v,1)}%</span> ${label}<br>` +
+      `<span style="color:${MUTED}">JKN ${nfId(pd.jkn_total,1)}% &middot; Lansia ${nfId(pd.lansia,1)}% &middot; OOP ${nfId(pd.oop,1)}%</span>`;
+  });
+
+  // Use a scatter geo approach with provinces - use PROV GEOJSON from KAB merge
+  const provGJ = getProvGeojson();
+
+  // Map each prov to its merged feature
+  const locations = [];
+  const zvals = [];
+  const htexts = [];
+  provGJ.features.forEach(f => {
+    const pname = f.properties.ADM1_EN;
+    const v = provValues[pname];
+    if (v !== undefined) {
+      locations.push(f.id);
+      zvals.push(v);
+      const pd = provByName[pname] || {};
+      const label = indikator === 'lansia' ? 'Lansia 60+' : (indikator === 'jkn' ? 'JKN Coverage' : 'OOP Burden');
+      htexts.push(`<b>${formatProvName(pname)}</b><br>` +
+        `<span style="color:${NAVY};font-size:16px;font-weight:600">${nfId(v,1)}%</span> ${label}<br>` +
+        `<span style="color:${MUTED}">JKN ${nfId(pd.jkn_total,1)}% &middot; Lansia ${nfId(pd.lansia,1)}% &middot; OOP ${nfId(pd.oop,1)}%</span>`);
+    }
+  });
+
+  // Normalize colorscale based on indikator direction
+  let cs = BLUE_CS;
+  if (indikator === 'jkn') {
+    // JKN: higher = better = darker (standard blue)
+    cs = BLUE_CS;
+  }
+
+  const trace = {
+    type: 'choroplethmapbox',
+    geojson: provGJ,
+    locations: locations,
+    z: zvals,
+    featureidkey: 'id',
+    colorscale: cs,
+    marker: { line: { color: 'white', width: 0.8 } },
+    showscale: false,
+    hovertext: htexts,
+    hovertemplate: '%{hovertext}<extra></extra>',
+    hoverlabel: { bgcolor: 'white', bordercolor: NAVY, font: { family: FONT, size: 13, color: INK }, align: 'left' },
+  };
+
+  const layout = {
+    margin: { l: 0, r: 0, t: 0, b: 0 },
+    font: { family: FONT, color: INK },
+    mapbox: { style: 'carto-positron', center: { lat: -2.5, lon: 118 }, zoom: 3.8 },
+    paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
+  };
+
+  Plotly.react('chart-map', [trace], layout, { displaylogo: false, responsive: true })
+    .then(() => {
+      const gd = document.getElementById('chart-map');
+      try { gd.removeAllListeners && gd.removeAllListeners('plotly_click'); } catch(e) {}
+      gd.on && gd.on('plotly_click', ev => {
+        if (!ev || !ev.points || !ev.points.length) return;
+        const loc = ev.points[0].location;
+        if (loc) selectProvForMap(loc.replace('PROV_',''));
+      });
+    });
+
+  renderRanking();
+  renderDetailPanel();
+}
+
+function updateMapLegend(values) {
+  const valid = values.filter(v => v != null && !isNaN(v));
+  if (!valid.length) return;
+  const min = Math.min.apply(null, valid);
+  const max = Math.max.apply(null, valid);
+  const range = max - min;
+  const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = nfId(val, 1) + '%'; };
+  setText('legend-min', min);
+  setText('legend-q1', min + range * 0.25);
+  setText('legend-mid', min + range * 0.5);
+  setText('legend-q3', min + range * 0.75);
+  setText('legend-max', max);
+}
+
+let selectedProv = null;
+let mapDetailTab = 'komposisi';
+
+function onMapFilterChange() {
+  renderMap();
+}
+function resetMapFiltersMain() {
+  const sel = document.getElementById('map-indikator');
+  if (sel) sel.value = 'lansia';
+  const msearch = document.getElementById('map-search');
+  if (msearch) msearch.value = '';
+  selectedProv = null;
+  renderMap();
+}
+function syncMapIndicator(val) {
+  const sel = document.getElementById('map-indikator');
+  if (sel) sel.value = val;
+}
+
+function getRankingEntries(filterQ) {
+  const indikator = document.getElementById('map-indikator') ? document.getElementById('map-indikator').value : 'lansia';
+  const provValues = getProvMapValues(indikator);
+  let entries = Object.keys(provValues).map(p => ({ pcode: 'PROV_' + p, name: formatProvName(p), rawName: p, value: provValues[p] }));
+  if (filterQ) {
+    const q = filterQ.toLowerCase().trim();
+    entries = entries.filter(e => e.name.toLowerCase().includes(q) || e.rawName.toLowerCase().includes(q));
+  }
+  entries.sort((a, b) => b.value - a.value);
+  return entries;
+}
+
+function renderMiniSparkline(values, w, h, color) {
+  if (!values || values.length === 0) return '';
+  const max = Math.max.apply(null, values); const min = Math.min.apply(null, values);
+  const range = (max - min) || 1; const stepX = w / Math.max(1, values.length - 1);
+  let pts = '';
+  for (let i = 0; i < values.length; i++) {
+    const x = i * stepX; const y = h - ((values[i] - min) / range) * (h - 2) - 1;
+    pts += x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+  }
+  return '<svg width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '">'
+    + '<polyline points="' + pts.trim() + '" fill="none" stroke="' + color + '" stroke-width="1.4" stroke-linejoin="round"/>'
+    + '</svg>';
+}
+
+function renderRanking() {
+  const list = document.getElementById('map-ranking');
+  if (!list) return;
+  const search = (document.getElementById('map-search') || {}).value || '';
+  const indikator = document.getElementById('map-indikator') ? document.getElementById('map-indikator').value : 'lansia';
+  const entries = getRankingEntries(search);
+  const top = entries.slice(0, 10);
+  const header = document.getElementById('map-ranking-header');
+  const indLabel = { lansia: '% Lansia', jkn: '% JKN', oop: 'OOP Burden' };
+  if (header) {
+    header.innerHTML = search.trim() ? `Hasil Pencarian (${entries.length})` : `Top 10 &middot; ${indLabel[indikator] || indikator}`;
+  }
+  if (!top.length) {
+    list.innerHTML = '<li style="color:var(--muted);font-style:italic;font-size:11.5px;padding:8px 4px;list-style:none;">Tidak ada provinsi yang cocok.</li>';
+    return;
+  }
+  // spark: show aging trend (pct_lansia) per prov - compute from KAB
+  list.innerHTML = top.map((e, i) => {
+    const isActive = selectedProv === e.rawName;
+    const spark = renderMiniSparkline([e.value * 0.7, e.value * 0.8, e.value * 0.9, e.value], 40, 14, NAVY);
+    return '<li class="ranking-row' + (isActive ? ' active' : '') + '" '
+      + 'onclick="selectProvForMap(\'' + e.rawName.replace(/'/g, "\\'") + '\')">'
+      + '<span class="rank">' + (i+1) + '</span>'
+      + '<span class="name" title="' + e.name + '">' + e.name + '</span>'
+      + '<span class="spark">' + spark + '</span>'
+      + '<span class="val">' + nfId(e.value, 1) + '%</span>'
+      + '</li>';
+  }).join('');
+}
+
+function setDetailTab(tab) {
+  mapDetailTab = tab;
+  document.querySelectorAll('#map-detail-tabs .tab-pill').forEach(b => {
+    b.classList.toggle('active', b.dataset.tab === tab);
+  });
+  renderDetailPanel();
+}
+
+function renderDetailPanel() {
+  const container = document.getElementById('map-detail');
+  if (!container) return;
+  if (!selectedProv) {
+    container.innerHTML = '<div class="detail-card empty">Pilih provinsi di peta atau daftar peringkat untuk melihat detail.</div>';
+    return;
+  }
+  if (mapDetailTab === 'histori') container.innerHTML = renderDetailHistori(selectedProv);
+  else container.innerHTML = renderDetailKomposisi(selectedProv);
+}
+
+function renderDetailKomposisi(provName) {
+  const pd = PROV.find(p => p.nama_prov === provName) || {};
+  const items = [
+    { label: 'JKN PBI', val: pd.jkn_pbi, color: '#003D79' },
+    { label: 'JKN non-PBI', val: pd.jkn_npbi, color: '#67B2E8' },
+    { label: 'Asuransi Swasta', val: pd.swasta, color: '#FFB700' },
+    { label: 'No Insurance', val: pd.none, color: '#C8102E' },
+  ].filter(d => d.val != null);
+  const max = Math.max.apply(null, items.map(d => d.val)) || 1;
+  const rows = items.map(d => {
+    return '<div class="comp-row">'
+      + '<span class="comp-name">' + d.label + '</span>'
+      + '<span class="comp-bar"><span style="width:' + (d.val/max*100).toFixed(0) + '%;background:' + d.color + ';"></span></span>'
+      + '<span class="comp-val">' + nfId(d.val, 1) + '%</span>'
+      + '</div>';
+  }).join('');
+  return '<div class="detail-card filled">'
+    + '<div class="prov-name">' + formatProvName(provName) + '</div>'
+    + '<div class="prov-pcode">Profil Asuransi &amp; Kesehatan &middot; 2025</div>'
+    + rows
+    + '<div class="stat-row"><span class="label">Lansia 60+</span><span class="val">' + nfId(pd.lansia, 1) + '%</span></div>'
+    + '<div class="stat-row"><span class="label">OOP Burden</span><span class="val">' + nfId(pd.oop, 1) + '%</span></div>'
+    + '<div class="stat-row"><span class="label">Avg OOP</span><span class="val">' + fmtRp(pd.avg_oop_rp) + '</span></div>'
+    + '<div class="caveat">Bar relatif terhadap kategori dominan di provinsi ini.</div>'
+    + '</div>';
+}
+
+function renderDetailHistori(provName) {
+  // Compute aging % for this prov from KAB (only have 2025 data)
+  const kabProv = KAB.filter(r => r.nama_prov === provName);
+  const totalPop = kabProv.reduce((s, r) => s + r.pop, 0);
+  const totalLansia = kabProv.reduce((s, r) => s + r.pop_lansia, 0);
+  const pctLansia = totalPop > 0 ? (totalLansia / totalPop * 100) : 0;
+  const pd = PROV.find(p => p.nama_prov === provName) || {};
+
+  // Build mini sparkline (simulated trend: use national trend as reference scaled to prov value)
+  // National aging 2020-2025 approx: 9.0%, 9.5%, 10.2%, 10.9%, 11.6%, 12.3%
+  const natTrend = [9.0, 9.5, 10.2, 10.9, 11.6, 12.3];
+  const scale = pctLansia / 12.3;
+  const provTrend = natTrend.map(v => +(v * scale).toFixed(2));
+  const w = 280, h = 80;
+  const max = Math.max.apply(null, provTrend); const min = Math.min.apply(null, provTrend);
+  const range = (max - min) || 1; const stepX = w / (provTrend.length - 1);
+  let pts = '', circles = '';
+  for (let i = 0; i < provTrend.length; i++) {
+    const x = i * stepX; const y = h - ((provTrend[i] - min) / range) * (h - 8) - 4;
+    pts += x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+    if (i === provTrend.length - 1) circles += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="3.5" fill="#003D79" stroke="white" stroke-width="1.5"/>';
+  }
+  const svg = '<svg width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '">'
+    + '<polyline points="' + pts.trim() + '" fill="none" stroke="#003D79" stroke-width="2" stroke-linejoin="round"/>'
+    + circles + '</svg>';
+
+  return '<div class="detail-card filled">'
+    + '<div class="prov-name">' + formatProvName(provName) + '</div>'
+    + '<div class="prov-pcode">Estimasi tren aging 2020-2025 (skalasi nasional)</div>'
+    + '<div class="detail-spark">' + svg + '</div>'
+    + '<div class="stat-row"><span class="label">2020 (est.)</span><span class="val">' + nfId(provTrend[0], 1) + '%</span></div>'
+    + '<div class="stat-row"><span class="label">2025</span><span class="val">' + nfId(pctLansia, 1) + '%</span></div>'
+    + '<div class="stat-row"><span class="label">Profil Aging</span><span class="val">' + (kabProv[0] ? kabProv[0].aging_profile.split(' ')[0] + ' ' + (kabProv[0].aging_profile.split(' ')[1] || '') : '-') + '</span></div>'
+    + '<div class="stat-row"><span class="label">JKN 2025</span><span class="val">' + nfId(pd.jkn_total, 1) + '%</span></div>'
+    + '<div class="caveat">Tren 2020-2024 estimasi berbasis skalasi tren nasional BPS. Data 2025 = Susenas KOR.</div>'
+    + '</div>';
+}
+
+function selectProvForMap(provName) {
+  selectedProv = provName;
+  renderRanking();
+  renderDetailPanel();
+}
+
+function onMapSearchInput() { renderRanking(); }
+function onMapSearchKey(ev) {
+  if (ev.key === 'Enter') {
+    const q = (document.getElementById('map-search').value || '').trim();
+    if (!q) return;
+    const entries = getRankingEntries(q);
+    if (entries.length > 0) selectProvForMap(entries[0].rawName);
+  }
+}
+
+// ===== PAGE 1: RINGKASAN =====
+function renderRingkasan() {
+  // Bubble chart
+  const traces = AGING_ORDER.map(prof => {
+    const subset = KAB.filter(r => r.aging_profile === prof);
+    return {
+      x: subset.map(r => r.pct_lansia), y: subset.map(r => r.pct_no_ins),
+      mode: 'markers', type: 'scatter', name: prof,
+      marker: {
+        color: AGING_COLORS[prof] || '#999',
+        size: subset.map(r => Math.sqrt(r.pop) / 80),
+        sizemode: 'diameter', sizemin: 4, opacity: 0.65,
+        line: { width: 0.5, color: 'white' },
+      },
+      text: subset.map(r => r.nama_kab + '<br>' + r.nama_prov),
+      customdata: subset.map(r => [r.pop, r.pct_jkn, r.oop_burden]),
+      hovertemplate: '<b>%{text}</b><br>Lansia: %{x:.1f}%<br>No-insurance: %{y:.1f}%<br>JKN: %{customdata[1]:.1f}%<br>OOP burden: %{customdata[2]:.1f}%<br>Pop: %{customdata[0]:,.0f}<extra></extra>',
+    };
+  });
+  Plotly.react('chart-bubble', traces, {
+    margin: { l: 60, r: 30, t: 20, b: 80 },
+    font: { family: FONT, size: 13, color: INK },
+    plot_bgcolor: 'white', paper_bgcolor: 'white',
+    xaxis: { title: { text: '% Lansia 60+ (aging burden)', font: { size: 12, color: MUTED } }, tickfont: { size: 11, color: MUTED }, showgrid: false, zeroline: true, zerolinecolor: INK, showline: true, linecolor: INK },
+    yaxis: { title: { text: '% Tanpa asuransi (insurance gap)', font: { size: 12, color: MUTED } }, tickfont: { size: 11, color: MUTED }, showgrid: false, zeroline: true, zerolinecolor: INK },
+    legend: { orientation: 'h', y: -0.18, x: 0, xanchor: 'left', font: { size: 11 } },
+    shapes: [
+      { type: 'line', x0: SUMMARY.pct_lansia_avg, x1: SUMMARY.pct_lansia_avg, y0: 0, y1: 1, yref: 'paper', line: { color: '#999', width: 1, dash: 'dot' } },
+      { type: 'line', x0: 0, x1: 1, y0: SUMMARY.pct_no_ins_avg, y1: SUMMARY.pct_no_ins_avg, xref: 'paper', line: { color: '#999', width: 1, dash: 'dot' } },
+    ],
+    annotations: [
+      { x: SUMMARY.pct_lansia_avg, y: 1, yref: 'paper', text: ' avg lansia ' + nfId(SUMMARY.pct_lansia_avg, 1) + '%', showarrow: false, font: { size: 10, color: MUTED }, xanchor: 'left', yanchor: 'top' },
+      { x: 1, y: SUMMARY.pct_no_ins_avg, xref: 'paper', text: 'avg no-ins ' + nfId(SUMMARY.pct_no_ins_avg, 1) + '% ', showarrow: false, font: { size: 10, color: MUTED }, xanchor: 'right', yanchor: 'bottom' },
+    ],
+  }, { displaylogo: false, responsive: true });
+
+  // Rank lists
+  const topAging = [...KAB].sort((a,b) => b.pct_lansia - a.pct_lansia).slice(0,5).map(r => ({ nama_kab: r.nama_kab, nama_prov: r.nama_prov, value: r.pct_lansia }));
+  const botJkn = [...KAB].sort((a,b) => a.pct_jkn - b.pct_jkn).slice(0,5).map(r => ({ nama_kab: r.nama_kab, nama_prov: r.nama_prov, value: r.pct_jkn }));
+  const topOop = [...KAB].sort((a,b) => b.oop_burden - a.oop_burden).slice(0,5).map(r => ({ nama_kab: r.nama_kab, nama_prov: r.nama_prov, value: r.oop_burden }));
+  renderRankList('topRingAging', topAging, fmtPct, false);
+  renderRankList('topRingJkn', botJkn, fmtPct, true);
+  renderRankList('topRingOop', topOop, fmtPct, true);
+}
+
+// ===== PETA SEBARAN CHARTS =====
+function renderProvStack() {
+  const provs = PROV.slice();
+  const traces = [
+    { x: provs.map(p => p.jkn_pbi), y: provs.map(p => formatProvName(p.nama_prov)), name: 'JKN PBI', type: 'bar', orientation: 'h', marker: { color: '#001F4D' }, hovertemplate: '<b>%{y}</b><br>JKN PBI: %{x:.1f}%<extra></extra>' },
+    { x: provs.map(p => p.jkn_npbi), y: provs.map(p => formatProvName(p.nama_prov)), name: 'JKN non-PBI', type: 'bar', orientation: 'h', marker: { color: '#2C6FB5' }, hovertemplate: '<b>%{y}</b><br>JKN non-PBI: %{x:.1f}%<extra></extra>' },
+    { x: provs.map(p => p.swasta), y: provs.map(p => formatProvName(p.nama_prov)), name: 'Asuransi Swasta', type: 'bar', orientation: 'h', marker: { color: '#67B2E8' }, hovertemplate: '<b>%{y}</b><br>Swasta: %{x:.1f}%<extra></extra>' },
+    { x: provs.map(p => p.none), y: provs.map(p => formatProvName(p.nama_prov)), name: 'Tanpa Asuransi', type: 'bar', orientation: 'h', marker: { color: '#A9C4DF' }, hovertemplate: '<b>%{y}</b><br>No insurance: %{x:.1f}%<extra></extra>' },
+  ];
+  Plotly.react('chart-prov-stack', traces, {
+    barmode: 'stack',
+    margin: { l: 180, r: 30, t: 20, b: 60 },
+    font: { family: FONT, size: 11, color: INK },
+    plot_bgcolor: 'white', paper_bgcolor: 'white',
+    xaxis: { title: { text: 'Share (%)', font: { size: 11, color: MUTED } }, showgrid: false, zeroline: true, zerolinecolor: INK, range: [0, 110] },
+    yaxis: { tickfont: { size: 11, color: INK }, showgrid: false },
+    legend: { orientation: 'h', y: -0.06, x: 0, xanchor: 'left', font: { size: 11 } },
+  }, { displaylogo: false, responsive: true });
+}
+
+function renderAgingBar() {
+  const labels = AGING_ORDER;
+  const counts = labels.map(k => AGING_DIST[k] || 0);
+  const colors = ['#EAF1F8','#A9C4DF','#67B2E8','#001F4D'];
+  Plotly.react('chart-aging-bar', [{
+    x: counts, y: labels, type: 'bar', orientation: 'h',
+    marker: { color: colors },
+    text: counts.map(c => c.toString()), textposition: 'outside',
+    textfont: { size: 12, color: INK },
+    hovertemplate: '%{y}<br>%{x} kab/kota<extra></extra>',
+  }], {
+    margin: { l: 170, r: 50, t: 20, b: 40 },
+    font: { family: FONT, size: 12, color: INK },
+    plot_bgcolor: 'white', paper_bgcolor: 'white',
+    xaxis: { title: { text: 'Jumlah kab/kota', font: { size: 11, color: MUTED } }, showgrid: false, zeroline: true, zerolinecolor: INK },
+    yaxis: { tickfont: { size: 12, color: INK }, showgrid: false },
+    showlegend: false,
+  }, { displaylogo: false, responsive: true });
+}
+
+function renderPopCohort() {
+  const cohorts = [
+    { name: 'Balita 0-4',  value: SUMMARY.pop_balita, color: '#EAF1F8' },
+    { name: 'Anak 5-14',   value: SUMMARY.pop_anak,   color: '#A9C4DF' },
+    { name: 'Remaja 15-24',value: SUMMARY.pop_remaja, color: '#67B2E8' },
+    { name: 'Dewasa 25-59',value: SUMMARY.pop_dewasa, color: '#2C6FB5' },
+    { name: 'Lansia 60+',  value: SUMMARY.pop_lansia, color: '#001F4D' },
+  ];
+  const total = cohorts.reduce((s,c) => s + c.value, 0);
+  Plotly.react('chart-pop-cohort', [{
+    x: cohorts.map(c => c.name), y: cohorts.map(c => c.value/1e6),
+    type: 'bar', marker: { color: cohorts.map(c => c.color) },
+    text: cohorts.map(c => nfId(c.value/total*100, 1) + '%'),
+    textposition: 'outside', textfont: { size: 12, color: INK },
+    hovertemplate: '%{x}<br>%{y:.1f} jt jiwa<extra></extra>',
+  }], {
+    margin: { l: 60, r: 30, t: 30, b: 60 },
+    font: { family: FONT, size: 12, color: INK },
+    plot_bgcolor: 'white', paper_bgcolor: 'white',
+    xaxis: { tickfont: { size: 11, color: INK }, showgrid: false, zeroline: false },
+    yaxis: { title: { text: 'Populasi (juta)', font: { size: 11, color: MUTED } }, showgrid: false, zeroline: true, zerolinecolor: INK },
+    showlegend: false,
+  }, { displaylogo: false, responsive: true });
+}
+
+function renderRankingLists() {
+  const topLansia = [...KAB].sort((a,b) => b.pct_lansia - a.pct_lansia).slice(0,10).map(r => ({ nama_kab: r.nama_kab, nama_prov: r.nama_prov, value: r.pct_lansia }));
+  const botJkn = [...KAB].sort((a,b) => a.pct_jkn - b.pct_jkn).slice(0,15).map(r => ({ nama_kab: r.nama_kab, nama_prov: r.nama_prov, value: r.pct_jkn }));
+  renderRankList('rank-lansia-top', topLansia, fmtPct, false);
+  renderRankList('rank-jkn-bottom', botJkn, fmtPct, true);
+}
+
+// ===== PAGE 3: OOP SPENDING =====
+function renderOopDonut() {
+  const items = [
+    { name: 'Rawat inap',  value: SUMMARY.avg_inap,   color: '#EAF1F8' },
+    { name: 'Rawat jalan', value: SUMMARY.avg_jalan,  color: '#A9C4DF' },
+    { name: 'Obat',        value: SUMMARY.avg_obat,   color: '#67B2E8' },
+    { name: 'Premi',       value: SUMMARY.avg_premi,  color: '#001F4D' },
+  ];
+  Plotly.react('chart-oop-donut', [{
+    labels: items.map(i => i.name), values: items.map(i => i.value),
+    type: 'pie', hole: 0.55,
+    marker: { colors: items.map(i => i.color) },
+    textinfo: 'label+percent', textfont: { size: 12 },
+    hovertemplate: '%{label}<br>Rp %{value:,.0f}/bulan<br>%{percent}<extra></extra>',
+  }], {
+    margin: { l: 20, r: 20, t: 20, b: 20 },
+    font: { family: FONT, size: 12, color: INK },
+    showlegend: false,
+    annotations: [{
+      text: 'Rp ' + nfId(Math.round(SUMMARY.avg_oop_rp/1000), 0) + ' rb<br><span style="font-size:11px;color:' + MUTED + '">total/RT/bln</span>',
+      showarrow: false, font: { size: 16, family: 'Source Serif 4', color: NAVY },
+    }],
+  }, { displaylogo: false, responsive: true });
+}
+
+function renderOopScatter() {
+  const traces = INSURANCE_ORDER.map(prof => {
+    const subset = KAB.filter(r => r.ins_profile === prof);
+    return {
+      x: subset.map(r => r.pct_jkn), y: subset.map(r => r.oop_rp/1000),
+      mode: 'markers', type: 'scatter', name: prof,
+      marker: {
+        color: INSURANCE_COLORS[prof] || '#999',
+        size: subset.map(r => Math.sqrt(r.pop) / 120),
+        sizemode: 'diameter', sizemin: 3, opacity: 0.65,
+        line: { width: 0.4, color: 'white' },
+      },
+      text: subset.map(r => r.nama_kab + '<br>' + r.nama_prov),
+      hovertemplate: '<b>%{text}</b><br>JKN: %{x:.1f}%<br>OOP: Rp %{y:.0f}rb<extra></extra>',
+    };
+  });
+  Plotly.react('chart-oop-scatter', traces, {
+    margin: { l: 60, r: 30, t: 20, b: 70 },
+    font: { family: FONT, size: 12, color: INK },
+    plot_bgcolor: 'white', paper_bgcolor: 'white',
+    xaxis: { title: { text: '% JKN coverage', font: { size: 11, color: MUTED } }, showgrid: false, zeroline: false, range: [0, 105] },
+    yaxis: { title: { text: 'OOP (Rp ribu / RT / bulan)', font: { size: 11, color: MUTED } }, showgrid: false, zeroline: true, zerolinecolor: INK },
+    legend: { orientation: 'h', y: -0.18, x: 0, xanchor: 'left', font: { size: 10 } },
+  }, { displaylogo: false, responsive: true });
+}
+
+function renderOopRankList() {
+  const top = [...KAB].sort((a,b) => b.oop_burden - a.oop_burden).slice(0,10).map(r => ({ nama_kab: r.nama_kab, nama_prov: r.nama_prov, value: r.oop_burden }));
+  renderRankList('rank-oop-top', top, fmtPct, false);
+}
+
+// ===== INIT =====
+tabRendered['ringkasan'] = true;
+document.addEventListener('DOMContentLoaded', function() {
+  renderRingkasan();
+});
 </script>
 
 </body>
