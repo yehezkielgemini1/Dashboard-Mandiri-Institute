@@ -1247,12 +1247,13 @@ function renderAgingBar() {
     marker: { color: colors },
     text: counts.map(c => c.toString()), textposition: 'outside',
     textfont: { size: 12, color: INK },
+    cliponaxis: false,
     hovertemplate: '%{y}<br>%{x} kab/kota<extra></extra>',
   }], {
-    margin: { l: 170, r: 50, t: 20, b: 40 },
+    margin: { l: 170, r: 110, t: 20, b: 40 },
     font: { family: FONT, size: 12, color: INK },
     plot_bgcolor: 'white', paper_bgcolor: 'white',
-    xaxis: { title: { text: 'Jumlah kab/kota', font: { size: 11, color: MUTED } }, showgrid: false, zeroline: true, zerolinecolor: INK },
+    xaxis: { title: { text: 'Jumlah kab/kota', font: { size: 11, color: MUTED } }, showgrid: false, zeroline: true, zerolinecolor: INK, range: [0, Math.max(...(AGING_ORDER.map(k => AGING_DIST[k] || 0))) * 1.25 || 1] },
     yaxis: { tickfont: { size: 12, color: INK }, showgrid: false },
     showlegend: false,
   }, { displaylogo: false, responsive: true });
@@ -1272,13 +1273,14 @@ function renderPopCohort() {
     type: 'bar', marker: { color: cohorts.map(c => c.color) },
     text: cohorts.map(c => nfId(c.value/total*100, 1) + '%'),
     textposition: 'outside', textfont: { size: 12, color: INK },
+    cliponaxis: false,
     hovertemplate: '%{x}<br>%{y:.1f} jt jiwa<extra></extra>',
   }], {
-    margin: { l: 60, r: 30, t: 30, b: 60 },
+    margin: { l: 60, r: 30, t: 44, b: 60 },
     font: { family: FONT, size: 12, color: INK },
     plot_bgcolor: 'white', paper_bgcolor: 'white',
     xaxis: { tickfont: { size: 11, color: INK }, showgrid: false, zeroline: false },
-    yaxis: { title: { text: 'Populasi (juta)', font: { size: 11, color: MUTED } }, showgrid: false, zeroline: true, zerolinecolor: INK },
+    yaxis: { title: { text: 'Populasi (juta)', font: { size: 11, color: MUTED } }, showgrid: false, zeroline: true, zerolinecolor: INK, range: [0, Math.max(...cohorts.map(c => c.value/1e6)) * 1.2 || 1] },
     showlegend: false,
   }, { displaylogo: false, responsive: true });
 }
@@ -1303,9 +1305,10 @@ function renderOopDonut() {
     type: 'pie', hole: 0.55,
     marker: { colors: items.map(i => i.color) },
     textinfo: 'label+percent', textfont: { size: 12 },
+    textposition: 'outside', automargin: true,
     hovertemplate: '%{label}<br>Rp %{value:,.0f}/bulan<br>%{percent}<extra></extra>',
   }], {
-    margin: { l: 20, r: 20, t: 20, b: 20 },
+    margin: { l: 80, r: 80, t: 60, b: 60 },
     font: { family: FONT, size: 12, color: INK },
     showlegend: false,
     annotations: [{
