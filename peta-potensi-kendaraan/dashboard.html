@@ -4,19 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Peta Potensi Pasar Kredit Kendaraan, Riset Kendaraan 2026</title>
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- Assets -->
 <script src="../_assets/plotly.min.js"></script>
 <script src="../_assets/tailwind.min.js"></script>
 <script src="../_assets/iconify-icon.min.js"></script>
 <script src="../_assets/icons.js"></script>
 <script defer src="../_assets/alpine.min.js"></script>
 <link href="../_assets/fonts/fonts.css" rel="stylesheet">
-<!-- v2 Tactile Editorial · refactored 2026-05-11 · v1 backup di _archive/v1-pre-tactile-editorial-2026-05-11/ -->
+<!-- v4.2 Leaflet map hero + full v4 pattern · 2026-05-16 -->
 <style>
   :root {
-    --navy: #003D79; --navy-deep: #002852; --sky: #67B2E8; --yellow: #FFB700;
+    --navy: #003D79; --navy-deep: #002852; --navy-primary: #003D79;
+    --sky: #67B2E8; --ice-blue: #67B2E8; --yellow: #FFB700;
     --ink: #051C2C; --rule: #E5E8EC; --rule-strong: #D0D5DD; --muted: #667085;
     --paper: #FFFFFF; --cream: #F8F6F0; --mist: #F0F6FC;
     --tier1: #003D79; --tier2: #67B2E8; --tier3: #FFE08A; --tier4: #E5E8EC; --lowconf: #C8102E;
+    --tr-base: 0.15s ease;
+    --shadow-subtle: 0 1px 3px rgba(0,0,0,0.08);
+    --bg-base: #fafbfc; --bg-elevated: #ffffff;
   }
   html, body { background: var(--paper); color: var(--ink); }
   body { font-family: 'Inter', system-ui, sans-serif; font-weight: 400; letter-spacing: -0.003em; }
@@ -35,31 +43,32 @@
   .chip-action:hover { background: var(--mist); border-color: var(--navy); }
   .chip-action.active { background: var(--navy); color: white; border-color: var(--navy); }
   .select-flat { border: 0; border-bottom: 1px solid var(--ink); background: transparent; padding: 6px 24px 6px 0; font-size: 15px; font-weight: 500; color: var(--ink); appearance: none; }
+
+  /* Chart card (v4) */
+  .chart-card {
+    background: white; border: 1px solid var(--rule);
+    border-radius: 6px; padding: 20px 20px 16px;
+    box-shadow: var(--shadow-subtle);
+  }
+  .chart-header { margin-bottom: 14px; }
+  .chart-header .chart-title {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 17px; font-weight: 600; color: var(--ink);
+    letter-spacing: -0.01em; margin: 0;
+  }
+  .chart-header .chart-sub {
+    font-size: 12px; color: var(--muted); margin-top: 4px;
+  }
   .chart-footer { border-top: 1px solid var(--rule); margin-top: 16px; padding-top: 12px; display: flex; flex-wrap: wrap; gap: 24px; font-size: 11px; color: var(--muted); }
   .chart-footer .label { font-weight: 600; color: var(--ink); text-transform: uppercase; letter-spacing: 0.06em; margin-right: 4px; }
-
-  /* Sidebar (sama dengan dashboard lain) */
-  .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 220px; background: var(--navy); color: white; padding: 24px 0; z-index: 40; display: flex; flex-direction: column; overflow-y: auto; }
-  .sidebar .brand { padding: 0 24px 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.12); }
-  .sidebar .brand-title { font-family: 'Source Serif 4', Georgia, serif; font-size: 18px; font-weight: 600; line-height: 1.15; color: white; }
-  .sidebar .brand-sub { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--yellow); margin-top: 4px; font-weight: 600; }
-  .sidebar .yellow-accent { display: inline-block; width: 10px; height: 10px; background: var(--yellow); margin-bottom: 8px; }
-  .sidebar .nav-section { padding: 16px 0; }
-  .sidebar .nav-label { padding: 0 24px; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 8px; }
-  .sidebar .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 24px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.7); border-left: 3px solid transparent; cursor: pointer; transition: all 0.15s; background: none; border-top: none; border-right: none; border-bottom: none; width: 100%; text-align: left; }
-  .sidebar .nav-item:hover { color: white; background: rgba(255,255,255,0.05); }
-  .sidebar .nav-item.active { color: white; border-left-color: var(--yellow); background: rgba(255,183,0,0.1); }
-  .sidebar .nav-item iconify-icon { font-size: 18px; }
-  .sidebar .footer { margin-top: auto; padding: 16px 24px; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.4); border-top: 1px solid rgba(255,255,255,0.12); }
-  .with-sidebar { margin-left: 220px; }
-
-  /* Hero band */
-  .hero-band { background: linear-gradient(180deg, #003D79 0%, #003D79 30%, #00498A 50%, #00407C 70%, #002852 100%); color: white; position: relative; }
-  .hero-band::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 1px; background: var(--yellow); opacity: 0.4; }
-  .hero-band .eyebrow { color: var(--yellow); }
-  .hero-band h1, .hero-band h2 { color: white; }
-  .hero-band p { color: rgba(255,255,255,0.78); }
-  .thematic-tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--navy); background: var(--yellow); border-radius: 0; margin-bottom: 16px; }
+  .chart-export-row { margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .export-btn-ghost {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    background: transparent; border: 1px solid var(--rule); color: var(--muted);
+    cursor: pointer; border-radius: 3px; transition: all 0.12s;
+  }
+  .export-btn-ghost:hover { border-color: var(--sky); color: var(--navy); }
 
   /* Tier chip */
   .tier-chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; }
@@ -69,37 +78,47 @@
   .tier-4 { background: var(--tier4); color: var(--muted); }
   .tier-low { background: rgba(200,16,46,0.1); color: var(--lowconf); border: 1px solid var(--lowconf); }
 
-  /* Top-50 table */
+  /* Top-N table */
   .rank-table { width: 100%; border-collapse: collapse; font-size: 13px; }
   .rank-table thead th { text-align: left; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 10px 8px; border-bottom: 2px solid var(--ink); position: sticky; top: 0; background: white; }
-  .rank-table thead th.sortable { cursor: pointer; }
-  .rank-table thead th.sortable:hover { color: var(--navy); }
   .rank-table tbody td { padding: 10px 8px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
   .rank-table tbody tr:hover { background: var(--mist); }
   .rank-table .rank-no { font-family: 'Source Serif 4', serif; font-weight: 600; color: var(--sky); width: 36px; }
   .rank-table .nama-kab { font-weight: 600; color: var(--ink); }
   .rank-table .sub-prov { display: block; font-size: 11px; color: var(--muted); font-weight: 400; margin-top: 2px; }
 
-  /* Drilldown drawer */
-  .drilldown { position: fixed; top: 0; right: 0; bottom: 0; width: 540px; background: white; border-left: 1px solid var(--rule); box-shadow: -8px 0 32px rgba(5,28,44,0.12); transform: translateX(100%); transition: transform 0.25s; z-index: 60; overflow-y: auto; }
-  .drilldown.is-open { transform: translateX(0); }
-  .drilldown .head { background: var(--navy); color: white; padding: 24px; position: relative; }
-  .drilldown .head .close { position: absolute; top: 16px; right: 16px; background: transparent; border: none; color: rgba(255,255,255,0.7); cursor: pointer; font-size: 22px; }
-  .drilldown .head h3 { font-family: 'Source Serif 4', serif; font-size: 24px; font-weight: 600; line-height: 1.1; }
-  .drilldown .head .sub { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 4px; }
-  .drilldown .body { padding: 24px; }
+  /* Caveat banner */
+  .caveat-banner { background: rgba(234,114,0,0.08); border-left: 3px solid #EA7200; padding: 14px 18px; margin: 16px 0; }
+  .caveat-banner .label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #EA7200; }
+  .caveat-banner .text { font-size: 13px; color: var(--ink); margin-top: 4px; line-height: 1.5; }
+
+  /* Pillar bars in drilldown */
   .pillar-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
   .pillar-row .lbl { flex: 1; font-size: 12px; color: var(--ink); }
   .pillar-row .bar-wrap { width: 200px; height: 8px; background: var(--mist); position: relative; }
   .pillar-row .bar { position: absolute; left: 0; top: 0; height: 100%; background: var(--navy); }
   .pillar-row .val { font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 14px; color: var(--ink); width: 50px; text-align: right; }
 
-  /* Caveat banner */
-  .caveat-banner { background: rgba(234,114,0,0.08); border-left: 3px solid #EA7200; padding: 14px 18px; margin: 16px 0; }
-  .caveat-banner .label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #EA7200; }
-  .caveat-banner .text { font-size: 13px; color: var(--ink); margin-top: 4px; line-height: 1.5; }
-
   *:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
+
+  /* ============ PAGE HEADER SLIM (v4) ============ */
+  .page-header-slim {
+    background: linear-gradient(180deg, var(--navy-deep) 0%, var(--navy-primary) 100%);
+    color: white;
+    border-bottom: 1px solid var(--rule);
+  }
+  .page-header-slim .eyebrow-small {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ice-blue);
+  }
+  .page-header-slim h1 { color: white; font-weight: 600; letter-spacing: -0.018em; }
+  .page-header-slim .page-marker {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.18em; color: rgba(255,255,255,0.5);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 4px 10px; border-radius: 2px;
+  }
 
   /* ============ TOP NAV (canonical) ============ */
   .topnav-canon { background: var(--navy-deep); padding: 14px 28px; display: flex; align-items: center; gap: 24px; border-bottom: 1px solid rgba(255,255,255,0.08); position: sticky; top: 0; z-index: 60; color: white; }
@@ -107,8 +126,9 @@
   .topnav-canon .brand { font-family: 'Source Serif 4', Georgia, serif; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; color: white; }
   .topnav-canon .brand-sub { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--sky); margin-top: 2px; font-weight: 600; }
   .topnav-canon .menu { display: flex; gap: 22px; margin-left: 24px; }
-  .topnav-canon .menu a, .topnav-canon .menu button { background: none; border: 0; font-family: inherit; font-size: 13px; font-weight: 500; color: white; opacity: 0.85; padding: 6px 0; cursor: pointer; transition: opacity 0.2s; }
+  .topnav-canon .menu a, .topnav-canon .menu button { background: none; border: 0; font-family: inherit; font-size: 13px; font-weight: 500; color: white; opacity: 0.85; padding: 6px 0; cursor: pointer; transition: opacity 0.2s; text-decoration: none; }
   .topnav-canon .menu a:hover, .topnav-canon .menu button:hover { opacity: 1; color: var(--sky); }
+  .topnav-canon .menu a.active { opacity: 1; border-bottom: 2px solid var(--yellow); }
   .topnav-canon .right { margin-left: auto; display: flex; gap: 14px; align-items: center; font-size: 12px; opacity: 0.8; }
   .topnav-canon .search { font-size: 22px; cursor: pointer; opacity: 0.85; color: white; }
   .nav-drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(5,28,44,0.55); z-index: 99; opacity: 0; transition: opacity 0.3s; }
@@ -118,14 +138,11 @@
   .nav-drawer .close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; color: white; padding: 6px; font-size: 26px; }
   .nav-drawer .drawer-label { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.55); margin: 18px 0 10px; }
   .nav-drawer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 2px; }
-  .nav-drawer a, .nav-drawer button { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 14px 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 19px; color: white; border: 0; border-bottom: 1px solid rgba(255,255,255,0.12); background: none; cursor: pointer; transition: color 0.15s; }
+  .nav-drawer a, .nav-drawer button { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 14px 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 19px; color: white; border: 0; border-bottom: 1px solid rgba(255,255,255,0.12); background: none; cursor: pointer; transition: color 0.15s; text-decoration: none; }
   .nav-drawer a:hover, .nav-drawer button:hover { color: var(--sky); }
   .nav-drawer iconify-icon { font-size: 18px; opacity: 0.7; }
-  .sidebar { top: 64px !important; }
 
   @media (max-width: 1100px) {
-    .sidebar { display: none; }
-    .with-sidebar { margin-left: 0 !important; }
     .topnav-canon .burger { display: inline-flex; }
     .topnav-canon .menu { display: none; }
     .topnav-canon .right .nav-link { display: none; }
@@ -134,32 +151,14 @@
     .topnav-canon { padding: 12px 18px; gap: 14px; }
     .topnav-canon .brand { font-size: 15px; }
     .topnav-canon .brand-sub { font-size: 9px; letter-spacing: 0.14em; }
-    .grid.grid-cols-1.md\:grid-cols-2 { grid-template-columns: 1fr !important; gap: 24px !important; }
-    .grid.grid-cols-1.md\:grid-cols-3 { grid-template-columns: 1fr !important; }
-    .grid.grid-cols-1.md\:grid-cols-4 { grid-template-columns: repeat(2, 1fr) !important; }
-    #chart-map, #chart-indikator, #chart-trend, #chart-detail { height: 420px !important; }
-    /* Filter panel: collapse padded into accordion-friendly stack */
-    .filter-panel, .filter-row { gap: 10px !important; }
   }
-  @media (max-width: 480px) {
-    .topnav-canon .brand-sub { display: none; }
-  }
+  @media (max-width: 480px) { .topnav-canon .brand-sub { display: none; } }
 
-  /* ============ STANDARDIZED FILTER BAR (canon untuk semua dashboard) ============ */
-  .filter-canon { background: var(--paper); border-bottom: 1px solid var(--rule-strong); padding: 16px 24px; }
-  .filter-canon-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
-  .filter-field { display: flex; flex-direction: column; gap: 6px; min-width: 160px; }
-  .filter-field label { font-size: 12px; font-weight: 700; color: var(--ink); }
-  .filter-field select { padding: 8px 12px; font-size: 13px; border: 1px solid var(--rule-strong); border-radius: 4px; background: white; cursor: pointer; min-width: 180px; }
-  .btn-submit { padding: 9px 28px; font-size: 13px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; background: var(--sky); color: white; border: none; cursor: pointer; border-radius: 4px; transition: background 0.2s; height: 36px; align-self: flex-end; }
-  .btn-submit:hover { background: var(--navy); }
-  .btn-submit:disabled { background: var(--muted); cursor: not-allowed; }
-
-  /* Empty state when no data submitted */
-  .empty-state { background: var(--paper); border: 1px dashed var(--rule-strong); padding: 80px 24px; text-align: center; margin: 24px 0; }
-  .empty-state .icon { font-size: 64px; color: var(--rule-strong); margin-bottom: 16px; }
-  .empty-state .title { font-family: 'Source Serif 4', serif; font-size: 22px; color: var(--ink); margin-bottom: 8px; }
-  .empty-state .desc { font-size: 14px; color: var(--muted); max-width: 480px; margin: 0 auto; }
+  /* ============ TAB PILLS (consolidated, max 4) ============ */
+  .tab-bar { background: white; border-bottom: 1px solid var(--rule); padding: 0 32px; display: flex; gap: 0; position: sticky; top: 56px; z-index: 50; }
+  .tab-bar .tab-pill-nav { padding: 14px 18px; font-size: 13px; font-weight: 600; color: var(--muted); border: 0; border-bottom: 2px solid transparent; background: none; cursor: pointer; font-family: inherit; transition: color 0.15s, border-color 0.15s; margin-bottom: -1px; white-space: nowrap; }
+  .tab-bar .tab-pill-nav:hover { color: var(--ink); }
+  .tab-bar .tab-pill-nav.active { color: var(--navy); border-bottom-color: var(--yellow); }
 
   /* ============ MULTI-SELECT DROPDOWN (canon v2) ============ */
   .ms-dd { position: relative; min-width: 200px; }
@@ -173,1198 +172,200 @@
   .ms-dd-search input { width: 100%; padding: 6px 10px; font-size: 12px; border: 1px solid var(--rule-strong); border-radius: 3px; }
   .ms-dd-list { overflow-y: auto; padding: 4px 0; flex: 1; }
   .ms-dd-list label { display: flex; align-items: center; gap: 8px; padding: 6px 12px; font-size: 13px; cursor: pointer; }
-  .ms-dd-list label:hover { background: var(--mist, #F0F6FC); }
+  .ms-dd-list label:hover { background: var(--mist); }
   .ms-dd-list .ms-divider { border-bottom: 1px solid var(--rule); margin: 4px 0; }
 
-  /* ============ CHIP MULTI-TOGGLE (canon v2) ============ */
+  /* ============ CHIP MULTI-TOGGLE ============ */
   .chip-ms { display: inline-flex; gap: 4px; flex-wrap: wrap; align-items: center; }
   .chip-ms button { padding: 7px 14px; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; background: white; color: var(--ink); border: 1px solid var(--rule-strong); cursor: pointer; border-radius: 4px; transition: all 0.15s; }
   .chip-ms button:hover { border-color: var(--sky); color: var(--navy); }
   .chip-ms button.active { background: var(--navy); color: white; border-color: var(--navy); }
-</style>
 
-<!-- UNIFORM v2 OVERRIDE 2026-05-05: hide sidebar entirely, keep topnav as the only nav -->
-<style id="uniform-v2-override">
-  /* Hide entire sidebar (incl. nav items, dark mode toggle, color blind toggle, palette tag) */
-  .sidebar, aside.sidebar { display: none !important; }
-  .mobile-toggle { display: none !important; }
-  /* Remove sidebar offset so main content uses full width */
-  .with-sidebar { margin-left: 0 !important; }
-  /* Push folio/filter sticky bars below topnav (topnav height ~64px) */
-  .folio { top: 64px !important; }
-  .filter-bar { top: 96px !important; }
-</style>
-<link rel="stylesheet" href="../_shared/tactile-editorial.css">
+  /* ============ MAP HERO + SIDE PANEL (v4.2) ============ */
+  .map-hero-scope {
+    background: var(--bg-elevated);
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 28px 28px 24px;
+    box-shadow: var(--shadow-subtle);
+    overflow: hidden;
+  }
+  .map-hero-header { max-width: 1100px; margin: 0 0 18px; }
+  .map-hero-header .eyebrow-roman {
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--navy); margin-bottom: 8px; display: block;
+  }
+  .map-hero-header .map-hero-title {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: clamp(24px, 3vw, 34px);
+    font-weight: 600; line-height: 1.15; letter-spacing: -0.012em;
+    color: var(--ink); margin: 0;
+  }
+  .map-hero-header .map-hero-intro {
+    margin-top: 10px; max-width: 820px;
+    font-size: 13.5px; line-height: 1.55; color: var(--muted);
+  }
+  .map-hero-header .map-hero-intro strong { color: var(--navy); font-weight: 600; }
 
-</head>
-<body>
+  .map-hero-grid {
+    position: relative;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+  }
 
-<div x-data="dashboard()" x-init="init()">
+  .map-area {
+    position: relative;
+    background: #f6f8fb;
+    overflow: hidden;
+    height: 820px;
+  }
+  #map-leaflet { width: 100%; height: 100%; }
 
-<!-- ============ TOP NAV (canon) ============ -->
-<nav class="topnav-canon" x-data="{ navOpen: false }">
-  <iconify-icon class="burger" icon="mdi:menu" @click="navOpen = true" role="button" aria-label="Buka menu" tabindex="0" @keydown.enter="navOpen = true"></iconify-icon>
-  <div>
-    <div class="brand">Mandiri Institute</div>
-    <div class="brand-sub">Potensi Kendaraan</div>
-  </div>
-  <div class="menu">
-    <a href="../index.html">Beranda</a>
-    <a href="#" onclick="window.gotoPage('overview'); return false;">Overview</a>
-    <a href="#" onclick="window.gotoPage('peta'); return false;">Peta Potensi</a>
-    <a href="#" onclick="window.gotoPage('indikator'); return false;">Detail Indikator</a>
-    <a href="#" onclick="window.gotoPage('metodologi'); return false;">Metodologi</a>
-  </div>
-  <div class="right">
-    <a class="nav-link" href="../index.html" style="color:white;opacity:0.85;font-weight:500;">Semua Dashboard</a>
-    <iconify-icon class="search" icon="mdi:magnify" role="button" aria-label="Cari" tabindex="0"></iconify-icon>
-  </div>
-  <div class="nav-drawer-overlay" :class="{ 'open': navOpen }" @click="navOpen = false"></div>
-  <aside class="nav-drawer" :class="{ 'open': navOpen }" aria-label="Menu navigasi">
-    <button class="close-btn" @click="navOpen = false" aria-label="Tutup menu"><iconify-icon icon="mdi:close"></iconify-icon></button>
-    <div class="drawer-label">Navigasi</div>
-    <ul>
-      <li><a href="../index.html" @click="navOpen = false"><iconify-icon icon="mdi:home-outline"></iconify-icon>Beranda</a></li>
-    </ul>
-    <div class="drawer-label">Potensi Kendaraan</div>
-    <ul>
-      <li><button onclick="window.gotoPage('overview')" @click="navOpen = false"><iconify-icon icon="mdi:view-dashboard-outline"></iconify-icon>Overview</button></li>
-      <li><button onclick="window.gotoPage('peta')" @click="navOpen = false"><iconify-icon icon="mdi:map-outline"></iconify-icon>Peta Potensi</button></li>
-      <li><button onclick="window.gotoPage('indikator')" @click="navOpen = false"><iconify-icon icon="mdi:layers-outline"></iconify-icon>Detail Indikator</button></li>
-      <li><button onclick="window.gotoPage('metodologi')" @click="navOpen = false"><iconify-icon icon="mdi:book-open-variant"></iconify-icon>Metodologi</button></li>
-    </ul>
-  </aside>
-</nav>
+  /* Filter floating overlay top-left */
+  .map-filter-overlay {
+    position: absolute; top: 14px; left: 14px;
+    display: flex; gap: 8px; z-index: 10;
+    background: rgba(255,255,255,0.97);
+    border: 1px solid var(--rule);
+    padding: 8px 10px; border-radius: 6px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    flex-wrap: wrap; align-items: flex-end;
+    max-width: calc(100% - 380px);
+  }
+  .map-filter-overlay .filter-pill { display: flex; flex-direction: column; gap: 3px; }
+  .map-filter-overlay .filter-pill-label {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--muted); padding-left: 2px;
+  }
+  .map-filter-overlay .filter-pill select {
+    appearance: none; -webkit-appearance: none;
+    background: #ffffff; border: 1px solid var(--rule);
+    color: var(--ink); font-size: 11.5px; font-weight: 500;
+    padding: 6px 24px 6px 10px; border-radius: 3px;
+    cursor: pointer; outline: none; font-family: inherit;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path d='M2 4 L5 7 L8 4' stroke='%23667085' fill='none' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat: no-repeat; background-position: right 7px center;
+  }
+  .map-filter-overlay .reset-filter-btn {
+    background: transparent; border: 1px solid var(--rule);
+    color: var(--muted); font-size: 9px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 6px 10px;
+    cursor: pointer; font-family: inherit; border-radius: 3px;
+  }
+  .map-filter-overlay .reset-filter-btn:hover { color: var(--navy); border-color: var(--sky); }
 
-<!-- ============ ADAPTIVE FILTER BAR (canon v2 — hide kalau page tidak butuh) ============ -->
-<div class="filter-canon" x-show="filterFields().length > 0">
-  <div class="filter-canon-inner">
-    <!-- Tahun -->
-    <div class="filter-field" x-show="filterFields().includes('tahun')">
-      <label>Tahun</label>
-      <select x-model.number="f.tahun" style="padding:8px 12px;font-size:13px;border:1px solid var(--rule-strong);border-radius:4px;background:white;cursor:pointer;min-width:120px;">
-        <template x-for="y in years" :key="y"><option :value="y" x-text="y"></option></template>
-      </select>
-    </div>
+  /* Side panel floating right */
+  .map-side-panel {
+    position: absolute; top: 14px; right: 14px; z-index: 10;
+    width: 340px; max-height: calc(100% - 28px);
+    background: rgba(255,255,255,0.97);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 14px 14px 16px;
+    display: flex; flex-direction: column; gap: 12px;
+    font-size: 12.5px; color: var(--ink);
+    overflow-y: auto;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.10);
+  }
+  .map-side-panel::-webkit-scrollbar { width: 5px; }
+  .map-side-panel::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.18); border-radius: 3px; }
 
-    <!-- Wilayah multi-select -->
-    <div class="filter-field" x-show="filterFields().includes('wilayah')">
-      <label>Wilayah</label>
-      <div class="ms-dd" x-data="{open:false, search:''}" @click.outside="open=false">
-        <button type="button" class="ms-dd-btn" :class="{open}" @click="open=!open">
-          <template x-if="f.wilayah.includes('__all__')"><span class="placeholder">Semua Provinsi</span></template>
-          <template x-if="!f.wilayah.includes('__all__')"><template x-for="w in f.wilayah" :key="w"><span class="ms-dd-chip" x-text="w"></span></template></template>
-        </button>
-        <div class="ms-dd-panel" x-show="open" x-transition.opacity>
-          <div class="ms-dd-search"><input type="text" placeholder="Cari provinsi..." x-model="search" @click.stop></div>
-          <div class="ms-dd-list">
-            <label><input type="checkbox" :checked="f.wilayah.includes('__all__')" @change="toggleWilayah('__all__')"> <strong>Semua Provinsi</strong></label>
-            <div class="ms-divider"></div>
-            <template x-for="w in provList.filter(p => p.toLowerCase().includes(search.toLowerCase()))" :key="w">
-              <label><input type="checkbox" :checked="f.wilayah.includes(w)" @change="toggleWilayah(w)"> <span x-text="w"></span></label>
-            </template>
-          </div>
-        </div>
-      </div>
-    </div>
+  .sp-section h4 {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase;
+    color: var(--navy); margin: 0 0 8px; padding-bottom: 6px;
+    border-bottom: 1px solid var(--rule);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .sp-search .search-input {
+    width: 100%; padding: 9px 11px; box-sizing: border-box;
+    background: #ffffff; border: 1px solid var(--rule);
+    color: var(--ink); font-size: 12px; outline: none;
+    border-radius: 3px; font-family: inherit;
+  }
+  .sp-search .search-input::placeholder { color: var(--muted); }
+  .sp-search .search-input:focus { border-color: var(--sky); box-shadow: 0 0 0 2px rgba(103,178,232,0.18); }
 
-    <!-- Sub-wilayah multi-select (hidden kalau Wilayah masih 'Semua') -->
-    <div class="filter-field" x-show="filterFields().includes('subwilayah') && !f.wilayah.includes('__all__')">
-      <label>Sub-wilayah</label>
-      <div class="ms-dd" x-data="{open:false, search:''}" @click.outside="open=false">
-        <button type="button" class="ms-dd-btn" :class="{open}" @click="open=!open">
-          <template x-if="f.subwilayah.includes('__all__')"><span class="placeholder">Semua Kab/Kota</span></template>
-          <template x-if="!f.subwilayah.includes('__all__')"><template x-for="kk in f.subwilayah" :key="kk"><span class="ms-dd-chip" x-text="kk"></span></template></template>
-        </button>
-        <div class="ms-dd-panel" x-show="open" x-transition.opacity>
-          <div class="ms-dd-search"><input type="text" placeholder="Cari kab/kota..." x-model="search" @click.stop></div>
-          <div class="ms-dd-list">
-            <label><input type="checkbox" :checked="f.subwilayah.includes('__all__')" @change="toggleSubwilayah('__all__')"> <strong>Semua Kab/Kota</strong></label>
-            <div class="ms-divider"></div>
-            <template x-for="kk in subList().filter(k => k.toLowerCase().includes(search.toLowerCase()))" :key="kk">
-              <label><input type="checkbox" :checked="f.subwilayah.includes(kk)" @change="toggleSubwilayah(kk)"> <span x-text="kk"></span></label>
-            </template>
-          </div>
-        </div>
-      </div>
-    </div>
+  .ranking-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0; }
+  .rank-row {
+    display: grid; grid-template-columns: 22px 1fr 44px;
+    gap: 6px; align-items: center;
+    padding: 7px 4px; border-bottom: 1px solid var(--rule);
+    cursor: pointer; transition: background 0.12s; font-size: 11.5px;
+  }
+  .rank-row:last-child { border-bottom: 0; }
+  .rank-row:hover { background: rgba(103,178,232,0.10); }
+  .rank-row.active { background: rgba(103,178,232,0.14); }
+  .rank-row .rr-num { font-weight: 700; color: var(--navy); text-align: right; font-variant-numeric: tabular-nums; font-size: 11px; }
+  .rank-row .rr-name { color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rank-row .rr-val { font-weight: 700; color: var(--navy); text-align: right; font-variant-numeric: tabular-nums; font-size: 11.5px; }
 
-    <!-- Tampilan: Skor Komposit / Pasar Potensial (page Peta) -->
-    <div class="filter-field" x-show="filterFields().includes('tampilan')">
-      <label>Tampilan</label>
-      <div class="chip-ms">
-        <button :class="{active: f.tampilan === 'composite'}" @click="f.tampilan = 'composite'">Skor Komposit</button>
-        <button :class="{active: f.tampilan === 'TAM'}" @click="f.tampilan = 'TAM'">Pasar Potensial</button>
-      </div>
-    </div>
+  /* Tab pills inside side panel */
+  .tab-pills { display: flex; gap: 0; border-bottom: 1px solid var(--rule); margin-bottom: 10px; }
+  .tab-pills button {
+    padding: 6px 10px; font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    background: none; border: 0; border-bottom: 2px solid transparent;
+    cursor: pointer; color: var(--muted); margin-bottom: -1px;
+    font-family: inherit; transition: color 0.15s, border-color 0.15s;
+  }
+  .tab-pills button.active { color: var(--navy); border-bottom-color: var(--yellow); }
+  .tab-pills button:hover:not(.active) { color: var(--ink); }
 
-    <!-- Tier multi-toggle (page Peta) -->
-    <div class="filter-field" x-show="filterFields().includes('tier')">
-      <label>Tier</label>
-      <div class="chip-ms">
-        <template x-for="t in ['Tier 1','Tier 2','Tier 3','Tier 4','Sampel Terbatas']" :key="'fb'+t">
-          <button :class="{active: f.tier.includes(t)}" @click="toggleTierF(t)" x-text="t.replace('Sampel Terbatas','Sampel')"></button>
-        </template>
-      </div>
-    </div>
+  /* Detail card */
+  .detail-empty { color: var(--muted); font-style: italic; padding: 12px; background: #f6f8fa; border-left: 3px solid var(--rule); font-size: 12px; line-height: 1.45; border-radius: 2px; }
+  .detail-filled { padding: 10px 12px; background: rgba(103,178,232,0.06); border-left: 3px solid var(--sky); border-radius: 2px; }
+  .detail-filled .d-name { font-family: 'Source Serif 4', Georgia, serif; font-weight: 600; color: var(--navy); font-size: 14px; margin-bottom: 2px; }
+  .detail-filled .d-prov { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+  .detail-stat-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 11.5px; border-bottom: 1px dashed var(--rule); }
+  .detail-stat-row:last-child { border-bottom: 0; }
+  .detail-stat-row .dsr-label { color: var(--muted); }
+  .detail-stat-row .dsr-val { font-weight: 600; color: var(--navy); font-variant-numeric: tabular-nums; }
 
-    <!-- Indikator (page Indikator) -->
-    <div class="filter-field" x-show="filterFields().includes('indikator')">
-      <label>Indikator</label>
-      <select x-model="f.indikator" style="padding:8px 12px;font-size:13px;border:1px solid var(--rule-strong);border-radius:4px;background:white;cursor:pointer;min-width:200px;">
-        <template x-for="m in indMetrics" :key="m"><option :value="m" x-text="indLabels[m]"></option></template>
-      </select>
-    </div>
+  /* Color legend below map */
+  .map-color-legend {
+    margin-top: 14px; padding: 8px 14px;
+    background: var(--bg-base);
+    border: 1px solid var(--rule); border-radius: 4px;
+    display: grid; grid-template-columns: auto 1fr;
+    gap: 14px; align-items: center;
+    font-size: 11px; color: var(--muted);
+  }
+  .map-color-legend .legend-label {
+    font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--navy); font-size: 10px;
+  }
+  .map-color-legend .legend-bar-wrap { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .map-color-legend .legend-bar {
+    height: 10px; border-radius: 2px;
+    background: linear-gradient(to right, #EAF1F8 0%, #A9C4DF 25%, #67B2E8 50%, #2C6FB5 75%, #001F4D 100%);
+    border: 1px solid var(--rule);
+  }
+  .map-color-legend .legend-ticks { display: flex; justify-content: space-between; font-variant-numeric: tabular-nums; font-size: 10.5px; }
 
-    <button class="btn-submit" @click="submit()">SUBMIT</button>
-  </div>
-</div>
+  .map-hero-footer {
+    margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--rule);
+    display: flex; flex-wrap: wrap; gap: 22px; font-size: 11px; color: var(--muted);
+  }
+  .map-hero-footer .label { font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.06em; margin-right: 4px; }
 
-<aside class="sidebar">
-  <div class="brand">
-    <a href="../index.html" style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--yellow);text-transform:uppercase;letter-spacing:0.1em;font-weight:600;text-decoration:none;margin-bottom:10px;">
-      <iconify-icon icon="mdi:arrow-left"></iconify-icon><span>Beranda</span>
-    </a>
-    <span class="yellow-accent"></span>
-    <div class="brand-title">Mandiri Institute</div>
-    <div class="brand-sub">Research Initiatives</div>
-  </div>
-  <div class="nav-section">
-    <div class="nav-label">Riset Kendaraan 2026</div>
-    <template x-for="t in tabs" :key="t.id">
-      <button @click="setPage(t.id)" :class="page === t.id ? 'nav-item active' : 'nav-item'">
-        <iconify-icon :icon="t.icon"></iconify-icon><span x-text="t.label"></span>
-      </button>
-    </template>
-  </div>
-  <div class="footer">
-    <div>Riset 2026</div>
-  </div>
-</aside>
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .map-side-panel { position: static; width: auto; max-height: none; box-shadow: none; backdrop-filter: none; border-top: 0; border-radius: 0; background: var(--bg-base); }
+    .map-hero-grid { display: flex; flex-direction: column; }
+    .map-area { min-height: 460px; height: 460px; }
+    .map-filter-overlay { max-width: calc(100% - 28px); }
+  }
+  @media (max-width: 768px) {
+    .map-hero-scope { padding: 24px 18px 22px; border-radius: 4px; }
+    .map-hero-header .map-hero-title { font-size: 24px; }
+  }
 
-<div class="with-sidebar">
-<div class="hero-band">
-  <header class="max-w-[1280px] mx-auto px-8 pt-16 pb-16">
-    <div class="thematic-tag"><iconify-icon icon="mdi:car-multiple"></iconify-icon>Research Initiative</div>
-    <div class="eyebrow">Riset Mandiri Institute &middot; Kredit Kendaraan</div>
-    <h1 class="serif-display text-4xl md:text-5xl mt-5 max-w-4xl" x-text="pageTitle"></h1>
-    <p class="mt-5 text-base max-w-3xl leading-relaxed" x-text="pageSubtitle"></p>
-  </header>
-</div>
-
-<main class="max-w-[1280px] mx-auto px-8 pb-16">
-
-  <!-- ====== EMPTY STATE (before submit) ====== -->
-  <template x-if="!submitted">
-    <div class="empty-state">
-      <iconify-icon icon="mdi:filter-variant-plus" class="icon"></iconify-icon>
-      <div class="title">Pilih filter dan klik <strong>SUBMIT</strong></div>
-      <div class="desc">Default: Tahun 2025 &middot; Semua Provinsi &middot; Tampilan Skor Komposit &middot; Tier 1+2. Bisa pilih multi-provinsi/kab-kota dan multi-tier.</div>
-    </div>
-  </template>
-
-  <!-- ==================== OVERVIEW ==================== -->
-  <section x-show="submitted && page === 'overview'">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-10 rule-top pt-8">
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Kab/Kota dianalisis</div>
-        <div class="stat-num text-5xl mt-3 ink">540</div>
-        <div class="text-sm muted mt-1">Cakupan nasional 2025</div>
-      </div>
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Tier 1 (Top 25%)</div>
-        <div class="stat-num text-5xl mt-3" style="color:var(--navy);">130</div>
-        <div class="text-sm muted mt-1">Prioritas utama targeting</div>
-      </div>
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Tier 2 (50-75%)</div>
-        <div class="stat-num text-5xl mt-3" style="color:var(--sky);">130</div>
-        <div class="text-sm muted mt-1">Prioritas sekunder</div>
-      </div>
-      <div>
-        <div class="eyebrow" style="color: var(--muted);">Sampel Terbatas</div>
-        <div class="stat-num text-5xl mt-3" style="color:var(--lowconf);">21</div>
-        <div class="text-sm muted mt-1">Sampel &lt; 30 RT Middle+</div>
-      </div>
-    </div>
-
-    <div class="caveat-banner">
-      <div class="label">Catatan penting</div>
-      <div class="text">
-        D1 (bensin liter): aproksimasi via harga Pertalite (BPS Susenas tidak mengumpulkan kuantitas).
-        Kabkot pemekaran Papua (kode 92/95/96/97) pasca-2022 tidak punya baseline 2019 untuk delta A3/A4/B1/D1.
-        Ambang sampel: kabkot dengan jumlah RT Middle+ &lt; 30 ditandai sampel terbatas.
-      </div>
-    </div>
-
-    <!-- Scorecard table — key metric snapshot 2019-2025 -->
-    <div class="mt-12">
-      <div class="eyebrow-roman">I. Skor Nasional Middle+</div>
-      <h2 class="serif-display text-3xl mt-3 max-w-3xl">Indikator utama, 2019-2025.</h2>
-      <p class="mt-3 muted text-base max-w-3xl">Indikator pasar kendaraan Middle Class+ nasional, 2019-2025 dengan perubahan total.</p>
-      <div class="hair-accent mt-6 pt-2"></div>
-      <div class="overflow-x-auto mt-2">
-        <table class="rank-table" style="min-width:800px;">
-          <thead>
-            <tr>
-              <th style="text-align:left;min-width:240px;">Indikator</th>
-              <template x-for="y in [2019,2020,2021,2022,2023,2024,2025]" :key="'sy'+y">
-                <th class="text-right" x-text="y"></th>
-              </template>
-              <th class="text-right" style="border-left:2px solid var(--ink);">Δ 19-25</th>
-            </tr>
-          </thead>
-          <tbody>
-            <template x-for="(r, i) in scorecard" :key="'sc'+i">
-              <tr>
-                <td><strong x-text="r.label"></strong></td>
-                <template x-for="(v, j) in r.vals" :key="'sv'+j">
-                  <td class="text-right num" x-text="formatScVal(v, r.fmt)"></td>
-                </template>
-                <td class="text-right num" style="border-left:2px solid var(--ink);font-weight:600;"
-                    :style="r.delta !== null ? 'color:' + (r.delta >= 0 ? 'var(--positive,#00875A)' : 'var(--negative,#C8102E)') : 'color:var(--muted)'"
-                    x-text="formatScDelta(r.delta, r.delta_fmt)"></td>
-              </tr>
-            </template>
-          </tbody>
-        </table>
-      </div>
-      <div class="chart-footer">
-        <span><span class="label">Sumber</span>Susenas KOR-RT + KP Blok 4.2</span>
-        <span><span class="label">Filter</span>middle+ ∈ {Lower MC, Middle MC, Upper MC, Upper Class}</span>
-      </div>
-    </div>
-
-    <div class="mt-12">
-      <div class="eyebrow-roman">II. Tren Visual</div>
-      <h2 class="serif-display text-3xl mt-3 max-w-3xl">Adopsi kendaraan dan intensitas pemakaian.</h2>
-      <p class="mt-3 muted text-base max-w-3xl">Tren 2019-2025 untuk Middle Class+ (Lower MC, Middle MC, Upper MC, Upper Class). Basis: Susenas BPS, level RT.</p>
-      <div class="hair-accent mt-6 pt-2"></div>
-      <div id="chart-trend" style="height:480px;"></div>
-      <div class="chart-footer">
-        <span><span class="label">Sumber</span>Susenas KOR-RT + KP Blok 4.2, BPS</span>
-        <span><span class="label">Filter</span>middle+ ∈ {Lower MC, Middle MC, Upper MC, Upper Class}</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== PETA ==================== -->
-  <section x-show="submitted && page === 'peta'">
-    <div class="rule-top pt-8 flex justify-end">
-      <button class="chip-action" @click="exportPPT()" style="background:var(--yellow);color:var(--ink);border-color:var(--yellow);font-weight:700;">
-        <iconify-icon icon="mdi:presentation"></iconify-icon>Export PPT
-      </button>
-    </div>
-    <div class="mt-8">
-      <span class="badge"><span class="badge-dot"></span>540 Kab/Kota · 13 Indeks</span>
-      <div class="eyebrow-roman mt-3">II. Peta Skor Komposit</div>
-      <h2 class="serif-display text-3xl mt-3 max-w-3xl">Kepadatan pasar kredit kendaraan per kab/kota.</h2>
-      <p class="mt-3 muted text-base max-w-3xl">Choropleth kab/kota dengan skor komposit 5 dimensi (Adopsi, Pembelian, Biaya, Intensitas, Kapasitas). Klik kab/kota untuk lihat profil detail.</p>
-      <div class="hair-accent mt-6 pt-2"></div>
-      <div id="chart-map" style="height:780px;"></div>
-      <div class="chart-footer">
-        <span><span class="label">Sumber</span>Susenas BPS · Shapefile BPS adm2 2020</span>
-        <span><span class="label">Skor Komposit</span>rata-rata tertimbang 5 dimensi (lihat Metodologi)</span>
-        <span><span class="label">Tier</span>kuartil skor (Tier 1 = 25% teratas)</span>
-      </div>
-    </div>
-
-    <!-- Top-50 ranking table -->
-    <div class="mt-16 rule-top pt-10">
-      <div class="eyebrow-roman">III. Top 50 Ranking</div>
-      <h3 class="serif-display text-2xl mt-3 max-w-3xl">Ranking <span x-text="rankView==='kab' ? 'kab/kota' : 'provinsi'"></span> berdasarkan <span x-text="rankSortBy==='composite' ? 'Skor Komposit' : 'Pasar Potensial'"></span>.</h3>
-      <div class="mt-4 flex gap-3 flex-wrap items-end">
-        <div>
-          <div class="eyebrow" style="color:var(--muted)">View</div>
-          <div class="mt-2 flex gap-2">
-            <button class="chip-action" :class="rankView==='kab' ? 'active' : ''" @click="rankView='kab'">Per Kab/Kota</button>
-            <button class="chip-action" :class="rankView==='prov' ? 'active' : ''" @click="rankView='prov'">Per Provinsi</button>
-          </div>
-        </div>
-        <div>
-          <div class="eyebrow" style="color:var(--muted)">Sort</div>
-          <div class="mt-2 flex gap-2">
-            <button class="chip-action" :class="rankSortBy==='composite' ? 'active' : ''" @click="rankSortBy='composite'">Skor</button>
-            <button class="chip-action" :class="rankSortBy==='TAM' ? 'active' : ''" @click="rankSortBy='TAM'">Pasar Potensial</button>
-          </div>
-        </div>
-        <div x-show="rankView==='kab'">
-          <div class="eyebrow" style="color:var(--muted)">Wilayah</div>
-          <select x-model="rankWilayah" @change="rankProv='All'" class="select-flat mt-2" style="min-width:160px;">
-            <template x-for="w in Object.keys(REGION_PROVS_JS)" :key="'rw'+w"><option :value="w" x-text="w"></option></template>
-          </select>
-        </div>
-        <div x-show="rankView==='kab'">
-          <div class="eyebrow" style="color:var(--muted)">Provinsi</div>
-          <select x-model="rankProv" class="select-flat mt-2" style="min-width:160px;">
-            <option value="All">Semua provinsi</option>
-            <template x-for="p in rankProvOptions" :key="'rp'+p.pcode"><option :value="p.pcode" x-text="p.nama"></option></template>
-          </select>
-        </div>
-      </div>
-      <!-- Per Kab/Kota view -->
-      <div x-show="rankView==='kab'" class="mt-6" style="max-height:600px;overflow-y:auto;border:1px solid var(--rule);">
-        <table class="rank-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Kab/Kota</th>
-              <th class="text-right">Skor</th>
-              <th class="text-right">Pasar Potensial (RT)</th>
-              <th>Tier</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <template x-for="(r, i) in topKabs" :key="'tk'+r.pcode">
-              <tr>
-                <td class="rank-no num" x-text="i+1"></td>
-                <td>
-                  <div class="nama-kab" x-text="r.nama_kab"></div>
-                  <div class="sub-prov" x-text="r.nama_prov"></div>
-                </td>
-                <td class="text-right num" x-text="r.composite.toFixed(1)"></td>
-                <td class="text-right num" x-text="(r.TAM/1000).toFixed(0)+' rb'"></td>
-                <td><span class="tier-chip" :class="tierClass(r.tier)" x-text="r.tier"></span></td>
-                <td><button class="chip-action" @click="openDrilldown(r.pcode)" style="font-size:10px;padding:3px 8px;">Detail</button></td>
-              </tr>
-            </template>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Per Provinsi view -->
-      <div x-show="rankView==='prov'" class="mt-6" style="max-height:600px;overflow-y:auto;border:1px solid var(--rule);">
-        <table class="rank-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Provinsi</th>
-              <th class="text-right">Rata-rata Skor</th>
-              <th class="text-right">Total Pasar Potensial (RT)</th>
-              <th class="text-right">N Kab</th>
-              <th>Distribusi Tier</th>
-            </tr>
-          </thead>
-          <tbody>
-            <template x-for="(r, i) in topProvs" :key="'tp'+r.pcode">
-              <tr>
-                <td class="rank-no num" x-text="i+1"></td>
-                <td><div class="nama-kab" x-text="r.nama_prov"></div></td>
-                <td class="text-right num" x-text="r.avg_composite.toFixed(1)"></td>
-                <td class="text-right num" x-text="(r.TAM/1e6).toFixed(2)+' jt'"></td>
-                <td class="text-right num" x-text="r.n_kab + (r.n_low_conf > 0 ? ' (' + r.n_low_conf + ' terbatas)' : '')"></td>
-                <td>
-                  <div style="display:flex;height:8px;border:1px solid var(--rule);max-width:140px">
-                    <template x-for="t in ['Tier 1','Tier 2','Tier 3','Tier 4','Sampel Terbatas']" :key="'tb'+r.pcode+t">
-                      <div :style="'background:' + tierColor(t) + ';flex:' + (r.tier_counts[t] || 0)" :title="t + ': ' + (r.tier_counts[t] || 0)"></div>
-                    </template>
-                  </div>
-                </td>
-              </tr>
-            </template>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== INDIKATOR ==================== -->
-  <section x-show="submitted && page === 'indikator'">
-    <div class="rule-top pt-8 flex flex-wrap items-end gap-6">
-      <div class="flex-1 min-w-[260px]">
-        <div class="eyebrow" style="color:var(--muted)">Indikator</div>
-        <select x-model="indMetric" @change="renderIndikator()" class="select-flat mt-2 w-full">
-          <template x-for="m in indMetrics" :key="'im'+m">
-            <option :value="m" x-text="indLabels[m].label"></option>
-          </template>
-        </select>
-      </div>
-      <div>
-        <div class="eyebrow" style="color:var(--muted)">Tahun</div>
-        <select x-model="indYear" @change="renderIndikator()" class="select-flat mt-2" style="min-width:90px">
-          <template x-for="y in [2019,2020,2021,2022,2023,2024,2025]" :key="'iy'+y">
-            <option :value="String(y)" x-text="y"></option>
-          </template>
-        </select>
-      </div>
-      <div>
-        <div class="eyebrow" style="color:var(--muted)">Wilayah</div>
-        <select x-model="indWilayah" @change="indProv='All'; renderIndikator()" class="select-flat mt-2" style="min-width:160px">
-          <template x-for="w in Object.keys(REGION_PROVS_JS)" :key="'iw'+w">
-            <option :value="w" x-text="w"></option>
-          </template>
-        </select>
-      </div>
-      <div>
-        <div class="eyebrow" style="color:var(--muted)">Provinsi</div>
-        <select x-model="indProv" @change="renderIndikator()" class="select-flat mt-2" style="min-width:160px">
-          <option value="All">Semua provinsi</option>
-          <template x-for="p in indProvOptions" :key="'ip'+p.pcode">
-            <option :value="p.pcode" x-text="p.nama"></option>
-          </template>
-        </select>
-      </div>
-    </div>
-
-    <div class="mt-12">
-      <span class="badge"><span class="badge-dot"></span>514 Kab/Kota · Indikator</span>
-      <div class="eyebrow-roman mt-3">III. Detail Indikator</div>
-      <h2 class="serif-display text-3xl mt-3 max-w-3xl" x-text="indLabels[indMetric].label + ' per kab/kota.'"></h2>
-      <p class="mt-3 muted text-base max-w-3xl">Indikator mentah (sebelum normalisasi). Filter wilayah dan provinsi untuk fokus regional.</p>
-      <div class="hair-accent mt-6 pt-2"></div>
-      <div id="chart-indikator" style="height:780px;"></div>
-      <div class="chart-footer">
-        <span><span class="label">Sumber</span>Susenas BPS · middle+ filter</span>
-        <span><span class="label">Tahun</span><span x-text="indYear"></span></span>
-      </div>
-
-      <!-- Top/Bottom 10 -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mt-12 rule-top pt-10">
-        <div>
-          <div class="eyebrow" style="color:var(--muted)">Top 10</div>
-          <h4 class="serif-display text-lg mt-2" x-text="'Tertinggi: ' + indLabels[indMetric].label"></h4>
-          <div class="mt-4">
-            <template x-for="(r, i) in indRankTop" :key="'irt'+r.pcode">
-              <div style="display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--rule);font-size:13px">
-                <span><strong style="color:var(--sky);font-family:'Source Serif 4',serif" x-text="i+1"></strong>&nbsp;&nbsp;<span x-text="r.nama"></span><span class="muted" style="font-size:11px;display:block;margin-left:24px" x-text="r.prov"></span></span>
-                <span class="num" style="font-weight:600" x-text="formatIndVal(r.value, indLabels[indMetric].fmt)"></span>
-              </div>
-            </template>
-          </div>
-        </div>
-        <div>
-          <div class="eyebrow" style="color:var(--muted)">Bottom 10</div>
-          <h4 class="serif-display text-lg mt-2" x-text="'Terendah: ' + indLabels[indMetric].label"></h4>
-          <div class="mt-4">
-            <template x-for="(r, i) in indRankBottom" :key="'irb'+r.pcode">
-              <div style="display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--rule);font-size:13px">
-                <span><strong style="color:#C8102E;font-family:'Source Serif 4',serif" x-text="i+1"></strong>&nbsp;&nbsp;<span x-text="r.nama"></span><span class="muted" style="font-size:11px;display:block;margin-left:24px" x-text="r.prov"></span></span>
-                <span class="num" style="font-weight:600" x-text="formatIndVal(r.value, indLabels[indMetric].fmt)"></span>
-              </div>
-            </template>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== METODOLOGI ==================== -->
-  <section x-show="submitted && page === 'metodologi'">
-    <div class="rule-top pt-8">
-
-      <!-- Layer A: Hero ringkas + pillar weight bar visual -->
-      <div class="eyebrow-roman">III. Arsitektur</div>
-      <h2 class="serif-display text-4xl mt-3 max-w-3xl">5 dimensi · 13 indeks · 1 skor komposit (0-100).</h2>
-      <p class="mt-4 muted text-base max-w-3xl">Setiap kab/kota dinilai dengan agregasi tertimbang 13 indeks yang dikelompokkan ke 5 dimensi. Bobot dimensi (kiri ke kanan):</p>
-
-      <!-- Pillar weight stacked bar -->
-      <div class="mt-6">
-        <div style="display:flex;height:36px;border:1px solid var(--ink);">
-          <div style="background:var(--navy);width:30%;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase">P1 · 30%</div>
-          <div style="background:#1A5394;width:25%;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase">P2 · 25%</div>
-          <div style="background:#67B2E8;width:15%;display:flex;align-items:center;justify-content:center;color:var(--ink);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase">P3 · 15%</div>
-          <div style="background:#A9C4DF;width:10%;display:flex;align-items:center;justify-content:center;color:var(--ink);font-size:11px;font-weight:700;letter-spacing:0.06em">P4 · 10%</div>
-          <div style="background:var(--yellow);width:20%;display:flex;align-items:center;justify-content:center;color:var(--ink);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase">P5 · 20%</div>
-        </div>
-        <div style="display:flex;margin-top:6px;font-size:10px;color:var(--muted);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;">
-          <div style="width:30%">Adopsi</div>
-          <div style="width:25%">Pembelian</div>
-          <div style="width:15%">Biaya</div>
-          <div style="width:10%">Intensitas</div>
-          <div style="width:20%">Kapasitas</div>
-        </div>
-      </div>
-
-      <!-- Layer B: 13 indeks tabel lengkap -->
-      <div class="mt-12">
-        <div class="eyebrow-roman">IV. 13 Indeks</div>
-        <h3 class="serif-display text-2xl mt-3 max-w-3xl">Definisi setiap indeks, formula, dan bobot.</h3>
-        <div class="overflow-x-auto mt-6">
-          <table class="rank-table" style="min-width:900px;">
-            <thead>
-              <tr>
-                <th style="width:60px">Kode</th>
-                <th style="min-width:180px">Dimensi</th>
-                <th style="min-width:300px">Label</th>
-                <th>Formula</th>
-                <th class="text-right">Bobot Sub</th>
-                <th class="text-right">Bobot Dimensi</th>
-              </tr>
-            </thead>
-            <tbody>
-              <template x-for="ix in indeksMeta" :key="ix.id">
-                <tr>
-                  <td><strong x-text="ix.id" style="color:var(--navy);font-family:'Source Serif 4',serif"></strong></td>
-                  <td x-text="pillarLabel(ix.pillar)"></td>
-                  <td x-text="ix.label"></td>
-                  <td><code x-text="ix.formula_calc" style="font-size:11px;background:var(--mist);padding:2px 6px"></code></td>
-                  <td class="text-right num" x-text="(ix.sub_w * 100).toFixed(0) + '%'"></td>
-                  <td class="text-right num muted" x-text="(pillarWeights[ix.pillar] * 100).toFixed(0) + '%'"></td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Layer C: 4-step method walkthrough -->
-      <div class="mt-12">
-        <div class="eyebrow-roman">V. Langkah Hitung</div>
-        <h3 class="serif-display text-2xl mt-3 max-w-3xl">Empat tahap dari data mentah ke tier skor.</h3>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
-          <div style="border-top:3px solid var(--navy);padding-top:16px;">
-            <div class="stat-num" style="font-size:48px;color:var(--navy);line-height:1;">1</div>
-            <div class="eyebrow mt-3" style="color:var(--ink);">Hitung</div>
-            <p class="text-sm muted mt-2 leading-relaxed">Hitung 13 indeks per kabkot 2025: <code>delta_pp</code> (perubahan poin persentase), <code>delta_pct</code> (% perubahan), atau <code>level</code> (nilai absolut tahun terbaru).</p>
-          </div>
-          <div style="border-top:3px solid var(--navy);padding-top:16px;">
-            <div class="stat-num" style="font-size:48px;color:var(--navy);line-height:1;">2</div>
-            <div class="eyebrow mt-3" style="color:var(--ink);">Normalisasi</div>
-            <p class="text-sm muted mt-2 leading-relaxed">Skala min-max tiap indeks ke 0-100 lintas kabkot. Indeks dengan NaN diset ke 0 (penalti).</p>
-          </div>
-          <div style="border-top:3px solid var(--navy);padding-top:16px;">
-            <div class="stat-num" style="font-size:48px;color:var(--navy);line-height:1;">3</div>
-            <div class="eyebrow mt-3" style="color:var(--ink);">Agregasi</div>
-            <p class="text-sm muted mt-2 leading-relaxed">Rata-rata tertimbang subindeks → skor dimensi (0-100). Rata-rata tertimbang dimensi (P1 30%, P2 25%, P3 15%, P4 10%, P5 20%) → <strong>skor komposit</strong> 0-100.</p>
-          </div>
-          <div style="border-top:3px solid var(--yellow);padding-top:16px;">
-            <div class="stat-num" style="font-size:48px;color:var(--navy);line-height:1;">4</div>
-            <div class="eyebrow mt-3" style="color:var(--ink);">Tier</div>
-            <p class="text-sm muted mt-2 leading-relaxed">Kuartil skor (sampel terbatas dikecualikan): <strong>Tier 1</strong> 25% teratas, Tier 2-T4 strata bawah. <strong>Pasar Potensial</strong> = skor × jumlah RT Middle+ / 100.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Layer D: Caveat formal numbered -->
-      <div class="rule-top pt-8 mt-12">
-        <div class="eyebrow-roman">VI. Catatan &amp; Batasan</div>
-        <h3 class="serif-display text-2xl mt-3 max-w-3xl">Hal-hal yang perlu diperhatikan saat membaca skor komposit.</h3>
-        <ol class="mt-6 space-y-4 text-sm" style="list-style:none;padding:0;counter-reset:cv;">
-          <template x-for="(c, i) in caveat" :key="'cv'+i">
-            <li style="counter-increment:cv;display:flex;gap:16px;padding:14px 18px;background:rgba(234,114,0,0.06);border-left:3px solid #EA7200;">
-              <span style="font-family:'Source Serif 4',serif;font-size:24px;font-weight:600;color:#EA7200;line-height:1;min-width:32px" x-text="(i+1).toString().padStart(2,'0')"></span>
-              <span style="line-height:1.6" x-text="c"></span>
-            </li>
-          </template>
-        </ol>
-      </div>
-
-      <!-- Data source footer -->
-      <div class="rule-top pt-8 mt-12">
-        <div class="eyebrow">Sumber Data &amp; Reproduksibilitas</div>
-        <p class="text-sm mt-3 leading-relaxed">
-          <strong>Sumber:</strong> Susenas Maret BPS 2019-2025, KOR-RT + Konsumsi Pengeluaran (KP) Blok 4.2.<br>
-          <strong>Filter universal:</strong> Middle+ (Lower MC, Middle MC, Upper MC, Upper Class). Pengecualian: <code>pct_middle_plus</code> memakai seluruh RT sebagai denominator.<br>
-          <strong>Bobot:</strong> <code>wert</code> (penimbang RT, ekuivalen <code>fwt</code> KOR-RT).<br>
-          <strong>Ambang sampel:</strong> jumlah RT Middle+ 2025 &lt; 30 → ditandai <em>sampel terbatas</em> (tidak dikeluarkan dari data).
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <footer class="rule-top mt-16 pt-8 pb-4 flex items-center justify-between text-xs muted uppercase tracking-widest">
-    <div>Mandiri Institute · Riset Kendaraan 2026</div>
-    <div>Generated 2026-04-29</div>
-    <div>Susenas BPS · weighted</div>
-  </footer>
-</main>
-</div>
-
-<!-- Drilldown drawer -->
-<aside class="drilldown" :class="drilldown.open ? 'is-open' : ''" role="dialog">
-  <div class="head">
-    <button class="close" @click="drilldown.open = false">×</button>
-    <div class="badge" style="background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.3);color:white">
-      <span x-text="drilldown.tier"></span>
-    </div>
-    <h3 x-text="drilldown.nama_kab" class="mt-2"></h3>
-    <div class="sub" x-text="drilldown.nama_prov"></div>
-  </div>
-  <div class="body">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-      <div>
-        <div class="eyebrow" style="color:var(--muted)">Skor Komposit</div>
-        <div class="stat-num text-3xl mt-2" style="color:var(--navy)" x-text="drilldown.composite"></div>
-      </div>
-      <div>
-        <div class="eyebrow" style="color:var(--muted)">Pasar Potensial (RT Middle+)</div>
-        <div class="stat-num text-3xl mt-2" style="color:var(--navy)" x-text="drilldown.tam_display"></div>
-      </div>
-    </div>
-
-    <div class="mt-6">
-      <div class="eyebrow">Skor 5 Dimensi</div>
-      <div class="mt-3">
-        <template x-for="p in drilldown.pillars" :key="p.lbl">
-          <div class="pillar-row">
-            <span class="lbl" x-text="p.lbl"></span>
-            <div class="bar-wrap">
-              <div class="bar" :style="'width:' + p.val + '%'"></div>
-            </div>
-            <span class="val" x-text="p.val.toFixed(1)"></span>
-          </div>
-        </template>
-      </div>
-    </div>
-
-    <div class="mt-6">
-      <div class="eyebrow">Trend 2019-2025</div>
-      <div id="chart-detail" style="height:280px;margin-top:12px"></div>
-    </div>
-
-    <template x-if="drilldown.low_conf">
-      <div class="caveat-banner mt-6">
-        <div class="label">Sampel Terbatas</div>
-        <div class="text">Jumlah RT Middle+ &lt; 30 di 2025. Skor tetap dihitung tapi presisi rendah.</div>
-      </div>
-    </template>
-  </div>
-</aside>
-
-</div>
-
-<script src="kendaraan_data.js"></script>
-<script>
-const TABS = [
-  { id: 'overview',   label: 'Overview',   icon: 'mdi:view-dashboard-outline' },
-  { id: 'peta',       label: 'Peta Potensi', icon: 'mdi:map-outline' },
-  { id: 'indikator',  label: 'Detail Indikator', icon: 'mdi:layers-outline' },
-  { id: 'metodologi', label: 'Metodologi', icon: 'mdi:book-open-variant' },
-];
-const PAGE_META = {
-  overview:   { title: 'Potensi Pasar Kredit Kendaraan, Indonesia 2025.',
-                sub: 'Skor komposit 13 indeks dari Susenas 2019-2025, fokus segmen Middle Class+.' },
-  peta:       { title: 'Sebaran skor komposit per kabupaten/kota.',
-                sub: 'Choropleth 514 kab/kota dengan skor 5 dimensi. Top 50 ranking + profil detail per kab/kota.' },
-  indikator:  { title: 'Detail indikator per kab/kota.',
-                sub: 'Jelajahi tiap indikator (% mobil, % motor, rata-rata belanja, dll) lintas tahun, wilayah, dan provinsi.' },
-  metodologi: { title: 'Metodologi skor komposit.',
-                sub: '5 dimensi, 13 indeks, agregasi tertimbang. Tabel definisi + langkah hitung + catatan.' },
-};
-const FONT = 'Inter, sans-serif';
-const INK = '#051C2C';
-const MUTED = '#667085';
-const TIER_COLORS = { 'Tier 1': '#003D79', 'Tier 2': '#67B2E8', 'Tier 3': '#FFE08A', 'Tier 4': '#E5E8EC', 'Sampel Terbatas': '#C8102E' };
-
-const REGION_PROVS = {
-  'Indonesia':          null,
-  'Sumatra':            ['11','12','13','14','15','16','17','18','19','21'],
-  'Jawa':               ['31','32','33','34','35','36'],
-  'Bali-Nusa Tenggara': ['51','52','53'],
-  'Kalimantan':         ['61','62','63','64','65'],
-  'Sulawesi':           ['71','72','73','74','75','76'],
-  'Maluku-Papua':       ['81','82','91','92','94','95','96','97'],
-};
-const INDIKATOR_LABELS = {
-  pct_mobil:        { label: 'Kepemilikan mobil per rumah tangga (%)', fmt: 'pct', palette: ['#E8EFF6','#A9C4DF','#67B2E8','#2A6FB3','#003D79'] },
-  pct_motor:        { label: 'Kepemilikan motor per rumah tangga (%)', fmt: 'pct', palette: ['#E8EFF6','#A9C4DF','#67B2E8','#2A6FB3','#003D79'] },
-  avg_kendaraan:    { label: 'Belanja kendaraan per rumah tangga (Rp/tahun)', fmt: 'rp', palette: ['#FFF8E5','#FFE08A','#FFB700','#D67900','#003D79'] },
-  avg_bensin_liter: { label: 'Konsumsi bensin per rumah tangga (liter/tahun)', fmt: 'num', palette: ['#FFF8E5','#FFE08A','#FFB700','#D67900','#003D79'] },
-  avg_nonfood:      { label: 'Belanja non-makanan per rumah tangga (Rp/bulan)', fmt: 'rp', palette: ['#E8EFF6','#A9C4DF','#67B2E8','#2A6FB3','#003D79'] },
-  avg_tol_parkir:   { label: 'Belanja tol + parkir per rumah tangga (Rp/tahun)', fmt: 'rp', palette: ['#E8EFF6','#A9C4DF','#67B2E8','#2A6FB3','#003D79'] },
-  avg_pelumas:      { label: 'Belanja pelumas per rumah tangga (Rp/tahun)', fmt: 'rp', palette: ['#E8EFF6','#A9C4DF','#67B2E8','#2A6FB3','#003D79'] },
-  avg_perbaikan:    { label: 'Belanja perbaikan kendaraan per rumah tangga (Rp/tahun)', fmt: 'rp', palette: ['#E8EFF6','#A9C4DF','#67B2E8','#2A6FB3','#003D79'] },
-  avg_stnk:         { label: 'Pajak STNK per rumah tangga (Rp/tahun)', fmt: 'rp', palette: ['#E8EFF6','#A9C4DF','#67B2E8','#2A6FB3','#003D79'] },
-  pct_middle_plus:  { label: 'Rumah tangga kelas Middle+ (%)', fmt: 'pct', palette: ['#FFF8E5','#FFE08A','#FFB700','#D67900','#003D79'] },
-};
-function pcodeProvCode(pcode) { return pcode.slice(2, 4); }
-function inRegion(pcode, wilayah, prov) {
-  const pc = pcodeProvCode(pcode);
-  if (prov && prov !== 'All') return pc === prov;
-  if (!wilayah || wilayah === 'Indonesia') return true;
-  return REGION_PROVS[wilayah].includes(pc);
-}
-
-const PAYLOAD = window.PAYLOAD;
-const GEOJSON = window.GEOJSON_KAB;
-
-function dashboard() {
-  // Build provList + provinsi → kab/kota mapping dari PAYLOAD.composite
-  const _PROV_TO_KAB = {};
-  const _PROV_TO_PCODE = {};  // nama_prov → kode 2-digit
-  Object.values(PAYLOAD.composite || {}).forEach(d => {
-    if (!_PROV_TO_KAB[d.nama_prov]) _PROV_TO_KAB[d.nama_prov] = [];
-    _PROV_TO_KAB[d.nama_prov].push(d.nama_kab);
-    if (!_PROV_TO_PCODE[d.nama_prov]) {
-      _PROV_TO_PCODE[d.nama_prov] = String(d.pcode).padStart(4,'0').slice(0,2);
-    }
-  });
-  Object.keys(_PROV_TO_KAB).forEach(p => _PROV_TO_KAB[p].sort());
-  return {
-    tabs: TABS, page: 'overview',
-    // ===== Canonical filter state v2 (multi-select + adaptive) =====
-    submitted: false,
-    years: [2019, 2020, 2021, 2022, 2023, 2024, 2025],
-    provList: Object.keys(_PROV_TO_KAB).sort(),
-    f: { tahun: 2025, wilayah: ['__all__'], subwilayah: ['__all__'], tampilan: 'composite', tier: ['Tier 1', 'Tier 2'], indikator: 'pct_mobil' },
-    applied: null,
-    PAGE_FILTERS: {
-      overview:   [],                                                          // HIDDEN (nasional)
-      peta:       ['tahun', 'wilayah', 'subwilayah', 'tampilan', 'tier'],
-      indikator:  ['tahun', 'wilayah', 'subwilayah', 'indikator'],
-      metodologi: []                                                            // HIDDEN
-    },
-    filterFields() { return this.PAGE_FILTERS[this.page] || []; },
-    _PROV_TO_KAB: _PROV_TO_KAB,
-    _PROV_TO_PCODE: _PROV_TO_PCODE,
-    // ===== existing chart-level state =====
-    mapMode: 'composite',  // 'composite' | 'TAM'
-    tierFilter: ['Tier 1', 'Tier 2'],
-    rankSortBy: 'composite',
-    rankView: 'kab',           // 'kab' | 'prov'
-    rankWilayah: 'Indonesia',
-    rankProv: 'All',
-    REGION_PROVS_JS: REGION_PROVS,
-    // Indikator page state
-    indYear: '2025',
-    indMetric: 'pct_mobil',
-    indWilayah: 'Indonesia',
-    indProv: 'All',
-    indMetrics: Object.keys(INDIKATOR_LABELS),
-    indLabels: INDIKATOR_LABELS,
-    drilldown: { open: false, pcode: null, nama_kab: '', nama_prov: '', tier: '', composite: 0, tam_display: '', pillars: [], low_conf: false },
-    caveat: PAYLOAD.caveat,
-    scorecard: PAYLOAD.scorecard,
-    indeksMeta: PAYLOAD.indeks_meta,
-    pillarWeights: PAYLOAD.pillar_weights,
-    formatScVal(v, fmt) {
-      if (v == null) return '-';
-      if (fmt === 'pct') return (v * 100).toFixed(1) + '%';
-      if (fmt === 'rp') {
-        if (v >= 1e6) return 'Rp ' + (v/1e6).toFixed(1) + ' jt';
-        if (v >= 1e3) return 'Rp ' + (v/1e3).toFixed(0) + ' rb';
-        return 'Rp ' + Math.round(v);
-      }
-      if (fmt === 'num') return v.toFixed(0);
-      return String(v);
-    },
-    formatScDelta(v, fmt) {
-      if (v == null) return '-';
-      const sign = v >= 0 ? '+' : '';
-      if (fmt === 'pp') return sign + v.toFixed(1) + ' pp';
-      return sign + v.toFixed(1) + '%';
-    },
-    indeksByPillar(pid) {
-      return this.indeksMeta.filter(x => x.pillar === pid);
-    },
-    pillarLabel(pid) {
-      const m = { 'P1_Adoption_Velocity': 'P1 · Adopsi',
-                  'P2_Purchase_Momentum': 'P2 · Pembelian',
-                  'P3_Cost_Of_Ownership': 'P3 · Biaya',
-                  'P4_Intensity': 'P4 · Intensitas',
-                  'P5_Capacity_Scale': 'P5 · Kapasitas' };
-      return m[pid] || pid;
-    },
-    get pageTitle() { return PAGE_META[this.page].title; },
-    get pageSubtitle() { return PAGE_META[this.page].sub; },
-    get topKabs() {
-      // Per-kab view: filter wilayah/prov + tier
-      let list = [...PAYLOAD.kab_list];
-      list = list.filter(k => {
-        const pcode = 'ID' + String(k.pcode).padStart(4, '0');
-        return inRegion(pcode, this.rankWilayah, this.rankProv);
-      });
-      list = list.filter(k => this.tierFilter.length === 0 || this.tierFilter.includes(k.tier));
-      list.sort((a,b) => (b[this.rankSortBy] || 0) - (a[this.rankSortBy] || 0));
-      return list.slice(0, 50);
-    },
-    get topProvs() {
-      // Per-prov rollup: sort by avg_composite or TAM
-      const sortKey = this.rankSortBy === 'composite' ? 'avg_composite' : 'TAM';
-      return [...PAYLOAD.prov_list].sort((a,b) => (b[sortKey] || 0) - (a[sortKey] || 0));
-    },
-    get rankProvOptions() {
-      // Prov options di filter, dependent on wilayah
-      const codes = REGION_PROVS[this.rankWilayah];
-      const all = Object.values(PAYLOAD.prov_rollup);
-      const filtered = codes ? all.filter(p => codes.includes(pcodeProvCode(p.pcode))) : all;
-      return filtered.sort((a,b) => a.nama_prov.localeCompare(b.nama_prov))
-        .map(p => ({ pcode: pcodeProvCode(p.pcode), nama: p.nama_prov }));
-    },
-    get indProvOptions() {
-      const codes = REGION_PROVS[this.indWilayah];
-      const all = Object.values(PAYLOAD.prov_rollup);
-      const filtered = codes ? all.filter(p => codes.includes(pcodeProvCode(p.pcode))) : all;
-      return filtered.sort((a,b) => a.nama_prov.localeCompare(b.nama_prov))
-        .map(p => ({ pcode: pcodeProvCode(p.pcode), nama: p.nama_prov }));
-    },
-    tierClass(t) {
-      return { 'Tier 1': 'tier-1', 'Tier 2': 'tier-2', 'Tier 3': 'tier-3', 'Tier 4': 'tier-4', 'Sampel Terbatas': 'tier-low' }[t] || '';
-    },
-    tierColor(t) { return TIER_COLORS[t] || '#999'; },
-    toggleTier(t) {
-      // legacy in-page handler — keep for back-compat (kalau masih dipakai)
-      const i = this.tierFilter.indexOf(t);
-      if (i >= 0) this.tierFilter.splice(i, 1);
-      else this.tierFilter.push(t);
-      this.renderMap();
-    },
-    // Multi-select handlers (canon v2)
-    toggleWilayah(val) {
-      if (val === '__all__') {
-        this.f.wilayah = ['__all__'];
-        this.f.subwilayah = ['__all__'];
-      } else {
-        const arr = this.f.wilayah.filter(v => v !== '__all__');
-        const i = arr.indexOf(val);
-        if (i >= 0) arr.splice(i, 1); else arr.push(val);
-        this.f.wilayah = arr.length ? arr : ['__all__'];
-        this.f.subwilayah = ['__all__'];
-      }
-    },
-    toggleSubwilayah(val) {
-      if (val === '__all__') { this.f.subwilayah = ['__all__']; return; }
-      const arr = this.f.subwilayah.filter(v => v !== '__all__');
-      const i = arr.indexOf(val);
-      if (i >= 0) arr.splice(i, 1); else arr.push(val);
-      this.f.subwilayah = arr.length ? arr : ['__all__'];
-    },
-    toggleTierF(t) {
-      const arr = [...this.f.tier];
-      const i = arr.indexOf(t);
-      if (i >= 0) arr.splice(i, 1); else arr.push(t);
-      this.f.tier = arr;
-    },
-    subList() {
-      if (this.f.wilayah.includes('__all__')) {
-        const all = new Set();
-        Object.values(this._PROV_TO_KAB).forEach(arr => arr.forEach(kk => all.add(kk)));
-        return [...all].sort();
-      }
-      const all = new Set();
-      this.f.wilayah.forEach(p => (this._PROV_TO_KAB[p] || []).forEach(kk => all.add(kk)));
-      return [...all].sort();
-    },
-    submit() {
-      this.applied = JSON.parse(JSON.stringify(this.f));
-      this.applied.tahun = parseInt(this.applied.tahun, 10);
-      // Sync canonical filter v2 ke per-page state existing (tanpa ubah chart logic)
-      this.indYear = String(this.applied.tahun);
-      this.indMetric = this.applied.indikator;
-      this.mapMode = this.applied.tampilan;
-      this.tierFilter = [...this.applied.tier];
-      // Wilayah multi -> sync ke single legacy field (ambil 1st atau Indonesia kalau __all__/multi)
-      if (this.applied.wilayah.includes('__all__')) {
-        this.indWilayah = 'Indonesia';  this.indProv = 'All';
-        this.rankWilayah = 'Indonesia'; this.rankProv = 'All';
-      } else if (this.applied.wilayah.length === 1) {
-        const pcode2 = this._PROV_TO_PCODE[this.applied.wilayah[0]];
-        let region = 'Indonesia';
-        Object.entries(REGION_PROVS).forEach(([reg, codes]) => {
-          if (codes && codes.includes(pcode2)) region = reg;
-        });
-        this.indWilayah = region;  this.rankWilayah = region;
-        this.indProv = pcode2 || 'All';
-        this.rankProv = pcode2 || 'All';
-      } else {
-        // Multi-prov: render Indonesia level (chart logic existing belum support multi)
-        this.indWilayah = 'Indonesia';  this.indProv = 'All';
-        this.rankWilayah = 'Indonesia'; this.rankProv = 'All';
-      }
-      this.submitted = true;
-      this.$nextTick(() => this.renderForPage(this.page));
-    },
-    init() {
-      window.gotoPage = (id) => this.setPage(id);
-      // Watch page change: re-render kalau sudah submit (filter bar adapts)
-      this.$watch('page', () => { if (this.submitted) this.$nextTick(() => this.renderForPage(this.page)); });
-      let resizeT;
-      window.addEventListener('resize', () => {
-        clearTimeout(resizeT);
-        resizeT = setTimeout(() => {
-          ['chart-map','chart-indikator','chart-trend','chart-detail'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el && el.data) { try { Plotly.Plots.resize(el); } catch(e) {} }
-          });
-        }, 150);
-      });
-    },
-    setPage(id) { this.page = id; if (this.submitted) this.renderForPage(id); },
-    renderForPage(id) {
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        if (id === 'overview') this.renderTrend();
-        else if (id === 'peta') this.renderMap();
-        else if (id === 'indikator') this.renderIndikator();
-      }));
-    },
-    formatIndVal(v, fmt) {
-      if (v == null) return '-';
-      if (fmt === 'pct') return (v * 100).toFixed(1) + '%';
-      if (fmt === 'rp') {
-        if (v >= 1e6) return 'Rp ' + (v/1e6).toFixed(2) + ' jt';
-        if (v >= 1e3) return 'Rp ' + (v/1e3).toFixed(0) + ' rb';
-        return 'Rp ' + Math.round(v);
-      }
-      if (fmt === 'num') return v.toFixed(0);
-      return String(v);
-    },
-    get indSliceFiltered() {
-      const slice = (PAYLOAD.map_indikator[this.indYear] || {})[this.indMetric] || {};
-      const out = {};
-      Object.entries(slice).forEach(([p, v]) => {
-        if (inRegion(p, this.indWilayah, this.indProv)) out[p] = v;
-      });
-      return out;
-    },
-    get indRankTop() {
-      const slice = this.indSliceFiltered;
-      const list = Object.entries(slice).map(([p, v]) => {
-        const pcode = parseInt(p.slice(2));
-        const d = PAYLOAD.composite[pcode];
-        return { pcode, nama: d ? d.nama_kab : p, prov: d ? d.nama_prov : '', value: v };
-      }).sort((a,b) => b.value - a.value).slice(0, 10);
-      return list;
-    },
-    get indRankBottom() {
-      const slice = this.indSliceFiltered;
-      const list = Object.entries(slice).map(([p, v]) => {
-        const pcode = parseInt(p.slice(2));
-        const d = PAYLOAD.composite[pcode];
-        return { pcode, nama: d ? d.nama_kab : p, prov: d ? d.nama_prov : '', value: v };
-      }).sort((a,b) => a.value - b.value).slice(0, 10);
-      return list;
-    },
-    renderIndikator() {
-      const slice = this.indSliceFiltered;
-      const meta = INDIKATOR_LABELS[this.indMetric];
-      const locs = Object.keys(slice);
-      const vals = locs.map(p => slice[p]);
-      const palette = meta.palette;
-      const fmt = meta.fmt;
-
-      // Quintile bins
-      const sorted = vals.slice().sort((a,b) => a-b);
-      const q = (p) => sorted.length ? sorted[Math.min(Math.floor(p * (sorted.length - 1)), sorted.length - 1)] : 0;
-      const bins = [sorted[0] || 0, q(0.2), q(0.4), q(0.6), q(0.8), sorted[sorted.length-1] || 1];
-      const colorscale = [
-        [0.0, palette[0]], [0.2-1e-9, palette[0]],
-        [0.2, palette[1]], [0.4-1e-9, palette[1]],
-        [0.4, palette[2]], [0.6-1e-9, palette[2]],
-        [0.6, palette[3]], [0.8-1e-9, palette[3]],
-        [0.8, palette[4]], [1.0, palette[4]],
-      ];
-
-      // Hovertext
-      const hovertext = locs.map(p => {
-        const pcode = parseInt(p.slice(2));
-        const d = PAYLOAD.composite[pcode];
-        const nama = d ? d.nama_kab : p;
-        const prov = d ? d.nama_prov : '';
-        const v = slice[p];
-        return `<b>${nama}</b><br><span style="color:#667085">${prov}</span><br>` +
-               `<span style="color:#003D79;font-size:18px;font-weight:600">${this.formatIndVal(v, fmt)}</span><br>` +
-               `<span style="color:#667085">${meta.label} · ${this.indYear}</span>`;
-      });
-
-      // Filter geojson to displayed kabs + base layer for non-data
-      const allowedSet = new Set(locs);
-      const dataFeatures = GEOJSON.features.filter(f => allowedSet.has(f.id) && (this.indWilayah === 'Indonesia' && this.indProv === 'All' || inRegion(f.id, this.indWilayah, this.indProv)));
-      const dataGJ = { type: 'FeatureCollection', features: dataFeatures };
-      // Base: kab di scope wilayah/prov tapi tidak punya data
-      const baseFeatures = GEOJSON.features.filter(f => inRegion(f.id, this.indWilayah, this.indProv) && !allowedSet.has(f.id));
-      const baseGJ = { type: 'FeatureCollection', features: baseFeatures };
-      const baseLocs = baseFeatures.map(f => f.id);
-
-      Plotly.react('chart-indikator', [
-        baseLocs.length ? {
-          type: 'choropleth', geojson: baseGJ, locations: baseLocs, z: baseLocs.map(_=>0),
-          featureidkey: 'properties.ADM2_PCODE',
-          colorscale: [[0,'#E8E8E8'],[1,'#E8E8E8']], showscale: false,
-          marker: { line: { color: 'white', width: 0.3 } },
-          hoverinfo: 'skip', showlegend: false,
-        } : null,
-        {
-          type: 'choropleth', geojson: dataGJ, locations: locs, z: vals,
-          featureidkey: 'properties.ADM2_PCODE',
-          zmin: bins[0], zmax: bins[5],
-          colorscale, showscale: true,
-          colorbar: { thickness: 10, len: 0.7, tickfont: { size: 11, color: MUTED } },
-          marker: { line: { color: 'white', width: 0.3 } },
-          hovertext, hovertemplate: '%{hovertext}<extra></extra>',
-          hoverlabel: { bgcolor: 'white', bordercolor: '#003D79', font: { family: FONT, size: 13, color: INK }, align: 'left', namelength: -1 },
-        }
-      ].filter(t => t), {
-        margin: { l: 0, r: 0, t: 0, b: 0 },
-        font: { family: FONT, color: INK },
-        geo: { visible: false, bgcolor: '#FAFBFC', projection: { type: 'mercator' }, fitbounds: 'locations' },
-        paper_bgcolor: 'transparent',
-      }, { displaylogo: false, responsive: true });
-    },
-    renderTrend() {
-      const t = PAYLOAD.nat_trend;
-      const yrs = [2019,2020,2021,2022,2023,2024,2025];
-      const traces = [
-        { x: yrs, y: t.pct_mobil.map(v => v ? v*100 : null), name: 'Kepemilikan mobil', mode: 'lines+markers', type: 'scatter', yaxis: 'y',
-           line: { color: '#003D79', width: 2.5 }, marker: { size: 8, color: '#003D79' } },
-        { x: yrs, y: t.pct_motor.map(v => v ? v*100 : null), name: 'Kepemilikan motor', mode: 'lines+markers', type: 'scatter', yaxis: 'y',
-           line: { color: '#67B2E8', width: 2.5 }, marker: { size: 8, color: '#67B2E8' } },
-        { x: yrs, y: t.avg_kendaraan.map(v => v ? v/1e6 : null), name: 'Belanja kendaraan per RT (Rp jt/tahun)', mode: 'lines+markers', type: 'scatter', yaxis: 'y2',
-           line: { color: '#FFB700', width: 2.5, dash: 'dot' }, marker: { size: 8, color: '#FFB700' } },
-      ];
-      Plotly.react('chart-trend', traces, {
-        margin: { l: 60, r: 60, t: 30, b: 60 },
-        font: { family: FONT, size: 13, color: INK },
-        plot_bgcolor: 'white', paper_bgcolor: 'white',
-        xaxis: { tickfont: { size: 14, color: INK }, showline: true, linecolor: INK, ticks: 'outside', tickcolor: INK, ticklen: 4 },
-        yaxis: { title: { text: 'Kepemilikan per RT (%)', font: { size: 12, color: MUTED } },
-                 tickfont: { size: 12, color: MUTED }, gridcolor: '#F0F2F5', range: [0, 100] },
-        yaxis2: { title: { text: 'Belanja kendaraan (Rp jt/RT/tahun)', font: { size: 12, color: '#FFB700' } },
-                  overlaying: 'y', side: 'right', tickfont: { size: 12, color: '#FFB700' } },
-        legend: { orientation: 'h', y: -0.18, x: 0, xanchor: 'left' },
-      }, { displaylogo: false, responsive: true });
-    },
-    renderMap() {
-      const isComposite = this.mapMode === 'composite';
-      // Build slice keyed by pcode
-      const slice = {};
-      const tierByP = {};
-      Object.values(PAYLOAD.composite).forEach(d => {
-        if (this.tierFilter.length > 0 && !this.tierFilter.includes(d.tier)) return;
-        const v = isComposite ? d.composite : d.TAM;
-        slice['ID' + String(d.pcode).padStart(4, '0')] = v;
-        tierByP['ID' + String(d.pcode).padStart(4, '0')] = d.tier;
-      });
-      const locs = Object.keys(slice);
-      const vals = locs.map(p => slice[p]);
-
-      // Hovertext rich
-      const hovertext = locs.map(p => {
-        const pcode = parseInt(p.slice(2));
-        const d = PAYLOAD.composite[pcode];
-        if (!d) return p;
-        const tamRb = (d.TAM / 1000).toFixed(0);
-        const lc = d.low_confidence ? '<br><span style="color:#C8102E">⚠ Low confidence (n &lt; 30)</span>' : '';
-        return `<b>${d.nama_kab}</b><br><span style="color:#667085">${d.nama_prov}</span><br>` +
-               `<span style="color:#003D79;font-size:18px;font-weight:600">${d.composite.toFixed(1)}</span> Composite<br>` +
-               `<span style="color:#667085">TAM: ${tamRb} rb RT · ${d.tier}</span>${lc}`;
-      });
-
-      // No-data layer (kabs in geojson but not in slice)
-      const allowedSet = new Set(locs);
-      const noDataFeatures = GEOJSON.features.filter(f => !allowedSet.has(f.id));
-      const noDataLocs = noDataFeatures.map(f => f.id);
-      const dataFeatures = GEOJSON.features.filter(f => allowedSet.has(f.id));
-      const dataGJ = { type: 'FeatureCollection', features: dataFeatures };
-      const baseGJ = { type: 'FeatureCollection', features: noDataFeatures };
-
-      Plotly.react('chart-map', [
-        // Base layer: kab tidak match tier filter → grey
-        noDataLocs.length ? {
-          type: 'choropleth', geojson: baseGJ, locations: noDataLocs, z: noDataLocs.map(_=>0),
-          featureidkey: 'properties.ADM2_PCODE',
-          colorscale: [[0,'#E8E8E8'],[1,'#E8E8E8']], showscale: false,
-          marker: { line: { color: 'white', width: 0.3 } },
-          hoverinfo: 'skip', showlegend: false,
-        } : null,
-        {
-          type: 'choropleth', geojson: dataGJ, locations: locs, z: vals,
-          featureidkey: 'properties.ADM2_PCODE',
-          zmin: 0, zmax: isComposite ? 100 : Math.max(...vals, 1),
-          colorscale: isComposite
-            ? [[0,'#E8EFF6'],[0.25,'#A9C4DF'],[0.5,'#67B2E8'],[0.75,'#2A6FB3'],[1,'#003D79']]
-            : [[0,'#FFF8E5'],[0.25,'#FFE08A'],[0.5,'#FFB700'],[0.75,'#D67900'],[1,'#003D79']],
-          showscale: true,
-          colorbar: { title: { text: isComposite ? 'Composite' : 'TAM (RT)', font: { size: 11, color: MUTED } },
-                      thickness: 10, len: 0.7, tickfont: { size: 11, color: MUTED } },
-          marker: { line: { color: 'white', width: 0.3 } },
-          hovertext, hovertemplate: '%{hovertext}<extra></extra>',
-          hoverlabel: { bgcolor: 'white', bordercolor: '#003D79', font: { family: FONT, size: 13, color: INK }, align: 'left', namelength: -1 },
-        }
-      ].filter(t => t), {
-        margin: { l: 0, r: 0, t: 0, b: 0 },
-        font: { family: FONT, color: INK },
-        geo: { visible: false, bgcolor: '#FAFBFC', projection: { type: 'mercator' },
-                lonaxis: { range: [94, 141.5] }, lataxis: { range: [-11.5, 6.5] } },
-        paper_bgcolor: 'transparent',
-      }, { displaylogo: false, responsive: true });
-
-      // Click event for drilldown
-      const mapEl = document.getElementById('chart-map');
-      const self = this;
-      if (mapEl.removeAllListeners) mapEl.removeAllListeners('plotly_click');
-      mapEl.on('plotly_click', d => {
-        if (d.points && d.points[0] && d.points[0].location) {
-          self.openDrilldown(parseInt(d.points[0].location.slice(2)));
-        }
-      });
-    },
-    openDrilldown(pcode) {
-      const d = PAYLOAD.composite[pcode];
-      if (!d) return;
-      this.drilldown.open = true;
-      this.drilldown.pcode = pcode;
-      this.drilldown.nama_kab = d.nama_kab;
-      this.drilldown.nama_prov = d.nama_prov;
-      this.drilldown.tier = d.tier;
-      this.drilldown.composite = d.composite.toFixed(1);
-      this.drilldown.tam_display = (d.TAM / 1000).toFixed(0) + ' rb';
-      this.drilldown.low_conf = d.low_confidence;
-      this.drilldown.pillars = [
-        { lbl: 'P1 Adoption Velocity', val: d.P1_Adoption_Velocity },
-        { lbl: 'P2 Purchase Momentum', val: d.P2_Purchase_Momentum },
-        { lbl: 'P3 Cost of Ownership', val: d.P3_Cost_Of_Ownership },
-        { lbl: 'P4 Intensity',         val: d.P4_Intensity },
-        { lbl: 'P5 Capacity Scale',    val: d.P5_Capacity_Scale },
-      ];
-      // Render trend chart in drawer
-      this.$nextTick(() => {
-        const ts = PAYLOAD.kab_ts[pcode];
-        if (!ts) return;
-        const yrs = [2019,2020,2021,2022,2023,2024,2025];
-        Plotly.newPlot('chart-detail', [
-          { x: yrs, y: ts.pct_mobil.map(v => v ? v*100 : null), name: 'Kepemilikan mobil', mode: 'lines+markers', line: {color:'#003D79', width:2} },
-          { x: yrs, y: ts.pct_motor.map(v => v ? v*100 : null), name: 'Kepemilikan motor', mode: 'lines+markers', line: {color:'#67B2E8', width:2} },
-        ], {
-          margin: { l: 40, r: 20, t: 20, b: 40 },
-          font: { family: FONT, size: 11, color: INK },
-          plot_bgcolor: 'white', paper_bgcolor: 'white',
-          xaxis: { tickfont: { size: 11 } },
-          yaxis: { tickfont: { size: 11, color: MUTED }, gridcolor: '#F0F2F5', range: [0, 100], title: {text:'%',font:{size:10}} },
-          legend: { orientation: 'h', y: -0.15, x: 0, xanchor: 'left', font: { size: 10 } },
-        }, { displaylogo: false, responsive: true });
-      });
-    },
-    exportPPT() {
-      const W = 1920, H = 1080;
-      const canvas = document.createElement('canvas');
-      canvas.width = W; canvas.height = H;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, W, H);
-      ctx.fillStyle = '#003D79'; ctx.fillRect(0, 0, W, 6);
-      ctx.fillStyle = '#051C2C';
-      ctx.font = "600 36px 'Source Serif 4', Georgia, serif";
-      ctx.fillText('Peta Potensi Pasar Kredit Kendaraan per Kab/Kota', 60, 90);
-      ctx.font = "400 18px 'Inter', sans-serif"; ctx.fillStyle = '#667085';
-      ctx.fillText((this.mapMode==='composite'?'Skor Komposit':'Pasar Potensial') + ' · 2025 · Riset Mandiri Institute', 60, 125);
-      Plotly.toImage('chart-map', { format: 'png', width: 1700, height: 800, scale: 2 })
-        .then(url => {
-          const img = new Image();
-          img.onload = () => {
-            ctx.drawImage(img, 110, 160, 1700, 800);
-            ctx.fillStyle = '#667085'; ctx.font = "400 14px 'Inter', sans-serif";
-            ctx.fillText('Sumber: Susenas BPS · Mandiri Institute · ' + new Date().toISOString().slice(0,10), 60, H - 30);
-            const logo = new Image();
-            logo.onload = () => {
-              const lh = 60, lw = logo.width * (lh / logo.height);
-              ctx.drawImage(logo, W - lw - 60, H - lh - 20, lw, lh);
-              canvas.toBlob(blob => {
-                const u = URL.createObjectURL(blob);
-                const a = document.createElement('a'); a.href = u; a.download = 'peta-kendaraan-2025-Mandiri-Institute.png';
-                document.body.appendChild(a); a.click(); document.body.removeChild(a);
-                URL.revokeObjectURL(u);
-              }, 'image/png');
-            };
-            logo.src = '../_assets/logo/mandiri-institute-color.jpg';
-          };
-          img.src = url;
-        });
-    },
-  };
-}
-</script>
-<!-- RELATED-LINKS-START -->
-<style>
+  /* Related links */
   .related-section { border-top: 1px solid var(--rule); margin-top: 64px; padding-top: 40px; padding-bottom: 32px; }
   .related-section .related-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--navy); }
   .related-section h3 { font-family: 'Source Serif 4', Georgia, serif; font-size: 24px; font-weight: 600; color: var(--ink); margin-top: 6px; margin-bottom: 24px; }
@@ -1379,41 +380,1151 @@ function dashboard() {
   .related-blurb { font-size: 12px; color: var(--muted); line-height: 1.45; margin-top: 6px; }
   .related-arrow { font-size: 18px; color: var(--navy); flex-shrink: 0; }
 </style>
-<div class="with-sidebar">
-<section class="related-section max-w-[1280px] mx-auto px-8">
-  <div class="related-eyebrow">Lihat Juga</div>
-  <h3>Dashboard terkait</h3>
-  <div class="related-grid">
-        <a href="../konsumsi-susenas/dashboard.html" class="related-card">
-          <div class="related-icon"><iconify-icon icon="mdi:cart-outline"></iconify-icon></div>
-          <div class="related-body">
-            <div class="related-tag">Riset Reguler</div>
-            <div class="related-title">Konsumsi per Kapita</div>
-            <div class="related-blurb">Pengeluaran konsumsi RT, makanan vs non-makanan, rincian 316 komoditi.</div>
-          </div>
-          <iconify-icon icon="mdi:arrow-right" class="related-arrow"></iconify-icon>
-        </a>
-        <a href="../kelas-kabkota/dashboard.html" class="related-card">
-          <div class="related-icon"><iconify-icon icon="mdi:account-group-outline"></iconify-icon></div>
-          <div class="related-body">
-            <div class="related-tag">Riset Reguler</div>
-            <div class="related-title">Distribusi Kelas Masyarakat</div>
-            <div class="related-blurb">Distribusi 8 kelas masyarakat di 514 kab/kota, plus kurva Lorenz & koefisien Gini.</div>
-          </div>
-          <iconify-icon icon="mdi:arrow-right" class="related-arrow"></iconify-icon>
-        </a>
-        <a href="../thematic/bbm/dashboard.html" class="related-card">
-          <div class="related-icon"><iconify-icon icon="mdi:gas-station-outline"></iconify-icon></div>
-          <div class="related-body">
-            <div class="related-tag">Isu Tematik</div>
-            <div class="related-title">Konsumsi BBM per Kelas</div>
-            <div class="related-blurb">Komposisi 5 jenis BBM per kelas masyarakat. Era subsidi Premium vs penghapusan 2022.</div>
-          </div>
-          <iconify-icon icon="mdi:arrow-right" class="related-arrow"></iconify-icon>
-        </a>
+<link rel="stylesheet" href="../_shared/tactile-editorial.css">
+</head>
+<body>
+
+<!-- ============ TOP NAV (canon v4) ============ -->
+<nav class="topnav-canon" id="topnav">
+  <iconify-icon class="burger" icon="mdi:menu" onclick="document.getElementById('kend-drawer').classList.add('open');document.getElementById('kend-overlay').classList.add('open');" role="button" aria-label="Buka menu" tabindex="0"></iconify-icon>
+  <a href="../index.html" style="text-decoration:none;color:inherit;display:block;" title="Kembali ke beranda">
+    <div class="brand">Mandiri Institute</div>
+    <div class="brand-sub">Potensi Kendaraan</div>
+  </a>
+  <div class="menu" id="topnav-menu">
+    <a href="#" data-tab="overview" class="active" onclick="switchTab('overview'); return false;">Overview</a>
+    <a href="#" data-tab="peta" onclick="switchTab('peta'); return false;">Peta Potensi</a>
+    <a href="#" data-tab="indikator" onclick="switchTab('indikator'); return false;">Detail Indikator</a>
+    <a href="#" data-tab="metodologi" onclick="switchTab('metodologi'); return false;">Metodologi</a>
   </div>
-</section>
+  <div class="right">
+    <a class="nav-link" href="../index.html" style="color:white;opacity:0.85;font-weight:500;text-decoration:none;">Semua Dashboard</a>
+    <iconify-icon class="search" icon="mdi:magnify" role="button" aria-label="Cari" tabindex="0"></iconify-icon>
+  </div>
+</nav>
+<div id="kend-overlay" class="nav-drawer-overlay" onclick="this.classList.remove('open');document.getElementById('kend-drawer').classList.remove('open');"></div>
+<aside id="kend-drawer" class="nav-drawer" aria-label="Menu navigasi">
+  <button class="close-btn" onclick="document.getElementById('kend-drawer').classList.remove('open');document.getElementById('kend-overlay').classList.remove('open');" aria-label="Tutup menu"><iconify-icon icon="mdi:close"></iconify-icon></button>
+  <div class="drawer-label">Potensi Kendaraan</div>
+  <ul>
+    <li><button onclick="switchTab('overview');document.getElementById('kend-drawer').classList.remove('open');document.getElementById('kend-overlay').classList.remove('open');"><iconify-icon icon="mdi:view-dashboard-outline"></iconify-icon>Overview</button></li>
+    <li><button onclick="switchTab('peta');document.getElementById('kend-drawer').classList.remove('open');document.getElementById('kend-overlay').classList.remove('open');"><iconify-icon icon="mdi:map-outline"></iconify-icon>Peta Potensi</button></li>
+    <li><button onclick="switchTab('indikator');document.getElementById('kend-drawer').classList.remove('open');document.getElementById('kend-overlay').classList.remove('open');"><iconify-icon icon="mdi:layers-outline"></iconify-icon>Detail Indikator</button></li>
+    <li><button onclick="switchTab('metodologi');document.getElementById('kend-drawer').classList.remove('open');document.getElementById('kend-overlay').classList.remove('open');"><iconify-icon icon="mdi:book-open-variant"></iconify-icon>Metodologi</button></li>
+  </ul>
+</aside>
+
+<!-- Slim page header (v4) -->
+<div class="page-header-slim">
+  <div class="max-w-screen-xl mx-auto px-6 py-5 flex items-center justify-between">
+    <div>
+      <div class="eyebrow-small">Riset Mandiri Institute &middot; Kredit Kendaraan 2026</div>
+      <h1 class="serif-display text-2xl md:text-3xl mt-1" id="page-title">Peta Potensi Pasar Kredit Kendaraan</h1>
+    </div>
+    <span class="page-marker hidden md:block">2025</span>
+  </div>
 </div>
-<!-- RELATED-LINKS-END -->
+
+<!-- Tab bar (4 tabs) -->
+<div class="tab-bar" id="tab-bar">
+  <button class="tab-pill-nav active" data-tab="overview" onclick="switchTab('overview')">Overview</button>
+  <button class="tab-pill-nav" data-tab="peta" onclick="switchTab('peta')">Peta Potensi</button>
+  <button class="tab-pill-nav" data-tab="indikator" onclick="switchTab('indikator')">Detail Indikator</button>
+  <button class="tab-pill-nav" data-tab="metodologi" onclick="switchTab('metodologi')">Metodologi</button>
+</div>
+
+<main class="max-w-[1280px] mx-auto px-6 pb-16">
+
+  <!-- ==================== OVERVIEW ==================== -->
+  <section id="tab-overview" class="tab-panel pt-8">
+
+    <!-- KPI row -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
+      <div class="chart-card">
+        <div class="eyebrow" style="color:var(--muted)">Kab/Kota dianalisis</div>
+        <div class="stat-num text-5xl mt-3 ink">540</div>
+        <div class="text-sm muted mt-1">Cakupan nasional 2025</div>
+      </div>
+      <div class="chart-card">
+        <div class="eyebrow" style="color:var(--muted)">Tier 1 (Top 25%)</div>
+        <div class="stat-num text-5xl mt-3" style="color:var(--navy)">130</div>
+        <div class="text-sm muted mt-1">Prioritas utama targeting</div>
+      </div>
+      <div class="chart-card">
+        <div class="eyebrow" style="color:var(--muted)">Tier 2 (50-75%)</div>
+        <div class="stat-num text-5xl mt-3" style="color:var(--sky)">130</div>
+        <div class="text-sm muted mt-1">Prioritas sekunder</div>
+      </div>
+      <div class="chart-card">
+        <div class="eyebrow" style="color:var(--muted)">Sampel Terbatas</div>
+        <div class="stat-num text-5xl mt-3" style="color:var(--lowconf)">21</div>
+        <div class="text-sm muted mt-1">Sampel &lt; 30 RT Middle+</div>
+      </div>
+    </div>
+
+    <div class="caveat-banner">
+      <div class="label">Catatan penting</div>
+      <div class="text">D1 (bensin liter): aproksimasi via harga Pertalite (BPS Susenas tidak mengumpulkan kuantitas). Kabkot pemekaran Papua (kode 92/95/96/97) pasca-2022 tidak punya baseline 2019 untuk delta A3/A4/B1/D1. Ambang sampel: kabkot dengan jumlah RT Middle+ &lt; 30 ditandai sampel terbatas.</div>
+    </div>
+
+    <!-- Scorecard table -->
+    <div class="chart-card mt-10">
+      <div class="chart-header">
+        <div class="eyebrow-roman">I. Skor Nasional Middle+</div>
+        <div class="chart-title mt-2">Indikator utama, 2019-2025</div>
+        <div class="chart-sub">Indikator pasar kendaraan Middle Class+ nasional, perubahan total.</div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="rank-table" style="min-width:760px" id="scorecard-table">
+          <thead>
+            <tr>
+              <th style="text-align:left;min-width:220px">Indikator</th>
+              <th class="text-right">2019</th><th class="text-right">2020</th><th class="text-right">2021</th>
+              <th class="text-right">2022</th><th class="text-right">2023</th><th class="text-right">2024</th><th class="text-right">2025</th>
+              <th class="text-right" style="border-left:2px solid var(--ink)">Δ 19-25</th>
+            </tr>
+          </thead>
+          <tbody id="scorecard-body"></tbody>
+        </table>
+      </div>
+      <div class="chart-export-row">
+        <button class="export-btn-ghost" onclick="exportCSV('scorecard')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
+      </div>
+      <div class="chart-footer">
+        <span><span class="label">Sumber</span>Susenas KOR-RT + KP Blok 4.2</span>
+        <span><span class="label">Filter</span>middle+ {Lower MC, Middle MC, Upper MC, Upper Class}</span>
+      </div>
+    </div>
+
+    <!-- Trend chart -->
+    <div class="chart-card mt-8">
+      <div class="chart-header">
+        <div class="eyebrow-roman">II. Tren Visual</div>
+        <div class="chart-title mt-2">Adopsi kendaraan dan intensitas pemakaian</div>
+        <div class="chart-sub">Tren 2019-2025 Middle Class+. Basis: Susenas BPS, level RT.</div>
+      </div>
+      <div id="chart-trend" style="height:420px"></div>
+      <div class="chart-export-row">
+        <button class="export-btn-ghost" onclick="exportChartPNG('chart-trend')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
+        <button class="export-btn-ghost" onclick="exportChartSVG('chart-trend')"><iconify-icon icon="mdi:vector-square"></iconify-icon>SVG</button>
+      </div>
+      <div class="chart-footer">
+        <span><span class="label">Sumber</span>Susenas KOR-RT + KP Blok 4.2, BPS</span>
+        <span><span class="label">Filter</span>middle+ {Lower MC, Middle MC, Upper MC, Upper Class}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PETA (v4.2 Leaflet Map Hero) ==================== -->
+  <section id="tab-peta" class="tab-panel pt-8" style="display:none">
+
+    <section class="map-hero-scope mb-8">
+      <div class="map-hero-header">
+        <span class="eyebrow-roman">II. Peta Sebaran</span>
+        <h2 class="map-hero-title mt-1">Sebaran Potensi Kendaraan</h2>
+        <p class="map-hero-intro">Skor potensi kendaraan <strong>540 kabupaten/kota</strong> Indonesia berdasarkan 5 dimensi (Adopsi, Pembelian, Biaya, Intensitas, Kapasitas). Klik kabupaten/kota untuk profil detail.</p>
+      </div>
+
+      <div class="map-hero-grid" style="position:relative;height:820px;display:flex;gap:0">
+        <!-- Map area -->
+        <div class="map-area" style="flex:1;position:relative;height:820px">
+
+          <!-- Filter overlay top-left -->
+          <div class="map-filter-overlay">
+            <div class="filter-pill">
+              <span class="filter-pill-label">Wilayah</span>
+              <select id="map-fil-wilayah" onchange="onMapFilterChange()">
+                <option value="Indonesia">Semua Indonesia</option>
+                <option value="Sumatra">Sumatra</option>
+                <option value="Jawa">Jawa</option>
+                <option value="Bali-Nusa Tenggara">Bali-Nusa Tenggara</option>
+                <option value="Kalimantan">Kalimantan</option>
+                <option value="Sulawesi">Sulawesi</option>
+                <option value="Maluku-Papua">Maluku-Papua</option>
+              </select>
+            </div>
+            <div class="filter-pill">
+              <span class="filter-pill-label">Tampilan</span>
+              <select id="map-fil-tampilan" onchange="onMapFilterChange()">
+                <option value="composite">Skor Komposit</option>
+                <option value="TAM">Pasar Potensial</option>
+              </select>
+            </div>
+            <div class="filter-pill">
+              <span class="filter-pill-label">Tier</span>
+              <select id="map-fil-tier" onchange="onMapFilterChange()">
+                <option value="all">Semua Tier</option>
+                <option value="Tier 1">Tier 1</option>
+                <option value="Tier 2">Tier 2</option>
+                <option value="Tier 3">Tier 3</option>
+                <option value="Tier 4">Tier 4</option>
+              </select>
+            </div>
+            <button class="reset-filter-btn" onclick="resetMapFilter()">Reset</button>
+          </div>
+
+          <!-- Leaflet map -->
+          <div id="map-leaflet" style="width:100%;height:820px;position:absolute;top:0;left:0;z-index:1"></div>
+        </div>
+
+        <!-- Floating side panel -->
+        <aside class="map-side-panel" id="map-side">
+
+          <!-- Search -->
+          <div class="sp-section sp-search">
+            <input class="search-input" id="map-search-input" type="text" placeholder="Cari kabupaten/kota..." oninput="onMapSearchInput(this.value)">
+            <div id="map-search-results" style="margin-top:6px;max-height:120px;overflow-y:auto;display:none"></div>
+          </div>
+
+          <!-- Top 10 ranking -->
+          <div class="sp-section sp-ranking">
+            <h4>Top 10 Kabupaten/Kota</h4>
+            <ol class="ranking-list" id="map-ranking"></ol>
+          </div>
+
+          <!-- Detail -->
+          <div class="sp-section sp-detail">
+            <h4><span id="detail-title">Detail</span></h4>
+            <div class="tab-pills">
+              <button onclick="setDetailTab('profil')" id="dtab-profil" class="active">Profil</button>
+              <button onclick="setDetailTab('histori')" id="dtab-histori">Histori</button>
+            </div>
+            <div id="map-detail"><div class="detail-empty">Klik kabupaten/kota pada peta untuk melihat profil detail.</div></div>
+            <div id="map-detail-histori" style="display:none">
+              <div id="chart-detail-map" style="height:200px;margin-top:8px"></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Color legend -->
+      <div class="map-color-legend" id="map-legend">
+        <span class="legend-label" id="legend-label">Skor<br>Komposit</span>
+        <div class="legend-bar-wrap">
+          <div class="legend-bar" id="legend-bar"></div>
+          <div class="legend-ticks" id="legend-ticks">
+            <span>0</span><span>25</span><span>50</span><span>75</span><span>100</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="map-hero-footer">
+        <span><span class="label">Sumber</span>Susenas BPS &middot; Shapefile BPS adm2 2020</span>
+        <span><span class="label">Skor Komposit</span>rata-rata tertimbang 5 dimensi</span>
+        <span><span class="label">Tier</span>kuartil skor (Tier 1 = 25% teratas)</span>
+      </div>
+    </section>
+
+    <!-- Export row -->
+    <div class="chart-export-row mb-6">
+      <button class="export-btn-ghost" onclick="exportMapPPT()"><iconify-icon icon="mdi:presentation"></iconify-icon>PPT</button>
+      <button class="export-btn-ghost" onclick="exportMapPNG()"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
+    </div>
+
+    <!-- Top-50 ranking table -->
+    <div class="chart-card mt-8">
+      <div class="chart-header">
+        <div class="eyebrow-roman">III. Top 50 Ranking</div>
+        <div class="chart-title mt-2" id="ranking-title">Ranking kab/kota berdasarkan Skor Komposit</div>
+      </div>
+      <div class="flex gap-3 flex-wrap items-end mb-4">
+        <div>
+          <div class="eyebrow" style="color:var(--muted)">View</div>
+          <div class="mt-2 flex gap-2">
+            <button class="chip-action active" id="rv-kab" onclick="setRankView('kab')">Per Kab/Kota</button>
+            <button class="chip-action" id="rv-prov" onclick="setRankView('prov')">Per Provinsi</button>
+          </div>
+        </div>
+        <div>
+          <div class="eyebrow" style="color:var(--muted)">Sort</div>
+          <div class="mt-2 flex gap-2">
+            <button class="chip-action active" id="rs-composite" onclick="setRankSort('composite')">Skor</button>
+            <button class="chip-action" id="rs-TAM" onclick="setRankSort('TAM')">Pasar Potensial</button>
+          </div>
+        </div>
+        <div id="rank-wilayah-wrap">
+          <div class="eyebrow" style="color:var(--muted)">Wilayah</div>
+          <select class="select-flat mt-2" id="rank-wilayah" onchange="renderRankingTable()" style="min-width:160px">
+            <option value="Indonesia">Semua Indonesia</option>
+            <option value="Sumatra">Sumatra</option>
+            <option value="Jawa">Jawa</option>
+            <option value="Bali-Nusa Tenggara">Bali-Nusa Tenggara</option>
+            <option value="Kalimantan">Kalimantan</option>
+            <option value="Sulawesi">Sulawesi</option>
+            <option value="Maluku-Papua">Maluku-Papua</option>
+          </select>
+        </div>
+      </div>
+      <div style="max-height:600px;overflow-y:auto;border:1px solid var(--rule)">
+        <table class="rank-table" id="ranking-table">
+          <thead><tr id="ranking-head"></tr></thead>
+          <tbody id="ranking-body"></tbody>
+        </table>
+      </div>
+      <div class="chart-export-row">
+        <button class="export-btn-ghost" onclick="exportCSV('ranking')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== INDIKATOR ==================== -->
+  <section id="tab-indikator" class="tab-panel pt-8" style="display:none">
+    <div class="flex flex-wrap items-end gap-6 mb-8">
+      <div class="flex-1 min-w-[240px]">
+        <div class="eyebrow" style="color:var(--muted)">Indikator</div>
+        <select class="select-flat mt-2 w-full" id="ind-metric" onchange="renderIndikator()">
+          <option value="pct_mobil">Kepemilikan mobil per RT (%)</option>
+          <option value="pct_motor">Kepemilikan motor per RT (%)</option>
+          <option value="avg_kendaraan">Belanja kendaraan per RT (Rp/tahun)</option>
+          <option value="avg_bensin_liter">Konsumsi bensin per RT (liter/tahun)</option>
+          <option value="avg_nonfood">Belanja non-makanan per RT (Rp/bulan)</option>
+          <option value="avg_tol_parkir">Belanja tol + parkir per RT (Rp/tahun)</option>
+          <option value="avg_pelumas">Belanja pelumas per RT (Rp/tahun)</option>
+          <option value="avg_perbaikan">Belanja perbaikan kendaraan per RT (Rp/tahun)</option>
+          <option value="avg_stnk">Pajak STNK per RT (Rp/tahun)</option>
+          <option value="pct_middle_plus">RT kelas Middle+ (%)</option>
+        </select>
+      </div>
+      <div>
+        <div class="eyebrow" style="color:var(--muted)">Tahun</div>
+        <select class="select-flat mt-2" id="ind-year" onchange="renderIndikator()" style="min-width:90px">
+          <option>2019</option><option>2020</option><option>2021</option><option>2022</option>
+          <option>2023</option><option>2024</option><option selected>2025</option>
+        </select>
+      </div>
+      <div>
+        <div class="eyebrow" style="color:var(--muted)">Wilayah</div>
+        <select class="select-flat mt-2" id="ind-wilayah" onchange="renderIndikator()" style="min-width:160px">
+          <option value="Indonesia">Semua Indonesia</option>
+          <option value="Sumatra">Sumatra</option>
+          <option value="Jawa">Jawa</option>
+          <option value="Bali-Nusa Tenggara">Bali-Nusa Tenggara</option>
+          <option value="Kalimantan">Kalimantan</option>
+          <option value="Sulawesi">Sulawesi</option>
+          <option value="Maluku-Papua">Maluku-Papua</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="eyebrow-roman">III. Detail Indikator</div>
+        <div class="chart-title mt-2" id="ind-chart-title">Kepemilikan mobil per kab/kota</div>
+        <div class="chart-sub">Indikator mentah (sebelum normalisasi). Filter wilayah untuk fokus regional.</div>
+      </div>
+      <div id="chart-indikator" style="height:680px"></div>
+      <div class="chart-export-row">
+        <button class="export-btn-ghost" onclick="exportChartPNG('chart-indikator')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
+        <button class="export-btn-ghost" onclick="exportChartSVG('chart-indikator')"><iconify-icon icon="mdi:vector-square"></iconify-icon>SVG</button>
+      </div>
+      <div class="chart-footer">
+        <span><span class="label">Sumber</span>Susenas BPS &middot; middle+ filter</span>
+        <span><span class="label">Tahun</span><span id="ind-footer-year">2025</span></span>
+      </div>
+    </div>
+
+    <!-- Top/Bottom 10 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="eyebrow" style="color:var(--muted)">Top 10 Tertinggi</div>
+          <div class="chart-title mt-1" id="ind-top-title">Kepemilikan mobil per RT</div>
+        </div>
+        <div id="ind-rank-top"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="eyebrow" style="color:var(--muted)">Bottom 10 Terendah</div>
+          <div class="chart-title mt-1" id="ind-bot-title">Kepemilikan mobil per RT</div>
+        </div>
+        <div id="ind-rank-bot"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== METODOLOGI ==================== -->
+  <section id="tab-metodologi" class="tab-panel pt-8" style="display:none">
+
+    <div class="chart-card mb-8">
+      <div class="eyebrow-roman">III. Arsitektur</div>
+      <h2 class="serif-display text-3xl mt-3 max-w-3xl">5 dimensi &middot; 13 indeks &middot; 1 skor komposit (0-100).</h2>
+      <p class="mt-4 muted text-base max-w-3xl">Bobot dimensi:</p>
+      <div class="mt-4">
+        <div style="display:flex;height:36px;border:1px solid var(--ink)">
+          <div style="background:var(--navy);width:30%;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase">P1 &middot; 30%</div>
+          <div style="background:#1A5394;width:25%;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase">P2 &middot; 25%</div>
+          <div style="background:#67B2E8;width:15%;display:flex;align-items:center;justify-content:center;color:var(--ink);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase">P3 &middot; 15%</div>
+          <div style="background:#A9C4DF;width:10%;display:flex;align-items:center;justify-content:center;color:var(--ink);font-size:11px;font-weight:700;letter-spacing:0.06em">P4 &middot; 10%</div>
+          <div style="background:var(--yellow);width:20%;display:flex;align-items:center;justify-content:center;color:var(--ink);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase">P5 &middot; 20%</div>
+        </div>
+        <div style="display:flex;margin-top:6px;font-size:10px;color:var(--muted);font-weight:600;letter-spacing:0.08em;text-transform:uppercase">
+          <div style="width:30%">Adopsi</div><div style="width:25%">Pembelian</div>
+          <div style="width:15%">Biaya</div><div style="width:10%">Intensitas</div><div style="width:20%">Kapasitas</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card mb-8">
+      <div class="eyebrow-roman">IV. 13 Indeks</div>
+      <div class="chart-title mt-2">Definisi, formula, dan bobot setiap indeks</div>
+      <div class="overflow-x-auto mt-4">
+        <table class="rank-table" style="min-width:900px" id="indeks-table">
+          <thead>
+            <tr>
+              <th style="width:60px">Kode</th>
+              <th style="min-width:180px">Dimensi</th>
+              <th style="min-width:280px">Label</th>
+              <th>Formula</th>
+              <th class="text-right">Bobot Sub</th>
+              <th class="text-right">Bobot Dimensi</th>
+            </tr>
+          </thead>
+          <tbody id="indeks-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="chart-card mb-8">
+      <div class="eyebrow-roman">V. Langkah Hitung</div>
+      <div class="chart-title mt-2">Empat tahap dari data mentah ke tier skor</div>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
+        <div style="border-top:3px solid var(--navy);padding-top:16px">
+          <div class="stat-num" style="font-size:48px;color:var(--navy);line-height:1">1</div>
+          <div class="eyebrow mt-3">Hitung</div>
+          <p class="text-sm muted mt-2 leading-relaxed">Hitung 13 indeks per kabkot 2025: <code>delta_pp</code>, <code>delta_pct</code>, atau <code>level</code>.</p>
+        </div>
+        <div style="border-top:3px solid var(--navy);padding-top:16px">
+          <div class="stat-num" style="font-size:48px;color:var(--navy);line-height:1">2</div>
+          <div class="eyebrow mt-3">Normalisasi</div>
+          <p class="text-sm muted mt-2 leading-relaxed">Skala min-max tiap indeks ke 0-100 lintas kabkot. NaN diset ke 0 (penalti).</p>
+        </div>
+        <div style="border-top:3px solid var(--navy);padding-top:16px">
+          <div class="stat-num" style="font-size:48px;color:var(--navy);line-height:1">3</div>
+          <div class="eyebrow mt-3">Agregasi</div>
+          <p class="text-sm muted mt-2 leading-relaxed">Rata-rata tertimbang subindeks ke skor dimensi. 5 dimensi ke skor komposit 0-100.</p>
+        </div>
+        <div style="border-top:3px solid var(--yellow);padding-top:16px">
+          <div class="stat-num" style="font-size:48px;color:var(--navy);line-height:1">4</div>
+          <div class="eyebrow mt-3">Tier</div>
+          <p class="text-sm muted mt-2 leading-relaxed">Kuartil skor: <strong>Tier 1</strong> 25% teratas, Tier 2-4 strata bawah. Pasar Potensial = skor x jumlah RT Middle+/100.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card mb-8">
+      <div class="eyebrow-roman">VI. Catatan &amp; Batasan</div>
+      <div class="chart-title mt-2">Hal-hal yang perlu diperhatikan saat membaca skor komposit</div>
+      <ol class="mt-6 space-y-4 text-sm" id="caveat-list" style="list-style:none;padding:0;counter-reset:cv"></ol>
+    </div>
+
+    <div class="chart-card">
+      <div class="eyebrow">Sumber Data</div>
+      <p class="text-sm mt-3 leading-relaxed">
+        <strong>Sumber:</strong> Susenas Maret BPS 2019-2025, KOR-RT + Konsumsi Pengeluaran (KP) Blok 4.2.<br>
+        <strong>Filter universal:</strong> Middle+ (Lower MC, Middle MC, Upper MC, Upper Class).<br>
+        <strong>Bobot:</strong> <code>wert</code> (penimbang RT).<br>
+        <strong>Ambang sampel:</strong> jumlah RT Middle+ 2025 &lt; 30 ditandai <em>sampel terbatas</em>.
+      </p>
+    </div>
+  </section>
+
+  <footer class="rule-top mt-16 pt-8 pb-4 flex items-center justify-between text-xs muted uppercase tracking-widest">
+    <div>Mandiri Institute &middot; Riset Kendaraan 2026</div>
+    <div>Generated 2026-04-29</div>
+    <div>Susenas BPS &middot; weighted</div>
+  </footer>
+
+  <!-- Related links -->
+  <section class="related-section">
+    <div class="related-eyebrow">Lihat Juga</div>
+    <h3>Dashboard terkait</h3>
+    <div class="related-grid">
+      <a href="../konsumsi-susenas/dashboard.html" class="related-card">
+        <div class="related-icon"><iconify-icon icon="mdi:cart-outline"></iconify-icon></div>
+        <div class="related-body">
+          <div class="related-tag">Riset Reguler</div>
+          <div class="related-title">Konsumsi per Kapita</div>
+          <div class="related-blurb">Pengeluaran konsumsi RT, makanan vs non-makanan, rincian 316 komoditi.</div>
+        </div>
+        <iconify-icon icon="mdi:arrow-right" class="related-arrow"></iconify-icon>
+      </a>
+      <a href="../kelas-kabkota/dashboard.html" class="related-card">
+        <div class="related-icon"><iconify-icon icon="mdi:account-group-outline"></iconify-icon></div>
+        <div class="related-body">
+          <div class="related-tag">Riset Reguler</div>
+          <div class="related-title">Distribusi Kelas Masyarakat</div>
+          <div class="related-blurb">Distribusi 8 kelas masyarakat di 514 kab/kota, plus kurva Lorenz &amp; koefisien Gini.</div>
+        </div>
+        <iconify-icon icon="mdi:arrow-right" class="related-arrow"></iconify-icon>
+      </a>
+      <a href="../thematic/bbm/dashboard.html" class="related-card">
+        <div class="related-icon"><iconify-icon icon="mdi:gas-station-outline"></iconify-icon></div>
+        <div class="related-body">
+          <div class="related-tag">Isu Tematik</div>
+          <div class="related-title">Konsumsi BBM per Kelas</div>
+          <div class="related-blurb">Komposisi 5 jenis BBM per kelas masyarakat. Era subsidi Premium vs penghapusan 2022.</div>
+        </div>
+        <iconify-icon icon="mdi:arrow-right" class="related-arrow"></iconify-icon>
+      </a>
+    </div>
+  </section>
+</main>
+
+<script src="kendaraan_data.js"></script>
+<script>
+// ============================================================
+// CONSTANTS & HELPERS
+// ============================================================
+const PAYLOAD = window.PAYLOAD;
+const GEOJSON_KAB = window.GEOJSON_KAB;
+const FONT = 'Inter, sans-serif';
+const INK = '#051C2C';
+const MUTED = '#667085';
+const BLUE_STOPS = ['#EAF1F8','#A9C4DF','#67B2E8','#2C6FB5','#001F4D'];
+const YELLOW_STOPS = ['#FFF8E5','#FFE08A','#FFB700','#D67900','#003D79'];
+const TIER_COLORS = { 'Tier 1': '#003D79', 'Tier 2': '#67B2E8', 'Tier 3': '#FFE08A', 'Tier 4': '#E5E8EC', 'Sampel Terbatas': '#C8102E' };
+const REGION_PROVS = {
+  'Indonesia': null,
+  'Sumatra':            ['11','12','13','14','15','16','17','18','19','21'],
+  'Jawa':               ['31','32','33','34','35','36'],
+  'Bali-Nusa Tenggara': ['51','52','53'],
+  'Kalimantan':         ['61','62','63','64','65'],
+  'Sulawesi':           ['71','72','73','74','75','76'],
+  'Maluku-Papua':       ['81','82','91','92','94','95','96','97'],
+};
+const INDIKATOR_LABELS = {
+  pct_mobil:        { label: 'Kepemilikan mobil per RT (%)', fmt: 'pct' },
+  pct_motor:        { label: 'Kepemilikan motor per RT (%)', fmt: 'pct' },
+  avg_kendaraan:    { label: 'Belanja kendaraan per RT (Rp/tahun)', fmt: 'rp' },
+  avg_bensin_liter: { label: 'Konsumsi bensin per RT (liter/tahun)', fmt: 'num' },
+  avg_nonfood:      { label: 'Belanja non-makanan per RT (Rp/bulan)', fmt: 'rp' },
+  avg_tol_parkir:   { label: 'Belanja tol + parkir per RT (Rp/tahun)', fmt: 'rp' },
+  avg_pelumas:      { label: 'Belanja pelumas per RT (Rp/tahun)', fmt: 'rp' },
+  avg_perbaikan:    { label: 'Belanja perbaikan kendaraan per RT (Rp/tahun)', fmt: 'rp' },
+  avg_stnk:         { label: 'Pajak STNK per RT (Rp/tahun)', fmt: 'rp' },
+  pct_middle_plus:  { label: 'RT kelas Middle+ (%)', fmt: 'pct' },
+};
+const PILLAR_LABELS = {
+  P1_Adoption_Velocity: 'P1 Adopsi',
+  P2_Purchase_Momentum: 'P2 Pembelian',
+  P3_Cost_Of_Ownership: 'P3 Biaya',
+  P4_Intensity: 'P4 Intensitas',
+  P5_Capacity_Scale: 'P5 Kapasitas',
+};
+
+function formatProvName(n) {
+  if (!n) return n;
+  return n.replace(/\b(Di|Dki|Diy|Kab\.|Kota)\b/gi, s => s.toUpperCase())
+    .replace(/\bDaerah Istimewa\b/gi, 'D.I.')
+    .replace(/\bKepulauan\b/gi, 'Kep.')
+    .trim();
+}
+function fmt(v, f) {
+  if (v == null || isNaN(v)) return '-';
+  if (f === 'pct') return (v * 100).toFixed(1).replace('.', ',') + '%';
+  if (f === 'rp') {
+    if (v >= 1e6) return 'Rp ' + (v/1e6).toFixed(1).replace('.', ',') + ' jt';
+    if (v >= 1e3) return 'Rp ' + Math.round(v/1e3).toLocaleString('id-ID') + ' rb';
+    return 'Rp ' + Math.round(v).toLocaleString('id-ID');
+  }
+  if (f === 'num') return Math.round(v).toLocaleString('id-ID');
+  return String(v);
+}
+function pcodeProvCode(pcode) { return String(pcode).padStart(4,'0').slice(0,2); }
+function inRegion(pcode, wilayah) {
+  const pc = typeof pcode === 'string' ? (pcode.startsWith('ID') ? pcode.slice(2,4) : String(pcode).padStart(4,'0').slice(0,2)) : pcodeProvCode(pcode);
+  if (!wilayah || wilayah === 'Indonesia') return true;
+  const codes = REGION_PROVS[wilayah];
+  return codes ? codes.includes(pc) : true;
+}
+function tierClass(t) {
+  return { 'Tier 1': 'tier-1', 'Tier 2': 'tier-2', 'Tier 3': 'tier-3', 'Tier 4': 'tier-4', 'Sampel Terbatas': 'tier-low' }[t] || '';
+}
+
+// ============================================================
+// TAB SYSTEM
+// ============================================================
+let currentTab = 'overview';
+let tabInitialized = {};
+
+function switchTab(id) {
+  currentTab = id;
+  document.querySelectorAll('.tab-panel').forEach(el => el.style.display = 'none');
+  document.getElementById('tab-' + id).style.display = '';
+  document.querySelectorAll('.tab-pill-nav, .menu a[data-tab]').forEach(el => {
+    el.classList.toggle('active', el.dataset.tab === id);
+  });
+  if (!tabInitialized[id]) {
+    tabInitialized[id] = true;
+    if (id === 'overview') { renderScorecard(); renderTrend(); }
+    else if (id === 'peta') {
+      initLeafletMap();
+      renderRankingTable();
+      setTimeout(() => { if (leafletMap) leafletMap.invalidateSize(); }, 200);
+    }
+    else if (id === 'indikator') renderIndikator();
+    else if (id === 'metodologi') renderMetodologi();
+  }
+}
+
+// ============================================================
+// OVERVIEW: Scorecard + Trend
+// ============================================================
+function formatScVal(v, fmt_) {
+  if (v == null) return '-';
+  if (fmt_ === 'pct') return (v * 100).toFixed(1).replace('.', ',') + '%';
+  if (fmt_ === 'rp') {
+    if (v >= 1e6) return 'Rp ' + (v/1e6).toFixed(1).replace('.', ',') + ' jt';
+    if (v >= 1e3) return 'Rp ' + Math.round(v/1e3) + ' rb';
+    return 'Rp ' + Math.round(v);
+  }
+  if (fmt_ === 'num') return Math.round(v).toLocaleString('id-ID');
+  return String(v);
+}
+function formatScDelta(v, fmt_) {
+  if (v == null) return '-';
+  const sign = v >= 0 ? '+' : '';
+  if (fmt_ === 'pp') return sign + v.toFixed(1).replace('.', ',') + ' pp';
+  return sign + v.toFixed(1).replace('.', ',') + '%';
+}
+
+function renderScorecard() {
+  const sc = PAYLOAD.scorecard;
+  const years = [2019,2020,2021,2022,2023,2024,2025];
+  const tbody = document.getElementById('scorecard-body');
+  if (!tbody || !sc) return;
+  tbody.innerHTML = sc.map(r => `
+    <tr>
+      <td><strong>${r.label}</strong></td>
+      ${r.vals.map(v => `<td class="text-right num">${formatScVal(v, r.fmt)}</td>`).join('')}
+      <td class="text-right num" style="border-left:2px solid var(--ink);font-weight:600;color:${r.delta == null ? 'var(--muted)' : r.delta >= 0 ? '#00875A' : '#C8102E'}">
+        ${r.delta != null ? formatScDelta(r.delta, r.delta_fmt) : '-'}
+      </td>
+    </tr>`).join('');
+}
+
+function renderTrend() {
+  const t = PAYLOAD.nat_trend;
+  const yrs = [2019,2020,2021,2022,2023,2024,2025];
+  Plotly.react('chart-trend', [
+    { x: yrs, y: t.pct_mobil.map(v => v ? v*100 : null), name: 'Kepemilikan mobil', mode: 'lines+markers', type: 'scatter', yaxis: 'y',
+      line: { color: '#003D79', width: 2.5 }, marker: { size: 8, color: '#003D79' } },
+    { x: yrs, y: t.pct_motor.map(v => v ? v*100 : null), name: 'Kepemilikan motor', mode: 'lines+markers', type: 'scatter', yaxis: 'y',
+      line: { color: '#67B2E8', width: 2.5 }, marker: { size: 8, color: '#67B2E8' } },
+    { x: yrs, y: t.avg_kendaraan.map(v => v ? v/1e6 : null), name: 'Belanja kendaraan per RT (Rp jt/tahun)', mode: 'lines+markers', type: 'scatter', yaxis: 'y2',
+      line: { color: '#FFB700', width: 2.5, dash: 'dot' }, marker: { size: 8, color: '#FFB700' } },
+  ], {
+    margin: { l: 60, r: 60, t: 20, b: 60 },
+    font: { family: FONT, size: 13, color: INK },
+    plot_bgcolor: 'white', paper_bgcolor: 'white',
+    xaxis: { tickfont: { size: 13, color: INK }, showline: true, linecolor: INK, ticks: 'outside', tickcolor: INK, ticklen: 4, showgrid: false },
+    yaxis: { title: { text: 'Kepemilikan per RT (%)', font: { size: 12, color: MUTED } },
+             tickfont: { size: 12, color: MUTED }, showgrid: false, range: [0, 100] },
+    yaxis2: { title: { text: 'Belanja kendaraan (Rp jt/RT/tahun)', font: { size: 12, color: '#FFB700' } },
+              overlaying: 'y', side: 'right', tickfont: { size: 12, color: '#FFB700' }, showgrid: false },
+    legend: { orientation: 'h', y: -0.18, x: 0, xanchor: 'left' },
+  }, { displaylogo: false, responsive: true });
+}
+
+// ============================================================
+// LEAFLET MAP (v4.2 hero)
+// ============================================================
+let leafletMap = null;
+let geojsonLayer = null;
+let selectedKode = null;
+let currentDetailTab = 'profil';
+let _mapMin = 0, _mapMax = 100;
+
+function getColor(value, min, max, isComposite) {
+  const stops = isComposite ? BLUE_STOPS : YELLOW_STOPS;
+  if (value == null || isNaN(value)) return '#E8E8E8';
+  const t = Math.max(0, Math.min(1, (value - min) / (Math.max(max - min, 1))));
+  const i = Math.min(4, Math.floor(t * 5));
+  return stops[i];
+}
+
+function getMapFilterState() {
+  const wilayah = document.getElementById('map-fil-wilayah')?.value || 'Indonesia';
+  const tampilan = document.getElementById('map-fil-tampilan')?.value || 'composite';
+  const tier = document.getElementById('map-fil-tier')?.value || 'all';
+  return { wilayah, tampilan, tier };
+}
+
+function getFilteredKabs() {
+  const { wilayah, tampilan, tier } = getMapFilterState();
+  const isComposite = tampilan === 'composite';
+  const vals = [];
+  const out = {};
+  Object.values(PAYLOAD.composite).forEach(d => {
+    if (!inRegion(d.pcode, wilayah)) return;
+    if (tier !== 'all' && d.tier !== tier) return;
+    const v = isComposite ? d.composite : d.TAM;
+    out['ID' + String(d.pcode).padStart(4,'0')] = { d, v };
+    vals.push(v);
+  });
+  const min = vals.length ? Math.min(...vals) : 0;
+  const max = vals.length ? Math.max(...vals) : 100;
+  return { out, min, max, isComposite };
+}
+
+function initLeafletMap() {
+  if (leafletMap) return;
+  leafletMap = L.map('map-leaflet', {
+    center: [-2.5, 118], zoom: 5,
+    zoomControl: true, scrollWheelZoom: true,
+  });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+    subdomains: 'abcd', maxZoom: 19,
+  }).addTo(leafletMap);
+
+  geojsonLayer = L.geoJSON(GEOJSON_KAB, {
+    style: styleFeature,
+    onEachFeature: (feature, layer) => {
+      const id = feature.id || feature.properties.ADM2_PCODE;
+      layer.on('click', () => selectKabForMap(id));
+      layer.bindTooltip(() => {
+        const pcode = id ? parseInt(id.replace('ID','')) : null;
+        const d = pcode ? PAYLOAD.composite[pcode] : null;
+        return d ? `<b>${d.nama_kab}</b><br><small>${d.nama_prov}</small><br>Skor: <b>${d.composite.toFixed(1)}</b>` : (id || '');
+      }, { sticky: true });
+    },
+  }).addTo(leafletMap);
+
+  renderRanking();
+  updateMapLegend(_mapMin, _mapMax);
+}
+
+function styleFeature(feature) {
+  const id = feature.id || feature.properties.ADM2_PCODE;
+  const pcode = id ? parseInt(id.replace('ID','')) : null;
+  const { out, min, max, isComposite } = getFilteredKabs();
+  _mapMin = min; _mapMax = max;
+  const entry = out[id];
+  if (!entry) return { fillColor: '#E8E8E8', fillOpacity: 0.5, color: '#fff', weight: 0.5 };
+  const color = getColor(entry.v, min, max, isComposite);
+  const isSelected = selectedKode === id;
+  return {
+    fillColor: color, fillOpacity: isSelected ? 1.0 : 0.78,
+    color: isSelected ? '#FFB700' : '#fff',
+    weight: isSelected ? 2.5 : 0.5,
+  };
+}
+
+function updateLeafletColors() {
+  if (!geojsonLayer) return;
+  const { min, max, isComposite } = getFilteredKabs();
+  _mapMin = min; _mapMax = max;
+  geojsonLayer.setStyle(feature => {
+    const id = feature.id || feature.properties.ADM2_PCODE;
+    const pcode = id ? parseInt(id.replace('ID','')) : null;
+    const { out } = getFilteredKabs();
+    const entry = out[id];
+    if (!entry) return { fillColor: '#E8E8E8', fillOpacity: 0.4, color: '#fff', weight: 0.5 };
+    const isSelected = selectedKode === id;
+    return {
+      fillColor: getColor(entry.v, min, max, isComposite),
+      fillOpacity: isSelected ? 1.0 : 0.78,
+      color: isSelected ? '#FFB700' : '#fff',
+      weight: isSelected ? 2.5 : 0.5,
+    };
+  });
+  updateMapLegend(min, max);
+}
+
+function updateMapLegend(min, max) {
+  const { tampilan } = getMapFilterState();
+  const isComposite = tampilan === 'composite';
+  const stops = isComposite ? BLUE_STOPS : YELLOW_STOPS;
+  const grad = `linear-gradient(to right, ${stops.join(', ')})`;
+  const bar = document.getElementById('legend-bar');
+  if (bar) bar.style.background = grad;
+  const ticks = document.getElementById('legend-ticks');
+  if (ticks) {
+    const pts = [min, min + (max-min)*0.25, min + (max-min)*0.5, min + (max-min)*0.75, max];
+    ticks.innerHTML = pts.map(v => `<span>${isComposite ? v.toFixed(0) : (v/1e3).toFixed(0)+'rb'}</span>`).join('');
+  }
+  const lbl = document.getElementById('legend-label');
+  if (lbl) lbl.innerHTML = isComposite ? 'Skor<br>Komposit' : 'Pasar<br>Potensial';
+}
+
+function renderRanking() {
+  const { out, isComposite } = getFilteredKabs();
+  const list = Object.entries(out)
+    .sort((a,b) => b[1].v - a[1].v)
+    .slice(0, 10);
+  const ol = document.getElementById('map-ranking');
+  if (!ol) return;
+  ol.innerHTML = list.map(([id, {d,v}], i) => `
+    <li class="rank-row${selectedKode===id?' active':''}" onclick="selectKabForMap('${id}')">
+      <span class="rr-num">${i+1}</span>
+      <span class="rr-name" title="${d.nama_kab}">${d.nama_kab}</span>
+      <span class="rr-val">${isComposite ? v.toFixed(1) : (v/1e3).toFixed(0)+'rb'}</span>
+    </li>`).join('');
+}
+
+function selectKabForMap(id) {
+  selectedKode = id;
+  // update colors
+  updateLeafletColors();
+  // update ranking active
+  document.querySelectorAll('#map-ranking .rank-row').forEach(el => {
+    el.classList.toggle('active', el.onclick && el.getAttribute('onclick') && el.getAttribute('onclick').includes(id));
+  });
+  renderRanking();
+  // parse pcode
+  const pcode = parseInt(id.replace('ID',''));
+  renderDetailPanel(pcode);
+  // zoom to feature
+  if (geojsonLayer) {
+    geojsonLayer.eachLayer(layer => {
+      const fid = layer.feature?.id || layer.feature?.properties?.ADM2_PCODE;
+      if (fid === id) {
+        try { leafletMap.fitBounds(layer.getBounds(), { padding: [40, 40] }); } catch(e) {}
+      }
+    });
+  }
+}
+
+function renderDetailPanel(pcode) {
+  const d = PAYLOAD.composite[pcode];
+  if (!d) return;
+  document.getElementById('detail-title').textContent = d.nama_kab;
+  if (currentDetailTab === 'profil') renderDetailProfil(pcode);
+  else renderDetailHistori(pcode);
+}
+
+function renderDetailProfil(pcode) {
+  const d = PAYLOAD.composite[pcode];
+  if (!d) return;
+  const div = document.getElementById('map-detail');
+  div.style.display = '';
+  document.getElementById('map-detail-histori').style.display = 'none';
+  const tamRb = (d.TAM / 1e3).toFixed(0);
+  const pillars = [
+    { lbl: 'P1 Adopsi', val: d.P1_Adoption_Velocity },
+    { lbl: 'P2 Pembelian', val: d.P2_Purchase_Momentum },
+    { lbl: 'P3 Biaya', val: d.P3_Cost_Of_Ownership },
+    { lbl: 'P4 Intensitas', val: d.P4_Intensity },
+    { lbl: 'P5 Kapasitas', val: d.P5_Capacity_Scale },
+  ];
+  div.innerHTML = `
+    <div class="detail-filled">
+      <div class="d-name">${d.nama_kab}</div>
+      <div class="d-prov">${d.nama_prov}</div>
+      <div class="detail-stat-row"><span class="dsr-label">Skor Komposit</span><span class="dsr-val">${d.composite.toFixed(1)}</span></div>
+      <div class="detail-stat-row"><span class="dsr-label">Pasar Potensial</span><span class="dsr-val">${tamRb} rb RT</span></div>
+      <div class="detail-stat-row"><span class="dsr-label">Tier</span><span class="dsr-val"><span class="tier-chip ${tierClass(d.tier)}">${d.tier}</span></span></div>
+      ${d.low_confidence ? '<div class="detail-stat-row"><span class="dsr-label" style="color:#C8102E">Sampel terbatas</span><span class="dsr-val" style="color:#C8102E">n &lt; 30</span></div>' : ''}
+    </div>
+    <div style="margin-top:10px">
+      ${pillars.map(p => `
+        <div class="pillar-row">
+          <span class="lbl">${p.lbl}</span>
+          <div class="bar-wrap"><div class="bar" style="width:${(p.val||0).toFixed(0)}%"></div></div>
+          <span class="val">${(p.val||0).toFixed(1)}</span>
+        </div>`).join('')}
+    </div>`;
+}
+
+function renderDetailHistori(pcode) {
+  const ts = PAYLOAD.kab_ts ? PAYLOAD.kab_ts[pcode] : null;
+  const div = document.getElementById('map-detail');
+  div.style.display = 'none';
+  const hdiv = document.getElementById('map-detail-histori');
+  hdiv.style.display = '';
+  if (!ts) { hdiv.innerHTML = '<div class="detail-empty">Data historis tidak tersedia.</div>'; return; }
+  const yrs = [2019,2020,2021,2022,2023,2024,2025];
+  hdiv.innerHTML = '<div id="chart-detail-map" style="height:200px"></div>';
+  Plotly.newPlot('chart-detail-map', [
+    { x: yrs, y: ts.pct_mobil.map(v => v ? v*100 : null), name: 'Mobil (%)', mode: 'lines+markers', line: { color: '#003D79', width: 2 } },
+    { x: yrs, y: ts.pct_motor.map(v => v ? v*100 : null), name: 'Motor (%)', mode: 'lines+markers', line: { color: '#67B2E8', width: 2 } },
+  ], {
+    margin: { l: 36, r: 10, t: 10, b: 40 },
+    font: { family: FONT, size: 10, color: INK },
+    plot_bgcolor: 'white', paper_bgcolor: 'white',
+    xaxis: { tickfont: { size: 10 }, showgrid: false },
+    yaxis: { tickfont: { size: 10, color: MUTED }, showgrid: false, range: [0, 100], title: { text: '%', font: { size: 9 } } },
+    legend: { orientation: 'h', y: -0.2, x: 0, font: { size: 9 } },
+  }, { displaylogo: false, responsive: true });
+}
+
+function setDetailTab(tab) {
+  currentDetailTab = tab;
+  document.getElementById('dtab-profil').classList.toggle('active', tab === 'profil');
+  document.getElementById('dtab-histori').classList.toggle('active', tab === 'histori');
+  if (selectedKode) {
+    const pcode = parseInt(selectedKode.replace('ID',''));
+    if (tab === 'profil') renderDetailProfil(pcode);
+    else renderDetailHistori(pcode);
+  }
+}
+
+function onMapFilterChange() {
+  updateLeafletColors();
+  renderRanking();
+  renderRankingTable();
+}
+
+function resetMapFilter() {
+  document.getElementById('map-fil-wilayah').value = 'Indonesia';
+  document.getElementById('map-fil-tampilan').value = 'composite';
+  document.getElementById('map-fil-tier').value = 'all';
+  onMapFilterChange();
+}
+
+function onMapSearchInput(q) {
+  const res = document.getElementById('map-search-results');
+  if (!q || q.length < 2) { res.style.display = 'none'; return; }
+  const ql = q.toLowerCase();
+  const matches = Object.values(PAYLOAD.composite)
+    .filter(d => d.nama_kab.toLowerCase().includes(ql) || d.nama_prov.toLowerCase().includes(ql))
+    .slice(0, 8);
+  if (!matches.length) { res.style.display = 'none'; return; }
+  res.style.display = '';
+  res.innerHTML = matches.map(d => `
+    <div onclick="selectKabForMap('ID${String(d.pcode).padStart(4,'0')}');document.getElementById('map-search-input').value='${d.nama_kab}';document.getElementById('map-search-results').style.display='none';"
+      style="padding:6px 10px;cursor:pointer;font-size:12px;border-bottom:1px solid var(--rule)"
+      onmouseover="this.style.background='var(--mist)'" onmouseout="this.style.background=''">
+      <strong>${d.nama_kab}</strong> <span style="color:var(--muted);font-size:11px">${d.nama_prov}</span>
+    </div>`).join('');
+}
+
+// ============================================================
+// RANKING TABLE
+// ============================================================
+let rankView = 'kab';
+let rankSort = 'composite';
+
+function setRankView(v) {
+  rankView = v;
+  document.getElementById('rv-kab').classList.toggle('active', v === 'kab');
+  document.getElementById('rv-prov').classList.toggle('active', v === 'prov');
+  document.getElementById('rank-wilayah-wrap').style.display = v === 'kab' ? '' : 'none';
+  renderRankingTable();
+}
+function setRankSort(s) {
+  rankSort = s;
+  document.getElementById('rs-composite').classList.toggle('active', s === 'composite');
+  document.getElementById('rs-TAM').classList.toggle('active', s === 'TAM');
+  renderRankingTable();
+}
+
+function renderRankingTable() {
+  const wilayah = document.getElementById('rank-wilayah')?.value || 'Indonesia';
+  const mapTampilan = document.getElementById('map-fil-tampilan')?.value || 'composite';
+  const mapTier = document.getElementById('map-fil-tier')?.value || 'all';
+  const head = document.getElementById('ranking-head');
+  const tbody = document.getElementById('ranking-body');
+  const title = document.getElementById('ranking-title');
+  if (!head || !tbody) return;
+
+  if (rankView === 'kab') {
+    title && (title.textContent = 'Ranking kab/kota berdasarkan ' + (rankSort === 'composite' ? 'Skor Komposit' : 'Pasar Potensial'));
+    head.innerHTML = '<th>#</th><th>Kab/Kota</th><th class="text-right">Skor</th><th class="text-right">Pasar Potensial</th><th>Tier</th>';
+    let list = [...PAYLOAD.kab_list].filter(k => inRegion(k.pcode, wilayah));
+    if (mapTier !== 'all') list = list.filter(k => k.tier === mapTier);
+    list.sort((a,b) => (b[rankSort]||0) - (a[rankSort]||0));
+    tbody.innerHTML = list.slice(0,50).map((r,i) => `
+      <tr onclick="switchTab('peta');selectKabForMap('ID${String(r.pcode).padStart(4,'0')}')" style="cursor:pointer">
+        <td class="rank-no num">${i+1}</td>
+        <td><div class="nama-kab">${r.nama_kab}</div><span class="sub-prov">${r.nama_prov}</span></td>
+        <td class="text-right num">${r.composite.toFixed(1)}</td>
+        <td class="text-right num">${(r.TAM/1e3).toFixed(0)} rb</td>
+        <td><span class="tier-chip ${tierClass(r.tier)}">${r.tier}</span></td>
+      </tr>`).join('');
+  } else {
+    title && (title.textContent = 'Ranking provinsi berdasarkan ' + (rankSort === 'composite' ? 'Rata-rata Skor' : 'Total Pasar Potensial'));
+    head.innerHTML = '<th>#</th><th>Provinsi</th><th class="text-right">Rata-rata Skor</th><th class="text-right">Total Pasar Potensial</th><th class="text-right">N Kab</th>';
+    const sortKey = rankSort === 'composite' ? 'avg_composite' : 'TAM';
+    const list = [...PAYLOAD.prov_list].sort((a,b) => (b[sortKey]||0) - (a[sortKey]||0));
+    tbody.innerHTML = list.map((r,i) => `
+      <tr>
+        <td class="rank-no num">${i+1}</td>
+        <td><div class="nama-kab">${r.nama_prov}</div></td>
+        <td class="text-right num">${r.avg_composite.toFixed(1)}</td>
+        <td class="text-right num">${(r.TAM/1e6).toFixed(2)} jt</td>
+        <td class="text-right num">${r.n_kab}</td>
+      </tr>`).join('');
+  }
+}
+
+// ============================================================
+// INDIKATOR (Plotly choropleth, existing logic)
+// ============================================================
+function renderIndikator() {
+  const metric = document.getElementById('ind-metric')?.value || 'pct_mobil';
+  const year = document.getElementById('ind-year')?.value || '2025';
+  const wilayah = document.getElementById('ind-wilayah')?.value || 'Indonesia';
+  const meta = INDIKATOR_LABELS[metric];
+
+  document.getElementById('ind-chart-title').textContent = meta.label + ' per kab/kota';
+  document.getElementById('ind-footer-year').textContent = year;
+  document.getElementById('ind-top-title').textContent = meta.label;
+  document.getElementById('ind-bot-title').textContent = meta.label;
+
+  const slice = (PAYLOAD.map_indikator[year] || {})[metric] || {};
+  const locs = [], vals = [];
+  Object.entries(slice).forEach(([p, v]) => {
+    if (!inRegion(p, wilayah)) return;
+    locs.push(p); vals.push(v);
+  });
+
+  const palette = BLUE_STOPS;
+  const sorted = vals.slice().sort((a,b) => a-b);
+  const q = p => sorted.length ? sorted[Math.min(Math.floor(p*(sorted.length-1)), sorted.length-1)] : 0;
+  const bins = [sorted[0]||0, q(0.2), q(0.4), q(0.6), q(0.8), sorted[sorted.length-1]||1];
+  const colorscale = [
+    [0.0, palette[0]], [0.2-1e-9, palette[0]],
+    [0.2, palette[1]], [0.4-1e-9, palette[1]],
+    [0.4, palette[2]], [0.6-1e-9, palette[2]],
+    [0.6, palette[3]], [0.8-1e-9, palette[3]],
+    [0.8, palette[4]], [1.0, palette[4]],
+  ];
+
+  const allowedSet = new Set(locs);
+  const dataFeatures = GEOJSON_KAB.features.filter(f => allowedSet.has(f.id));
+  const baseFeatures = GEOJSON_KAB.features.filter(f => inRegion(f.id, wilayah) && !allowedSet.has(f.id));
+  const dataGJ = { type: 'FeatureCollection', features: dataFeatures };
+  const baseGJ = { type: 'FeatureCollection', features: baseFeatures };
+  const baseLocs = baseFeatures.map(f => f.id);
+
+  const hovertext = locs.map(p => {
+    const pcode = parseInt(p.slice(2));
+    const d = PAYLOAD.composite[pcode];
+    return `<b>${d ? d.nama_kab : p}</b><br><span style="color:#667085">${d ? d.nama_prov : ''}</span><br><span style="color:#003D79;font-size:16px;font-weight:600">${fmt(slice[p], meta.fmt)}</span>`;
+  });
+
+  Plotly.react('chart-indikator', [
+    baseLocs.length ? { type: 'choropleth', geojson: baseGJ, locations: baseLocs, z: baseLocs.map(_=>0),
+      featureidkey: 'properties.ADM2_PCODE', colorscale: [[0,'#E8E8E8'],[1,'#E8E8E8']], showscale: false,
+      marker: { line: { color: 'white', width: 0.3 } }, hoverinfo: 'skip', showlegend: false } : null,
+    { type: 'choropleth', geojson: dataGJ, locations: locs, z: vals,
+      featureidkey: 'properties.ADM2_PCODE', zmin: bins[0], zmax: bins[5],
+      colorscale, showscale: true,
+      colorbar: { thickness: 10, len: 0.7, tickfont: { size: 11, color: MUTED } },
+      marker: { line: { color: 'white', width: 0.3 } },
+      hovertext, hovertemplate: '%{hovertext}<extra></extra>',
+      hoverlabel: { bgcolor: 'white', bordercolor: '#003D79', font: { family: FONT, size: 13, color: INK }, align: 'left', namelength: -1 },
+    }
+  ].filter(Boolean), {
+    margin: { l: 0, r: 0, t: 0, b: 0 },
+    font: { family: FONT, color: INK },
+    geo: { visible: false, bgcolor: '#FAFBFC', projection: { type: 'mercator' }, fitbounds: 'locations' },
+    paper_bgcolor: 'transparent',
+  }, { displaylogo: false, responsive: true });
+
+  // Top/Bottom 10
+  const pairs = locs.map((p,i) => {
+    const pcode = parseInt(p.slice(2));
+    const d = PAYLOAD.composite[pcode];
+    return { nama: d ? d.nama_kab : p, prov: d ? d.nama_prov : '', value: vals[i] };
+  });
+  const topHtml = [...pairs].sort((a,b) => b.value-a.value).slice(0,10).map((r,i) => `
+    <div style="display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--rule);font-size:13px">
+      <span><strong style="color:var(--sky);font-family:'Source Serif 4',serif">${i+1}</strong>&nbsp;&nbsp;${r.nama}<span class="muted" style="font-size:11px;display:block;margin-left:22px">${r.prov}</span></span>
+      <span class="num" style="font-weight:600">${fmt(r.value, meta.fmt)}</span>
+    </div>`).join('');
+  const botHtml = [...pairs].sort((a,b) => a.value-b.value).slice(0,10).map((r,i) => `
+    <div style="display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--rule);font-size:13px">
+      <span><strong style="color:#C8102E;font-family:'Source Serif 4',serif">${i+1}</strong>&nbsp;&nbsp;${r.nama}<span class="muted" style="font-size:11px;display:block;margin-left:22px">${r.prov}</span></span>
+      <span class="num" style="font-weight:600">${fmt(r.value, meta.fmt)}</span>
+    </div>`).join('');
+  document.getElementById('ind-rank-top').innerHTML = topHtml;
+  document.getElementById('ind-rank-bot').innerHTML = botHtml;
+}
+
+// ============================================================
+// METODOLOGI
+// ============================================================
+function renderMetodologi() {
+  // Indeks table
+  const tbody = document.getElementById('indeks-body');
+  if (tbody && PAYLOAD.indeks_meta) {
+    const pw = PAYLOAD.pillar_weights || {};
+    tbody.innerHTML = PAYLOAD.indeks_meta.map(ix => `
+      <tr>
+        <td><strong style="color:var(--navy);font-family:'Source Serif 4',serif">${ix.id}</strong></td>
+        <td>${PILLAR_LABELS[ix.pillar] || ix.pillar}</td>
+        <td>${ix.label}</td>
+        <td><code style="font-size:11px;background:var(--mist);padding:2px 6px">${ix.formula_calc || ''}</code></td>
+        <td class="text-right num">${((ix.sub_w||0)*100).toFixed(0)}%</td>
+        <td class="text-right num muted">${((pw[ix.pillar]||0)*100).toFixed(0)}%</td>
+      </tr>`).join('');
+  }
+  // Caveat list
+  const cvEl = document.getElementById('caveat-list');
+  if (cvEl && PAYLOAD.caveat) {
+    cvEl.innerHTML = PAYLOAD.caveat.map((c,i) => `
+      <li style="counter-increment:cv;display:flex;gap:16px;padding:14px 18px;background:rgba(234,114,0,0.06);border-left:3px solid #EA7200">
+        <span style="font-family:'Source Serif 4',serif;font-size:24px;font-weight:600;color:#EA7200;line-height:1;min-width:32px">${String(i+1).padStart(2,'0')}</span>
+        <span style="line-height:1.6">${c}</span>
+      </li>`).join('');
+  }
+}
+
+// ============================================================
+// EXPORTS
+// ============================================================
+function exportChartPNG(id) {
+  Plotly.toImage(id, { format: 'png', scale: 2 }).then(url => {
+    const a = document.createElement('a'); a.href = url; a.download = id + '.png';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  });
+}
+function exportChartSVG(id) {
+  Plotly.toImage(id, { format: 'svg' }).then(url => {
+    const a = document.createElement('a'); a.href = url; a.download = id + '.svg';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  });
+}
+function exportCSV(type) {
+  let rows = [], headers = [];
+  if (type === 'scorecard' && PAYLOAD.scorecard) {
+    headers = ['Indikator','2019','2020','2021','2022','2023','2024','2025','Delta'];
+    rows = PAYLOAD.scorecard.map(r => [r.label, ...r.vals.map(v => v != null ? v : ''), r.delta != null ? r.delta : '']);
+  } else if (type === 'ranking') {
+    headers = ['Ranking','Nama','Provinsi','Skor','TAM','Tier'];
+    let list = [...PAYLOAD.kab_list].sort((a,b) => (b[rankSort]||0) - (a[rankSort]||0)).slice(0,50);
+    rows = list.map((r,i) => [i+1, r.nama_kab, r.nama_prov, r.composite, r.TAM, r.tier]);
+  }
+  const csv = [headers, ...rows].map(r => r.map(v => '"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob = new Blob(['﻿'+csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = type + '-kendaraan.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function exportMapPNG() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1920; canvas.height = 1080;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0,0,1920,1080);
+  ctx.fillStyle = '#003D79'; ctx.fillRect(0,0,1920,5);
+  ctx.fillStyle = '#051C2C'; ctx.font = "600 32px 'Source Serif 4',Georgia,serif";
+  ctx.fillText('Peta Potensi Pasar Kredit Kendaraan per Kab/Kota', 60, 80);
+  ctx.font = "400 16px 'Inter',sans-serif"; ctx.fillStyle = '#667085';
+  ctx.fillText('Skor Komposit 2025 - Riset Mandiri Institute', 60, 112);
+  ctx.fillStyle = '#667085'; ctx.font = "400 12px 'Inter',sans-serif";
+  ctx.fillText('Sumber: Susenas BPS - Mandiri Institute - ' + new Date().toISOString().slice(0,10), 60, 1060);
+  canvas.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'peta-kendaraan-2025.png';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 'image/png');
+}
+function exportMapPPT() { exportMapPNG(); }
+
+// ============================================================
+// AUTO-INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  // Auto-submit: render overview immediately
+  tabInitialized['overview'] = true;
+  renderScorecard();
+  renderTrend();
+});
+</script>
 </body>
 </html>
