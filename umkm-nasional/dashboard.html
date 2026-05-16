@@ -184,28 +184,6 @@ body{font-family:'Inter',system-ui,sans-serif;font-weight:400;letter-spacing:-0.
   </div>
 </div>
 
-<!-- Global filter bar -->
-<div style="background:var(--canvas);border-bottom:1px solid var(--rule);padding:12px 28px;">
-  <div class="max-w-screen-xl mx-auto" style="display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap;">
-    <div style="display:flex;flex-direction:column;gap:4px;">
-      <label style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-soft);">Tahun</label>
-      <select id="g-tahun" onchange="onGlobalFilter()" style="padding:7px 36px 7px 12px;font-size:12px;border:1px solid var(--rule-strong);border-radius:4px;background:white;min-width:110px;height:36px;appearance:none;font-family:inherit;cursor:pointer;background-image:url(&quot;data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23003D79'%3e%3cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.39a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z' clip-rule='evenodd'/%3e%3c/svg%3e&quot;);background-repeat:no-repeat;background-position:right 8px center;background-size:18px;font-weight:500;">
-        <option value="2025" selected>2025</option>
-        <option value="2024">2024</option>
-        <option value="2023">2023</option>
-        <option value="2022">2022</option>
-        <option value="2021">2021</option>
-      </select>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:4px;">
-      <label style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-soft);">Provinsi</label>
-      <select id="g-prov" onchange="onGlobalFilter()" style="padding:7px 36px 7px 12px;font-size:12px;border:1px solid var(--rule-strong);border-radius:4px;background:white;min-width:200px;height:36px;appearance:none;font-family:inherit;cursor:pointer;background-image:url(&quot;data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23003D79'%3e%3cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.39a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z' clip-rule='evenodd'/%3e%3c/svg%3e&quot;);background-repeat:no-repeat;background-position:right 8px center;background-size:18px;font-weight:500;">
-        <option value="__all__">Semua Provinsi</option>
-      </select>
-    </div>
-    <div id="g-context" style="font-size:12px;color:var(--muted);align-self:center;padding-bottom:2px;"></div>
-  </div>
-</div>
 
 <!-- Main content -->
 <main class="max-w-screen-xl mx-auto px-6 py-8">
@@ -219,7 +197,10 @@ body{font-family:'Inter',system-ui,sans-serif;font-weight:400;letter-spacing:-0.
     <div class="kpi-card"><div class="kpi-eyebrow">Menengah</div><div class="kpi-num" id="kpi-menengah">-</div><div class="kpi-sub" id="kpi-menengah-n">-</div></div>
   </div>
   <div class="chart-card mb-8">
-    <div class="chart-header"><div class="eyebrow">I &middot; Tren Nasional</div><h3>Jumlah UMKM per Tahun</h3><div class="sub">Estimasi tertimbang Sakernas Agustus, 2021-2025</div></div>
+    <div class="chart-header"><div class="eyebrow">I &middot; Tren Nasional</div><h3>Jumlah UMKM</h3></div>
+    <div class="chart-filter">
+      <div class="ff"><label>Provinsi</label><select id="fc-trend-prov" onchange="renderTrend()"><option value="__all__">Semua Provinsi</option></select></div>
+    </div>
     <div id="chart-trend" style="height:360px"></div>
     <div class="chart-export-row">
       <button class="action-btn" onclick="downloadImage('chart-trend','png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
@@ -228,7 +209,10 @@ body{font-family:'Inter',system-ui,sans-serif;font-weight:400;letter-spacing:-0.
     <div class="chart-footer"><span><span class="label">Sumber</span>Sakernas BPS Agustus 2021-2025</span><span><span class="label">Bobot</span>Sampel tertimbang ke populasi</span></div>
   </div>
   <div class="chart-card mb-8">
-    <div class="chart-header"><div class="eyebrow">II &middot; Komposisi Ukuran</div><h3>Mikro / Kecil / Menengah</h3><div class="sub">Tahun terpilih</div></div>
+    <div class="chart-header"><div class="eyebrow">II &middot; Komposisi Ukuran</div><h3>Komposisi Ukuran UMKM</h3></div>
+    <div class="chart-filter">
+      <div class="ff"><label>Tahun</label><select id="fc-ukuran-tahun" onchange="renderUkuran();updateKPICards()"><option>2025</option><option>2024</option><option>2023</option><option>2022</option><option>2021</option></select></div>
+    </div>
     <div id="chart-ukuran" style="height:320px"></div>
     <div class="chart-export-row"><button class="action-btn" onclick="downloadImage('chart-ukuran','png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button></div>
     <div class="chart-footer"><span><span class="label">Definisi</span>Mikro=1-4 pekerja; Kecil=5-19; Menengah=20-99 (UU 20/2008)</span></div>
@@ -238,7 +222,11 @@ body{font-family:'Inter',system-ui,sans-serif;font-weight:400;letter-spacing:-0.
 <!-- ======================== TAB: SEKTOR ======================== -->
 <div class="tab-page" id="page-sektor">
   <div class="chart-card mb-8">
-    <div class="chart-header"><div class="eyebrow">I &middot; Per Lapangan Usaha</div><h3>UMKM Menurut Sektor</h3><div class="sub">17 sektor KBLI 2-digit, tahun terpilih</div></div>
+    <div class="chart-header"><div class="eyebrow">I &middot; Per Lapangan Usaha</div><h3>Distribusi per Lapangan Usaha</h3></div>
+    <div class="chart-filter">
+      <div class="ff"><label>Tahun</label><select id="fc-sektor-tahun" onchange="renderSektorBar();renderSektorTable()"><option>2025</option><option>2024</option><option>2023</option><option>2022</option><option>2021</option></select></div>
+      <div class="ff"><label>Provinsi</label><select id="fc-sektor-prov" onchange="renderSektorBar();renderSektorTable()"><option value="__all__">Semua Provinsi</option></select></div>
+    </div>
     <div id="chart-sektor" style="height:520px"></div>
     <div class="chart-export-row">
       <button class="action-btn" onclick="downloadImage('chart-sektor','png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
@@ -247,7 +235,7 @@ body{font-family:'Inter',system-ui,sans-serif;font-weight:400;letter-spacing:-0.
     <div class="chart-footer"><span><span class="label">Sumber</span>Sakernas BPS</span><span><span class="label">Klasifikasi</span>17 sektor KBLI 2-digit</span></div>
   </div>
   <div class="chart-card mb-8">
-    <div class="chart-header"><div class="eyebrow">II &middot; Tabel Detail</div><h3>Sektor &times; Ukuran</h3></div>
+    <div class="chart-header"><div class="eyebrow">II &middot; Tabel Detail</div><h3>Tabel Sektor dan Ukuran</h3></div>
     <div style="overflow-x:auto;"><div id="table-sektor"></div></div>
     <div class="chart-footer"><span><span class="label">Sumber</span>Sakernas BPS Agustus</span></div>
   </div>
@@ -256,7 +244,10 @@ body{font-family:'Inter',system-ui,sans-serif;font-weight:400;letter-spacing:-0.
 <!-- ======================== TAB: PETA SEBARAN ======================== -->
 <div class="tab-page" id="page-peta">
   <div class="chart-card mb-8">
-    <div class="chart-header"><div class="eyebrow">I &middot; Distribusi Geografis</div><h3>Top 20 Kabupaten/Kota</h3><div class="sub">Wilayah dengan UMKM terbanyak, tahun terpilih</div></div>
+    <div class="chart-header"><div class="eyebrow">I &middot; Distribusi Geografis</div><h3>Top 20 Kabupaten/Kota</h3></div>
+    <div class="chart-filter">
+      <div class="ff"><label>Tahun</label><select id="fc-wilayah-tahun" onchange="renderTopWilayah()"><option>2025</option><option>2024</option><option>2023</option><option>2022</option><option>2021</option></select></div>
+    </div>
     <div id="chart-top-wilayah" style="height:580px"></div>
     <div class="chart-export-row">
       <button class="action-btn" onclick="downloadImage('chart-top-wilayah','png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
@@ -445,39 +436,19 @@ const PLOT_CFG = { displayModeBar:false, responsive:true };
 const BLUE5 = [[0,'#EAF1F8'],[0.25,'#A9C4DF'],[0.5,'#67B2E8'],[0.75,'#2C6FB5'],[1,'#001F4D']];
 const UK_COLORS = { Mikro:'#003D79', Kecil:'#67B2E8', Menengah:'#FFB700' };
 
-// ── Populate province filter dropdown
-(function populateProvSelect() {
-  const sel = document.getElementById('g-prov');
-  if (!sel) return;
-  Object.keys(PAYLOAD.wilayah).sort().forEach(p => {
-    const opt = document.createElement('option');
-    opt.value = p; opt.textContent = p;
-    sel.appendChild(opt);
+// ── Populate per-chart province dropdowns
+(function populateProvSelects() {
+  const provs = Object.keys(PAYLOAD.wilayah).sort();
+  ['fc-trend-prov','fc-sektor-prov'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    provs.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p; opt.textContent = p;
+      sel.appendChild(opt);
+    });
   });
 })();
-
-// ── Global filter state
-let gState = { tahun: 2025, prov: '__all__' };
-
-function getGlobalFiltered() {
-  const y = gState.tahun, prov = gState.prov;
-  return _RC.filter(r => {
-    if (r[0] !== y) return false;
-    if (prov !== '__all__' && rowProv(r) !== prov) return false;
-    return true;
-  });
-}
-
-function onGlobalFilter() {
-  gState.tahun = parseInt(document.getElementById('g-tahun').value, 10);
-  gState.prov  = document.getElementById('g-prov').value;
-  const ctx = document.getElementById('g-context');
-  if (ctx) {
-    const provLabel = gState.prov === '__all__' ? 'Semua Provinsi' : gState.prov;
-    ctx.textContent = 'Tahun ' + gState.tahun + ' · ' + provLabel;
-  }
-  renderCurrentTab();
-}
 
 // ── Tab switching (v4 pattern: pill indicator + page-marker + page-title)
 const PAGE_META = {
@@ -521,7 +492,8 @@ function renderCurrentTab() {
 
 // ── KPI cards
 function updateKPICards() {
-  const data = getGlobalFiltered();
+  const tahun = parseInt(document.getElementById('fc-ukuran-tahun')?.value || '2025', 10);
+  const data = _RC.filter(r => r[0]===tahun);
   const total = data.reduce((s,r) => s+r[5], 0);
   const uk = { Mikro:0, Kecil:0, Menengah:0 };
   data.forEach(r => { const u=rowUk(r); uk[u]=(uk[u]||0)+r[5]; });
@@ -536,40 +508,42 @@ function updateKPICards() {
   set('kpi-menengah-n', fmtJuta(uk.Menengah)+' UMKM');
 }
 
-// ── Tren per tahun (bar, colored by selected year)
+// ── Tren per tahun (bar, colored by latest year)
 function renderTrend() {
-  const prov = gState.prov;
+  const prov = document.getElementById('fc-trend-prov')?.value || '__all__';
   const trend = PAYLOAD.years.map(y => {
     return _RC.filter(r => r[0]===y && (prov==='__all__'||rowProv(r)===prov)).reduce((s,r)=>s+r[5],0);
   });
+  const maxY = Math.max(...trend);
   const traces = [{
     type:'bar',
     x: PAYLOAD.years.map(String),
     y: trend,
     text: trend.map(v => fmtJuta(v)),
-    textposition:'auto',
+    textposition:'outside',
     cliponaxis:false,
-    marker:{ color: PAYLOAD.years.map(y => y===gState.tahun ? '#003D79' : '#67B2E8') },
+    marker:{ color: PAYLOAD.years.map((y,i) => i===trend.length-1 ? '#003D79' : '#67B2E8') },
     hovertemplate:'<b>%{x}</b><br>%{y:,.0f} UMKM<extra></extra>',
   }];
   Plotly.newPlot('chart-trend', traces, v4Layout({
-    margin:{t:20,b:50,l:70,r:30},
+    margin:{t:44,b:50,l:20,r:20},
     xaxis: v4XAxis({type:'category'}),
-    yaxis: v4YAxis({title:{text:'Jumlah UMKM',font:{size:12,color:INK}}}),
-    bargap:0.35,
+    yaxis: v4YAxis({visible:false, range:[0, maxY*1.2]}),
+    bargap:0.55,
   }), PLOT_CFG);
 }
 
 // ── Komposisi ukuran (donut)
 function renderUkuran() {
-  const data = getGlobalFiltered();
+  const tahun = parseInt(document.getElementById('fc-ukuran-tahun')?.value || '2025', 10);
+  const data = _RC.filter(r => r[0]===tahun);
   const uk = { Mikro:0, Kecil:0, Menengah:0 };
   data.forEach(r => { const u=rowUk(r); uk[u]=(uk[u]||0)+r[5]; });
   Plotly.newPlot('chart-ukuran', [{
     type:'pie', hole:0.55,
     labels:['Mikro','Kecil','Menengah'],
     values:[uk.Mikro,uk.Kecil,uk.Menengah],
-    marker:{ colors:['#003D79','#67B2E8','#FFB700'] },
+    marker:{ colors:['#003D79','#67B2E8','#A9C4DF'] },
     textinfo:'label+percent', textposition:'outside',
     hovertemplate:'<b>%{label}</b><br>%{value:,.0f} UMKM (%{percent})<extra></extra>',
   }], v4Layout({margin:{l:20,r:20,t:20,b:20},showlegend:true,legend:{orientation:'h',y:-0.1}}), PLOT_CFG);
@@ -577,10 +551,13 @@ function renderUkuran() {
 
 // ── Sektor bar
 function renderSektorBar() {
-  const data = getGlobalFiltered();
+  const tahun = parseInt(document.getElementById('fc-sektor-tahun')?.value || '2025', 10);
+  const prov  = document.getElementById('fc-sektor-prov')?.value || '__all__';
+  const data = _RC.filter(r => r[0]===tahun && (prov==='__all__'||rowProv(r)===prov));
   const sums = {};
   data.forEach(r => { const s=rowSek(r); sums[s]=(sums[s]||0)+r[5]; });
   const sorted = Object.entries(sums).sort((a,b)=>b[1]-a[1]).filter(e=>e[1]>0);
+  const maxX = sorted[0]?.[1] || 1;
   Plotly.newPlot('chart-sektor', [{
     type:'bar', orientation:'h',
     y: sorted.map(e=>e[0]).reverse(),
@@ -590,16 +567,18 @@ function renderSektorBar() {
     marker:{color:'#003D79'},
     hovertemplate:'<b>%{y}</b><br>%{x:,.0f} UMKM<extra></extra>',
   }], v4Layout({
-    margin:{l:170,r:80,t:20,b:50},
-    xaxis: v4XAxis({tickformat:',.0f'}),
+    margin:{l:200,r:100,t:20,b:40},
+    xaxis: v4XAxis({tickformat:',.0f', range:[0, maxX*1.25]}),
     yaxis: v4YAxis({automargin:true,showline:false,zeroline:false,ticks:''}),
-    bargap:0.35,
+    bargap:0.5,
   }), PLOT_CFG);
 }
 
 // ── Sektor table
 function renderSektorTable() {
-  const data = getGlobalFiltered();
+  const tahun = parseInt(document.getElementById('fc-sektor-tahun')?.value || '2025', 10);
+  const prov  = document.getElementById('fc-sektor-prov')?.value || '__all__';
+  const data = _RC.filter(r => r[0]===tahun && (prov==='__all__'||rowProv(r)===prov));
   const cell = {};
   data.forEach(r => {
     const k=rowSek(r), u=rowUk(r);
@@ -618,13 +597,14 @@ function renderSektorTable() {
 
 // ── Top wilayah (kabkota bar)
 function renderTopWilayah() {
-  const y = gState.tahun;
+  const y = parseInt(document.getElementById('fc-wilayah-tahun')?.value || '2025', 10);
   const sums = {};
   _RC.filter(r => r[0]===y).forEach(r => {
     const k = rowKk(r)+'('+rowProv(r)+')';
     sums[k]=(sums[k]||0)+r[5];
   });
   const sorted = Object.entries(sums).sort((a,b)=>b[1]-a[1]).slice(0,20);
+  const maxXw = sorted[0]?.[1] || 1;
   Plotly.newPlot('chart-top-wilayah', [{
     type:'bar', orientation:'h',
     y: sorted.map(e=>e[0]).reverse(),
@@ -634,16 +614,17 @@ function renderTopWilayah() {
     marker:{color:'#003D79'},
     hovertemplate:'<b>%{y}</b><br>%{x:,.0f} UMKM<extra></extra>',
   }], v4Layout({
-    margin:{l:280,r:80,t:20,b:50},
-    xaxis: v4XAxis({tickformat:',.0f'}),
+    margin:{l:300,r:110,t:20,b:40},
+    xaxis: v4XAxis({tickformat:',.0f', range:[0, maxXw*1.25]}),
     yaxis: v4YAxis({automargin:true,showline:false,zeroline:false,ticks:''}),
-    bargap:0.35,
+    bargap:0.5,
   }), PLOT_CFG);
 }
 
 // ── Treemap (provinsi -> sektor)
 function renderTreemap() {
-  const data = getGlobalFiltered();
+  const tahun = parseInt(document.getElementById('fc-wilayah-tahun')?.value || '2025', 10);
+  const data = _RC.filter(r => r[0]===tahun);
   const hier = {};
   data.forEach(r => {
     const p=rowProv(r), s=rowSek(r);
