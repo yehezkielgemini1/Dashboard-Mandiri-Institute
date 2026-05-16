@@ -545,8 +545,9 @@ function renderUkuran() {
     values:[uk.Mikro,uk.Kecil,uk.Menengah],
     marker:{ colors:['#003D79','#67B2E8','#A9C4DF'] },
     textinfo:'label+percent', textposition:'outside',
+    automargin: true,
     hovertemplate:'<b>%{label}</b><br>%{value:,.0f} UMKM (%{percent})<extra></extra>',
-  }], v4Layout({margin:{l:20,r:20,t:20,b:20},showlegend:true,legend:{orientation:'h',y:-0.1}}), PLOT_CFG);
+  }], v4Layout({margin:{l:80,r:80,t:60,b:60},showlegend:true,legend:{orientation:'h',y:-0.12}}), PLOT_CFG);
 }
 
 // ── Sektor bar
