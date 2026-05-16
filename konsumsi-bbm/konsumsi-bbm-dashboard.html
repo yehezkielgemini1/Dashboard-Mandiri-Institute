@@ -1780,7 +1780,7 @@ function renderTopProv() {
   }];
   const xMax = values.length ? Math.max(...values) * 1.18 : 100;
   Plotly.newPlot('chart-top-prov', traces, v4Layout({
-    margin: { t: 20, b: 60, l: 160, r: 60 },
+    margin: { t: 20, b: 60, l: 160, r: 110 },
     yaxis: v4YAxis({ automargin: true, showline: false, zeroline: false, ticks: '' }),
     xaxis: v4XAxis({ ticksuffix: '%', range: [0, xMax] }),
     bargap: 0.35,
