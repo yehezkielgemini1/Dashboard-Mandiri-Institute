@@ -332,7 +332,7 @@
 </div>
 </article>
 <article class="relative h-[480px] group overflow-hidden rounded-sm shadow-sm hover:shadow-xl transition-shadow flex flex-col justify-end bg-gray-200">
-<div class="absolute inset-0 bg-cover group-hover:scale-105 transition-transform duration-700" style="background-image: url('_assets/foto/kendaraan-clean.jpg'); background-position: center 50%; filter: brightness(0.9) saturate(0.85) contrast(1.02);"></div>
+<div class="absolute inset-0 bg-cover group-hover:scale-105 transition-transform duration-700" style="background-image: url('_assets/foto/umkm-pasar.jpg'); background-position: center 50%; filter: brightness(0.9) saturate(0.85) contrast(1.02);"></div>
 <div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/70 via-mandiri-deep/30 to-mandiri-deep/15"></div>
 <div class="absolute top-6 left-6 bg-white/90 text-ice-blue text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest backdrop-blur-sm">Ekonomi Digital</div>
 <div class="relative z-10 p-6 bg-white m-4 rounded-sm shadow-lg border-t-4 border-ice-blue">
@@ -361,7 +361,7 @@
 <p class="text-[10px] text-ice-blue uppercase tracking-[0.15em] mb-2 font-bold">Riset | 2025</p>
 <h3 class="text-xl font-serif text-mandiri-navy mb-3 font-medium">Konsumsi BBM</h3>
 <p class="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">Asesmen tematik dinamika konsumsi BBM bersubsidi dan dampak kebijakan energi terhadap kesejahteraan rumah tangga.</p>
-<a class="inline-flex items-center text-sm font-bold text-mandiri-navy hover:text-ice-blue transition-colors uppercase tracking-wider" href="thematic/bbm/dashboard.html">Jelajahi Data <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>
+<a class="inline-flex items-center text-sm font-bold text-mandiri-navy hover:text-ice-blue transition-colors uppercase tracking-wider" href="konsumsi-bbm/konsumsi-bbm-dashboard.html">Jelajahi Data <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>
 </div>
 </article>
 <article class="relative h-[400px] group overflow-hidden rounded-sm shadow-sm flex flex-col justify-end bg-gray-200">
@@ -376,7 +376,7 @@
 </div>
 </article>
 <article class="relative h-[400px] group overflow-hidden rounded-sm shadow-sm flex flex-col justify-end bg-gray-200">
-<div class="absolute inset-0 bg-cover group-hover:scale-105 transition-transform duration-700" style="background-image: url('_assets/foto/kelas-masyarakat-clean.jpg'); background-position: center 55%; filter: brightness(0.9) saturate(0.85) contrast(1.02);"></div>
+<div class="absolute inset-0 bg-cover group-hover:scale-105 transition-transform duration-700" style="background-image: url('_assets/foto/kesehatan-klinik.jpg'); background-position: center 50%; filter: brightness(0.9) saturate(0.85) contrast(1.02);"></div>
 <div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/70 via-mandiri-deep/30 to-mandiri-deep/15"></div>
 <div class="absolute top-6 left-6 bg-white/90 text-ice-blue text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest backdrop-blur-sm">Kesehatan</div>
 <div class="relative z-10 p-6 bg-white m-4 rounded-sm shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 border-l-4 border-ice-blue">
@@ -387,7 +387,7 @@
 </div>
 </article>
 <article class="relative h-[400px] group overflow-hidden rounded-sm shadow-sm flex flex-col justify-end bg-gray-200">
-<div class="absolute inset-0 bg-cover group-hover:scale-105 transition-transform duration-700" style="background-image: url('_assets/foto/bbm-clean.jpg'); background-position: center 55%; filter: brightness(0.9) saturate(0.85) contrast(1.02);"></div>
+<div class="absolute inset-0 bg-cover group-hover:scale-105 transition-transform duration-700" style="background-image: url('_assets/foto/mbg-sd-anak.jpg'); background-position: center 50%; filter: brightness(0.9) saturate(0.85) contrast(1.02);"></div>
 <div class="absolute inset-0 bg-gradient-to-t from-mandiri-deep/70 via-mandiri-deep/30 to-mandiri-deep/15"></div>
 <div class="absolute top-6 left-6 bg-white/90 text-ice-blue text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest backdrop-blur-sm">Kebijakan Publik</div>
 <div class="relative z-10 p-6 bg-white m-4 rounded-sm shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 border-l-4 border-ice-blue">
@@ -455,4 +455,16 @@
 </div>
 </footer>
 <!-- END: MainFooter -->
+<script>
+  // Make entire article card clickable — click anywhere on card redirects to first link inside
+  document.querySelectorAll('article').forEach(function(card) {
+    var link = card.querySelector('a[href]');
+    if (link) {
+      card.style.cursor = 'pointer';
+      card.addEventListener('click', function(e) {
+        if (!e.target.closest('a')) window.location.href = link.href;
+      });
+    }
+  });
+</script>
 </body></html>
