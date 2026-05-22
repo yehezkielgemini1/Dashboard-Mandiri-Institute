@@ -678,6 +678,14 @@ function fmtPct(v, dec) { return v != null ? fmtNum(v, dec == null ? 1 : dec) + 
 // ====================== RINGKASAN: Quadrant bubble ======================
 function renderQuadrant() {
   const fies_med = 1.90, sppg_med = 3.73;
+  // Compute robust ranges from data percentiles to avoid outlier-driven auto-scale
+  const allX = PAYLOAD.rows.map(r => r.sppg_10k_anak).filter(v => v > 0).sort((a,b) => a-b);
+  const allY = PAYLOAD.rows.map(r => r.fies).filter(v => v != null).sort((a,b) => a-b);
+  const xMin = Math.max(0.1, allX[Math.floor(allX.length * 0.01)] * 0.8);   // 1st pct
+  const xMax = Math.min(100, allX[Math.floor(allX.length * 0.99)] * 1.3);   // 99th pct
+  const yMax = Math.min(25, Math.max(12, allY[Math.floor(allY.length * 0.98)] * 1.15));
+  const xLogMin = Math.log10(xMin), xLogMax = Math.log10(xMax);
+
   const traces = [];
   for (const tier of Object.keys(TIER_COLORS)) {
     const sub = PAYLOAD.rows.filter(r => r.tier === tier);
@@ -688,9 +696,9 @@ function renderQuadrant() {
       name: tier.split(' - ')[0],
       marker: {
         color: TIER_COLORS[tier],
-        size: sub.map(r => Math.max(4, Math.min(40, Math.sqrt(r.n_sppg + 1) * 2.5))),
-        opacity: 0.65,
-        line: { color: 'white', width: 0.5 }
+        size: sub.map(r => Math.max(6, Math.min(36, Math.sqrt(r.n_sppg + 1) * 2.2))),
+        opacity: 0.55,
+        line: { color: 'white', width: 0.8 }
       },
       text: sub.map(r =>
         '<b>' + r.nama_kab + '</b><br>' + formatProvName(r.nama_prov) +
@@ -704,31 +712,44 @@ function renderQuadrant() {
     });
   }
   Plotly.react('chart-quadrant', traces, {
-    margin: { l:70, r:30, t:24, b:70 },
+    margin: { l:70, r:40, t:40, b:80 },
     font: { family:FONT, size:13, color:INK },
     plot_bgcolor: 'white', paper_bgcolor: 'white',
     xaxis: {
-      title: { text:'SPPG per 10rb anak 6-18 (log)', font:{size:12,color:MUTED} },
+      title: { text:'SPPG per 10rb anak 6-18 (skala log)', font:{size:12,color:MUTED}, standoff:14 },
       type:'log', dtick:1,
+      range: [xLogMin, xLogMax],
       tickfont:{size:11,color:MUTED},
-      showgrid:false, zeroline:true, zerolinecolor:'#E5E8EC',
-      showline:true, linecolor:INK, ticks:'outside'
+      showgrid:true, gridcolor:'#F0F2F5', gridwidth:1,
+      zeroline:false,
+      showline:true, linecolor:'#E5E8EC', ticks:'outside', tickcolor:'#E5E8EC'
     },
     yaxis: {
-      title: { text:'Rawan pangan moderate-severe (%)', font:{size:12,color:MUTED} },
+      title: { text:'Rawan pangan moderate-severe (%)', font:{size:12,color:MUTED}, standoff:14 },
+      range: [0, yMax],
       tickfont:{size:11,color:MUTED},
-      showgrid:false, zeroline:true, zerolinecolor:'#E5E8EC',
+      showgrid:true, gridcolor:'#F0F2F5', gridwidth:1,
+      zeroline:false,
+      showline:true, linecolor:'#E5E8EC', ticks:'outside', tickcolor:'#E5E8EC'
     },
-    legend: { orientation:'h', y:-0.16, x:0, xanchor:'left', font:{size:11} },
+    legend: { orientation:'h', y:-0.2, x:0.5, xanchor:'center', font:{size:11}, bgcolor:'rgba(0,0,0,0)' },
     shapes: [
-      { type:'line', x0:sppg_med, x1:sppg_med, y0:0, y1:60, xref:'x', yref:'y', line:{color:'#bbb',width:1,dash:'dot'} },
-      { type:'line', x0:0.01, x1:1000, y0:fies_med, y1:fies_med, xref:'x', yref:'y', line:{color:'#bbb',width:1,dash:'dot'} },
+      // Quadrant background tints (soft, helps separate regions)
+      { type:'rect', x0:xLogMin, x1:Math.log10(sppg_med), y0:fies_med, y1:yMax, xref:'x', yref:'y', fillcolor:'rgba(200,16,46,0.04)', line:{width:0}, layer:'below' },
+      { type:'rect', x0:Math.log10(sppg_med), x1:xLogMax, y0:0, y1:fies_med, xref:'x', yref:'y', fillcolor:'rgba(1,61,121,0.04)', line:{width:0}, layer:'below' },
+      // Median split lines
+      { type:'line', x0:sppg_med, x1:sppg_med, y0:0, y1:yMax, xref:'x', yref:'y', line:{color:'#67B2E8',width:1.5,dash:'dash'} },
+      { type:'line', x0:xMin, x1:xMax, y0:fies_med, y1:fies_med, xref:'x', yref:'y', line:{color:'#67B2E8',width:1.5,dash:'dash'} },
     ],
     annotations: [
-      { x:0.05, y:30, xref:'x', yref:'y', text:'<b>GAP</b>', showarrow:false, font:{size:11,color:'#C8102E'}, align:'left' },
-      { x:50, y:30, xref:'x', yref:'y', text:'<b>OVER-SERVED</b>', showarrow:false, font:{size:11,color:'#67B2E8'}, align:'left' },
-      { x:0.05, y:0.5, xref:'x', yref:'y', text:'<b>LOW PRIORITY</b>', showarrow:false, font:{size:11,color:'#A9C4DF'}, align:'left' },
-      { x:50, y:0.5, xref:'x', yref:'y', text:'<b>SUDAH TERTANGANI</b>', showarrow:false, font:{size:11,color:'#013D79'}, align:'left' },
+      // Quadrant labels at top of each quadrant
+      { x:xLogMin + 0.05, y:yMax * 0.95, xref:'x', yref:'y', text:'GAP<br><span style="font-size:9px;font-weight:400;">High rawan · Low SPPG</span>', showarrow:false, font:{size:12,color:'#C8102E',family:FONT}, align:'left', xanchor:'left', yanchor:'top' },
+      { x:xLogMax - 0.05, y:yMax * 0.95, xref:'x', yref:'y', text:'OVER-SERVED<br><span style="font-size:9px;font-weight:400;">High rawan · High SPPG</span>', showarrow:false, font:{size:12,color:'#67B2E8',family:FONT}, align:'right', xanchor:'right', yanchor:'top' },
+      { x:xLogMin + 0.05, y:yMax * 0.05, xref:'x', yref:'y', text:'LOW PRIORITY<br><span style="font-size:9px;font-weight:400;">Low rawan · Low SPPG</span>', showarrow:false, font:{size:12,color:'#A9C4DF',family:FONT}, align:'left', xanchor:'left', yanchor:'bottom' },
+      { x:xLogMax - 0.05, y:yMax * 0.05, xref:'x', yref:'y', text:'SUDAH TERTANGANI<br><span style="font-size:9px;font-weight:400;">Low rawan · High SPPG</span>', showarrow:false, font:{size:12,color:'#013D79',family:FONT}, align:'right', xanchor:'right', yanchor:'bottom' },
+      // Median value labels
+      { x:Math.log10(sppg_med), y:yMax * 1.02, xref:'x', yref:'y', text:'median: '+sppg_med, showarrow:false, font:{size:9,color:'#67B2E8'}, yanchor:'bottom' },
+      { x:xLogMax, y:fies_med, xref:'x', yref:'y', text:'median: '+fies_med+'%', showarrow:false, font:{size:9,color:'#67B2E8'}, xanchor:'right', yanchor:'bottom' },
     ],
   }, { displaylogo:false, responsive:true });
 }
