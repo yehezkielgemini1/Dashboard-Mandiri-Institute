@@ -453,10 +453,10 @@ const PAGE_META = {
 };
 
 function switchTabNav(id) {
-  // Hide all pages
-  document.querySelectorAll('.tab-page').forEach(p => p.classList.add('hidden'));
+  // Show only the active tab page (CSS: .tab-page { display:none } .tab-page.active { display:block })
+  document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
   const pg = document.getElementById('page-' + id);
-  if (pg) pg.classList.remove('hidden');
+  if (pg) pg.classList.add('active');
   // Update buttons active state
   document.querySelectorAll('[data-tab]').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.tab === id);
