@@ -2,7 +2,7 @@
   "dashboard": "mbg-gap-analysis",
   "title": "Pemetaan Prioritas Program MBG vs Kerawanan Pangan",
   "subtitle": "Gap Analysis SPPG x FIES per 514 Kab/Kota Indonesia",
-  "last_updated": "2026-05-07",
+  "last_updated": "2026-06-12",
   "data_sources": {
     "sppg": {
       "source": "BGN portal scrape (Mandiri Institute scraping agent)",
@@ -21,6 +21,19 @@
       "source": "Susenas KOR Maret 2025 (sum weind individu)",
       "pop_total_2025_jt": 281.62,
       "pop_anak_6_18_2025_jt": 59.14
+    },
+    "stunting": {
+      "source": "SSGI Kemenkes 2024 (Dalam Angka), prevalensi balita stunting per kabkota",
+      "year": 2024,
+      "coverage": "412/514 kabkota; 102 tanpa angka: 86 ditahan QC Kemenkes (RR<70%/RSE>25%/perubahan ekstrem>10%) + 16 kabkota Papua Tengah & Papua Pegunungan tidak dirilis",
+      "file": "Riset/Initiatives/MBG Gap Analysis/Output/mbg-gap-score-with-stunting-2024.parquet",
+      "updated": "2026-06-12"
+    },
+    "kuadran_fies_stunting": {
+      "source": "260612_Kuadran FIES x Stunting.xlsx (Riset/Kajian/Sosial-Ekonomi/Ketahanan Pangan), sheet Kuadran 514 Kabkota",
+      "method": "FIES theta-FAO (% penduduk rawan total, cutoff crisp seragam) x Stunting SSGI 2024, cutoff X=10.44% Y=19.8%",
+      "note": "Metrik FIES theta-FAO BERBEDA dari share_rawan_moderate_severe rumah tangga yang dipakai gap_score",
+      "updated": "2026-06-12"
     }
   },
   "methodology": {

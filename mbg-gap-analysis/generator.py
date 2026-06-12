@@ -1,8 +1,9 @@
 """
-Generator dashboard MBG Gap Analysis (Phase 0 + Phase 2 stunting overlay).
+Generator dashboard MBG Gap Analysis (Phase 0 + Phase 2 stunting overlay, SSGI 2024).
 Input:
   - data/mbg-gap.csv (Phase 0, 514 rows x 18 cols)
-  - ../../Riset Initiatives/MBG Gap Analysis/Output/mbg-gap-score-with-stunting.parquet (Phase 2)
+  - ../../Riset/Initiatives/MBG Gap Analysis/Output/mbg-gap-score-with-stunting-2024.parquet (Phase 2, SSGI 2024)
+  - ../../Riset/Kajian/Sosial-Ekonomi/Ketahanan Pangan/260612_Kuadran FIES x Stunting.xlsx (Kuadran theta-FAO)
   - ../kelas-kabkota/kabkota_bps_simplified.geojson (REUSED)
   - metadata.json
 Output:
@@ -17,7 +18,8 @@ import numpy as np
 
 HERE = Path(__file__).parent
 CSV_PHASE0 = HERE / "data" / "mbg-gap.csv"
-PARQUET_PHASE2 = HERE.parent.parent / "Riset Initiatives" / "MBG Gap Analysis" / "Output" / "mbg-gap-score-with-stunting.parquet"
+PARQUET_PHASE2 = HERE.parent.parent / "Riset" / "Initiatives" / "MBG Gap Analysis" / "Output" / "mbg-gap-score-with-stunting-2024.parquet"
+XLSX_KUADRAN = HERE.parent.parent / "Riset" / "Kajian" / "Sosial-Ekonomi" / "Ketahanan Pangan" / "260612_Kuadran FIES x Stunting.xlsx"
 GEOJSON = HERE.parent / "kelas-kabkota" / "kabkota_bps_simplified.geojson"
 META = HERE / "metadata.json"
 OUT = HERE / "dashboard.html"
@@ -82,7 +84,45 @@ def load():
     return df
 
 
-def build_payload(df, meta):
+def load_kuadran():
+    """Load Kuadran FIES (theta-FAO) x Stunting SSGI 2024 dari xlsx kajian Ketahanan Pangan."""
+    if not XLSX_KUADRAN.exists():
+        print(f"WARNING: Kuadran xlsx not found at {XLSX_KUADRAN}")
+        return None
+    kq = pd.read_excel(XLSX_KUADRAN, sheet_name="Kuadran 514 Kabkota")
+    counts = kq["Kuadran"].value_counts(dropna=False).to_dict()
+    d = kq.dropna(subset=["Total Rawan FIES 2025", "Stunting 2024"])
+    pearson = float(d["Total Rawan FIES 2025"].corr(d["Stunting 2024"]))
+    rows = []
+    for _, r in d.iterrows():
+        cat = r["Catatan"] if pd.notna(r["Catatan"]) else None
+        rows.append({
+            "kab": r["Kabupaten/Kota"],
+            "prov": str(r["Provinsi"]).replace("Sumatera", "Sumatra"),
+            "fies_total": round(float(r["Total Rawan FIES 2025"]), 2),
+            "stunting": round(float(r["Stunting 2024"]), 1),
+            "kuadran": r["Kuadran"],
+            "flag": cat is not None,
+            "catatan": cat,
+        })
+    n_flag = sum(1 for r in rows if r["flag"])
+    print(f"Kuadran FIES x Stunting: {len(rows)} plotted ({n_flag} flagged Catatan), pearson={pearson:.3f}")
+    return {
+        "rows": rows,
+        "pearson": round(pearson, 3),
+        "counts": {
+            "K1": int(counts.get("K1 Krisis Ganda", 0)),
+            "K2": int(counts.get("K2 Tekanan Pangan", 0)),
+            "K3": int(counts.get("K3 Stunting Non-Pangan", 0)),
+            "K4": int(counts.get("K4 Relatif Aman", 0)),
+            "NA": int(counts.get("N/A (stunting tidak dirilis)", 0)),
+        },
+        "cutoff_x": 10.44,
+        "cutoff_y": 19.8,
+    }
+
+
+def build_payload(df, meta, kuadran=None):
     rows = []
     for _, r in df.iterrows():
         rows.append({
@@ -186,6 +226,7 @@ def build_payload(df, meta):
         "top10_gap": top10_gap,
         "thresholds": meta["methodology"]["thresholds"],
         "caveats": meta["caveats"],
+        "kuadran_fies": kuadran,
     }
 
 
@@ -195,6 +236,11 @@ def build_html(payload, _unused_geojson, generated):
     n_tier1 = t["tier_count"].get("Tier 1 - Prioritas Tinggi", 0)
     pop_anak_jt = t["pop_anak_total"] / 1e6
     pop_total_jt = t["pop_total"] / 1e6
+    kq = payload.get("kuadran_fies") or {"rows": [], "pearson": 0.0,
+                                         "counts": {"K1": 0, "K2": 0, "K3": 0, "K4": 0, "NA": 0},
+                                         "cutoff_x": 10.44, "cutoff_y": 19.8}
+    kq_n = len(kq["rows"])
+    kc = kq["counts"]
 
     # Embed payload data (light, ~250kb gzipped). Geojson loaded via fetch to keep HTML small.
     payload_js = json.dumps(payload, separators=(",", ":"), ensure_ascii=False)
@@ -370,6 +416,7 @@ def build_html(payload, _unused_geojson, generated):
     #chart-quadrant {{ height: 380px !important; }}
     #chart-map {{ height: 480px !important; }}
     #chart-prov-tier {{ height: 360px !important; }}
+    #chart-kuadran-fies {{ height: 380px !important; }}
     .serif-display.text-3xl {{ font-size: 22px !important; }}
     .serif-display.text-4xl {{ font-size: 26px !important; }}
     .serif-display.text-5xl {{ font-size: 30px !important; }}
@@ -533,7 +580,7 @@ def build_html(payload, _unused_geojson, generated):
       <div>
         <span class="badge" style="background:#FFE5EA;border-color:var(--negative);color:var(--negative);"><span class="badge-dot" style="background:var(--negative);"></span>Super-Priority</span>
         <h3 class="serif-display text-2xl mt-3">Top 10 super-priority (Tier 1 + GAP + Stunting tinggi)</h3>
-        <p class="mt-2 muted text-sm">Triple-criteria: prioritas tinggi gap_score, kuadran GAP, dan SSGI 2021 stunting tinggi. Cluster dominan Papua/NTT/Maluku.</p>
+        <p class="mt-2 muted text-sm">Triple-criteria: prioritas tinggi gap_score, kuadran GAP, dan SSGI 2024 stunting tinggi. Cluster dominan NTT (6 dari 10) + Maluku.</p>
         <div class="mt-4">
           <template x-for="(r, i) in superPriority" :key="r.pcode">
             <div class="super-card">
@@ -590,8 +637,8 @@ def build_html(payload, _unused_geojson, generated):
       <div id="chart-map" style="height:780px;"></div>
       <div id="legend-map" class="mt-3"></div>
       <div class="chart-footer">
-        <span><span class="label">Sumber</span>BPS adm2 2020 &middot; SSGI 2021 (Kemenkes) &middot; Mandiri Institute</span>
-        <span><span class="label">Catatan</span>4 kabkota tanpa data SSGI 2021 (Kep Tanimbar, Yapen, Banggai, Konawe Kepulauan)</span>
+        <span><span class="label">Sumber</span>BPS adm2 2020 &middot; SSGI 2024 (Kemenkes) &middot; Mandiri Institute</span>
+        <span><span class="label">Catatan</span>102 kabkota tanpa angka stunting: 86 ditahan QC Kemenkes (a.l. Kota Medan, Kota Surabaya, Kab Bogor, Kab Bekasi) + 16 kabkota Papua Tengah &amp; Papua Pegunungan tidak dirilis</span>
       </div>
     </div>
   </section>
@@ -725,7 +772,7 @@ def build_html(payload, _unused_geojson, generated):
         <div class="stat-card">
           <div class="lbl">Stunting Rata-rata</div>
           <div class="val" x-text="(drillProvObj && drillProvObj.avg_stunting != null) ? drillProvObj.avg_stunting.toFixed(1) + '%' : '-'"></div>
-          <div class="sub">SSGI 2021, mean kabkota</div>
+          <div class="sub">SSGI 2024, mean kabkota</div>
         </div>
       </div>
 
@@ -790,7 +837,7 @@ def build_html(payload, _unused_geojson, generated):
           <li><b>SPPG (BGN)</b>: portal scrape <code class="text-xs muted">bgn.go.id/operasional-sppg</code>, snapshot 2026-05-06, 27.427 unit kelurahan-level di-agregasi ke 514 kabkota.</li>
           <li><b>FIES 2025</b>: replikasi FAO Food Insecurity Experience Scale dari Susenas Maret 2025 (modul KOR), dengan headline metric <i>moderate-severe</i>.</li>
           <li><b>Populasi</b>: Susenas KOR Maret 2025, weighted (fwt individu), filter umur 6-18 tahun untuk denominator SPPG density.</li>
-          <li><b>Stunting</b>: SSGI Kemenkes 2021, prevalensi balita stunting per kabkota (510 dari 514 kabkota).</li>
+          <li><b>Stunting</b>: SSGI Kemenkes 2024 (Dalam Angka), prevalensi balita stunting per kabkota (412 dari 514 kabkota dirilis).</li>
         </ul>
       </div>
       <div>
@@ -808,7 +855,7 @@ def build_html(payload, _unused_geojson, generated):
       </div>
       <div>
         <div class="eyebrow">Cross-validation Phase 2</div>
-        <h3 class="serif-display text-xl mt-2">Stunting overlay (SSGI 2021)</h3>
+        <h3 class="serif-display text-xl mt-2">Stunting overlay (SSGI 2024)</h3>
         <table class="text-sm mt-4 w-full" style="border-collapse: collapse;">
           <thead>
             <tr style="border-bottom: 1px solid var(--ink);">
@@ -827,11 +874,30 @@ def build_html(payload, _unused_geojson, generated):
       </div>
     </div>
 
+    <!-- Kuadran FIES x Stunting (theta-FAO) -->
+    <div class="mt-16 rule-top pt-10">
+      <span class="badge"><span class="badge-dot"></span>Kuadran FIES x Stunting</span>
+      <div class="eyebrow-roman mt-3">V. Kuadran FIES x Stunting (theta-FAO)</div>
+      <h2 class="serif-display text-3xl mt-2 max-w-3xl">Kerawanan pangan penduduk vs prevalensi stunting, {kq_n} kabkota.</h2>
+      <p class="mt-3 muted text-base max-w-3xl">Setiap titik = 1 kabkota. Sumbu X = % penduduk rawan pangan total (FIES theta-FAO, Susenas Maret 2025), sumbu Y = prevalensi balita stunting (SSGI 2024). Garis putus-putus = cutoff X = {kq['cutoff_x']}% dan Y = {kq['cutoff_y']}%. Marker x abu = kabkota dengan catatan anomali data (sampel tipis Papua, QC SSGI parsial, anomali Susenas).</p>
+      <div class="hair-accent mt-6 pt-2"></div>
+      <div id="chart-kuadran-fies" style="height:560px;"></div>
+      <div class="chart-footer">
+        <span><span class="label">Sumber</span>Susenas Maret 2025 (FIES theta-FAO) &middot; SSGI 2024 (Kemenkes) &middot; Mandiri Institute</span>
+        <span><span class="label">Cutoff</span>FIES {kq['cutoff_x']}% &middot; Stunting {kq['cutoff_y']}%</span>
+      </div>
+      <div class="mt-5 max-w-3xl text-sm" style="line-height:1.7;">
+        <p>Korelasi Pearson FIES x stunting = <b>{kq['pearson']:.3f}</b> (positif moderat). Distribusi kuadran: <b>K1 Krisis Ganda {kc['K1']}</b> kabkota, K2 Tekanan Pangan {kc['K2']}, <b>K3 Stunting Non-Pangan {kc['K3']}</b>, K4 Relatif Aman {kc['K4']}, N/A (stunting tidak dirilis) {kc['NA']}.</p>
+        <p class="mt-2">Insight: K3 ({kc['K3']} kabkota stunting tinggi padahal pangan relatif aman, contoh Kab Jeneponto dan klaster Aceh) adalah bukti stunting tidak selalu soal akses pangan. MBG perlu ditemani intervensi sanitasi, air bersih, dan pola asuh. Kab Timor Tengah Selatan mencatat stunting tertinggi nasional 56.8% dengan FIES hanya 15.4%.</p>
+        <p class="mt-2 muted text-xs"><b>Catatan metode:</b> sumbu FIES pada chart ini memakai metode theta-FAO (% penduduk rawan total, cutoff crisp seragam) yang BERBEDA dari metrik kerawanan moderate-severe rumah tangga yang dipakai gap_score di tab lain, sehingga kedua angka tidak bisa dibandingkan langsung.</p>
+      </div>
+    </div>
+
     <div class="mt-16 rule-top pt-10">
       <h3 class="serif-display text-2xl">Caveat &middot; batasan analisis</h3>
       <ul class="mt-4 text-sm grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-3" style="line-height:1.6;">
         {''.join(f'<li class="pl-4 border-l-2 border-[#FFB700]"><b>Caveat {i+1}.</b> {c}</li>' for i, c in enumerate(payload['caveats']))}
-        <li class="pl-4 border-l-2 border-[#FFB700]"><b>Caveat 5.</b> Stunting SSGI 2021 (4 tahun lag dari FIES 2025). 4 kabkota tanpa stunting (Kep Tanimbar, Yapen, Banggai, Konawe Kepulauan). Asumsi struktural per kabkota.</li>
+        <li class="pl-4 border-l-2 border-[#FFB700]"><b>Caveat 5.</b> Stunting SSGI 2024, hampir kontemporer dengan FIES Maret 2025 (FIES Maret 2025 x SSGI 2024). 102 kabkota tanpa angka stunting: 86 ditahan QC Kemenkes (a.l. Kota Medan, Kota Surabaya, Kab Bogor, Kab Bekasi) + 16 kabkota Papua Tengah &amp; Papua Pegunungan tidak dirilis.</li>
       </ul>
     </div>
 
@@ -874,7 +940,7 @@ const ROWS_BY_PCODE = Object.fromEntries(PAYLOAD.rows.map(r => [r.pcode, r]));
 
 const PAGE_META = {{
   ringkasan:  {{ title: 'Pemetaan prioritas program MBG vs kerawanan pangan + stunting.',
-                 sub: 'Composite Gap Score 514 kabkota: FIES kerawanan pangan x SPPG density, divalidasi stunting SSGI 2021. Phase 0 cross-section snapshot 2025/2026.' }},
+                 sub: 'Composite Gap Score 514 kabkota: FIES kerawanan pangan x SPPG density, divalidasi stunting SSGI 2024. Phase 0 cross-section snapshot 2025/2026.' }},
   peta:       {{ title: 'Peta Indonesia: tier MBG, kuadran GAP, dan bivariate stunting.',
                  sub: 'Choropleth 514 kabkota dengan toggle 4 view: Tier MBG (quartile gap_score), Kuadran (median split), Bivariate (Tier x Stunting), atau Stunting tier saja.' }},
   ranking:    {{ title: 'Ranking 514 kabkota berdasarkan Gap Score.',
@@ -882,7 +948,7 @@ const PAGE_META = {{
   drilldown:  {{ title: 'Drilldown profil prioritas MBG per provinsi.',
                  sub: 'Pilih 1 dari 38 provinsi untuk lihat distribusi tier, list kabkota, agregat FIES dan stunting.' }},
   metodologi: {{ title: 'Metodologi Gap Score, threshold, dan caveat.',
-                 sub: 'Formula composite, sumber data BGN portal + Susenas KOR + FIES + SSGI 2021 stunting, threshold quartile, dan keterbatasan analisis.' }},
+                 sub: 'Formula composite, sumber data BGN portal + Susenas KOR + FIES + SSGI 2024 stunting, kuadran FIES x stunting (theta-FAO), threshold quartile, dan keterbatasan analisis.' }},
 }};
 const TABS = [
   {{ id: 'ringkasan',  label: 'Ringkasan',          icon: 'mdi:view-dashboard-outline' }},
@@ -959,6 +1025,7 @@ function dash() {{
         if (id === 'ringkasan')  this.renderQuadrant();
         else if (id === 'peta')  this.renderMap();
         else if (id === 'drilldown') this.renderDrilldown();
+        else if (id === 'metodologi') this.renderKuadranFies();
       }}));
     }},
 
@@ -1021,13 +1088,13 @@ function dash() {{
       if (this.mapView === 'tier') return 'Tier MBG: 4 prioritas berdasarkan Gap Score.';
       if (this.mapView === 'quadrant') return 'Kuadran: kombinasi FIES x SPPG density.';
       if (this.mapView === 'bivariate') return 'Bivariate: Tier MBG (warna utama) x Stunting (saturasi).';
-      if (this.mapView === 'stunting') return 'Stunting tier (SSGI 2021).';
+      if (this.mapView === 'stunting') return 'Stunting tier (SSGI 2024).';
     }},
     mapSubline() {{
       if (this.mapView === 'tier') return 'Quartile gap_score: Tier 1 (Q75+, merah) sampai Tier 4 (Q25-, sky). Hover untuk detail FIES, SPPG, gap, stunting.';
       if (this.mapView === 'quadrant') return 'GAP (high FIES + low SPPG) merah, Sudah Tertangani navy, Over-served sky, Low Priority sky-soft.';
       if (this.mapView === 'bivariate') return 'Diagonal gelap = super-priority (Tier 1 + S1 stunting tinggi). 16 sel dari kombinasi 4 tier MBG x 4 tier stunting.';
-      if (this.mapView === 'stunting') return 'S1 (>=30%) merah, S4 (<20.7%) sky. Validation independen MBG ranking.';
+      if (this.mapView === 'stunting') return 'Quartile SSGI 2024: S1 (>27.3%) merah, S4 (<=16.9%) sky. Validation independen MBG ranking. 102 kabkota abu = data tidak dirilis.';
     }},
     renderMap() {{
       if (!GEOJSON) {{
@@ -1106,8 +1173,8 @@ function dash() {{
       }} else if (this.mapView === 'quadrant') {{
         html = lblWrap(Object.entries(QUADRANT_COLORS).map(([k, c]) => item(c, k)).join(''));
       }} else if (this.mapView === 'stunting') {{
-        const lbl = {{ 'S1 High': 'S1 High (>=30.1%)', 'S2': 'S2 (25.7-30%)', 'S3': 'S3 (20.8-25.6%)', 'S4 Low': 'S4 Low (<=20.7%)' }};
-        html = lblWrap(Object.entries(STUNTING_TIER_COLORS).map(([k, c]) => item(c, lbl[k])).join('') + item('#E8E8E8', 'No data (4 kabkota)'));
+        const lbl = {{ 'S1 High': 'S1 High (>27.3%)', 'S2': 'S2 (22.3-27.3%)', 'S3': 'S3 (16.9-22.2%)', 'S4 Low': 'S4 Low (<=16.9%)' }};
+        html = lblWrap(Object.entries(STUNTING_TIER_COLORS).map(([k, c]) => item(c, lbl[k])).join('') + item('#E8E8E8', 'No data (102 kabkota)'));
       }} else if (this.mapView === 'bivariate') {{
         // Build 4x4 matrix
         const tiers = ['Tier 1 - Prioritas Tinggi','Tier 2 - Prioritas Sedang','Tier 3 - Cukup Tertangani','Tier 4 - Low Priority'];
@@ -1186,6 +1253,58 @@ function dash() {{
       URL.revokeObjectURL(url);
     }},
 
+    // ===== Metodologi: Kuadran FIES (theta-FAO) x Stunting SSGI 2024 =====
+    renderKuadranFies() {{
+      const KQ = PAYLOAD.kuadran_fies;
+      if (!KQ || !document.getElementById('chart-kuadran-fies')) return;
+      const KCOLORS = {{ 'K1 Krisis Ganda': '#C8102E', 'K2 Tekanan Pangan': '#EA7200', 'K3 Stunting Non-Pangan': '#003D79', 'K4 Relatif Aman': '#A9C4DF' }};
+      const mkHover = r => `<b>${{r.kab}}</b><br>${{r.prov}}<br>FIES total rawan (theta-FAO): ${{r.fies_total.toFixed(1)}}%<br>Stunting 2024: ${{r.stunting.toFixed(1)}}%<br>${{r.kuadran}}` + (r.catatan ? `<br><i>Catatan: ${{r.catatan}}</i>` : '');
+      const traces = [];
+      for (const k of Object.keys(KCOLORS)) {{
+        const sub = KQ.rows.filter(r => r.kuadran === k && !r.flag);
+        traces.push({{
+          x: sub.map(r => r.fies_total),
+          y: sub.map(r => r.stunting),
+          mode: 'markers', type: 'scatter', name: k,
+          marker: {{ color: KCOLORS[k], size: 7, opacity: 0.65, line: {{ color: 'white', width: 0.5 }} }},
+          text: sub.map(mkHover),
+          hovertemplate: '%{{text}}<extra></extra>',
+        }});
+      }}
+      const flagged = KQ.rows.filter(r => r.flag);
+      traces.push({{
+        x: flagged.map(r => r.fies_total),
+        y: flagged.map(r => r.stunting),
+        mode: 'markers', type: 'scatter', name: 'Catatan anomali',
+        marker: {{ color: '#98A2B3', size: 7, symbol: 'x', opacity: 0.85 }},
+        text: flagged.map(mkHover),
+        hovertemplate: '%{{text}}<extra></extra>',
+      }});
+      Plotly.react('chart-kuadran-fies', traces, {{
+        margin: {{ l: 70, r: 30, t: 30, b: 70 }},
+        font: {{ family: FONT, size: 13, color: INK }},
+        plot_bgcolor: 'white', paper_bgcolor: 'white',
+        xaxis: {{ title: {{ text: 'Penduduk rawan pangan total, theta-FAO (%)', font: {{ size: 13, color: MUTED }} }},
+                  range: [0, 55], tickfont: {{ size: 11, color: MUTED }}, gridcolor: '#EAECF0',
+                  showline: true, linecolor: INK, ticks: 'outside' }},
+        yaxis: {{ title: {{ text: 'Prevalensi balita stunting SSGI 2024 (%)', font: {{ size: 13, color: MUTED }} }},
+                  range: [0, 62], tickfont: {{ size: 11, color: MUTED }}, gridcolor: '#EAECF0' }},
+        legend: {{ orientation: 'h', y: -0.14, x: 0, xanchor: 'left', font: {{ size: 11 }} }},
+        shapes: [
+          {{ type: 'line', x0: KQ.cutoff_x, x1: KQ.cutoff_x, y0: 0, y1: 62, xref: 'x', yref: 'y',
+             line: {{ color: '#999', width: 1, dash: 'dash' }} }},
+          {{ type: 'line', x0: 0, x1: 55, y0: KQ.cutoff_y, y1: KQ.cutoff_y, xref: 'x', yref: 'y',
+             line: {{ color: '#999', width: 1, dash: 'dash' }} }},
+        ],
+        annotations: [
+          {{ x: 40, y: 58, xref: 'x', yref: 'y', text: '<b>K1 KRISIS GANDA</b>', showarrow: false, font: {{ size: 11, color: '#C8102E' }} }},
+          {{ x: 40, y: 3, xref: 'x', yref: 'y', text: '<b>K2 TEKANAN PANGAN</b>', showarrow: false, font: {{ size: 11, color: '#EA7200' }} }},
+          {{ x: 1, y: 58, xref: 'x', yref: 'y', text: '<b>K3 STUNTING NON-PANGAN</b>', showarrow: false, font: {{ size: 11, color: '#003D79' }}, xanchor: 'left' }},
+          {{ x: 1, y: 3, xref: 'x', yref: 'y', text: '<b>K4 RELATIF AMAN</b>', showarrow: false, font: {{ size: 11, color: '#7C90A8' }}, xanchor: 'left' }},
+        ],
+      }}, {{ displaylogo: false, responsive: true }});
+    }},
+
     // ===== Drilldown =====
     renderDrilldown() {{
       const sub = this.drillKabRows;
@@ -1236,8 +1355,9 @@ def main():
 
     with open(META, "r", encoding="utf-8") as f:
         meta = json.load(f)
-    payload = build_payload(df, meta)
-    print(f"Payload rows={len(payload['rows'])}, prov={len(payload['prov_list'])}, super-priority={len(payload['super_priority'])}")
+    kuadran = load_kuadran()
+    payload = build_payload(df, meta, kuadran)
+    print(f"Payload rows={len(payload['rows'])}, prov={len(payload['prov_list'])}, super-priority={len(payload['super_priority'])}, kuadran_fies={len(kuadran['rows']) if kuadran else 0}")
 
     # Verify geojson exists at sibling location (loaded at runtime via fetch)
     if not GEOJSON.exists():
