@@ -105,10 +105,10 @@ body { font-family: 'Inter', system-ui, sans-serif; font-weight: 400; letter-spa
 
 /* KPI cards */
 .kpi-card { background: white; border: 1px solid var(--rule); padding: 20px 24px; }
-.kpi-card.kpi-positive { border-top: 3px solid var(--positive); }
-.kpi-card.kpi-negative { border-top: 3px solid var(--negative); }
+.kpi-card.kpi-positive { border-top: 3px solid var(--sky); }
+.kpi-card.kpi-negative { border-top: 3px solid var(--sky); }
 .kpi-card.kpi-sky { border-top: 3px solid var(--sky); }
-.kpi-card.kpi-yellow { border-top: 3px solid var(--yellow); }
+.kpi-card.kpi-yellow { border-top: 3px solid var(--sky); }
 .kpi-card.kpi-navy { border-top: 3px solid var(--navy); }
 .kpi-card .kpi-label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
 .kpi-card .kpi-val { font-family: 'Source Serif 4', Georgia, serif; font-size: 22px; font-weight: 600; color: var(--ink); margin-top: 6px; line-height: 1.15; }
@@ -608,12 +608,11 @@ button, .chip-action { transition: all var(--tr-base); }
 <!-- ============ TOP NAV (canon, sticky) — added 2026-05-05 untuk uniform v2 ============ -->
 <nav class="topnav">
   <iconify-icon class="burger" icon="mdi:menu" @click="navOpen = true" role="button" aria-label="Buka menu" tabindex="0" @keydown.enter="navOpen = true"></iconify-icon>
-  <div>
+  <a href="../../index.html" style="text-decoration:none;color:inherit;display:block;" title="Kembali ke beranda Mandiri Institute">
     <div class="brand">Mandiri Institute</div>
     <div class="brand-sub">Pemetaan Aktivitas Ekonomi &middot; DKI Jakarta</div>
-  </div>
+  </a>
   <div class="menu">
-    <a href="../../index.html">Beranda</a>
     <a href="#" :class="page==='ringkasan' ? 'active' : ''" @click.prevent="setPage('ringkasan')">Ringkasan</a>
     <a href="#" :class="page==='peta' ? 'active' : ''" @click.prevent="setPage('peta')">Peta Aktivitas</a>
     <a href="#" :class="page==='skor-potensi' ? 'active' : ''" @click.prevent="setPage('skor-potensi')">Skor Potensi</a>
