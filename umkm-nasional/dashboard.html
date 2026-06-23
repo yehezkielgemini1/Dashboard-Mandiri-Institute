@@ -140,7 +140,53 @@ body{font-family:'Inter',system-ui,sans-serif;font-weight:400;letter-spacing:-0.
 .map-hero-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:22px;font-size:11px;color:var(--muted);}
 .map-hero-footer .label{font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.06em;margin-right:4px;}
 @media(max-width:1024px){.map-side-panel{position:static;width:auto;max-height:none;box-shadow:none;backdrop-filter:none;border-top:0;border-radius:0;background:#fafbfc;}.map-hero-grid{display:flex;flex-direction:column;}.map-area{min-height:460px;}.map-area #chart-map{height:460px !important;}.map-filter-overlay{max-width:calc(100% - 28px);}}
+
+/* === CANON v4.x: eyebrow roman numeral (inline override) === */
+.eyebrow-roman{font-family:'Source Serif 4',Georgia,serif;font-style:italic;font-size:13px;font-weight:500;letter-spacing:0.02em;text-transform:none;color:var(--navy);}
+
+/* === CANON v4.x: folio bar === */
+.folio{position:sticky;top:64px;z-index:30;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);padding:8px 0;}
+.folio-inner{max-width:1280px;margin:0 auto;padding:0 32px;display:flex;justify-content:space-between;font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);}
+.folio .left{color:var(--ink);}
+.folio .right{color:var(--muted);}
+
+/* === CANON v4.x: dark-mode toggle button === */
+.theme-toggle{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);color:white;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;transition:background .15s,border-color .15s;}
+.theme-toggle:hover{background:rgba(255,255,255,0.18);}
+.theme-toggle .theme-label{letter-spacing:-0.003em;}
+
+/* === CANON DARK-MODE TOKEN OVERRIDE (active via document.documentElement.dataset.theme='dark') === */
+:root[data-theme="dark"]{
+  --canvas:#061429; --paper:#142A4A; --ink:#F4F8FC; --ink-soft:#B6C8DE;
+  --rule:#2C4868; --rule-strong:#6A88AA; --navy-deep:#00153A; --mist:#142A4A;
+  --muted:#9DB2CC; --muted-soft:#6A88AA;
+}
+html,body,.kpi-card,.chart-card,.nav-drawer,.topnav-canon,.table-sm th,.table-sm td,.map-hero-scope,.map-side-panel,.map-filter-overlay,.folio{transition:background-color 0.25s ease,border-color 0.25s ease,color 0.25s ease;}
+:root[data-theme="dark"] .plotly text{fill:var(--ink) !important;}
+:root[data-theme="dark"] .page-header-slim{background:linear-gradient(180deg,#00153A 0%,#001F4D 100%);}
+:root[data-theme="dark"] .folio{background:rgba(20,42,74,0.92);}
+:root[data-theme="dark"] .map-hero-scope{background:var(--paper);}
+:root[data-theme="dark"] .map-side-panel{background:rgba(20,42,74,0.97);}
+:root[data-theme="dark"] .map-filter-overlay{background:rgba(20,42,74,0.97);}
+:root[data-theme="dark"] .map-area{background:var(--paper);}
+:root[data-theme="dark"] .map-area #chart-map{background:var(--paper);}
+:root[data-theme="dark"] .chart-filter{background:var(--canvas);}
+:root[data-theme="dark"] .table-sm th{background:var(--mist);}
+:root[data-theme="dark"] .map-side-panel .detail-card.empty,
+:root[data-theme="dark"] .map-side-panel .detail-spark,
+:root[data-theme="dark"] .map-color-legend{background:#061429;}
 </style>
+<link rel="stylesheet" href="../_shared/tactile-editorial.css">
+<script>
+/* Anti-FOUC: apply saved theme before paint */
+(function(){
+  try {
+    var t = localStorage.getItem('mi-theme');
+    if (!t && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) t = 'dark';
+    if (t === 'dark') document.documentElement.dataset.theme = 'dark';
+  } catch(e) {}
+})();
+</script>
 </head>
 <body class="min-h-screen">
 
@@ -158,6 +204,10 @@ body{font-family:'Inter',system-ui,sans-serif;font-weight:400;letter-spacing:-0.
     <a href="#" data-tab="metodologi" onclick="switchTab('metodologi');return false;">Metodologi</a>
   </div>
   <div class="right">
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="Ganti tema">
+      <span id="theme-icon" aria-hidden="true">🌙</span>
+      <span class="theme-label" id="theme-label">Dark</span>
+    </button>
     <a class="nav-link" href="../index.html" style="color:white;opacity:0.85;font-weight:500;">Semua Dashboard</a>
   </div>
 </nav>
@@ -172,6 +222,14 @@ body{font-family:'Inter',system-ui,sans-serif;font-weight:400;letter-spacing:-0.
     <li><button onclick="switchTab('metodologi');document.getElementById('umkm-drawer').classList.remove('open');document.getElementById('umkm-drawer-overlay').classList.remove('open');"><iconify-icon icon="mdi:book-open-variant"></iconify-icon>Metodologi</button></li>
   </ul>
 </aside>
+
+<!-- Folio bar -->
+<div class="folio">
+  <div class="folio-inner">
+    <span class="left">Mandiri Institute</span>
+    <span class="right">Sakernas BPS 2021-2025</span>
+  </div>
+</div>
 
 <!-- Slim page header -->
 <div class="page-header-slim">
@@ -197,24 +255,31 @@ body{font-family:'Inter',system-ui,sans-serif;font-weight:400;letter-spacing:-0.
     <div class="kpi-card"><div class="kpi-eyebrow">Menengah</div><div class="kpi-num" id="kpi-menengah">-</div><div class="kpi-sub" id="kpi-menengah-n">-</div></div>
   </div>
   <div class="chart-card mb-8">
-    <div class="chart-header"><div class="eyebrow">I &middot; Tren Nasional</div><h3>Jumlah UMKM</h3></div>
+    <div class="chart-header"><div class="eyebrow-roman">I &middot; Tren Nasional</div><h3>Jumlah UMKM</h3></div>
     <div class="chart-filter">
       <div class="ff"><label>Provinsi</label><select id="fc-trend-prov" onchange="renderTrend()"><option value="__all__">Semua Provinsi</option></select></div>
     </div>
     <div id="chart-trend" style="height:360px"></div>
     <div class="chart-export-row">
-      <button class="action-btn" onclick="downloadImage('chart-trend','png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
+      <button class="action-btn" onclick="downloadPPT('chart-trend','Jumlah UMKM Nasional 2021-2025','Tren nasional · Sakernas BPS')"><iconify-icon icon="mdi:presentation"></iconify-icon>PPT</button>
       <button class="action-btn" onclick="downloadCSV('trend')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
+      <button class="action-btn" onclick="downloadImage('chart-trend','png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
+      <button class="action-btn" onclick="downloadImage('chart-trend','svg')"><iconify-icon icon="mdi:vector-square"></iconify-icon>SVG</button>
     </div>
     <div class="chart-footer"><span><span class="label">Sumber</span>Sakernas BPS Agustus 2021-2025</span><span><span class="label">Bobot</span>Sampel tertimbang ke populasi</span></div>
   </div>
   <div class="chart-card mb-8">
-    <div class="chart-header"><div class="eyebrow">II &middot; Komposisi Ukuran</div><h3>Komposisi Ukuran UMKM</h3></div>
+    <div class="chart-header"><div class="eyebrow-roman">II &middot; Komposisi Ukuran</div><h3>Komposisi Ukuran UMKM</h3></div>
     <div class="chart-filter">
       <div class="ff"><label>Tahun</label><select id="fc-ukuran-tahun" onchange="renderUkuran();updateKPICards()"><option>2025</option><option>2024</option><option>2023</option><option>2022</option><option>2021</option></select></div>
     </div>
     <div id="chart-ukuran" style="height:320px"></div>
-    <div class="chart-export-row"><button class="action-btn" onclick="downloadImage('chart-ukuran','png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button></div>
+    <div class="chart-export-row">
+      <button class="action-btn" onclick="downloadPPT('chart-ukuran','Komposisi Ukuran UMKM','Mikro / Kecil / Menengah · Sakernas BPS')"><iconify-icon icon="mdi:presentation"></iconify-icon>PPT</button>
+      <button class="action-btn" onclick="downloadCSV('ukuran')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
+      <button class="action-btn" onclick="downloadImage('chart-ukuran','png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
+      <button class="action-btn" onclick="downloadImage('chart-ukuran','svg')"><iconify-icon icon="mdi:vector-square"></iconify-icon>SVG</button>
+    </div>
     <div class="chart-footer"><span><span class="label">Definisi</span>Mikro=1-4 pekerja; Kecil=5-19; Menengah=20-99 (UU 20/2008)</span></div>
   </div>
 </div>
@@ -222,20 +287,22 @@ body{font-family:'Inter',system-ui,sans-serif;font-weight:400;letter-spacing:-0.
 <!-- ======================== TAB: SEKTOR ======================== -->
 <div class="tab-page" id="page-sektor">
   <div class="chart-card mb-8">
-    <div class="chart-header"><div class="eyebrow">I &middot; Per Lapangan Usaha</div><h3>Distribusi per Lapangan Usaha</h3></div>
+    <div class="chart-header"><div class="eyebrow-roman">I &middot; Per Lapangan Usaha</div><h3>Distribusi per Lapangan Usaha</h3></div>
     <div class="chart-filter">
       <div class="ff"><label>Tahun</label><select id="fc-sektor-tahun" onchange="renderSektorBar();renderSektorTable()"><option>2025</option><option>2024</option><option>2023</option><option>2022</option><option>2021</option></select></div>
       <div class="ff"><label>Provinsi</label><select id="fc-sektor-prov" onchange="renderSektorBar();renderSektorTable()"><option value="__all__">Semua Provinsi</option></select></div>
     </div>
     <div id="chart-sektor" style="height:520px"></div>
     <div class="chart-export-row">
-      <button class="action-btn" onclick="downloadImage('chart-sektor','png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
+      <button class="action-btn" onclick="downloadPPT('chart-sektor','Distribusi UMKM per Lapangan Usaha','Per sektor · Sakernas BPS')"><iconify-icon icon="mdi:presentation"></iconify-icon>PPT</button>
       <button class="action-btn" onclick="downloadCSV('sektor')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
+      <button class="action-btn" onclick="downloadImage('chart-sektor','png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
+      <button class="action-btn" onclick="downloadImage('chart-sektor','svg')"><iconify-icon icon="mdi:vector-square"></iconify-icon>SVG</button>
     </div>
     <div class="chart-footer"><span><span class="label">Sumber</span>Sakernas BPS</span><span><span class="label">Klasifikasi</span>17 sektor KBLI 2-digit</span></div>
   </div>
   <div class="chart-card mb-8">
-    <div class="chart-header"><div class="eyebrow">II &middot; Tabel Detail</div><h3>Tabel Sektor dan Ukuran</h3></div>
+    <div class="chart-header"><div class="eyebrow-roman">II &middot; Tabel Detail</div><h3>Tabel Sektor dan Ukuran</h3></div>
     <div style="overflow-x:auto;"><div id="table-sektor"></div></div>
     <div class="chart-footer"><span><span class="label">Sumber</span>Sakernas BPS Agustus</span></div>
   </div>
@@ -244,14 +311,16 @@ body{font-family:'Inter',system-ui,sans-serif;font-weight:400;letter-spacing:-0.
 <!-- ======================== TAB: PETA SEBARAN ======================== -->
 <div class="tab-page" id="page-peta">
   <div class="chart-card mb-8">
-    <div class="chart-header"><div class="eyebrow">I &middot; Distribusi Geografis</div><h3>Top 20 Kabupaten/Kota</h3></div>
+    <div class="chart-header"><div class="eyebrow-roman">I &middot; Distribusi Geografis</div><h3>Top 20 Kabupaten/Kota</h3></div>
     <div class="chart-filter">
       <div class="ff"><label>Tahun</label><select id="fc-wilayah-tahun" onchange="renderTopWilayah()"><option>2025</option><option>2024</option><option>2023</option><option>2022</option><option>2021</option></select></div>
     </div>
     <div id="chart-top-wilayah" style="height:580px"></div>
     <div class="chart-export-row">
-      <button class="action-btn" onclick="downloadImage('chart-top-wilayah','png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
+      <button class="action-btn" onclick="downloadPPT('chart-top-wilayah','Top 20 Kabupaten/Kota','Distribusi geografis · Sakernas BPS')"><iconify-icon icon="mdi:presentation"></iconify-icon>PPT</button>
       <button class="action-btn" onclick="downloadCSV('wilayah')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
+      <button class="action-btn" onclick="downloadImage('chart-top-wilayah','png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
+      <button class="action-btn" onclick="downloadImage('chart-top-wilayah','svg')"><iconify-icon icon="mdi:vector-square"></iconify-icon>SVG</button>
     </div>
     <div class="chart-footer"><span><span class="label">Sumber</span>Sakernas BPS</span></div>
   </div>
@@ -322,9 +391,14 @@ body{font-family:'Inter',system-ui,sans-serif;font-weight:400;letter-spacing:-0.
   </section>
 
   <div class="chart-card mb-8">
-    <div class="chart-header"><div class="eyebrow">III &middot; Treemap</div><h3>Provinsi &rarr; Sektor</h3><div class="sub">Ukuran proporsional terhadap jumlah UMKM</div></div>
+    <div class="chart-header"><div class="eyebrow-roman">III &middot; Treemap</div><h3>Provinsi &rarr; Sektor</h3><div class="sub">Ukuran proporsional terhadap jumlah UMKM</div></div>
     <div id="chart-treemap" style="height:500px"></div>
-    <div class="chart-export-row"><button class="action-btn" onclick="downloadImage('chart-treemap','png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button></div>
+    <div class="chart-export-row">
+      <button class="action-btn" onclick="downloadPPT('chart-treemap','UMKM per Provinsi dan Sektor','Treemap · Sakernas BPS')"><iconify-icon icon="mdi:presentation"></iconify-icon>PPT</button>
+      <button class="action-btn" onclick="downloadCSV('treemap')"><iconify-icon icon="mdi:download"></iconify-icon>CSV</button>
+      <button class="action-btn" onclick="downloadImage('chart-treemap','png')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
+      <button class="action-btn" onclick="downloadImage('chart-treemap','svg')"><iconify-icon icon="mdi:vector-square"></iconify-icon>SVG</button>
+    </div>
     <div class="chart-footer"><span><span class="label">Sumber</span>Sakernas BPS</span></div>
   </div>
 </div>
@@ -332,11 +406,11 @@ body{font-family:'Inter',system-ui,sans-serif;font-weight:400;letter-spacing:-0.
 <!-- ======================== TAB: METODOLOGI ======================== -->
 <div class="tab-page" id="page-metodologi">
   <div class="chart-card mb-6">
-    <div class="chart-header"><div class="eyebrow">A &middot; Sumber Data</div><h3>Sakernas BPS 2021-2025</h3></div>
+    <div class="chart-header"><div class="eyebrow-roman">I &middot; Sumber Data</div><h3>Sakernas BPS 2021-2025</h3></div>
     <table class="table-sm"><thead><tr><th>Sumber</th><th>Periode</th><th>Granularity</th></tr></thead><tbody><tr><td>Sakernas BPS (Agustus)</td><td>2021-2025</td><td>540 kab/kota &times; 17 sektor &times; 3 ukuran</td></tr></tbody></table>
   </div>
   <div class="chart-card mb-6">
-    <div class="chart-header"><div class="eyebrow">B &middot; Definisi UMKM</div><h3>UU 20/2008</h3></div>
+    <div class="chart-header"><div class="eyebrow-roman">II &middot; Definisi UMKM</div><h3>UU 20/2008</h3></div>
     <table class="table-sm"><thead><tr><th>Ukuran</th><th>Pekerja</th><th>Karakteristik</th></tr></thead><tbody>
       <tr><td><strong>Mikro</strong></td><td>1-4</td><td>Berusaha sendiri tanpa bantuan atau pekerja tidak tetap</td></tr>
       <tr><td><strong>Kecil</strong></td><td>5-19</td><td>Berusaha sendiri dengan pekerja tetap</td></tr>
@@ -344,7 +418,7 @@ body{font-family:'Inter',system-ui,sans-serif;font-weight:400;letter-spacing:-0.
     </tbody></table>
   </div>
   <div class="chart-card mb-6">
-    <div class="chart-header"><div class="eyebrow">C &middot; Catatan Penting</div><h3>Keterbatasan Data</h3></div>
+    <div class="chart-header"><div class="eyebrow-roman">III &middot; Catatan Penting</div><h3>Keterbatasan Data</h3></div>
     <ol style="margin-left:20px;font-size:13px;line-height:1.8;color:var(--ink);">
       <li>Estimasi UMKM tertimbang Sakernas tidak setara sensus Podes BPS atau IBS.</li>
       <li>Sektor "Adm Pemerintahan" di-exclude dari hitungan UMKM.</li>
@@ -424,17 +498,17 @@ const PROV_DATA_ALL = buildProvData();
 // ── v4 Plotly style helpers
 const INK = '#051C2C', MUTED = '#667085', RULE = '#E5E8EC';
 function v4Layout(extra) {
-  return Object.assign({paper_bgcolor:'transparent',plot_bgcolor:'transparent',font:{family:'Inter,system-ui,sans-serif',color:INK,size:12}},extra||{});
+  return Object.assign({paper_bgcolor:'transparent',plot_bgcolor:'transparent',separators:',.',font:{family:'Inter,system-ui,sans-serif',color:INK,size:12}},extra||{});
 }
 function v4XAxis(extra) {
   return Object.assign({showgrid:false,zeroline:false,showline:true,linecolor:INK,linewidth:1,ticks:'outside',tickcolor:INK,ticklen:4,tickfont:{size:12,color:INK}},extra||{});
 }
 function v4YAxis(extra) {
-  return Object.assign({showgrid:false,zeroline:true,zerolinecolor:RULE,zerolinewidth:1,tickfont:{size:12,color:MUTED}},extra||{});
+  return Object.assign({showgrid:false,zeroline:true,zerolinecolor:INK,zerolinewidth:1,tickfont:{size:12,color:MUTED}},extra||{});
 }
 const PLOT_CFG = { displayModeBar:false, responsive:true };
 const BLUE5 = [[0,'#EAF1F8'],[0.25,'#A9C4DF'],[0.5,'#67B2E8'],[0.75,'#2C6FB5'],[1,'#001F4D']];
-const UK_COLORS = { Mikro:'#003D79', Kecil:'#67B2E8', Menengah:'#FFB700' };
+const UK_COLORS = { Mikro:'#003D79', Kecil:'#67B2E8', Menengah:'#A9C4DF' };
 
 // ── Populate per-chart province dropdowns
 (function populateProvSelects() {
@@ -474,6 +548,7 @@ function switchTab(tab) {
   if (markerEl) markerEl.textContent = meta.marker;
   try { window.scrollTo({ top:0, behavior:'smooth' }); } catch(e){}
   renderCurrentTab();
+  if (typeof _theme !== 'undefined' && _theme === 'dark') setTimeout(applyPlotlyTheme, 120);
 }
 
 function renderCurrentTab() {
@@ -875,7 +950,7 @@ function renderDetailKomposisi(provName, year) {
   const items = [
     {name:'Mikro',val:yd.Mikro,color:'#003D79'},
     {name:'Kecil',val:yd.Kecil,color:'#67B2E8'},
-    {name:'Menengah',val:yd.Menengah,color:'#FFB700'},
+    {name:'Menengah',val:yd.Menengah,color:'#A9C4DF'},
   ].filter(d=>d.val>0);
   const maxV = Math.max.apply(null,items.map(d=>d.val))||1;
   const rows = items.map(d => {
@@ -940,44 +1015,161 @@ function onMapSearchKey(ev) {
 }
 
 // ── Export helpers
+function _downloadCanvas(canvas, filename) {
+  canvas.toBlob(function(blob){
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 'image/png');
+}
+// PNG / SVG export via Plotly.toImage (scale 2 for crisp PNG)
 function downloadImage(chartId, fmt) {
   const gd = document.getElementById(chartId);
   if (!gd) return;
-  Plotly.downloadImage(gd, { format: fmt, filename: chartId, width:1200, height:700 });
+  Plotly.toImage(gd, { format: fmt, width:1600, height:900, scale:2 }).then(function(url){
+    const a = document.createElement('a');
+    a.href = url; a.download = chartId+'.'+fmt;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  });
+}
+// PPT-ready branded PNG: 1920x1080 canvas with title + chart + source + logo (suite convention)
+function downloadPPT(chartId, title, subtitle) {
+  const gd = document.getElementById(chartId);
+  if (!gd) return;
+  const W = 1920, H = 1080;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#003D79'; ctx.fillRect(0, 0, W, 6);
+  ctx.fillStyle = '#051C2C';
+  ctx.font = "600 36px 'Source Serif 4', Georgia, serif";
+  ctx.fillText(title || 'UMKM Nasional · Mandiri Institute', 60, 90);
+  ctx.font = "400 18px 'Inter', sans-serif";
+  ctx.fillStyle = '#667085';
+  ctx.fillText(subtitle || '', 60, 125);
+  Plotly.toImage(gd, { format:'png', width:1700, height:800, scale:2 }).then(function(url){
+    const img = new Image();
+    img.onload = function(){
+      ctx.drawImage(img, 110, 160, 1700, 800);
+      ctx.fillStyle = '#667085';
+      ctx.font = "400 14px 'Inter', sans-serif";
+      ctx.fillText('Sumber: Sakernas BPS 2021-2025 · Mandiri Institute · '+new Date().toISOString().slice(0,10), 60, H - 30);
+      const logo = new Image();
+      logo.onload = function(){
+        const lh = 60, lw = logo.width * (lh / logo.height);
+        ctx.drawImage(logo, W - lw - 60, H - lh - 20, lw, lh);
+        _downloadCanvas(canvas, chartId+'-Mandiri-Institute.png');
+      };
+      logo.onerror = function(){ _downloadCanvas(canvas, chartId+'.png'); };
+      logo.src = '../_assets/logo/mandiri-institute-color.jpg';
+    };
+    img.src = url;
+  });
 }
 function downloadCSV(key) {
-  const y = gState.tahun, prov = gState.prov;
-  let rows = [], header = '';
+  const y = parseInt(document.getElementById('fc-ukuran-tahun')?.value
+        || document.getElementById('fc-sektor-tahun')?.value
+        || document.getElementById('fc-wilayah-tahun')?.value || '2025', 10);
+  let rows = [], header = '', csvYear = y;
   if (key==='trend') {
+    const prov = document.getElementById('fc-trend-prov')?.value || '__all__';
     header = 'Tahun,Jumlah UMKM';
     rows = PAYLOAD.years.map(yr => {
       const n = _RC.filter(r=>r[0]===yr&&(prov==='__all__'||rowProv(r)===prov)).reduce((s,r)=>s+r[5],0);
       return yr+','+Math.round(n);
     });
+    csvYear = 'all';
+  } else if (key==='ukuran') {
+    const yu = parseInt(document.getElementById('fc-ukuran-tahun')?.value || '2025', 10);
+    header = 'Ukuran,Jumlah UMKM';
+    const uk = {Mikro:0,Kecil:0,Menengah:0};
+    _RC.filter(r=>r[0]===yu).forEach(r=>{ const u=rowUk(r); uk[u]=(uk[u]||0)+r[5]; });
+    rows = ['Mikro','Kecil','Menengah'].map(u=>'"'+u+'",'+Math.round(uk[u]));
+    csvYear = yu;
   } else if (key==='sektor') {
+    const ys = parseInt(document.getElementById('fc-sektor-tahun')?.value || '2025', 10);
+    const prov = document.getElementById('fc-sektor-prov')?.value || '__all__';
     header = 'Sektor,Mikro,Kecil,Menengah,Total';
-    const data = getGlobalFiltered();
+    const data = _RC.filter(r => r[0]===ys && (prov==='__all__'||rowProv(r)===prov));
     const cell = {};
     data.forEach(r => { const k=rowSek(r),u=rowUk(r); if(!cell[k]) cell[k]={Mikro:0,Kecil:0,Menengah:0,total:0}; cell[k][u]=(cell[k][u]||0)+r[5]; cell[k].total+=r[5]; });
-    rows = Object.entries(cell).sort((a,b)=>b[1].total-a[1].total).map(([s,v])=>'"'+s+'",'+Math.round(v.Mikro)+','+Math.round(v.Kecil)+','+Math.round(v.Menengah)+','+Math.round(v.total));
+    rows = Object.entries(cell).filter(([,v])=>v.total>0).sort((a,b)=>b[1].total-a[1].total).map(([s,v])=>'"'+s+'",'+Math.round(v.Mikro)+','+Math.round(v.Kecil)+','+Math.round(v.Menengah)+','+Math.round(v.total));
+    csvYear = ys;
   } else if (key==='wilayah') {
+    const yw = parseInt(document.getElementById('fc-wilayah-tahun')?.value || '2025', 10);
     header = 'Kabupaten/Kota,Provinsi,Jumlah UMKM';
     const sums = {};
-    _RC.filter(r=>r[0]===y).forEach(r=>{ const k=rowKk(r),p=rowProv(r),key2=k+'|||'+p; sums[key2]=(sums[key2]||0)+r[5]; });
+    _RC.filter(r=>r[0]===yw).forEach(r=>{ const k=rowKk(r),p=rowProv(r),key2=k+'|||'+p; sums[key2]=(sums[key2]||0)+r[5]; });
     rows = Object.entries(sums).sort((a,b)=>b[1]-a[1]).slice(0,50).map(([k,n])=>{ const parts=k.split('|||'); return '"'+parts[0]+'","'+parts[1]+'",'+Math.round(n); });
+    csvYear = yw;
+  } else if (key==='treemap') {
+    const yt = parseInt(document.getElementById('fc-wilayah-tahun')?.value || '2025', 10);
+    header = 'Provinsi,Sektor,Jumlah UMKM';
+    const data = _RC.filter(r => r[0]===yt);
+    const cell = {};
+    data.forEach(r => { const p=rowProv(r), s=rowSek(r), kk=p+'|||'+s; cell[kk]=(cell[kk]||0)+r[5]; });
+    rows = Object.entries(cell).filter(([,n])=>n>0).sort((a,b)=>b[1]-a[1]).map(([kk,n])=>{ const parts=kk.split('|||'); return '"'+parts[0]+'","'+parts[1]+'",'+Math.round(n); });
+    csvYear = yt;
   }
   const csv = header+'\n'+rows.join('\n');
   const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'umkm-'+key+'-'+y+'.csv';
+  a.download = 'umkm-'+key+'-'+csvYear+'.csv';
   a.click();
+}
+
+// ── Dark mode (vanilla; localStorage key 'mi-theme')
+let _theme = 'light';
+function syncThemeButton() {
+  const icon = document.getElementById('theme-icon');
+  const label = document.getElementById('theme-label');
+  const btn = document.getElementById('theme-toggle');
+  if (icon) icon.textContent = _theme === 'light' ? '🌙' : '☀️';
+  if (label) label.textContent = _theme === 'light' ? 'Dark' : 'Light';
+  if (btn) btn.setAttribute('aria-label', _theme === 'light' ? 'Aktifkan dark mode' : 'Aktifkan light mode');
+}
+function initTheme() {
+  let stored = null;
+  try { stored = localStorage.getItem('mi-theme'); } catch(e){}
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  _theme = stored || (prefersDark ? 'dark' : 'light');
+  document.documentElement.dataset.theme = _theme === 'dark' ? 'dark' : '';
+  syncThemeButton();
+}
+function applyPlotlyTheme() {
+  const isDark = _theme === 'dark';
+  const layout = {
+    paper_bgcolor: isDark ? '#142A4A' : 'transparent',
+    plot_bgcolor:  isDark ? '#142A4A' : 'transparent',
+    'font.color':  isDark ? '#F4F8FC' : INK,
+    'xaxis.tickfont.color': isDark ? '#B6C8DE' : INK,
+    'yaxis.tickfont.color': isDark ? '#B6C8DE' : MUTED,
+    'xaxis.linecolor': isDark ? '#6A88AA' : INK,
+    'xaxis.tickcolor': isDark ? '#6A88AA' : INK,
+    'yaxis.zerolinecolor': isDark ? '#6A88AA' : INK,
+  };
+  document.querySelectorAll('.js-plotly-plot').forEach(function(el){
+    try { Plotly.relayout(el, layout); } catch(e) {}
+  });
+}
+function toggleTheme() {
+  _theme = _theme === 'light' ? 'dark' : 'light';
+  try { localStorage.setItem('mi-theme', _theme); } catch(e){}
+  document.documentElement.dataset.theme = _theme === 'dark' ? 'dark' : '';
+  syncThemeButton();
+  applyPlotlyTheme();
 }
 
 // ── Auto-init on load
 document.addEventListener('DOMContentLoaded', function() {
+  initTheme();
   switchTab('ringkasan');
   renderDetailPanel();
+  if (_theme === 'dark') setTimeout(applyPlotlyTheme, 120);
 });
 </script>
 </body>

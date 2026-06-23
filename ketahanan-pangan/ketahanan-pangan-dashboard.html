@@ -809,6 +809,75 @@
 </style>
 <link rel="stylesheet" href="../_shared/tactile-editorial.css">
 
+<style id="canon-darkmode-folio-v4x">
+  /* === CANON DARK-MODE TOKEN OVERRIDE (placed AFTER shared CSS so it wins the cascade).
+       Activates when JS sets document.documentElement.dataset.theme = 'dark' → :root[data-theme="dark"]. === */
+  :root[data-theme="dark"] {
+    --canvas: #061429;            /* near black-navy page bg */
+    --paper: #142A4A;             /* card bg */
+    --ink: #F4F8FC;               /* near white */
+    --ink-soft: #B6C8DE;
+    --muted: #8FA6C2;
+    --muted-soft: #6A88AA;
+    --rule: #2C4868;
+    --rule-strong: #6A88AA;
+    --navy-deep: #00153A;         /* darkest */
+    /* Ice blue pops on dark — keep same */
+    --ice-blue-soft: #142A4A;
+    --mist: #142A4A;
+  }
+
+  /* Smooth theme transition */
+  html, body, .chart-card, .stat-card, .nav-drawer, .topnav-canon, .table th, .table td,
+  .page-header-slim, .folio, .kpi-card {
+    transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+  }
+
+  /* Plotly text fill on dark */
+  :root[data-theme="dark"] .plotly text { fill: var(--ink) !important; }
+
+  /* Component-level dark overrides */
+  :root[data-theme="dark"] body { background: var(--canvas) !important; }
+  :root[data-theme="dark"] .filter-canon { background: rgba(20,42,74,0.94); border-bottom-color: var(--rule); }
+  :root[data-theme="dark"] .page-header-slim { background: linear-gradient(180deg, #00153A 0%, #001F4D 100%); }
+  :root[data-theme="dark"] .folio { background: rgba(20,42,74,0.92); border-bottom-color: var(--rule); }
+  :root[data-theme="dark"] .folio .left { color: var(--ink); }
+  :root[data-theme="dark"] .folio .right { color: var(--muted); }
+
+  /* === THEME TOGGLE BUTTON (lives in topnav-canon .right) === */
+  .theme-toggle {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.10); color: white;
+    border: 1px solid rgba(255,255,255,0.18); border-radius: 999px;
+    padding: 5px 12px; font-size: 12px; font-weight: 600; cursor: pointer;
+    line-height: 1; transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+  .theme-toggle:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.32); }
+  .theme-toggle .theme-label { letter-spacing: 0.04em; }
+  @media (max-width: 820px) { .theme-toggle .theme-label { display: none; } }
+
+  /* === FOLIO STRIP markup support (CSS already in inline block; this scopes the run-time strip) === */
+  /* (uses existing .folio / .folio-inner / .left / .right rules) */
+
+  /* === Chart-card numbered eyebrow → eyebrow-roman: scope so it matches chart-header scale
+       (suppress the 24px leading rule, drop serif size to chart-header proportion) === */
+  .chart-card .chart-header .eyebrow-roman {
+    font-size: 13px; color: var(--ice-blue); margin: 0;
+  }
+  .chart-card .chart-header .eyebrow-roman::before { display: none; }
+</style>
+
+<!-- Anti-FOUC theme bootstrap (vanilla IIFE, runs before body paints) -->
+<script>
+(function() {
+  try {
+    var t = localStorage.getItem('mi-theme');
+    if (!t && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) t = 'dark';
+    if (t === 'dark') document.documentElement.dataset.theme = 'dark';
+  } catch(e) {}
+})();
+</script>
+
 </head>
 <body class="min-h-screen" style="background:var(--paper)">
 
@@ -827,6 +896,10 @@
   </div>
   <div class="right">
     <a class="nav-link" href="../index.html" style="color:white;opacity:0.85;font-weight:500;">Semua Dashboard</a>
+    <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="Ganti tema gelap/terang">
+      <span id="theme-icon" aria-hidden="true">🌙</span>
+      <span class="theme-label" id="theme-label">Dark</span>
+    </button>
     <iconify-icon class="search" icon="mdi:magnify" role="button" aria-label="Cari" tabindex="0"></iconify-icon>
   </div>
 </nav>
@@ -841,6 +914,14 @@
     <li><button onclick="switchTab('methodology');document.getElementById('kp-drawer').classList.remove('open');document.getElementById('kp-drawer-overlay').classList.remove('open');"><iconify-icon icon="mdi:book-open-variant"></iconify-icon>Metodologi</button></li>
   </ul>
 </aside>
+
+<!-- Folio strip (canon v4.x): editorial running head between topnav & page header -->
+<div class="folio">
+  <div class="folio-inner">
+    <span class="left">Mandiri Institute</span>
+    <span class="right">Ketahanan Pangan Indonesia &middot; 2019&ndash;2025</span>
+  </div>
+</div>
 
 <!-- Slim page header (v4): single continuous flow dari topnav, no white sandwich -->
 <div class="page-header-slim">
@@ -897,7 +978,7 @@
     <!-- National trend line -->
     <div class="chart-card mb-8">
       <div class="chart-header">
-        <div class="eyebrow">I &middot; Tren Nasional</div>
+        <div class="eyebrow-roman">I &middot; Tren Nasional</div>
         <h3>Tingkat Kerawanan Pangan</h3>
       </div>
       <div id="chart-nat-trend" style="height:480px"></div>
@@ -916,7 +997,7 @@
     <!-- Top 10 Provinsi (full-width, stack atas) -->
     <div class="chart-card mb-8">
       <div class="chart-header">
-        <div class="eyebrow">II &middot; Top 10 Provinsi</div>
+        <div class="eyebrow-roman">II &middot; Top 10 Provinsi</div>
         <h3>Tingkat Kerawanan Pangan Tertinggi</h3>
       </div>
       <div class="chart-filter">
@@ -959,7 +1040,7 @@
     <!-- Top 10 Kab/Kota (full-width, stack bawah) -->
     <div class="chart-card mb-8">
       <div class="chart-header">
-        <div class="eyebrow">III &middot; Top 10 Kab/Kota</div>
+        <div class="eyebrow-roman">III &middot; Top 10 Kab/Kota</div>
         <h3>Tingkat Kerawanan Pangan Tertinggi</h3>
       </div>
       <div class="chart-filter">
@@ -1103,7 +1184,7 @@
     <!-- Trend per kab/kota (chart-card) -->
     <div class="chart-card mb-8">
       <div class="chart-header">
-        <div class="eyebrow">II &middot; Tren</div>
+        <div class="eyebrow-roman">II &middot; Tren</div>
         <h3>Tren Tingkat Kerawanan Pangan</h3>
       </div>
       <div class="chart-filter">
@@ -1173,7 +1254,7 @@
     <!-- Komposisi stacked (chart-card) -->
     <div class="chart-card mb-8">
       <div class="chart-header">
-        <div class="eyebrow">III &middot; Komposisi</div>
+        <div class="eyebrow-roman">III &middot; Komposisi</div>
         <h3 id="stacked-title">Komposisi Tingkat Kerawanan Pangan</h3>
       </div>
       <div class="chart-filter">
@@ -1224,7 +1305,7 @@
     <!-- Ranking chart-card -->
     <div class="chart-card mb-8">
       <div class="chart-header">
-        <div class="eyebrow">I &middot; Ranking</div>
+        <div class="eyebrow-roman">I &middot; Ranking</div>
         <h3 id="prov-chart-title">Tingkat Kerawanan Pangan per Kab/Kota</h3>
       </div>
       <div class="chart-filter">
@@ -1275,7 +1356,7 @@
     <!-- Tabel chart-card -->
     <div class="chart-card mb-8">
       <div class="chart-header">
-        <div class="eyebrow">II &middot; Perubahan Antar-Tahun</div>
+        <div class="eyebrow-roman">II &middot; Perubahan Antar-Tahun</div>
         <h3>Perubahan Tingkat Kerawanan Pangan</h3>
       </div>
       <div class="prov-drilldown-table">
@@ -1627,6 +1708,9 @@ function switchTab(tab) {
     renderTrend();
   }
   if (tab === 'province') { populateProvSelect(); }
+
+  // Re-apply dark theme to charts rendered on this tab switch
+  if (typeof __theme !== 'undefined' && __theme === 'dark') setTimeout(applyPlotlyTheme, 200);
 }
 
 // No-op: filter bar dropped (inline per chart)
@@ -2697,7 +2781,55 @@ function renderProvince() {
   }).join('');
 }
 
+// ============ THEME (canon v4.x dark-mode, vanilla — no Alpine) ============
+// localStorage KEY: 'mi-theme' (values 'light' | 'dark')
+let __theme = 'light';
+
+function __syncThemeChrome() {
+  const icon = document.getElementById('theme-icon');
+  const label = document.getElementById('theme-label');
+  const btn = document.getElementById('theme-toggle-btn');
+  if (icon)  icon.textContent  = __theme === 'light' ? '🌙' : '☀️';
+  if (label) label.textContent = __theme === 'light' ? 'Dark' : 'Light';
+  if (btn)   btn.setAttribute('aria-label', __theme === 'light' ? 'Aktifkan dark mode' : 'Aktifkan light mode');
+}
+
+function initTheme() {
+  let stored = null;
+  try { stored = localStorage.getItem('mi-theme'); } catch(e) {}
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  __theme = stored || (prefersDark ? 'dark' : 'light');
+  document.documentElement.dataset.theme = __theme === 'dark' ? 'dark' : '';
+  __syncThemeChrome();
+}
+
+function toggleTheme() {
+  __theme = __theme === 'light' ? 'dark' : 'light';
+  try { localStorage.setItem('mi-theme', __theme); } catch(e) {}
+  document.documentElement.dataset.theme = __theme === 'dark' ? 'dark' : '';
+  __syncThemeChrome();
+  applyPlotlyTheme();
+}
+
+// Re-theme all Plotly charts in place (relayout, no full re-render)
+function applyPlotlyTheme() {
+  const isDark = __theme === 'dark';
+  const layout = {
+    paper_bgcolor: isDark ? '#142A4A' : '#FFFFFF',
+    plot_bgcolor:  isDark ? '#142A4A' : '#FFFFFF',
+    'font.color':  isDark ? '#F4F8FC' : '#051C2C',
+    'xaxis.gridcolor': isDark ? '#2C4868' : '#E5E7EB',
+    'yaxis.gridcolor': isDark ? '#2C4868' : '#E5E7EB',
+    'xaxis.tickfont.color': isDark ? '#B6C8DE' : '#475569',
+    'yaxis.tickfont.color': isDark ? '#B6C8DE' : '#475569'
+  };
+  document.querySelectorAll('.js-plotly-plot').forEach(el => {
+    try { Plotly.relayout(el, layout); } catch(e) { /* chart not yet rendered */ }
+  });
+}
+
 // ── Init v4 (auto-submit, charts render immediately)
+initTheme();
 populateStackedProv();
 renderStackedKabChip();
 populateTrendProv();
@@ -2705,6 +2837,9 @@ renderKabChips();
 populateProvSelect();
 __submitted = true;
 renderOverview();
+
+// Apply theme to charts that just rendered (if dark active on load)
+if (__theme === 'dark') setTimeout(applyPlotlyTheme, 150);
 
 // Topnav bridge + resize
 window.gotoPage = (id) => { if (typeof switchTab === 'function') switchTab(id); };

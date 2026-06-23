@@ -9,6 +9,16 @@
 <script src="../_assets/iconify-icon.min.js"></script>
 <script src="../_assets/icons.js"></script>
 <link href="../_assets/fonts/fonts.css" rel="stylesheet">
+<!-- Anti-FOUC theme bootstrap (canon v4.x) -->
+<script>
+(function() {
+  try {
+    var t = localStorage.getItem('mi-theme');
+    if (!t && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) t = 'dark';
+    if (t === 'dark') document.documentElement.dataset.theme = 'dark';
+  } catch(e) {}
+})();
+</script>
 <!-- v4.1 Pattern Rollout 2026-05-15 (refined from ketahanan-pangan iteration) -->
 <style>
   :root {
@@ -649,6 +659,61 @@
     .map-hero-header .map-hero-title { font-size: 24px; }
     .map-hero-header .map-hero-intro { font-size: 12.5px; }
   }
+
+  /* ============ EYEBROW ROMAN (canon v4.x) ============ */
+  .eyebrow-roman { font-family: 'Source Serif 4', Georgia, serif; font-style: italic; font-size: var(--fs-md); font-weight: 500; letter-spacing: 0.02em; text-transform: none; color: var(--navy); }
+
+  /* ============ FOLIO STRIP (canon v4.x) ============ */
+  .folio { position: sticky; top: 64px; z-index: 30; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--rule); padding: 8px 0; }
+  .folio-inner { max-width: 1280px; margin: 0 auto; padding: 0 32px; display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+  .folio .left { color: var(--ink); }
+  .folio .right { color: var(--muted); }
+
+  /* ============ THEME TOGGLE BUTTON (canon v4.x) ============ */
+  .theme-toggle {
+    background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.18);
+    color: white; cursor: pointer; border-radius: 999px;
+    padding: 6px 12px; font-family: inherit; font-size: 12px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: all 0.18s ease;
+  }
+  .theme-toggle:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.32); }
+  .theme-toggle .theme-label { letter-spacing: 0.02em; }
+
+  /* ============ CANON DARK-MODE TOKEN OVERRIDE (v4.x) ============ */
+  :root[data-theme="dark"] {
+    --canvas: #061429;             /* near black-navy */
+    --paper: #142A4A;              /* card bg */
+    --ink: #F4F8FC;                /* near white */
+    --ink-soft: #B6C8DE;
+    --muted: #8FA6C0;
+    --rule: #2C4868;
+    --rule-strong: #6A88AA;
+    --navy-deep: #00153A;          /* darkest */
+    --mist: #1B3457;
+    --ice-blue-soft: #142A4A;
+  }
+  /* Smooth theme transition */
+  html, body, .kpi-card, .hero-stat, .chart-card, .nav-drawer, .topnav-canon,
+  .folio, .map-hero-scope, .map-side-panel, .table-sm th, .table-sm td {
+    transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+  }
+  /* Plotly text fill on dark */
+  :root[data-theme="dark"] .plotly text { fill: var(--ink) !important; }
+  /* Component-level dark overrides */
+  :root[data-theme="dark"] .page-header-slim { background: linear-gradient(180deg, #00153A 0%, #001F4D 100%); }
+  :root[data-theme="dark"] .folio { background: rgba(20,42,74,0.92); }
+  :root[data-theme="dark"] .map-hero-scope { background: var(--paper); }
+  :root[data-theme="dark"] .map-area,
+  :root[data-theme="dark"] .map-area #chart-map { background: var(--paper); }
+  :root[data-theme="dark"] .map-side-panel { background: rgba(20,42,74,0.97); }
+  :root[data-theme="dark"] .map-filter-overlay,
+  :root[data-theme="dark"] .map-export-overlay { background: rgba(20,42,74,0.92); }
+  :root[data-theme="dark"] .map-color-legend { background: var(--canvas); }
+  :root[data-theme="dark"] .chart-filter { background: var(--canvas); }
+  :root[data-theme="dark"] .map-side-panel .detail-card.empty { background: var(--canvas); }
+  :root[data-theme="dark"] .map-side-panel .comp-row .comp-bar { background: rgba(255,255,255,0.08); }
+  :root[data-theme="dark"] .map-side-panel .detail-spark { background: var(--canvas); }
 </style>
 </head>
 <body class="min-h-screen" style="background:var(--paper)">
@@ -667,9 +732,21 @@
   </div>
   <div class="right">
     <a class="nav-link" href="../index.html" style="color:white;opacity:0.85;font-weight:500;">Semua Dashboard</a>
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="Ganti tema gelap/terang">
+      <span id="theme-icon" aria-hidden="true">🌙</span>
+      <span class="theme-label" id="theme-label">Dark</span>
+    </button>
     <iconify-icon class="search" icon="mdi:magnify" role="button" aria-label="Cari" tabindex="0"></iconify-icon>
   </div>
 </nav>
+
+<!-- Folio strip (canon v4.x) -->
+<div class="folio">
+  <div class="folio-inner">
+    <span class="left">Mandiri Institute</span>
+    <span class="right">Susenas Maret BPS &middot; 2019-2025</span>
+  </div>
+</div>
 <div id="bbm-drawer-overlay" class="nav-drawer-overlay" onclick="this.classList.remove('open');document.getElementById('bbm-drawer').classList.remove('open');"></div>
 <aside id="bbm-drawer" class="nav-drawer" aria-label="Menu navigasi">
   <button class="close-btn" onclick="document.getElementById('bbm-drawer').classList.remove('open');document.getElementById('bbm-drawer-overlay').classList.remove('open');" aria-label="Tutup menu"><iconify-icon icon="mdi:close"></iconify-icon></button>
@@ -720,7 +797,7 @@
     <!-- Tren Nasional (komposisi BBM per tahun, stacked bar) -->
     <div class="chart-card mb-8">
       <div class="chart-header">
-        <div class="eyebrow">I &middot; Tren Nasional</div>
+        <div class="eyebrow-roman">I &middot; Tren Nasional</div>
         <h3>Konsumsi BBM</h3>
       </div>
       <div id="chart-tren-nasional" style="height:480px"></div>
@@ -740,7 +817,7 @@
     <!-- Komposisi per kelas masyarakat (stacked bar with year filter) -->
     <div class="chart-card mb-8">
       <div class="chart-header">
-        <div class="eyebrow">II &middot; Komposisi per Kelas</div>
+        <div class="eyebrow-roman">II &middot; Komposisi per Kelas</div>
         <h3>Konsumsi BBM</h3>
       </div>
       <div class="chart-filter">
@@ -781,7 +858,7 @@
     <!-- Tabel ringkasan perubahan share -->
     <div class="chart-card mb-8">
       <div class="chart-header">
-        <div class="eyebrow">III &middot; Perubahan Antar-Tahun</div>
+        <div class="eyebrow-roman">III &middot; Perubahan Antar-Tahun</div>
         <h3>Perubahan Konsumsi BBM</h3>
       </div>
       <div style="overflow-x:auto;">
@@ -920,7 +997,7 @@
     <!-- Top 10 Provinsi -->
     <div class="chart-card mb-8">
       <div class="chart-header">
-        <div class="eyebrow">II &middot; Top 10 Provinsi</div>
+        <div class="eyebrow-roman">II &middot; Top 10 Provinsi</div>
         <h3>Konsumsi BBM Tertinggi</h3>
       </div>
       <div class="chart-filter">
@@ -974,7 +1051,7 @@
     <!-- Profil Provinsi (komposisi BBM dalam satu provinsi terpilih) -->
     <div class="chart-card mb-8">
       <div class="chart-header">
-        <div class="eyebrow">III &middot; Profil Provinsi</div>
+        <div class="eyebrow-roman">III &middot; Profil Provinsi</div>
         <h3 id="profil-prov-title">Konsumsi BBM</h3>
       </div>
       <div class="chart-filter">
@@ -1096,7 +1173,7 @@
 <!-- Data (preserved from previous build) -->
 <script>
 const CHART_DATA = {"2019": {"classes": ["Poor", "Vulnerable", "Lower AMC", "Upper AMC", "Lower MC", "Middle MC", "Upper MC", "Upper Class"], "fuels": {"Tidak beli": [9112270.0, 11222048.0, 10451927.0, 3977973.0, 3476803.0, 243006.0, 41319.0, 27896.0], "Premium": [3630767.0, 12285181.0, 20381166.0, 9288279.0, 7941887.0, 704509.0, 131473.0, 143360.0], "Pertalite": [6688336.0, 19384406.0, 36356626.0, 19194825.0, 25504647.0, 2212427.0, 426879.0, 441235.0], "Pertamax": [5478802.0, 11149751.0, 15664318.0, 11994256.0, 13782023.0, 1187870.0, 234959.0, 323485.0], "Pertamax Turbo": [234396.0, 926668.0, 808070.0, 723782.0, 1176731.0, 195983.0, 69534.0, 86543.0]}, "totals": [25144571.0, 54968054.0, 83662107.0, 45179115.0, 51882091.0, 4543795.0, 904164.0, 1022519.0]}, "2020": {"classes": ["Poor", "Vulnerable", "Lower AMC", "Upper AMC", "Lower MC", "Middle MC", "Upper MC", "Upper Class"], "fuels": {"Tidak beli": [8876733.0, 10557097.0, 10105674.0, 3650934.0, 3269014.0, 269311.0, 42251.0, 38828.0], "Premium": [3573794.0, 13194307.0, 18876785.0, 9715222.0, 5911987.0, 383324.0, 74021.0, 44992.0], "Pertalite": [6913502.0, 21571883.0, 37597631.0, 17591206.0, 24501136.0, 2158684.0, 328737.0, 268040.0], "Pertamax": [6814647.0, 11783878.0, 17853065.0, 12556030.0, 15060393.0, 1701441.0, 350894.0, 440258.0], "Pertamax Turbo": [245342.0, 393035.0, 525824.0, 692105.0, 1797301.0, 392900.0, 107035.0, 86187.0]}, "totals": [26424018.0, 57500200.0, 84958979.0, 44205497.0, 50539831.0, 4905660.0, 902938.0, 878305.0]}, "2021": {"classes": ["Poor", "Vulnerable", "Lower AMC", "Upper AMC", "Lower MC", "Middle MC", "Upper MC", "Upper Class"], "fuels": {"Tidak beli": [8575867.0, 9782429.0, 9536939.0, 3759864.0, 3343823.0, 226594.0, 34989.0, 47980.0], "Premium": [2891596.0, 11356804.0, 16809394.0, 7924807.0, 2702009.0, 119388.0, 21087.0, 41005.0], "Pertalite": [6481577.0, 23751166.0, 39608377.0, 16066887.0, 18282387.0, 919261.0, 166604.0, 157202.0], "Pertamax": [9386227.0, 12877033.0, 19667320.0, 15558159.0, 18957127.0, 2407891.0, 423778.0, 454497.0], "Pertamax Turbo": [207505.0, 552459.0, 928355.0, 962627.0, 4768744.0, 1152451.0, 299854.0, 372709.0]}, "totals": [27542772.0, 58319891.0, 86550385.0, 44272344.0, 48054090.0, 4825585.0, 946312.0, 1073393.0]}, "2022": {"classes": ["Poor", "Vulnerable", "Lower AMC", "Upper AMC", "Lower MC", "Middle MC", "Upper MC", "Upper Class"], "fuels": {"Tidak beli": [7103227.0, 9056299.0, 8332307.0, 3037046.0, 2614973.0, 244364.0, 39779.0, 33723.0], "Premium": [2916110.0, 14795577.0, 11618768.0, 4053698.0, 367410.0, 13202.0, 3837.0, 5074.0], "Pertalite": [5829974.0, 24274071.0, 42924577.0, 14669624.0, 8911514.0, 151947.0, 23640.0, 36474.0], "Pertamax": [10051290.0, 13635118.0, 27106554.0, 17833830.0, 17752464.0, 1722198.0, 204843.0, 230536.0], "Pertamax Turbo": [260560.0, 759003.0, 2430063.0, 2920861.0, 13621383.0, 3044511.0, 796149.0, 777519.0]}, "totals": [26161161.0, 62520068.0, 92412269.0, 42515059.0, 43267744.0, 5176222.0, 1068248.0, 1083326.0]}, "2023": {"classes": ["Poor", "Vulnerable", "Lower AMC", "Upper AMC", "Lower MC", "Middle MC", "Upper MC", "Upper Class"], "fuels": {"Tidak beli": [6758638.0, 9118249.0, 8256559.0, 2588470.0, 2240262.0, 202052.0, 53293.0, 41983.0], "Premium": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "Pertalite": [13315825.0, 45113386.0, 63239544.0, 25863328.0, 11862482.0, 262199.0, 73338.0, 75657.0], "Pertamax": [5241141.0, 8938992.0, 19836727.0, 10210746.0, 16798572.0, 1358329.0, 251844.0, 228842.0], "Pertamax Turbo": [582942.0, 1257722.0, 3584603.0, 3344814.0, 10693471.0, 3770085.0, 704212.0, 918485.0]}, "totals": [25898546.0, 64428349.0, 94917433.0, 42007358.0, 41594787.0, 5592665.0, 1082687.0, 1264967.0]}, "2024": {"classes": ["Poor", "Vulnerable", "Lower AMC", "Upper AMC", "Lower MC", "Middle MC", "Upper MC", "Upper Class"], "fuels": {"Tidak beli": [6329272.0, 8621066.0, 7104122.0, 2345244.0, 1848477.0, 165338.0, 39365.0, 25027.0], "Premium": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "Pertalite": [12179450.0, 45563030.0, 62875407.0, 25355404.0, 12592503.0, 241921.0, 29535.0, 35042.0], "Pertamax": [5959245.0, 11808162.0, 22316444.0, 10770940.0, 18136498.0, 1162046.0, 148496.0, 158011.0], "Pertamax Turbo": [751238.0, 1699457.0, 3355479.0, 3375204.0, 9129648.0, 3491860.0, 865169.0, 851710.0]}, "totals": [25219205.0, 67691715.0, 95651452.0, 41846792.0, 41707126.0, 5061165.0, 1082565.0, 1069790.0]}, "2025": {"classes": ["Poor", "Vulnerable", "Lower AMC", "Upper AMC", "Lower MC", "Middle MC", "Upper MC", "Upper Class"], "fuels": {"Tidak beli": [6113802.0, 9048059.0, 7287839.0, 2324297.0, 1606867.0, 121485.0, 31251.0, 34759.0], "Premium": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "Pertalite": [16849941.0, 55257249.0, 72472772.0, 28243415.0, 14866569.0, 319918.0, 42134.0, 54150.0], "Pertamax": [700381.0, 3125934.0, 14153385.0, 11612999.0, 17041310.0, 1277527.0, 174785.0, 187125.0], "Pertamax Turbo": [190436.0, 497323.0, 3126880.0, 2731788.0, 7329973.0, 3107790.0, 788954.0, 901207.0]}, "totals": [23854560.0, 67928565.0, 97040876.0, 44912499.0, 40844719.0, 4826720.0, 1037124.0, 1177241.0]}};
-const COLORS = {"Tidak beli": "#B6B8BA", "Premium": "#EA7200", "Pertalite": "#FFB700", "Pertamax": "#67B2E8", "Pertamax Turbo": "#003D79"};
+/* COLORS legacy (orange/yellow series palette) removed 2026-06-23: dead code, 0 ref. FUEL_COLORS (pure blue, v4) is canonical. */
 const INSIGHTS = [{"kelas": "Poor", "pertalite_2019": 41.7, "pertalite_2025": 95.0, "pertamax_2019": 34.2, "pertamax_2025": 3.9, "delta_pertalite": 53.3, "delta_pertamax": -30.2}, {"kelas": "Vulnerable", "pertalite_2019": 44.3, "pertalite_2025": 93.8, "pertamax_2019": 25.5, "pertamax_2025": 5.3, "delta_pertalite": 49.5, "delta_pertamax": -20.2}, {"kelas": "Lower AMC", "pertalite_2019": 49.7, "pertalite_2025": 80.7, "pertamax_2019": 21.4, "pertamax_2025": 15.8, "delta_pertalite": 31.1, "delta_pertamax": -5.6}, {"kelas": "Upper AMC", "pertalite_2019": 46.6, "pertalite_2025": 66.3, "pertamax_2019": 29.1, "pertamax_2025": 27.3, "delta_pertalite": 19.7, "delta_pertamax": -1.8}, {"kelas": "Lower MC", "pertalite_2019": 52.7, "pertalite_2025": 37.9, "pertamax_2019": 28.5, "pertamax_2025": 43.4, "delta_pertalite": -14.8, "delta_pertamax": 15.0}, {"kelas": "Middle MC", "pertalite_2019": 51.4, "pertalite_2025": 6.8, "pertamax_2019": 27.6, "pertamax_2025": 27.2, "delta_pertalite": -44.6, "delta_pertamax": -0.5}, {"kelas": "Upper MC", "pertalite_2019": 49.5, "pertalite_2025": 4.2, "pertamax_2019": 27.2, "pertamax_2025": 17.4, "delta_pertalite": -45.3, "delta_pertamax": -9.9}, {"kelas": "Upper Class", "pertalite_2019": 44.4, "pertalite_2025": 4.7, "pertamax_2019": 32.5, "pertamax_2025": 16.4, "delta_pertalite": -39.6, "delta_pertamax": -16.1}];
 const FUELS = ["Tidak beli", "Premium", "Pertalite", "Pertamax", "Pertamax Turbo"];
 const PROV_META = {"ID11": "ACEH", "ID12": "SUMATERA UTARA", "ID13": "SUMATERA BARAT", "ID14": "RIAU", "ID15": "JAMBI", "ID16": "SUMATERA SELATAN", "ID17": "BENGKULU", "ID18": "LAMPUNG", "ID19": "KEPULAUAN BANGKA BELITUNG", "ID21": "KEPULAUAN RIAU", "ID31": "DKI JAKARTA", "ID32": "JAWA BARAT", "ID33": "JAWA TENGAH", "ID34": "DI YOGYAKARTA", "ID35": "JAWA TIMUR", "ID36": "BANTEN", "ID51": "BALI", "ID52": "NUSA TENGGARA BARAT", "ID53": "NUSA TENGGARA TIMUR", "ID61": "KALIMANTAN BARAT", "ID62": "KALIMANTAN TENGAH", "ID63": "KALIMANTAN SELATAN", "ID64": "KALIMANTAN TIMUR", "ID65": "KALIMANTAN UTARA", "ID71": "SULAWESI UTARA", "ID72": "SULAWESI TENGAH", "ID73": "SULAWESI SELATAN", "ID74": "SULAWESI TENGGARA", "ID75": "GORONTALO", "ID76": "SULAWESI BARAT", "ID81": "MALUKU", "ID82": "MALUKU UTARA", "ID91": "PAPUA BARAT", "ID94": "PAPUA"};
@@ -1229,6 +1306,7 @@ function switchTab(tab) {
     renderTopProv();
     renderProfilProv();
   }
+  if (currentTheme === 'dark') setTimeout(applyPlotlyTheme, 120);
 }
 
 // â”€â”€ KPI computation
@@ -1953,12 +2031,53 @@ function copyShareLink() {
   try { navigator.clipboard.writeText(window.location.href); } catch (e) {}
 }
 
+// â”€â”€ Theme (canon v4.x dark-mode) â”€â”€ vanilla JS, localStorage key 'mi-theme'
+let currentTheme = 'light';
+function syncThemeButton() {
+  const icon = document.getElementById('theme-icon');
+  const label = document.getElementById('theme-label');
+  if (icon) icon.textContent = currentTheme === 'light' ? '🌙' : '☀️';
+  if (label) label.textContent = currentTheme === 'light' ? 'Dark' : 'Light';
+}
+function initTheme() {
+  const stored = localStorage.getItem('mi-theme');
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  currentTheme = stored || (prefersDark ? 'dark' : 'light');
+  document.documentElement.dataset.theme = currentTheme === 'dark' ? 'dark' : '';
+  syncThemeButton();
+}
+function toggleTheme() {
+  currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+  try { localStorage.setItem('mi-theme', currentTheme); } catch(e) {}
+  document.documentElement.dataset.theme = currentTheme === 'dark' ? 'dark' : '';
+  syncThemeButton();
+  applyPlotlyTheme();
+}
+function applyPlotlyTheme() {
+  const isDark = currentTheme === 'dark';
+  const layout = {
+    paper_bgcolor: isDark ? '#142A4A' : 'transparent',
+    plot_bgcolor:  isDark ? '#142A4A' : 'transparent',
+    'font.color':  isDark ? '#F4F8FC' : INK,
+    'xaxis.linecolor':       isDark ? '#6A88AA' : INK,
+    'xaxis.tickcolor':       isDark ? '#6A88AA' : INK,
+    'xaxis.tickfont.color':  isDark ? '#B6C8DE' : INK,
+    'yaxis.zerolinecolor':   isDark ? '#6A88AA' : INK,
+    'yaxis.tickfont.color':  isDark ? '#B6C8DE' : MUTED,
+  };
+  document.querySelectorAll('.js-plotly-plot').forEach(el => {
+    try { Plotly.relayout(el, layout); } catch(e) { /* not yet rendered */ }
+  });
+}
+
 // â”€â”€ Initial render on load
 window.addEventListener('DOMContentLoaded', () => {
+  initTheme();
   renderTrenNasional();
   renderKomposisi();
   renderInsightsTable();
   updateKPICards();
+  if (currentTheme === 'dark') setTimeout(applyPlotlyTheme, 120);
 });
 
 // Sticky topnav offset for #anchor scroll

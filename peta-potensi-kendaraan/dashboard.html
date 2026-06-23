@@ -18,10 +18,11 @@
 <style>
   :root {
     --navy: #003D79; --navy-deep: #002852; --navy-primary: #003D79;
+    --navy-soft: #1A5394; --sky-soft: #A9C4DF;
     --sky: #67B2E8; --ice-blue: #67B2E8; --yellow: #FFB700;
     --ink: #051C2C; --rule: #E5E8EC; --rule-strong: #D0D5DD; --muted: #667085;
     --paper: #FFFFFF; --cream: #F8F6F0; --mist: #F0F6FC;
-    --tier1: #003D79; --tier2: #67B2E8; --tier3: #FFE08A; --tier4: #E5E8EC; --lowconf: #C8102E;
+    --tier1: #001F4D; --tier2: #2C6FB5; --tier3: #A9C4DF; --tier4: #EAF1F8; --lowconf: #C8102E;
     --tr-base: 0.15s ease;
     --shadow-subtle: 0 1px 3px rgba(0,0,0,0.08);
     --bg-base: #fafbfc; --bg-elevated: #ffffff;
@@ -47,7 +48,7 @@
   /* Chart card (v4) */
   .chart-card {
     background: white; border: 1px solid var(--rule);
-    border-radius: 6px; padding: 20px 20px 16px;
+    border-radius: 4px; padding: 20px 20px 16px;
     box-shadow: var(--shadow-subtle);
   }
   .chart-header { margin-bottom: 14px; }
@@ -88,8 +89,8 @@
   .rank-table .sub-prov { display: block; font-size: 11px; color: var(--muted); font-weight: 400; margin-top: 2px; }
 
   /* Caveat banner */
-  .caveat-banner { background: rgba(234,114,0,0.08); border-left: 3px solid #EA7200; padding: 14px 18px; margin: 16px 0; }
-  .caveat-banner .label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #EA7200; }
+  .caveat-banner { background: rgba(26,83,148,0.08); border-left: 3px solid var(--navy-soft); padding: 14px 18px; margin: 16px 0; }
+  .caveat-banner .label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--navy-soft); }
   .caveat-banner .text { font-size: 13px; color: var(--ink); margin-top: 4px; line-height: 1.5; }
 
   /* Pillar bars in drilldown */
@@ -186,7 +187,7 @@
     background: var(--bg-elevated);
     color: var(--ink);
     border: 1px solid var(--rule);
-    border-radius: 6px;
+    border-radius: 4px;
     padding: 28px 28px 24px;
     box-shadow: var(--shadow-subtle);
     overflow: hidden;
@@ -379,8 +380,70 @@
   .related-title { font-family: 'Source Serif 4', Georgia, serif; font-size: 15px; font-weight: 600; line-height: 1.25; margin-top: 4px; }
   .related-blurb { font-size: 12px; color: var(--muted); line-height: 1.45; margin-top: 6px; }
   .related-arrow { font-size: 18px; color: var(--navy); flex-shrink: 0; }
+
+  /* ============ FOLIO (canon v4.x) ============ */
+  .folio { position: relative; z-index: 40; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--rule); padding: 8px 0; }
+  .folio-inner { max-width: 1280px; margin: 0 auto; padding: 0 32px; display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+  .folio .left { color: var(--ink); }
+  .folio .right { color: var(--muted); }
+
+  /* ============ THEME TOGGLE (canon v4.x) ============ */
+  .theme-toggle { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.20); color: white; font-family: inherit; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; padding: 5px 10px; border-radius: 4px; cursor: pointer; transition: background 0.15s, border-color 0.15s; }
+  .theme-toggle:hover { background: rgba(255,255,255,0.18); border-color: var(--sky); }
+  .theme-toggle .theme-label { text-transform: uppercase; letter-spacing: 0.08em; }
+
+  /* ============ DARK MODE (canon v4.x token override) ============ */
+  :root[data-theme="dark"] {
+    --canvas: #061429;
+    --paper: #142A4A;
+    --ink: #F4F8FC;
+    --muted: #B6C8DE;
+    --rule: #2C4868;
+    --rule-strong: #6A88AA;
+    --navy-deep: #00153A;
+    --mist: #142A4A;
+    --cream: #102543;
+    --bg-base: #0B1E3A;
+    --bg-elevated: #142A4A;
+    --shadow-subtle: 0 1px 3px rgba(0,0,0,0.4);
+  }
+  /* Smooth theme transition */
+  html, body, .chart-card, .map-hero-scope, .nav-drawer, .topnav-canon, .rank-table th, .rank-table td, .map-side-panel, .folio, .tab-bar {
+    transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+  }
+  :root[data-theme="dark"], :root[data-theme="dark"] body { background: var(--canvas); color: var(--ink); }
+  :root[data-theme="dark"] .chart-card { background: var(--paper); }
+  :root[data-theme="dark"] .map-hero-scope { background: var(--paper); }
+  :root[data-theme="dark"] .map-area { background: #0B1E3A; }
+  :root[data-theme="dark"] .map-filter-overlay,
+  :root[data-theme="dark"] .map-side-panel { background: rgba(20,42,74,0.96); }
+  :root[data-theme="dark"] .map-filter-overlay .filter-pill select,
+  :root[data-theme="dark"] .sp-search .search-input { background: #0B1E3A; color: var(--ink); }
+  :root[data-theme="dark"] .map-color-legend,
+  :root[data-theme="dark"] .detail-empty { background: var(--bg-base); }
+  :root[data-theme="dark"] .tab-bar { background: var(--paper); }
+  :root[data-theme="dark"] .rank-table thead th { background: var(--paper); }
+  :root[data-theme="dark"] .folio { background: rgba(20,42,74,0.92); border-bottom-color: var(--rule); }
+  :root[data-theme="dark"] .related-card,
+  :root[data-theme="dark"] .select-flat { background: var(--paper); color: var(--ink); }
+  :root[data-theme="dark"] .chip-action,
+  :root[data-theme="dark"] .chip-ms button { background: var(--paper); color: var(--ink); }
+  :root[data-theme="dark"] .related-icon { background: var(--bg-base); }
+  :root[data-theme="dark"] .page-header-slim { background: linear-gradient(180deg, #00153A 0%, #001F4D 100%); }
+  :root[data-theme="dark"] .leaflet-tile { filter: brightness(0.7) invert(1) contrast(0.9) hue-rotate(180deg) saturate(0.7); }
+  :root[data-theme="dark"] .plotly text { fill: var(--ink) !important; }
 </style>
 <link rel="stylesheet" href="../_shared/tactile-editorial.css">
+<!-- Anti-FOUC: set theme before paint (canon key 'mi-theme') -->
+<script>
+(function() {
+  try {
+    var t = localStorage.getItem('mi-theme');
+    if (!t && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) t = 'dark';
+    if (t === 'dark') document.documentElement.dataset.theme = 'dark';
+  } catch(e) {}
+})();
+</script>
 </head>
 <body>
 
@@ -399,6 +462,10 @@
   </div>
   <div class="right">
     <a class="nav-link" href="../index.html" style="color:white;opacity:0.85;font-weight:500;text-decoration:none;">Semua Dashboard</a>
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="Ganti tema">
+      <span id="theme-icon" aria-hidden="true">🌙</span>
+      <span class="theme-label" id="theme-label">Dark</span>
+    </button>
     <iconify-icon class="search" icon="mdi:magnify" role="button" aria-label="Cari" tabindex="0"></iconify-icon>
   </div>
 </nav>
@@ -431,6 +498,14 @@
   <button class="tab-pill-nav" data-tab="peta" onclick="switchTab('peta')">Peta Potensi</button>
   <button class="tab-pill-nav" data-tab="indikator" onclick="switchTab('indikator')">Detail Indikator</button>
   <button class="tab-pill-nav" data-tab="metodologi" onclick="switchTab('metodologi')">Metodologi</button>
+</div>
+
+<!-- Folio (canon v4.x) -->
+<div class="folio">
+  <div class="folio-inner">
+    <span class="left">Mandiri Institute</span>
+    <span class="right">Riset Kendaraan 2026 &middot; Susenas BPS</span>
+  </div>
 </div>
 
 <main class="max-w-[1280px] mx-auto px-6 pb-16">
@@ -507,6 +582,8 @@
       <div class="chart-export-row">
         <button class="export-btn-ghost" onclick="exportChartPNG('chart-trend')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
         <button class="export-btn-ghost" onclick="exportChartSVG('chart-trend')"><iconify-icon icon="mdi:vector-square"></iconify-icon>SVG</button>
+        <button class="export-btn-ghost" onclick="exportChartJPEG('chart-trend')"><iconify-icon icon="mdi:file-jpg-box"></iconify-icon>JPG</button>
+        <button class="export-btn-ghost" onclick="exportChartWEBP('chart-trend')"><iconify-icon icon="mdi:file-image-outline"></iconify-icon>WEBP</button>
       </div>
       <div class="chart-footer">
         <span><span class="label">Sumber</span>Susenas KOR-RT + KP Blok 4.2, BPS</span>
@@ -716,6 +793,8 @@
       <div class="chart-export-row">
         <button class="export-btn-ghost" onclick="exportChartPNG('chart-indikator')"><iconify-icon icon="mdi:image-outline"></iconify-icon>PNG</button>
         <button class="export-btn-ghost" onclick="exportChartSVG('chart-indikator')"><iconify-icon icon="mdi:vector-square"></iconify-icon>SVG</button>
+        <button class="export-btn-ghost" onclick="exportChartJPEG('chart-indikator')"><iconify-icon icon="mdi:file-jpg-box"></iconify-icon>JPG</button>
+        <button class="export-btn-ghost" onclick="exportChartWEBP('chart-indikator')"><iconify-icon icon="mdi:file-image-outline"></iconify-icon>WEBP</button>
       </div>
       <div class="chart-footer">
         <span><span class="label">Sumber</span>Susenas BPS &middot; middle+ filter</span>
@@ -755,7 +834,7 @@
           <div style="background:#1A5394;width:25%;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase">P2 &middot; 25%</div>
           <div style="background:#67B2E8;width:15%;display:flex;align-items:center;justify-content:center;color:var(--ink);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase">P3 &middot; 15%</div>
           <div style="background:#A9C4DF;width:10%;display:flex;align-items:center;justify-content:center;color:var(--ink);font-size:11px;font-weight:700;letter-spacing:0.06em">P4 &middot; 10%</div>
-          <div style="background:var(--yellow);width:20%;display:flex;align-items:center;justify-content:center;color:var(--ink);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase">P5 &middot; 20%</div>
+          <div style="background:#002852;width:20%;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase">P5 &middot; 20%</div>
         </div>
         <div style="display:flex;margin-top:6px;font-size:10px;color:var(--muted);font-weight:600;letter-spacing:0.08em;text-transform:uppercase">
           <div style="width:30%">Adopsi</div><div style="width:25%">Pembelian</div>
@@ -881,8 +960,9 @@ const FONT = 'Inter, sans-serif';
 const INK = '#051C2C';
 const MUTED = '#667085';
 const BLUE_STOPS = ['#EAF1F8','#A9C4DF','#67B2E8','#2C6FB5','#001F4D'];
-const YELLOW_STOPS = ['#FFF8E5','#FFE08A','#FFB700','#D67900','#003D79'];
-const TIER_COLORS = { 'Tier 1': '#003D79', 'Tier 2': '#67B2E8', 'Tier 3': '#FFE08A', 'Tier 4': '#E5E8EC', 'Sampel Terbatas': '#C8102E' };
+// Canon v4.x: data viz monokromatik biru. YELLOW_STOPS dihapus sebagai ramp data,
+// semua view (composite + TAM) pakai BLUE_STOPS di peta + legend.
+const TIER_COLORS = { 'Tier 1': '#001F4D', 'Tier 2': '#2C6FB5', 'Tier 3': '#A9C4DF', 'Tier 4': '#EAF1F8', 'Sampel Terbatas': '#C8102E' };
 const REGION_PROVS = {
   'Indonesia': null,
   'Sumatra':            ['11','12','13','14','15','16','17','18','19','21'],
@@ -965,6 +1045,7 @@ function switchTab(id) {
     else if (id === 'indikator') renderIndikator();
     else if (id === 'metodologi') renderMetodologi();
   }
+  if (document.documentElement.dataset.theme === 'dark') setTimeout(applyPlotlyTheme, 150);
 }
 
 // ============================================================
@@ -1012,16 +1093,16 @@ function renderTrend() {
     { x: yrs, y: t.pct_motor.map(v => v ? v*100 : null), name: 'Kepemilikan motor', mode: 'lines+markers', type: 'scatter', yaxis: 'y',
       line: { color: '#67B2E8', width: 2.5 }, marker: { size: 8, color: '#67B2E8' } },
     { x: yrs, y: t.avg_kendaraan.map(v => v ? v/1e6 : null), name: 'Belanja kendaraan per RT (Rp jt/tahun)', mode: 'lines+markers', type: 'scatter', yaxis: 'y2',
-      line: { color: '#FFB700', width: 2.5, dash: 'dot' }, marker: { size: 8, color: '#FFB700' } },
+      line: { color: '#1A5394', width: 2.5, dash: 'dot' }, marker: { size: 8, color: '#1A5394' } },
   ], {
     margin: { l: 60, r: 60, t: 20, b: 60 },
     font: { family: FONT, size: 13, color: INK },
     plot_bgcolor: 'white', paper_bgcolor: 'white',
-    xaxis: { tickfont: { size: 13, color: INK }, showline: true, linecolor: INK, ticks: 'outside', tickcolor: INK, ticklen: 4, showgrid: false },
+    xaxis: { tickfont: { size: 13, color: INK }, showline: true, linecolor: INK, ticks: 'outside', tickcolor: INK, ticklen: 4, showgrid: false, zeroline: true, zerolinecolor: '#051C2C' },
     yaxis: { title: { text: 'Kepemilikan per RT (%)', font: { size: 12, color: MUTED } },
-             tickfont: { size: 12, color: MUTED }, showgrid: false, range: [0, 100] },
-    yaxis2: { title: { text: 'Belanja kendaraan (Rp jt/RT/tahun)', font: { size: 12, color: '#FFB700' } },
-              overlaying: 'y', side: 'right', tickfont: { size: 12, color: '#FFB700' }, showgrid: false },
+             tickfont: { size: 12, color: MUTED }, showgrid: false, range: [0, 100], zeroline: true, zerolinecolor: '#051C2C' },
+    yaxis2: { title: { text: 'Belanja kendaraan (Rp jt/RT/tahun)', font: { size: 12, color: '#1A5394' } },
+              overlaying: 'y', side: 'right', tickfont: { size: 12, color: '#1A5394' }, showgrid: false, zeroline: false },
     legend: { orientation: 'h', y: -0.18, x: 0, xanchor: 'left' },
   }, { displaylogo: false, responsive: true });
 }
@@ -1036,7 +1117,7 @@ let currentDetailTab = 'profil';
 let _mapMin = 0, _mapMax = 100;
 
 function getColor(value, min, max, isComposite) {
-  const stops = isComposite ? BLUE_STOPS : YELLOW_STOPS;
+  const stops = BLUE_STOPS; // canon: monokromatik biru utk composite + TAM
   if (value == null || isNaN(value)) return '#E8E8E8';
   const t = Math.max(0, Math.min(1, (value - min) / (Math.max(max - min, 1))));
   const i = Math.min(4, Math.floor(t * 5));
@@ -1135,7 +1216,7 @@ function updateLeafletColors() {
 function updateMapLegend(min, max) {
   const { tampilan } = getMapFilterState();
   const isComposite = tampilan === 'composite';
-  const stops = isComposite ? BLUE_STOPS : YELLOW_STOPS;
+  const stops = BLUE_STOPS; // canon: monokromatik biru utk composite + TAM
   const grad = `linear-gradient(to right, ${stops.join(', ')})`;
   const bar = document.getElementById('legend-bar');
   if (bar) bar.style.background = grad;
@@ -1243,8 +1324,8 @@ function renderDetailHistori(pcode) {
     margin: { l: 36, r: 10, t: 10, b: 40 },
     font: { family: FONT, size: 10, color: INK },
     plot_bgcolor: 'white', paper_bgcolor: 'white',
-    xaxis: { tickfont: { size: 10 }, showgrid: false },
-    yaxis: { tickfont: { size: 10, color: MUTED }, showgrid: false, range: [0, 100], title: { text: '%', font: { size: 9 } } },
+    xaxis: { tickfont: { size: 10 }, showgrid: false, zeroline: true, zerolinecolor: '#051C2C' },
+    yaxis: { tickfont: { size: 10, color: MUTED }, showgrid: false, range: [0, 100], title: { text: '%', font: { size: 9 } }, zeroline: true, zerolinecolor: '#051C2C' },
     legend: { orientation: 'h', y: -0.2, x: 0, font: { size: 9 } },
   }, { displaylogo: false, responsive: true });
 }
@@ -1456,8 +1537,8 @@ function renderMetodologi() {
   const cvEl = document.getElementById('caveat-list');
   if (cvEl && PAYLOAD.caveat) {
     cvEl.innerHTML = PAYLOAD.caveat.map((c,i) => `
-      <li style="counter-increment:cv;display:flex;gap:16px;padding:14px 18px;background:rgba(234,114,0,0.06);border-left:3px solid #EA7200">
-        <span style="font-family:'Source Serif 4',serif;font-size:24px;font-weight:600;color:#EA7200;line-height:1;min-width:32px">${String(i+1).padStart(2,'0')}</span>
+      <li style="counter-increment:cv;display:flex;gap:16px;padding:14px 18px;background:rgba(26,83,148,0.06);border-left:3px solid var(--navy-soft)">
+        <span style="font-family:'Source Serif 4',serif;font-size:24px;font-weight:600;color:var(--navy-soft);line-height:1;min-width:32px">${String(i+1).padStart(2,'0')}</span>
         <span style="line-height:1.6">${c}</span>
       </li>`).join('');
   }
@@ -1475,6 +1556,18 @@ function exportChartPNG(id) {
 function exportChartSVG(id) {
   Plotly.toImage(id, { format: 'svg' }).then(url => {
     const a = document.createElement('a'); a.href = url; a.download = id + '.svg';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  });
+}
+function exportChartJPEG(id) {
+  Plotly.toImage(id, { format: 'jpeg', scale: 2 }).then(url => {
+    const a = document.createElement('a'); a.href = url; a.download = id + '.jpg';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  });
+}
+function exportChartWEBP(id) {
+  Plotly.toImage(id, { format: 'webp', scale: 2 }).then(url => {
+    const a = document.createElement('a'); a.href = url; a.download = id + '.webp';
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
   });
 }
@@ -1517,13 +1610,56 @@ function exportMapPNG() {
 function exportMapPPT() { exportMapPNG(); }
 
 // ============================================================
+// THEME (dark-mode), vanilla, canon key 'mi-theme'
+// ============================================================
+function applyPlotlyTheme() {
+  if (typeof Plotly === 'undefined') return;
+  const isDark = document.documentElement.dataset.theme === 'dark';
+  const layout = {
+    paper_bgcolor: isDark ? '#142A4A' : '#FFFFFF',
+    plot_bgcolor:  isDark ? '#142A4A' : '#FFFFFF',
+    'font.color':  isDark ? '#F4F8FC' : '#051C2C',
+    'xaxis.tickfont.color': isDark ? '#B6C8DE' : '#667085',
+    'yaxis.tickfont.color': isDark ? '#B6C8DE' : '#667085',
+  };
+  document.querySelectorAll('.js-plotly-plot').forEach(el => {
+    try { Plotly.relayout(el, layout); } catch(e) {}
+  });
+}
+function updateThemeUI() {
+  const isDark = document.documentElement.dataset.theme === 'dark';
+  const icon = document.getElementById('theme-icon');
+  const label = document.getElementById('theme-label');
+  if (icon) icon.textContent = isDark ? '☀️' : '🌙';
+  if (label) label.textContent = isDark ? 'Light' : 'Dark';
+}
+function initTheme() {
+  let stored = null;
+  try { stored = localStorage.getItem('mi-theme'); } catch(e) {}
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme = stored || (prefersDark ? 'dark' : 'light');
+  document.documentElement.dataset.theme = theme === 'dark' ? 'dark' : '';
+  updateThemeUI();
+}
+function toggleTheme() {
+  const isDark = document.documentElement.dataset.theme === 'dark';
+  const next = isDark ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next === 'dark' ? 'dark' : '';
+  try { localStorage.setItem('mi-theme', next); } catch(e) {}
+  updateThemeUI();
+  applyPlotlyTheme();
+}
+
+// ============================================================
 // AUTO-INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
   // Auto-submit: render overview immediately
   tabInitialized['overview'] = true;
   renderScorecard();
   renderTrend();
+  if (document.documentElement.dataset.theme === 'dark') setTimeout(applyPlotlyTheme, 120);
 });
 </script>
 </body>
